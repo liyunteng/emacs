@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: include ""
+# key: cpp
+# --
+`(progn
+  (setq header "")
+  (setq filename (file-name-sans-extension
+                  (file-name-nondirectory (buffer-file-name))))
+  (setq suffix (file-name-extension
+                (file-name-nondirectory (buffer-file-name))))
+  (if (or (equal "c" suffix)
+          (equal "cpp" suffix)
+          (equal "cxx" suffix))
+      (progn (if (file-exists-p (concat filename ".h"))
+                 (setq header (concat filename ".h")))
+             (if (file-exists-p (concat filename ".hpp"))
+                 (setq header (concat filename ".hpp")))
+             (if (equal header "")
+                 nil
+               (concat "#include \"" header "\"")))))`
+$0

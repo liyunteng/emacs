@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: brief function doc
+# key: docb
+# group: doxygen
+# --
+/**
+ * @brief $0
+ */

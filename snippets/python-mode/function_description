@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+#cotributor: Henrique Jung <henriquenj@gmail.com>
+#name: File description
+#key: doch
+#group: doxygen
+# --
+#!/usr/bin/env python2.6
+#  -*- coding: utf-8 -*-
+#
+#  @file ${1:`(file-name-nondirectory(buffer-file-name))`}
+#  @brief ${2:A Documented file.}
+#${3:
+#  @author `(user-full-name)` <liyunteng@streamocean.com>
+#  @copyright CopyRight (C) 2017 StreamOcean
+#  @date Last-Updated:
+}

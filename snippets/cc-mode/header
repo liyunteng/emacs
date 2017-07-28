@@ -1,0 +1,40 @@
+# -*- mode: snippet -*-
+# name: header
+# key: h
+# --
+/*
+*=====================================================================
+*
+*       Filename:  `(file-name-nondirectory(buffer-file-name))`
+*
+*    Description:  ${1:}
+*
+*        Verison:  ${2:1.0}
+*       Revision:  ${3:none}
+*       Compiler:  ${4:gcc}
+*   Last-Updated:
+*
+*         Author:  Yunteng Li (liyunteng) liyunteng@streamocean.com
+*        Company:  StreamOcean.Inc
+*      Copyright:  Copyright (c) 2016, Streamocean.Inc
+*
+*=====================================================================
+*/
+
+`(progn
+  (setq header "")
+  (setq filename (file-name-sans-extension
+                  (file-name-nondirectory (buffer-file-name))))
+  (setq suffix (file-name-extension
+                (file-name-nondirectory (buffer-file-name))))
+  (if (or (equal "c" suffix)
+          (equal "cpp" suffix)
+          (equal "cxx" suffix))
+      (progn (if (file-exists-p (concat filename ".h"))
+                 (setq header (concat filename ".h")))
+             (if (file-exists-p (concat filename ".hpp"))
+                 (setq header (concat filename ".hpp")))
+             (if (equal header "")
+                 nil
+               (concat "#include \"" header "\"")))))`
+$0

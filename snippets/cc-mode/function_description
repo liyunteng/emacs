@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+#cotributor: Henrique Jung <henriquenj@gmail.com>
+#name: Function doc
+#key: docf
+#group: doxygen
+# --
+
+/**
+ *  @brief ${1:function description}
+ *  @param ${2:param}
+ *  @param ${3:param}
+ *  @return ${4:return type}
+ */
