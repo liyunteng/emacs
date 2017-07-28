@@ -66,7 +66,7 @@
 (defvar my-term-shell "/bin/bash")
 (setq-default explicit-shell-file-name my-term-shell)
 (setq-default term-input-ring-file-name
-              (expand-file-name "term" my-savefile-dir))
+              (expand-file-name "term" my-cache-dir))
 
 (setq-default multi-term-program my-term-shell)
 ;; (setq-default multi-term-program "/bin/bash")

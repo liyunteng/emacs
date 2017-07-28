@@ -1,4 +1,4 @@
-;;; my-benchmarking.el --- custom                    -*- lexical-binding: t; -*-
+;;; my-debug.el --- custom                    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  liyunteng
 
@@ -189,5 +189,5 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 (add-hook 'after-init-hook
           (lambda () (run-at-time 0 nil 'my-show-init-time)))
 
-(provide 'my-benchmarking)
+(provide 'my-debug)
 ;;; my-benchmarking.el ends here

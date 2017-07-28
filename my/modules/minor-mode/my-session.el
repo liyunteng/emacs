@@ -57,7 +57,7 @@
                         tags-file-name
                         tags-table-list)))
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
-(setq desktop-path (list my-savefile-dir))
+(setq desktop-path (list my-cache-dir))
 (setq desktop-auto-save-timeout 600)
 (setq desktop-missing-file-warning t)
 (setq desktop-restore-in-current-display t)
@@ -91,7 +91,7 @@
 (savehist-mode t)
 
 (require 'session)
-(setq-default session-save-file (expand-file-name "session" my-savefile-dir))
+(setq-default session-save-file (expand-file-name "session" my-cache-dir))
 (setq-default session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\\\|^/ssh:\\|^ftp:\\|^rsync:)")
 (setq-default session-set-file-name-exclude-regexp "[/\\]\\.overview\\|[/\\]\\.session\\|News[/\\]\\|^/ssh:\\|^ftp:\\|^rsync:")
 (add-hook 'after-init-hook 'session-initialize)

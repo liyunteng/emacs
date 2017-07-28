@@ -24,13 +24,6 @@
 
 ;;; Code:
 
-;;出错后显示错误原因
-(setq debug-on-error t)
-
-;; 设置个人信息
-(setq user-full-name "liyunteng")
-;; 设置个人邮箱
-(setq user-mail-address "li_yunteng@163.com")
 
 ;;========== backup =========
 ;; 不产生备份文件
@@ -38,7 +31,7 @@
 ;;所有的备份文件转移到Backup目录下
 (when make-backup-files
   (setq backup-directory-alist
-        `((".*" . ,(expand-file-name "Backup/" my-savefile-dir)))
+        `((".*" . ,(expand-file-name "Backup/" my-cache-dir)))
         version-control t
         kept-old-versions 2
         kept-new-versions 2
@@ -49,7 +42,7 @@
 ;; (setq-default my-auto-save t)
 (setq-default auto-save-default t)
 (when auto-save-default
-  (let ((autosave-dir (expand-file-name "auto-save/" my-savefile-dir)))
+  (let ((autosave-dir (expand-file-name "auto-save/" my-cache-dir)))
     (setq auto-save-list-file-prefix
           (concat autosave-dir "saves-"))
     (setq auto-save-file-name-transforms
@@ -60,21 +53,21 @@
 
 ;; 将保存的文件移动到.emacs.d/目录中
 (setq-default recentf-save-file  (expand-file-name "recentf" user-emacs-directory))
-(setq-default diary-file (expand-file-name "diary" my-savefile-dir))
-(setq-default ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-savefile-dir))
-(setq-default ido-save-directory-list-file (expand-file-name "ido.last" my-savefile-dir))
-(setq-default projectile-known-projects-file (expand-file-name "projectile-bookmarks" my-savefile-dir))
-(setq-default smex-save-file (expand-file-name "smex-items" my-savefile-dir))
+(setq-default diary-file (expand-file-name "diary" my-cache-dir))
+(setq-default ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir))
+(setq-default ido-save-directory-list-file (expand-file-name "ido.last" my-cache-dir))
+(setq-default projectile-known-projects-file (expand-file-name "projectile-bookmarks" my-cache-dir))
+(setq-default smex-save-file (expand-file-name "smex-items" my-cache-dir))
 
 ;; abbrev
-(setq-default abbrev-file-name (expand-file-name "abbrev_defs" my-savefile-dir))
+(setq-default abbrev-file-name (expand-file-name "abbrev_defs" my-cache-dir))
 
 ;; undo-tree
 (setq-default undo-tree-history-directory-alist
-              `((".*" . ,(expand-file-name "undo-tree/" my-savefile-dir))))
+              `((".*" . ,(expand-file-name "undo-tree/" my-cache-dir))))
 
 ;; tramp cache files
-(setq-default tramp-auto-save-directory (expand-file-name "tramp" my-savefile-dir))
+(setq-default tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
 
 (provide 'my-base)
 ;;; my-base.el ends here

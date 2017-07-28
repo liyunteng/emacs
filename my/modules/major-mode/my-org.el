@@ -82,7 +82,7 @@
                (file-exists-p org-ditaa-jar-path))
     (let ((jar-name "ditaa0_9.jar")
           (url "http://jaist.dl.sourceforge.net/project/ditaa/ditaa/0.9/ditaa0_9.zip"))
-      (setq org-ditaa-jar-path (expand-file-name jar-name my-savefile-dir))
+      (setq org-ditaa-jar-path (expand-file-name jar-name my-cache-dir))
       (unless (file-exists-p org-ditaa-jar-path)
         (my-grab-ditaa url jar-name)))))
 
@@ -237,7 +237,7 @@ typical word processor."
 ;; Save the running clock and all clock history when exiting Emacs, load it on startup
 (setq-default org-clock-persist t)
 (setq-default org-clock-in-resume t)
-(setq-default org-clock-persist-file (expand-file-name "org-clock-save" my-savefile-dir))
+(setq-default org-clock-persist-file (expand-file-name "org-clock-save" my-cache-dir))
 
 ;; Save clock data and notes in the LOGBOOK drawer
 (setq-default org-clock-into-drawer t)

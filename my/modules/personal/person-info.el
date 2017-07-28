@@ -1,4 +1,4 @@
-;;; my-custom.el --- custom                          -*- lexical-binding: t; -*-
+;;; info.el --- my info                              -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  liyunteng
 
@@ -23,21 +23,12 @@
 ;; 
 
 ;;; Code:
+;; 设置个人信息
+(setq user-full-name "liyunteng")
+
+;; 设置个人邮箱
+(setq user-mail-address "li_yunteng@163.com")
 
 
-
-(provide 'my-custom)
-;;; my-custom.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(safe-local-variable-values (quote ((flycheck-disabled-checkers emacs-lisp-checkdoc))))
- '(session-use-package t nil (session)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(provide 'person-info)
+;;; info.el ends here

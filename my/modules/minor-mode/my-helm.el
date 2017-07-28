@@ -25,7 +25,7 @@
 ;;; Code:
 
 (my-require-package 'helm)
-(my-require-package 'helm-directory)
+;;(my-require-package 'helm-directory)
 (my-require-package 'helm-ag)
 (my-require-package 'helm-descbinds)
 (my-require-package 'helm-dired-history)
@@ -33,9 +33,9 @@
 (my-require-package 'helm-smex)
 (my-require-package 'helm-swoop)
 (require 'helm)
-(require 'helm-directory)
 (require 'helm-ag)
 (require 'helm-descbinds)
+;;(require 'helm-directory)
 (require 'helm-dired-history)
 (require 'helm-dired-recent-dirs)
 (require 'helm-smex)
