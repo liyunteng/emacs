@@ -66,6 +66,27 @@
 (setq-default undo-tree-history-directory-alist
               `((".*" . ,(expand-file-name "undo-tree/" my-cache-dir))))
 
+;; saveplace remembers your location in a file when saving files
+(setq-default save-place-file (expand-file-name "saveplace" my-cache-dir))
+
+;; savehist
+(setq-default savehist-file (expand-file-name "savehist" my-cache-dir))
+
+;; recentf
+(setq-default recentf-save-file (expand-file-name "recentf" my-cache-dir))
+
+;; bookmark
+(setq-default bookmark-default-file (expand-file-name "bookmarks" my-cache-dir))
+
+;; projectile
+(setq-default projectile-cache-file (expand-file-name  "projectile.cache" my-cache-dir))
+
+;; eshell
+(setq-default eshell-directory-name (expand-file-name "eshell" my-cache-dir))
+
+;; semantic
+(setq-default semanticdb-default-save-directory
+	      (expand-file-name "semanticdb" my-cache-dir))
 ;; tramp cache files
 (setq-default tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
 

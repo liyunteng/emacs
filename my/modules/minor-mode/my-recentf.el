@@ -28,6 +28,7 @@
 
 (setq-default
  recentf-max-saved-items 1000
+ recentf-max-menu-items 15
  recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
                    "/TAGS$" "/GTAGS$" "/GRAGS" "/GPATH$"))
 (add-hook 'after-init-hook

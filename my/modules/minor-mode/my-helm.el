@@ -32,7 +32,9 @@
 (my-require-package 'helm-dired-recent-dirs)
 (my-require-package 'helm-smex)
 (my-require-package 'helm-swoop)
+(my-require-package 'helm-projectile)
 (require 'helm)
+(require 'helm-config)
 (require 'helm-ag)
 (require 'helm-descbinds)
 ;;(require 'helm-directory)
@@ -40,6 +42,7 @@
 (require 'helm-dired-recent-dirs)
 (require 'helm-smex)
 (require 'helm-swoop)
+
 (setq helm-swoop-split-with-multiple-windows t
       helm-swoop-split-direction 'split-window-vertically
       helm-swoop-speed-or-color t
@@ -158,6 +161,18 @@ Removes the automatic guessing of the initial value based on thing at point. "
   )
 (add-hook 'helm-mode-hook 'my-helm-bookmark-keybindings)
 
+
+;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(global-unset-key (kbd "C-x c"))
+
+(define-key helm-command-map (kbd "o")     'helm-occur)
+(define-key helm-command-map (kbd "g")     'helm-do-grep)
+(define-key helm-command-map (kbd "C-c w") 'helm-wikipedia-suggest)
+(define-key helm-command-map (kbd "SPC")   'helm-all-mark-rings)
+
 (define-key helm-find-files-map (kbd "C-c C-e") 'my/helm-find-files-edit)
 (define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)
 
@@ -177,6 +192,22 @@ Removes the automatic guessing of the initial value based on thing at point. "
     (helm :sources (helm-def-source--emacs-faces
                     (format "%s" (or default "default")))
           :buffer "*helm faces*")))
-(global-set-key (kbd "C-c h x") 'my/helm-faces)
+
+;; shell history.
+(define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
+
+;; use helm to list eshell history
+(add-hook 'eshell-mode-hook
+          #'(lambda ()
+              (substitute-key-definition 'eshell-list-history 'helm-eshell-history eshell-mode-map)))
+
+(substitute-key-definition 'find-tag 'helm-etags-select global-map)
+(setq projectile-completion-system 'helm)
+(helm-descbinds-mode)
+(helm-mode 1)
+
+;; enable Helm version of Projectile with replacment commands
+(helm-projectile-on)
+
 (provide 'my-helm)
 ;;; my-helm.el ends here

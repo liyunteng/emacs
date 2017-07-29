@@ -26,7 +26,7 @@
 
 (defvar my-dir (expand-file-name "my" user-emacs-directory))
 (defvar my-modules-dir (expand-file-name  "modules" my-dir))
-(defvar my-custom-file (expand-file-name "my-custom.el" my-modules-dir))
+(defvar my-custom-file (expand-file-name "custom.el" my-dir))
 
 (defvar my-forks-dir (expand-file-name "forks" my-dir))
 (defvar my-libs-dir (expand-file-name "libs" my-dir))

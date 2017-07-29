@@ -28,7 +28,23 @@
 (setq-default font-use-system-font t)
 ;; (if (eq system-type 'linux)
 ;;     (custom-set-faces
-;;      `(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 113 :width normal))))))
+;;      `(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant
+;;      normal :weight normal :height 113 :width normal))))))
+
+(require 'zenburn-theme)
+(defvar my-theme 'zenburn)
+(load-theme my-theme t)
+
+(require 'smart-mode-line)
+(setq sml/no-confirm-load-theme t)
+(setq sml/theme nil)
+(add-hook 'after-init-hook #'sml/setup)
+
+(require 'beacon)
+(beacon-mode +1)
+
+(require 'which-key)
+(which-key-mode +1)
 
 (defvar my--after-display-system-init-alist '())
 (defadvice server-create-window-system-frame

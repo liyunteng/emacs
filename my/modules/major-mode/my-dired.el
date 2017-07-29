@@ -47,8 +47,8 @@
 (setq-default global-dired-hide-details-mode nil)
 ;;; 重用buffer，避免产生过多的dired buffer
 (setq-default toggle-diredp-find-file-reuse-dir t)
-(setq-default dired-recursive-deletes 'top)
-(setq-default dired-recursive-copies 'top)
+(setq-default dired-recursive-deletes 'always)
+(setq-default dired-recursive-copies 'always)
 ;; dired忽略的上限
 (setq-default dired-omit-mode t)
 (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*")
@@ -68,6 +68,7 @@
     (add-to-list 'dired-omit-extensions ex)))
 
 (after-load 'dired
+  (require 'dired-x)
   (require 'dired+)
   (require 'dired-sort)
 

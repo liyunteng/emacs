@@ -23,8 +23,6 @@
 ;;
 
 ;;; Code:
-
-
 (setq-default magit-branch-read-upstream-first 'fallback)
 (setq-default magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
 (when (eq window-system 'w32)

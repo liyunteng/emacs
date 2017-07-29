@@ -70,12 +70,9 @@
 
 ;; 在标题栏提示当前位置
 (setq frame-title-format
-      '((:eval
-         (if (buffer-file-name)
-             (abbreviate-file-name (buffer-file-name))
-           (if (eq major-mode 'dired-mode)
-               dired-directory "%b" )
-           ))))
+      '( "Emacs - " (:eval (if (buffer-file-name)
+                               (abbreviate-file-name (buffer-file-name))
+                             "%b"))))
 
 (require 'page-break-lines)
 (global-page-break-lines-mode t)
@@ -84,6 +81,11 @@
 (setq expand-region-contract-fast-key ",")
 (setq expand-region-smart-cursor nil)
 
+(require 'bookmark)
+(setq bookmark-save-flag 1)
+
+(require 'projectile)
+(projectile-global-mode +1)
 
 ;;显示行列号
 (require 'help-mode)
@@ -160,8 +162,13 @@
 
 ;; Show column number in mode line
 (setq column-number-mode t)
+(setq line-number-mode t)
+
 ;; highlight current line
-(global-hl-line-mode t)
+(global-hl-line-mode +1)
+
+(set-default 'imenu-auto-rescan t)
+
 ;; no blink
 (blink-cursor-mode -1)
 ;; When emacs asks for "yes" or "no", let "y" or "n" suffice
@@ -269,7 +276,9 @@ It runs `tabulated-list-revert-hook', then calls `tabulated-list-print'."
 ;;(setq-default my-flyspell nil)
 
 ;; whitespace 设置
-(require 'whitespace-cleanup-mode)
+(require 'whitespace-cleanup-mode)  
+(global-whitespace-mode +1)
+(global-whitespace-cleanup-mode +1)
 (setq-default whitespace-line-column fill-column)
 (setq-default whitespace-style
               '(face trailing lines-tail empty
@@ -319,6 +328,14 @@ It runs `tabulated-list-revert-hook', then calls `tabulated-list-print'."
     (flycheck-pos-tip-mode 1)
     ))
 
+;; 
+(require 'easymenu)
+(require 'imenu-anywhere)
+
+
+(setq require-final-newline t)
+(delete-selection-mode t)
+
 ;; hippie
 (setq hippie-expand-try-functions-list
       '(
@@ -351,7 +368,16 @@ It runs `tabulated-list-revert-hook', then calls `tabulated-list-print'."
 ;; misc
 (setq indent-tabs-mode nil)
 (setq set-mark-command-repeat-pop t)
-(setq-default ediff-split-window-function 'split-window-horizontally)
+(setq-default ediff-split-window-function 'split-window-horizontally
+              ediff-window-setup-function 'ediff-setup-windows-plain)
+(require 'ediff)
+;; clean up obsolete buffers automatically
+(require 'midnight)
+
+;; smarter kill-ring navigation
+(require 'browse-kill-ring)
+(browse-kill-ring-default-keybindings)
+(global-set-key (kbd "s-y") 'browse-kill-ring)
 
 ;; 响铃
 ;; (defun my/flash-mode-line ()
@@ -711,8 +737,86 @@ Compare them on count first,and in case of tie sort them alphabetically."
 
 
 ;; undo-tree
+(require 'undo-tree)
 (setq-default undo-tree-visualizer-timestamps t
-              undo-tree-visualizer-diff t)
+              undo-tree-visualizer-diff t
+              undo-tree-auto-save-history t)
+(global-undo-tree-mode)
+(diminish 'undo-tree-mode)
+
+;; enable winner-mode to manage window configurations
+(winner-mode +1)
+
+;; diff-hl
+(global-diff-hl-mode +1)
+(add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+(add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+
+;; easy-kill
+(global-set-key [remap kill-ring-save] 'easy-kill)
+
+;; use settings from .editorconfig file when present
+(require 'editorconfig)
+(editorconfig-mode 1)
+
+;; activate it for all buffers
+(if (< emacs-major-version 25)
+    (progn (require 'saveplace)
+           (setq-default save-place t))
+  (save-place-mode 1))
+
+;; use shift + arrow keys to switch between visible buffers
+(require 'windmove)
+(windmove-default-keybindings)
+
+;;
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+(setq uniquify-separator "/")
+(setq uniquify-after-kill-buffer-p t)
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+
+;;
+(defmacro with-region-or-buffer (func)
+  "When called with no active region, call FUNC on current buffer."
+  `(defadvice ,func (before with-region-or-buffer activate compile)
+     (interactive
+      (if mark-active
+          (list (region-beginning) (region-end))
+        (list (point-min) (point-max))))))
+
+(with-region-or-buffer indent-region)
+(with-region-or-buffer untabify)
+
+;; make a shell script executable automatically on save
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
+
+;; saner regex syntax
+(require 're-builder)
+(setq reb-re-syntax 'string)
+
+;; Compilation from Emacs
+(defun my-colorize-compilation-buffer ()
+  "Colorize a compilation mode buffer."
+  (interactive)
+  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
+  (when (eq major-mode 'compilation-mode)
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max)))))
+(require 'compile)
+(setq compilation-ask-about-save nil  ; Just save before compiling
+      compilation-always-kill t       ; Just kill old compile processes before
+                                        ; starting the new one
+      compilation-scroll-output 'first-error ; Automatically scroll to first
+                                        ; error
+      )
+;; Colorize output of Compilation Mode, see
+;; http://stackoverflow.com/a/3072831/355252
+(require 'ansi-color)
+(add-hook 'compilation-filter-hook #'my-colorize-compilation-buffer)
+
+
 
 (defvar load-user-customized-major-mode-hook t)
 (defvar cached-normal-file-full-path nil)
@@ -785,5 +889,6 @@ Compare them on count first,and in case of tie sort them alphabetically."
     "print the GTAGSLIBPATH (for debug purpose)"
     (interactive)
     (message "GTAGSLIBPATH=%s" (getenv "GTAGSLIBPATH"))))
+
 (provide 'my-edit)
 ;;; my-edit.el ends here

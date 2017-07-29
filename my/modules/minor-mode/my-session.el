@@ -87,8 +87,17 @@
 ;;----------------------------------------------------------------------------
 ;; Restore histories and registers after saving
 ;;----------------------------------------------------------------------------
+(require 'savehist)
+;; savehist keeps track of some history
+(require 'savehist)
+(setq savehist-additional-variables
+      ;; search entries
+      '(search-ring regexp-search-ring)
+      ;; save every minute
+      savehist-autosave-interval 60)
+(savehist-mode +1)
+
 (setq-default history-length 1000)
-(savehist-mode t)
 
 (require 'session)
 (setq-default session-save-file (expand-file-name "session" my-cache-dir))

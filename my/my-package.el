@@ -26,26 +26,41 @@
 
 (require 'cl)
 (require 'package)
+(require 'my-pinned-packages nil t)
 (defvar my-packages-save-dir (expand-file-name "elpa" user-emacs-directory))
 
-(setq package-archives
-      '(("melpa" . "http://elpa.emacs-china.org/melpa/")
-	("melpa-stable" . "http://elpa.emacs-china.org/melpa-stable/")
-	("gnu" . "http://elpa.emacs-china.org/gnu/")
-	("org" . "http://elpa.emacs-china.org/org/")))
-
-;; (add-to-list 'package-pinned-packages
-;;              '(switch-window . "melpa-stable"))
 (setq package-user-dir my-packages-save-dir)
 (package-initialize)
 
 (defvar my-packages '(anzu
+		      beacon
+		      browse-kill-ring
+		      crux
+		      dash
+		      discover-my-major
+		      diff-hl
+		      diminish
+		      easy-kill
+		      editorconfig
 		      elisp-slime-nav
 		      expand-region
+		      flycheck
+		      git-timemachine
+		      gitconfig-mode
+		      gitignore-mode
+		      imenu-anywhere
+		      projectile
+		      magit
+		      move-text
+		      smart-mode-line
+		      smartparens
+		      undo-tree
+		      which-key
 		      helm
 		      helm-directory
 		      whitespace-cleanup-mode
 		      zenburn-theme))
+
 (defun my-packages-installed-p ()
   "Check if all packages in `my-packages' are installed."
   (every #'package-installed-p my-packages))

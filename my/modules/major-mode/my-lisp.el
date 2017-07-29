@@ -286,6 +286,9 @@
     (insert ";; Happy hacking " (or user-login-name "") " - Emacs ♥ you!\n\n")
     (current-buffer)))
 
+(define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eval-defun)
+(define-key emacs-lisp-mode-map (kbd "C-c C-b") 'eval-buffer)
+(setq mode-name "EL")
 
 (provide 'my-lisp)
 ;;; my-lisp.el ends here
