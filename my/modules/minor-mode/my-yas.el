@@ -34,11 +34,6 @@
     (add-to-list 'yas-snippet-dirs my-yas-dir))
 (yas-reload-all)
 
-(defun my-yas-generic-setup-for-mode-hook ()
-  (unless (my/is-buffer-file-temp)
-    (push 'yas-hippie-try-expand hippie-expand-try-functions-list)
-    (yas-minor-mode t)))
-
 ;; (yas-global-mode t)
 (dolist (hook '(prog-mode-hook
                 latex-mode-hook
@@ -58,9 +53,10 @@
                 snippet-mode-hook
                 udev-mode-hook
                 ))
-  (add-hook hook 'my-yas-generic-setup-for-mode-hook))
+  (add-hook hook 'yas-minor-mode-on))
 
 (defun my/yas-reload-all ()
+  "My yas-realod-all and compile."
   (interactive)
   (yas-compile-directory (file-truename my-yas-dir))
   (yas-reload-all)

@@ -65,7 +65,7 @@
 
   (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2")))
 
-  (after-load 'js2-mode
+  (after-load 'js2-imenu-extras
     (js2-imenu-extras-setup)))
 
 ;; js-mode

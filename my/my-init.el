@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
@@ -44,7 +44,6 @@
 (defvar my-modules
   '(my-base
     my-utils
-    my-locales
     my-gui
     my-window
     my-themes
@@ -57,6 +56,7 @@
     my-edit
 
     ;; minor
+    my-mode
     my-helm
     my-semantic
     my-tramp
@@ -80,6 +80,7 @@
     my-python
     my-lisp
     my-org
+    my-web
     my-sh
     my-syslog
     my-javascript
@@ -90,8 +91,8 @@
 
     my-global-keybind
     my-session
-    my-server
-    ))
+    my-locales
+    my-server))
 
 (defun my-load (m)
   "Load feature M."

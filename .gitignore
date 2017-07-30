@@ -2,3 +2,4 @@ savefile/
 elpa/
 my/cache/
 cache/
+my/custom.el

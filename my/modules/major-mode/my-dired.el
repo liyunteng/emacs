@@ -38,20 +38,22 @@
   (setq-default dired-listing-switches "-alh"))
 
 ;; (setq dired-ls-sorting-switches "SXU")
-(setq-default dired-isearch-filenames 'dwim)
-(setq-default dired-omit-verbose nil)
-(setq-default dired-dwim-target t)
-(setq-default diredp-hide-details-initially-flag nil)
-(setq-default diredp-hide-details-propagate-flag nil)
-(setq-default dired-hide-details-mode nil)
-(setq-default global-dired-hide-details-mode nil)
-;;; 重用buffer，避免产生过多的dired buffer
-(setq-default toggle-diredp-find-file-reuse-dir t)
-(setq-default dired-recursive-deletes 'always)
-(setq-default dired-recursive-copies 'always)
-;; dired忽略的上限
-(setq-default dired-omit-mode t)
-(setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*")
+(setq-default dired-isearch-filenames 'dwim
+              dired-omit-verbose nil
+              dired-dwim-target t
+              diredp-hide-details-initially-flag nil
+              diredp-hide-details-propagate-flag nil
+              dired-hide-details-mode nil
+              global-dired-hide-details-mode nil
+              ;;; 重用buffer，避免产生过多的dired buffer
+              toggle-diredp-find-file-reuse-dir t
+              dired-recursive-deletes 'top
+              dired-recursive-copies 'top
+              ;; dired忽略的上限
+              dired-omit-mode t
+              dired-omit-file "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
+              )
+
 ;;; 使用！来使用外部程序打开
 ;; (setq dired-guess-shell-alist-user
 ;;       '(("\\.avi\\'" "totem &")
@@ -112,6 +114,11 @@ if no files marked, always operate on current line in dired-mode."
   (define-key dired-mode-map (kbd "C-M-S-f") 'find-grep-dired)
   (define-key dired-mode-map (kbd "\\") 'my/dired-run-git-command)
   ;; (define-key dired-mode-map (kbd "=") 'dired-compare-directories)
+
+  (when (boundp 'diff-hl-dired-mode)
+    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
   )
+
+
 (provide 'my-dired)
 ;;; my-dired.el ends here

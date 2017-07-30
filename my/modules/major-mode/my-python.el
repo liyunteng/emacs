@@ -37,12 +37,16 @@
 (setenv "WORKON_HOME" my-python-virtualenv-dir)
 
 (setq-default python-indent-guess-indent-offset nil)
-(after-load 'python
-  (require 'company)
-  (require 'company-dabbrev-code)
-  (require 'elpy)
 
-  (pyvenv-workon my-python-virtualenv-workon-name)
+(after-load 'elpy
+  (setq-default elpy-modules '(elpy-module-sane-defaults
+                               elpy-module-company
+                               elpy-module-eldoc
+                               elpy-module-flymake
+                               elpy-module-pyvenv
+                               elpy-module-yasnippet
+                               elpy-module-django))
+
   (setq-default elpy-rpc-backend "jedi")
   (setq-default elpy-dedicated-shells nil)
 
@@ -91,6 +95,7 @@
        (kill-local-variable 'company-backends))
       ))
 
+
   (defun my-install-python-virtualenv ()
     "My install python virtualenv."
     (if (or (not (file-exists-p my-python-virtualenv-dir))
@@ -115,6 +120,11 @@
               (elpy-rpc-restart)
               (message "Done"))))))
 
+  (my-install-python-virtualenv)
+  (pyvenv-workon my-python-virtualenv-workon-name))
+
+(after-load 'python
+  (require 'elpy)
 
   (defun my/elpy-shell-kill ()
     "My elpy shell kill."
@@ -129,7 +139,6 @@
   (defun my-python-mode-keys ()
     "My python key."
     ;; (define-key jedi-mode-map (kbd "TAB") 'jedi:complete)
-
     (local-set-key (kbd "C-c C-f") 'python-shell-send-file)
     (local-set-key (kbd "C-c C-e") 'python-shell-send-defun)
 
@@ -144,8 +153,10 @@
 
   (defun my-python-mode-hook ()
     "My python mode hook."
-    (semantic-mode -1)
-    (my-install-python-virtualenv)
+    (when semantic-mode
+      (semantic-mode -1))
+
+    (set (make-local-variable 'highlight-indentation-mode) nil)
 
     (subword-mode +1)
     (set (make-local-variable 'tab-width) 4)
@@ -158,7 +169,8 @@
       (setq-local imenu-create-index-function
                   #'python-imenu-create-flat-index))
     (add-hook 'post-self-insert-hook
-              #'electric-layout-post-self-insert-function nil 'local))
+              #'electric-layout-post-self-insert-function nil 'local)
+    )
 
   (add-hook 'python-mode-hook 'my-python-mode-keys)
   (add-hook 'python-mode-hook 'my-python-mode-hook)
@@ -166,13 +178,12 @@
 
   (defun my-python-shell-mode-hook ()
     "My python shell mode hook."
-    (semantic-mode -1)
+    (when semantic-mode
+      (semantic-mode -1))
     (set (make-local-variable 'tab-width) 4)
     (if (boundp 'python-shell-completion-native-enable)
         (setq python-shell-completion-native-enable t)))
-  (add-hook 'inferior-python-mode-hook 'my-python-shell-mode-hook)
-
-  )
+  (add-hook 'inferior-python-mode-hook 'my-python-shell-mode-hook))
 
 (provide 'my-python)
 ;;; my-python.el ends here

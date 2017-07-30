@@ -46,9 +46,9 @@
 
 (require 'smartparens-config)
 ;; (sp-use-paredit-bindings)
-(setq-default sp-base-key-bindings 'smartparens)
-(setq-default sp-autoskip-closing-pair 'always)
-(setq-default sp-hybrid-kill-entire-symbol nil)
+(setq sp-base-key-bindings 'smartparens)
+(setq sp-autoskip-closing-pair 'always)
+(setq sp-hybrid-kill-entire-symbol nil)
 (sp-use-smartparens-bindings)
 (show-smartparens-global-mode +1)
 (setq blink-matching-paren nil)

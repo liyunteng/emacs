@@ -26,7 +26,7 @@
 
 (my-require-package 'lively)
 (my-require-package 'ipretty)
-(my-require-package 'hl-sexp)
+;; (my-require-package 'hl-sexp)
 (my-require-package 'immortal-scratch)
 (my-require-package 'cl-lib-highlight)
 (my-require-package 'aggressive-indent)
@@ -35,13 +35,19 @@
 (my-require-package 'macrostep)
 (my-require-package 'highlight-quoted)
 (my-require-package 'flycheck-package)
+(my-require-package 'elisp-slime-nav)
+(my-require-package 'auto-compile)
 
-(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+(dolist (hook '(emacs-lisp-mode-hook
+                ielm-mode-hook
+                help-mode-hook
+                messages-buffer-mode-hook
+                completion-list-mode-hook
+                debugger-mode-hook))
   (add-hook hook 'turn-on-elisp-slime-nav-mode))
-
-(setq-default initial-scratch-message
-              (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
-
+(require 'elisp-slime-nav)
+(after-load 'elisp-slime-nav
+  (define-key elisp-slime-nav-mode-map (kbd "M-.") 'elisp-slime-nav-find-elisp-thing-at-point))
 
 ;; Make C-x C-e run 'eval-region if the region is active
 (defun my/eval-last-sexp-or-region (prefix)
@@ -113,17 +119,44 @@
   (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol-partially t))
 
 ;; ----------------------------------------------------------------------------
+;; Automatic byte compilation
+;; ----------------------------------------------------------------------------
+(when (require 'auto-compile)
+  (auto-compile-on-save-mode 1)
+  (auto-compile-on-load-mode 1))
+
+;; ----------------------------------------------------------------------------
+;; Load .el if newer than corresponding .elc
+;; ----------------------------------------------------------------------------
+(setq load-prefer-newer t)
+
+;; ----------------------------------------------------------------------------
 ;; Highlight current sexp
 ;; ----------------------------------------------------------------------------
 
 ;; Prevent flickery behaviour due to hl-sexp-mode unhighlighting before each command
-(after-load 'hl-sexp
-  (defadvice hl-sexp-mode (after unflicker (&optional turn-on) activate)
-    (when turn-on
-      (remove-hook 'pre-command-hook #'hl-sexp-unhighlight))))
+;; (after-load 'hl-sexp
+;;   (defadvice hl-sexp-mode (after unflicker (&optional turn-on) activate)
+;;     (when turn-on
+;;       (remove-hook 'pre-command-hook #'hl-sexp-unhighlight))))
 
 (add-hook 'after-init-hook 'immortal-scratch-mode)
 
+
+;;; Support byte-compilation in a sub-process, as
+;;; required by highlight-cl
+
+(defun my/byte-compile-file-batch (filename)
+  "Byte-compile FILENAME in batch mode, ie. a clean sub-process."
+  (interactive "fFile to byte-compile in batch mode: ")
+  (let ((emacs (car command-line-args)))
+    (compile
+     (concat
+      emacs " "
+      (mapconcat
+       'shell-quote-argument
+       (list "-Q" "-batch" "-f" "batch-byte-compile" filename)
+       " ")))))
 
 ;; ----------------------------------------------------------------------------
 ;; Enable desired features for all lisp modes
@@ -132,18 +165,19 @@
   "Run `check-parens' when the current buffer is saved."
   (add-hook 'after-save-hook #'check-parens nil t))
 
-(defun my-lisp-disable-electric-pair ()
-  (setq post-self-insert-hook
-        (remove electric-pair-post-self-insert-function
-                post-self-insert-hook)))
+;; (defun my-disable-indent-guide ()
+;;   (when (bound-and-true-p indent-guide-mode)
+;;     (indent-guide-mode -1)))
+
 (defvar my-lispy-modes-hook
-  '(turn-on-eldoc-mode
+  '(
+    turn-on-eldoc-mode
+    ;; hl-sexp-mode
+    aggressive-indent-mode
+    ;; my-disable-indent-guide
     my-enable-check-parens-on-save
     )
   "Hook run in all Lisp modes.")
-
-
-(add-to-list 'my-lispy-modes-hook 'aggressive-indent-mode)
 
 (defun my-lisp-setup ()
   "Enable features useful in any Lisp mode."
@@ -235,9 +269,16 @@
   (add-hook 'my-theme-mode-hook 'rainbow-mode))
 
 ;; Can be prohibitively slow with very long forms
-(add-to-list 'my-theme-mode-hook (lambda () (aggressive-indent-mode -1)) t)
+(when (require 'aggressive-indent)
+  (add-to-list 'my-theme-mode-hook (lambda () (aggressive-indent-mode -1)) t))
 
-(add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode)
+(when (require 'highlight-quoted)
+  (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode))
+
+(when (require 'flycheck)
+  (my-require-package 'flycheck-package)
+  (after-load 'flycheck
+    (flycheck-package-setup)))
 
 ;; ERT
 (after-load 'ert
@@ -268,27 +309,24 @@
     (when (fboundp 'aggressive-indent-indent-defun)
       (aggressive-indent-indent-defun))))
 
-(defconst my/lisp-scratch-buffer-name "*scratch*")
+(defconst my-lisp-scratch-buffer-name "*scratch*")
 (defun my/lisp-scratch ()
   "Create a 'lisp-interaction-mode' scratch buffer."
   (interactive)
-  (pop-to-buffer (my/lisp-find-or-create-scratch-buffer)))
+  (pop-to-buffer (my--lisp-find-or-create-scratch-buffer)))
 
-(defun my/lisp-find-or-create-scratch-buffer ()
+(defun my--lisp-find-or-create-scratch-buffer ()
   "Find or create the 'lisp-interaction-mode' scratch buffer."
-  (or (get-buffer my/lisp-scratch-buffer-name)
-      (my/lisp-create-scratch-buffer)))
+  (or (get-buffer my-lisp-scratch-buffer-name)
+      (my--lisp-create-scratch-buffer)))
 
-(defun my/lisp-create-scratch-buffer ()
+(defun my--lisp-create-scratch-buffer ()
   "Create a new 'lisp-interaction-mode' scratch buffer."
-  (with-current-buffer (get-buffer-create my/lisp-scratch-buffer-name)
+  (with-current-buffer (get-buffer-create my-lisp-scratch-buffer-name)
     (lisp-interaction-mode)
     (insert ";; Happy hacking " (or user-login-name "") " - Emacs ♥ you!\n\n")
     (current-buffer)))
 
-(define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eval-defun)
-(define-key emacs-lisp-mode-map (kbd "C-c C-b") 'eval-buffer)
-(setq mode-name "EL")
 
 (provide 'my-lisp)
 ;;; my-lisp.el ends here

@@ -26,14 +26,14 @@
 
 (require 'recentf)
 
-(setq-default
+(setq
  recentf-max-saved-items 1000
  recentf-max-menu-items 15
  recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
                    "/TAGS$" "/GTAGS$" "/GRAGS" "/GPATH$"))
 (add-hook 'after-init-hook
           'recentf-load-list 'recentf-cleanup)
-
+(recentf-mode +1)
 
 (provide 'my-recentf)
 ;;; my-recentf.el ends here

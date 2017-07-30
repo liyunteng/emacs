@@ -212,8 +212,5 @@ Dedicated (locked) windows are left untouched."
     ))
 (setq revert-buffer-function 'my--revert-buffer-function)
 
-(unless (memq window-system '(nt w32))
-  (windmove-default-keybindings 'control))
-
 (provide 'my-window)
 ;;; my-window.el ends here

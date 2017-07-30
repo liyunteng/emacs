@@ -87,7 +87,6 @@
 ;;----------------------------------------------------------------------------
 ;; Restore histories and registers after saving
 ;;----------------------------------------------------------------------------
-(require 'savehist)
 ;; savehist keeps track of some history
 (require 'savehist)
 (setq savehist-additional-variables
@@ -104,6 +103,30 @@
 (setq-default session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\\\|^/ssh:\\|^ftp:\\|^rsync:)")
 (setq-default session-set-file-name-exclude-regexp "[/\\]\\.overview\\|[/\\]\\.session\\|News[/\\]\\|^/ssh:\\|^ftp:\\|^rsync:")
 (add-hook 'after-init-hook 'session-initialize)
+
+
+
+
+;; automatically save buffers associated with files on buffer switch
+;; and on windows switch
+(defun my-auto-save-command ()
+  "Save the current buffer if `prelude-auto-save' is not nil."
+  (when (and auto-save-default
+             buffer-file-name
+             (buffer-modified-p (current-buffer))
+             (file-writable-p buffer-file-name))
+    (save-buffer)))
+
+;; advise all window switching functions
+(my|advise-commands "auto-save"
+		    (switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
+		    before
+		    (my-auto-save-command))
+
+(add-hook 'mouse-leave-buffer-hook 'my-auto-save-command)
+
+(when (version<= "24.4" emacs-version)
+  (add-hook 'focus-out-hook 'my-auto-save-command))
 
 (provide 'my-session)
 ;;; my-session.el ends here

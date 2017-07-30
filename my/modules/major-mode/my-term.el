@@ -24,7 +24,7 @@
 
 ;;; Code:
 (my-require-package 'multi-term)
-;; (require 'multi-term)
+;; (autoload 'multi-term-next "multi-term" nil)
 
 (after-load 'comint
   (setq comint-scroll-to-bottom-on-input nil)
@@ -124,7 +124,7 @@
 
   (add-hook 'term-mode-hook
             (lambda ()
-              ;; (my-mode -1)
+              (my-mode -1)
               (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
               (setq-local mouse-yank-at-point t)
               (setq-local transient-mark-mode nil)
@@ -145,12 +145,21 @@
         (multi-term-dedicated-select))))
 
 
-  (add-to-list 'term-bind-key-alist '("C-c C-a") 'term-bol)
-  (add-to-list 'term-bind-key-alist '("C-c C-m" . my/toggle-term-mode))
-  (add-to-list 'term-bind-key-alist '("C-c C-q" . term-quit-subjob))
-  (add-to-list 'term-bind-key-alist '("C-c C-z" . term-stop-subjob))
-  (add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-esc))
+  ;; (add-to-list 'term-bind-key-alist '("C-c C-a") 'term-bol)
+  ;; (add-to-list 'term-bind-key-alist '("C-c C-m" . my/toggle-term-mode))
+  ;; (add-to-list 'term-bind-key-alist '("C-c C-q" . term-quit-subjob))
+  ;; (add-to-list 'term-bind-key-alist '("C-c C-z" . term-stop-subjob))
+  ;; (add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-esc))
+  ;; (add-to-list 'term-bind-key-alist '("C-l" . term-send-raw))
+  ;; (add-to-list 'term-bind-key-alist '("C-c C-p" . term-previous-prompt))
+  ;; (add-to-list 'term-bind-key-alist '("C-c C-n" . term-next-prompt))
+
+  (add-to-list 'term-bind-key-alist '("C-c C-a" . term-send-raw))
+  (add-to-list 'term-bind-key-alist '("C-c C-q" . term-send-raw))
+  (add-to-list 'term-bind-key-alist '("C-c C-z" . term-send-raw))
+  (add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-raw))
   (add-to-list 'term-bind-key-alist '("C-l" . term-send-raw))
+  (add-to-list 'term-bind-key-alist '("C-c C-m" . my/toggle-term-mode))
   (add-to-list 'term-bind-key-alist '("C-c C-p" . term-previous-prompt))
   (add-to-list 'term-bind-key-alist '("C-c C-n" . term-next-prompt))
 
@@ -164,19 +173,24 @@
   )
 
 (after-load 'eshell
-  (setq eshell-cmpl-cycle-completions nil
-        ;; auto truncate after 20k lines
-        eshell-buffer-maximum-lines 20000
-        ;; history size
-        eshell-history-size 350
-        ;; no duplicates in history
-        eshell-hist-ignoredups t
-        ;; buffer shorthand -> echo foo > #'buffer
-        eshell-buffer-shorthand t
-        ;; my prompt is easy enough to see
-        eshell-highlight-prompt nil
-        ;; treat 'echo' like shell echo
-        eshell-plain-echo-behavior t)
+  (setq-default eshell-cmpl-cycle-completions nil
+                ;; auto truncate after 20k lines
+                eshell-buffer-maximum-lines 20000
+                ;; history size
+                eshell-history-size 350
+                ;; no duplicates in history
+                eshell-hist-ignoredups t
+                ;; buffer shorthand -> echo foo > #'buffer
+                eshell-buffer-shorthand t
+                ;; my prompt is easy enough to see
+                eshell-highlight-prompt nil
+                ;; treat 'echo' like shell echo
+                eshell-plain-echo-behavior t
+
+                eshell-send-direct-to-subprocesses t
+                eshell-scroll-to-bottom-on-input nil
+                eshell-scroll-to-bottom-on-output nil
+                )
   (defun my--protect-eshell-prompt ()
     "Protect Eshell's prompt like Comint's prompts.
 
@@ -192,24 +206,30 @@ is achieved by adding the relevant text properties."
                         read-only t
                         front-sticky (field inhibit-line-move-field-capture)))))
 
+  (add-hook 'eshell-after-prompt-hook 'my--protect-eshell-prompt)
+  (autoload 'eshell-delchar-or-maybe-eof "em-rebind")
+
+  (defun eshell/clear ()
+    (interactive)
+    (let ((inhibit-read-only t))
+      (erase-buffer))
+    (eshell-send-input))
   (defun my--init-eshell ()
     "Stuff to do when enabling eshell."
-    (setq pcomplete-cycle-completions nil)
+    (setq-default pcomplete-cycle-completions nil)
     (if (bound-and-true-p linum-mode) (linum-mode -1))
     (when semantic-mode
       (semantic-mode -1))
     (when (boundp 'eshell-output-filter-functions)
       (push 'eshell-truncate-buffer eshell-output-filter-functions))
 
-    (setq-local global-hl-line-mode nil)
     ;; Caution! this will erase buffer's content at C-l
     (define-key eshell-mode-map (kbd "C-l") 'eshell/clear)
-    (define-key eshell-mode-map (kbd "C-d") 'eshell-delchar-or-maybe-eof))
-
-  (add-hook 'eshell-after-prompt-hook 'my--protect-eshell-prompt)
-  (autoload 'eshell-delchar-or-maybe-eof "em-rebind")
+    (define-key eshell-mode-map (kbd "C-d") 'eshell-delchar-or-maybe-eof)
+    (setq-local global-hl-line-mode nil)
+    )
   (add-hook 'eshell-mode-hook 'my--init-eshell)
-
   )
+
 (provide 'my-term)
 ;;; my-term.el ends here

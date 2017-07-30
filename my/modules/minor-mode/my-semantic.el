@@ -48,14 +48,24 @@
 
 (after-load 'semantic/mru-bookmark
   ;;修复向回跳转的问题
-  (defadvice push-mark (around semantic-mru-bookmark activate)
-    "Push a mark at LOCATION with NOMSG and ACTIVATE passed to `push-mark'.
-If `semantic-mru-bookmark-mode' is active, also push a tag onto
-the mru bookmark stack."
+  (defadvice semantic-ia--fast-jump-helper (around my-semantic-ia-fast-jump-push-mark activate)
     (semantic-mrub-push semantic-mru-bookmark-ring
                         (point)
                         'mark)
-    ad-do-it))
+    (when (fboundp 'xref-push-marker-stack)
+      (xref-push-marker-stack (set-mark (point))))
+    ad-do-it
+    )
+  ;; (defadvice push-mark (around semantic-mru-bookmark activate)
+  ;;     "Push a mark at LOCATION with NOMSG and ACTIVATE passed to `push-mark'.
+  ;; If `semantic-mru-bookmark-mode' is active, also push a tag onto
+  ;; the mru bookmark stack."
+  ;;     (semantic-mrub-push semantic-mru-bookmark-ring
+  ;;                         (point)
+  ;;                         'mark)
+  ;;     (xref-push-marker-stack)
+  ;;     ad-do-it)
+  )
 
 (after-load 'speedbar
   (require 'semantic/sb)

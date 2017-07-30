@@ -30,6 +30,7 @@
 (setq completion-cycle-threshold nil)
 
 (require 'company)
+(global-company-mode -1)
 (when (display-graphic-p)
   (after-load 'company
     (require 'company-quickhelp)
@@ -39,6 +40,26 @@
     ;; (company-quickhelp-mode 1)
     (define-key company-active-map (kbd "C-h") #'company-quickhelp-manual-begin)
     ))
+
+
+;; Suspend page-break-lines-mode while company menu is active
+;; (see https://github.com/company-mode/company-mode/issues/416)
+(after-load 'company
+  (after-load 'page-break-lines-mode
+    (defvar sanityinc/page-break-lines-on-p nil)
+    (make-variable-buffer-local 'sanityinc/page-break-lines-on-p)
+
+    (defun sanityinc/page-break-lines-disable (&rest ignore)
+      (when (setq sanityinc/page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
+        (page-break-lines-mode -1)))
+
+    (defun sanityinc/page-break-lines-maybe-reenable (&rest ignore)
+      (when sanityinc/page-break-lines-on-p
+        (page-break-lines-mode 1)))
+
+    (add-hook 'company-completion-started-hook 'sanityinc/page-break-lines-disable)
+    (add-hook 'company-completion-finished-hook 'sanityinc/page-break-lines-maybe-reenable)
+    (add-hook 'company-completion-cancelled-hook 'sanityinc/page-break-lines-maybe-reenable)))
 
 (setq company-show-numbers t)
 (setq company-minimum-prefix-length 2)
@@ -135,38 +156,52 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company c-mode)
 (my|enable-company c++-mode)
 
-(my|defvar-company-backends objc-mode)
-(my|defvar-company-backends java-mode)
-(my|defvar-company-backends idl-mode)
-(my|defvar-company-backends pike-mode)
-(my|defvar-company-backends awk-mode)
-
 (my|defvar-company-backends cmake-mode)
 (push 'company-cmake company-backends-cmake-mode)
 (my|enable-company cmake-mode)
-(my|defvar-company-backends LaTex-mode)
+
 (my|defvar-company-backends go-mode)
 (push 'company-go company-backends-go-mode)
 (my|enable-company go-mode)
+
 (my|defvar-company-backends sh-mode)
 (push 'company-shell company-backends-sh-mode)
 (push 'company-shell-env company-backends-sh-mode)
 (my|enable-company sh-mode)
+
 (my|defvar-company-backends php-mode)
 (push 'company-php company-backends-php-mode)
 (my|enable-company php-mode)
 
-(my|defvar-company-backends python-mode)
-(my|defvar-company-backends inferior-python-mode)
-
 (my|defvar-company-backends css-mode)
+(push 'company-css company-backends-css-mode)
+(my|enable-company css-mode)
+
 (my|defvar-company-backends web-mode)
-(my|defvar-company-backends js2-mode)
+(push 'company-nxml company-backends-web-mode)
+(my|enable-company web-mode)
+
 (my|defvar-company-backends emacs-lisp-mode)
 (push 'company-capf company-backends-emacs-lisp-mode)
 (my|enable-company emacs-lisp-mode)
-(my|defvar-company-backends lisp-interaction-mode)
+
+(my|defvar-company-backends java-mode)
+(push 'company-eclim company-backends-java-mode)
+(my|enable-company java-mode)
+
+(my|defvar-company-backends objc-mode)
+(my|defvar-company-backends idl-mode)
+(my|defvar-company-backends pike-mode)
+(my|defvar-company-backends awk-mode)
 (my|defvar-company-backends markdown-mode)
+(my|defvar-company-backends LaTex-mode)
+(my|defvar-company-backends js2-mode)
+
+(my|disable-company term-mode)
+(my|disable-company shell-mode)
+
+;; (my|defvar-company-backends python-mode)
+;; (my|defvar-company-backends inferior-python-mode)
 
 (provide 'my-ac)
 ;;; my-ac.el ends here

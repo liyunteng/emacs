@@ -23,20 +23,21 @@
 ;;
 
 ;;; Code:
-;; (require 'avy)
-(after-load 'avy
-  (global-set-key (kbd "C-x j c") 'avy-goto-char)
-  (global-set-key (kbd "C-x j w") 'avy-goto-word-1)
-  (global-set-key (kbd "C-x j s") 'avy-goto-symbol-1)
-  (global-set-key (kbd "C-x j .") 'avy-goto-word-or-subword-1)
-  (global-set-key (kbd "C-x j l") 'avy-goto-line)
-  (global-set-key (kbd "C-x j m") 'avy-move-line)
-  (global-set-key (kbd "C-x j p") 'avy-copy-line)
-  (global-set-key (kbd "C-x j b") 'avy-pop-mark)
-  (global-set-key (kbd "C-x j r") 'avy-resume)
-  (define-key isearch-mode-map (kbd "C-j") 'avy-isearch)
-  )
+(my-require-package 'avy)
+(require 'avy)
 
+(setq avy-background t)
+(setq avy-style 'at-full)
+(global-set-key (kbd "C-x j c") 'avy-goto-char)
+(global-set-key (kbd "C-x j w") 'avy-goto-word-1)
+(global-set-key (kbd "C-x j s") 'avy-goto-symbol-1)
+(global-set-key (kbd "C-x j .") 'avy-goto-word-or-subword-1)
+(global-set-key (kbd "C-x j l") 'avy-goto-line)
+(global-set-key (kbd "C-x j m") 'avy-move-line)
+(global-set-key (kbd "C-x j p") 'avy-copy-line)
+(global-set-key (kbd "C-x j b") 'avy-pop-mark)
+(global-set-key (kbd "C-x j r") 'avy-resume)
+(define-key isearch-mode-map (kbd "C-j") 'avy-isearch)
 
 (provide 'my-avy)
 ;;; my-avy.el ends here

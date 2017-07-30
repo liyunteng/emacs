@@ -33,7 +33,6 @@
 (package-initialize)
 
 (defvar my-packages '(anzu
-		      beacon
 		      browse-kill-ring
 		      crux
 		      dash
@@ -52,14 +51,12 @@
 		      projectile
 		      magit
 		      move-text
-		      smart-mode-line
 		      smartparens
 		      undo-tree
-		      which-key
 		      helm
 		      helm-directory
 		      whitespace-cleanup-mode
-		      zenburn-theme))
+		      ))
 
 (defun my-packages-installed-p ()
   "Check if all packages in `my-packages' are installed."
@@ -89,6 +86,7 @@ Missing packages are installed automatically."
 
 ;; run package installation
 (my-install-packages)
+
 (defun my-list-foreign-packages ()
   "Browse third-party packages not bundled with My.
 

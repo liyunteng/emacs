@@ -39,7 +39,6 @@
         backup-by-copying t))
 
 ;; 自动保存模式
-;; (setq-default my-auto-save t)
 (setq-default auto-save-default t)
 (when auto-save-default
   (let ((autosave-dir (expand-file-name "auto-save/" my-cache-dir)))

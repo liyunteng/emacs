@@ -241,12 +241,29 @@
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
 
 ;; 激活magit-log，可在magit-log中操作magit
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+
 ;; (global-set-key (kbd "C-x v g") 'magit-log)
 
 ;; (global-set-key (kbd "C-M-/") 'completion-at-point)
 
 ;; (global-set-key (kbd "C-x [") 'switch-to-prev-buffer)
 ;; (global-set-key (kbd "C-x ]") 'switch-to-next-buffer)
+
+
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+
+;; A complementary binding to the apropos-command (C-h a)
+(define-key 'help-command "A" 'apropos)
+;; A quick major mode help with discover-my-major
+(define-key 'help-command (kbd "C-m") 'discover-my-major)
+(define-key 'help-command (kbd "C-f") 'find-function)
+(define-key 'help-command (kbd "C-k") 'find-function-on-key)
+(define-key 'help-command (kbd "C-v") 'find-variable)
+(define-key 'help-command (kbd "C-l") 'find-library)
+(define-key 'help-command (kbd "C-i") 'info-display-manual)
 
 (provide 'my-global-keybind)
 ;;; my-global-keybind.el ends `'here

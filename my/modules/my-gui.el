@@ -31,18 +31,22 @@
 ;;      `(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant
 ;;      normal :weight normal :height 113 :width normal))))))
 
+(my-require-package 'zenburn-theme)
 (require 'zenburn-theme)
 (defvar my-theme 'zenburn)
 (load-theme my-theme t)
 
+(my-require-package 'smart-mode-line)
 (require 'smart-mode-line)
 (setq sml/no-confirm-load-theme t)
 (setq sml/theme nil)
 (add-hook 'after-init-hook #'sml/setup)
 
+(my-require-package 'beacon)
 (require 'beacon)
 (beacon-mode +1)
 
+(my-require-package 'which-key)
 (require 'which-key)
 (which-key-mode +1)
 

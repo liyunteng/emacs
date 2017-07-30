@@ -34,11 +34,17 @@
                 web-mode))
   (add-hook hook 'hs-minor-mode))
 
-(define-key hs-minor-mode-map (kbd "C-c -") 'hs-hide-block)
-(define-key hs-minor-mode-map (kbd "C-c =") 'hs-show-block)
-(define-key hs-minor-mode-map (kbd "C-c _") 'hs-hide-all)
-(define-key hs-minor-mode-map (kbd "C-c +") 'hs-show-all)
-(define-key hs-minor-mode-map (kbd "C-c m") 'hs-toggle-hiding)
+(defvar hs-command-prefix)
+(define-prefix-command 'hs-command-prefix)
+(define-key hs-minor-mode-map (kbd "C-c M-h") 'hs-command-prefix)
+
+(define-key hs-command-prefix (kbd "h") 'hs-hide-block)
+(define-key hs-command-prefix (kbd "s") 'hs-show-block)
+(define-key hs-command-prefix (kbd "H") 'hs-hide-all)
+(define-key hs-command-prefix (kbd "S") 'hs-show-all)
+(define-key hs-command-prefix (kbd "l") 'hs-hide-level)
+(define-key hs-command-prefix (kbd "m") 'hs-toggle-hiding)
+(define-key hs-minor-mode-map [(shift mouse-2)] 'hs-mouse-toggle-hiding)
 
 (provide 'my-hideshow)
 ;;; my-hideshow.el ends here

@@ -169,7 +169,7 @@
 
   "non-nil values disable company mode in that mode."
   :type 'list
-  :group 'my)
+  :group 'prelude)
 
 (dolist (hook my-disable-company-modes-hook)
   (add-hook hook
