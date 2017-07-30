@@ -646,13 +646,14 @@ the right."
 (my-require-package 'flycheck)
 (require 'flycheck)
 (if (fboundp 'global-flycheck-mode)
-    (global-flycheck-mode +1)
-  (add-hook 'prog-mode-hook 'flycheck-mode)
-  (when (display-graphic-p)
-    (my-require-package 'flycheck-pos-tip)
-    (require 'flycheck-pos-tip)
-    (flycheck-pos-tip-mode 1))
-  )
+    (progn
+      (global-flycheck-mode +1)
+      (add-hook 'prog-mode-hook 'flycheck-mode)
+      (when (display-graphic-p)
+	(progn
+	  (my-require-package 'flycheck-pos-tip)
+	  (require 'flycheck-pos-tip)
+	  (flycheck-pos-tip-mode 1)))))
 
 ;; GTAGS
 (my-require-package 'ggtags)
