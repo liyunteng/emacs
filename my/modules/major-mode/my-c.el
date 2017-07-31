@@ -351,7 +351,6 @@ clang++ -Wall编译"
     (add-to-list 'flycheck-clang-include-path item))
 
   ;; (setq-default company-clang-arguments '("-std=c++11"))
-  (whitespace-toggle-options '(tabs))
   )
 
 (defun my-c-mode-keys ()

@@ -243,7 +243,7 @@
   "If reverting from VC, delete any .elc file that will now be out of sync."
   (when my-vc-reverting
     (when (and (eq 'emacs-lisp-mode major-mode)
-               buffer-file-name
+			   buffer-file-name
                (string= "el" (file-name-extension buffer-file-name)))
       (let ((elc (concat buffer-file-name "c")))
         (when (file-exists-p elc)

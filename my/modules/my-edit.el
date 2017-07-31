@@ -74,7 +74,7 @@
 (setq line-spacing 0.0)
 
 ;; 显示80行就换行
-(setq fill-column 80)
+(setq-default default-fill-column 80)
 
 ;; Show column number in mode line
 (setq column-number-mode t)
@@ -99,7 +99,7 @@
 (setq help-window-select 't)
 
 ;; tab width
-(setq tab-width 4)
+(setq-default default-tab-width 4)
 
 ;; don't use tab
 (setq indent-tabs-mode nil)
@@ -150,10 +150,10 @@
 ;; initial scarch message
 (setq-default initial-scratch-message
               (concat ";; Happy hacking, "
-		      user-login-name
-		      (if user-full-name
-			  (concat " ("user-full-name ")"))
-		      " - Emacs ♥ you!\n\n"))
+                      user-login-name
+                      (if user-full-name
+                          (concat " ("user-full-name ")"))
+                      " - Emacs ♥ you!\n\n"))
 
 
 ;; linum
@@ -238,7 +238,7 @@
 
 ;; ediff
 (setq-default ediff-split-window-function 'split-window-horizontally
-          ediff-window-setup-function 'ediff-setup-windows-plain)
+              ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;; clean up obsolete buffers automatically
 (require 'midnight)
@@ -283,35 +283,23 @@
 
 ;; whitespace 设置
 (require 'whitespace)
-(my-require-package 'whitespace-cleanup-mode)
-(require 'whitespace-cleanup-mode)
-(setq whitespace-line-column fill-column)
-(setq whitespace-style
-      '(face trailing lines-tail empty
-             space-before-tab::space newline
-             indentation::space space-after-tab::space))
-(global-whitespace-mode +1)
-(global-whitespace-cleanup-mode +1)
-(diminish 'whitespace-cleanup-mode)
-(add-hook 'before-save-hook 'whitespace-cleanup)
+(setq-default show-trailing-whitespace 1)
+(set-face-attribute 'trailing-whitespace nil
+					:background
+					(face-attribute 'font-lock-comment-face
+									:foreground))
+;; (set-face-attribute 'whitespace-space nil
+;; 					:background nil
+;; 					:foreground (face-attribute 'font-lock-warning-face
+;; 												:foreground))
+;; (set-face-attribute 'whitespace-tab nil
+;; 					:background nil)
+;; (set-face-attribute 'whitespace-indentation nil
+;; 					:background nil)
 
-(setq show-trailing-whitespace t)
-(when show-trailing-whitespace
-  (set-face-attribute 'trailing-whitespace nil
-                      :background
-                      (face-attribute 'font-lock-comment-face
-                                      :foreground))
-  (set-face-attribute 'whitespace-space nil
-                      :background nil
-                      :foreground (face-attribute 'font-lock-warning-face
-                                                  :foreground))
-  (set-face-attribute 'whitespace-tab nil
-                      :background nil)
-  (set-face-attribute 'whitespace-indentation nil
-                      :background nil))
 (defun my-no-trailing-whitespace ()
   "Turn off display of trailing whitespace in this buffer."
-  (setq show-trailing-whitespace nil))
+  (setq-local show-trailing-whitespace nil))
 ;; But don't show trailing whitespace in SQLi, inf-ruby etc.
 (dolist (hook '(special-mode-hook
                 Info-mode-hook
@@ -327,6 +315,21 @@
                 term-mode-hook))
   (add-hook hook #'my-no-trailing-whitespace))
 
+(setq whitespace-line-column fill-column)
+(setq whitespace-style
+      '(face tabs tab-mark spaces space-mark
+             trailling lines-tail
+             indentation::space
+             indentation:tab
+             newline
+             newline-mark))
+;; (global-whitespace-mode +1)
+(my-require-package 'whitespace-cleanup-mode)
+(require 'whitespace-cleanup-mode)
+(global-whitespace-cleanup-mode +1)
+(diminish 'whitespace-cleanup-mode)
+(add-hook 'before-save-hook 'whitespace-cleanup )
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;;拷贝来的代码自动格式化
 (defvar my-indent-sensitive-modes
@@ -357,14 +360,14 @@
       (indent-region beg end nil)))
 
 (my|advise-commands "indent" (yank yank-pop) after
-            "If current mode is one of `my-yank-indent-modes',
+					"If current mode is one of `my-yank-indent-modes',
 indent yanked text (with prefix arg don't indent)."
-            (if (and (not (ad-get-arg 0))
-                 (not (member major-mode my-indent-sensitive-modes))
-                 (or (derived-mode-p 'prog-mode)
-                 (member major-mode my-yank-indent-modes)))
-            (let ((transient-mark-mode nil))
-              (yank-advised-indent-function (region-beginning) (region-end)))))
+                    (if (and (not (ad-get-arg 0))
+                             (not (member major-mode my-indent-sensitive-modes))
+                             (or (derived-mode-p 'prog-mode)
+                                 (member major-mode my-yank-indent-modes)))
+                        (let ((transient-mark-mode nil))
+                          (yank-advised-indent-function (region-beginning) (region-end)))))
 
 ;; hippie
 (setq hippie-expand-try-functions-list
@@ -710,10 +713,10 @@ the right."
       (global-flycheck-mode +1)
       (add-hook 'prog-mode-hook 'flycheck-mode)
       (when (display-graphic-p)
-    (progn
-      (my-require-package 'flycheck-pos-tip)
-      (require 'flycheck-pos-tip)
-      (flycheck-pos-tip-mode 1)))))
+        (progn
+          (my-require-package 'flycheck-pos-tip)
+          (require 'flycheck-pos-tip)
+          (flycheck-pos-tip-mode 1)))))
 
 ;; GTAGS
 (my-require-package 'ggtags)
@@ -782,6 +785,7 @@ This functions should be added to the hooks of major modes for programming."
   (my-local-comment-auto-fill)
   (my-font-lock-comment-annotations))
 (add-hook 'prog-mode-hook 'my-prog-mode-defaults)
+
 
 
 (defun my/rename-file (filename &optional new-filename)

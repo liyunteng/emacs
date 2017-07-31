@@ -44,22 +44,21 @@
 
 ;; Suspend page-break-lines-mode while company menu is active
 ;; (see https://github.com/company-mode/company-mode/issues/416)
-(after-load 'company
-  (after-load 'page-break-lines-mode
-    (defvar sanityinc/page-break-lines-on-p nil)
-    (make-variable-buffer-local 'sanityinc/page-break-lines-on-p)
+(after-load 'page-break-lines-mode
+  (defvar sanityinc/page-break-lines-on-p nil)
+  (make-variable-buffer-local 'sanityinc/page-break-lines-on-p)
 
-    (defun sanityinc/page-break-lines-disable (&rest ignore)
-      (when (setq sanityinc/page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
-        (page-break-lines-mode -1)))
+  (defun sanityinc/page-break-lines-disable (&rest ignore)
+    (when (setq sanityinc/page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
+      (page-break-lines-mode -1)))
 
-    (defun sanityinc/page-break-lines-maybe-reenable (&rest ignore)
-      (when sanityinc/page-break-lines-on-p
-        (page-break-lines-mode 1)))
+  (defun sanityinc/page-break-lines-maybe-reenable (&rest ignore)
+    (when sanityinc/page-break-lines-on-p
+      (page-break-lines-mode 1)))
 
-    (add-hook 'company-completion-started-hook 'sanityinc/page-break-lines-disable)
-    (add-hook 'company-completion-finished-hook 'sanityinc/page-break-lines-maybe-reenable)
-    (add-hook 'company-completion-cancelled-hook 'sanityinc/page-break-lines-maybe-reenable)))
+  (add-hook 'company-completion-started-hook 'sanityinc/page-break-lines-disable)
+  (add-hook 'company-completion-finished-hook 'sanityinc/page-break-lines-maybe-reenable)
+  (add-hook 'company-completion-cancelled-hook 'sanityinc/page-break-lines-maybe-reenable))
 
 (setq company-show-numbers t)
 (setq company-minimum-prefix-length 2)
@@ -215,6 +214,10 @@ MODE parameter must match the parameter used in the call to
 
 (my|disable-company term-mode)
 (my|disable-company shell-mode)
+(my|disable-company eshell-mode)
+(my|disable-company org-mode)
+(my|disable-company org-agenda-mode)
+(my|disable-company calendar-mode)
 
 ;; (my|defvar-company-backends python-mode)
 ;; (my|defvar-company-backends inferior-python-mode)

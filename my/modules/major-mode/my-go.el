@@ -51,7 +51,6 @@
   (defun my-go-mode-hook ()
     "My go mode hook."
     (progn
-      (whitespace-toggle-options '(tabs))
       (go-eldoc-setup)
       ))
 
