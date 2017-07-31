@@ -257,7 +257,7 @@ clang++ -Wall编译"
 ;; (defun hif-divide (a b)
 ;;   (if (not (equal 0 (hif-mathify b)))
 ;;       (/ (hif-mathify a)
-;;          (hif-mathify b))
+;;          (Hif-mathify b))
 ;;     0))
 
 ;;Add kernel style

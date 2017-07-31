@@ -23,10 +23,13 @@
 ;;
 
 ;;; Code:
-
+(my-require-package 'anzu)
 (require 'anzu)
 (global-anzu-mode +1)
 (setq anzu-mode-lighter "")
+(global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+(global-set-key [remap query-replace] 'anzu-query-replace)
+
 (defun my-anzu-update-mode-line (here total)
   "Custom update function which does not propertize the status."
   (when anzu--state
@@ -61,11 +64,6 @@ This is useful when followed by an immediate kill."
   (interactive)
   (isearch-exit)
   (goto-char isearch-other-end))
-
-
-(global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
-(global-set-key [remap query-replace] 'anzu-query-replace)
-
 
 ;; DEL during isearch should edit the search string, not jump back to the previous result
 (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)

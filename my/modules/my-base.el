@@ -81,7 +81,6 @@
 (setq-default projectile-cache-file (expand-file-name  "projectile.cache" my-cache-dir))
 
 ;; eshell
-(setq-default eshell-directory-name (expand-file-name "eshell" my-cache-dir))
 
 ;; semantic
 (setq-default semanticdb-default-save-directory

@@ -228,12 +228,6 @@
 ;;菜单栏
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
 
-;; 激活magit-log，可在magit-log中操作magit
-(global-set-key (kbd "C-x g") 'magit-status)
-(global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
-
-;; (global-set-key (kbd "C-x v g") 'magit-log)
-
 ;; (global-set-key (kbd "C-M-/") 'completion-at-point)
 
 ;; (global-set-key (kbd "C-x [") 'switch-to-prev-buffer)

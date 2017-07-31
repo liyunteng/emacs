@@ -24,11 +24,21 @@
 
 ;;; Code:
 
+(my-require-package 'magit)
+(my-require-package 'git-timemachine)
+(my-require-package 'gitconfig-mode)
+(my-require-package 'gitignore-mode)
 
 (setq-default magit-branch-read-upstream-first 'fallback)
 (setq-default magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
 (when (eq window-system 'w32)
   (setenv "GIT_ASKPASS" "git-gui--askpass"))
+
+;; 激活magit-log，可在magit-log中操作magit
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+
+;; (global-set-key (kbd "C-x v g") 'magit-log)
 
 ;; fullscreen
 ;; (setq-default magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)

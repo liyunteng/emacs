@@ -101,6 +101,10 @@ Otherwise,add it to a queue of actions to perform after the first graphical fram
   (setq inhibit-startup-echo-area-message t))
 (my-removes-gui-elements)
 
+(let ((no-border '(internal-border-width . 0)))
+  (add-to-list 'default-frame-alist no-border)
+  (add-to-list 'initial-frame-alist no-border))
+
 ;; font
 ;; (defvar my-default-font '("DejaVu Sans"
 ;;                           :size 16
@@ -108,8 +112,6 @@ Otherwise,add it to a queue of actions to perform after the first graphical fram
 ;;                           :width normal
 ;;                           :powerline-scale 1.1))
 (defvar my-default-font nil)
-(defvar my--diminished-minor-modes nil
-  "List of diminished modes to unicode or ascii values.")
 
 (defun my-set-default-font (plists)
   "Set the font given the passed PLISTS.

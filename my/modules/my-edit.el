@@ -129,6 +129,13 @@
 ;; Single space between sentences is more widespread than double
 (setq-default sentence-end-double-space nil)
 
+;; don't let the cursor go into minibuffer prompt
+(setq minibuffer-prompt-properties
+      '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
+
+(setq truncate-lines nil)
+(setq truncate-partial-width-windows nil)
+(transient-mark-mode +1)
 
 ;; 现实电池状态
 (require 'battery)
@@ -227,7 +234,7 @@
 
 ;; ediff
 (setq-default ediff-split-window-function 'split-window-horizontally
-	      ediff-window-setup-function 'ediff-setup-windows-plain)
+          ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;; clean up obsolete buffers automatically
 (require 'midnight)
@@ -252,8 +259,8 @@
 (require 'autorevert)
 (global-auto-revert-mode t)
 ;; Also auto refresh dired, but be quiet about it
-(setq-default global-auto-revert-non-file-buffers t
-              auto-revert-verbose nil)
+(setq global-auto-revert-non-file-buffers t
+      auto-revert-verbose nil)
 (add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode)
 
 
@@ -281,6 +288,7 @@
              indentation::space space-after-tab::space))
 (global-whitespace-mode +1)
 (global-whitespace-cleanup-mode +1)
+(diminish 'whitespace-cleanup-mode)
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 (setq show-trailing-whitespace t)
@@ -345,14 +353,14 @@
       (indent-region beg end nil)))
 
 (my|advise-commands "indent" (yank yank-pop) after
-		    "If current mode is one of `my-yank-indent-modes',
+            "If current mode is one of `my-yank-indent-modes',
 indent yanked text (with prefix arg don't indent)."
-		    (if (and (not (ad-get-arg 0))
-			     (not (member major-mode my-indent-sensitive-modes))
-			     (or (derived-mode-p 'prog-mode)
-				 (member major-mode my-yank-indent-modes)))
-			(let ((transient-mark-mode nil))
-			  (yank-advised-indent-function (region-beginning) (region-end)))))
+            (if (and (not (ad-get-arg 0))
+                 (not (member major-mode my-indent-sensitive-modes))
+                 (or (derived-mode-p 'prog-mode)
+                 (member major-mode my-yank-indent-modes)))
+            (let ((transient-mark-mode nil))
+              (yank-advised-indent-function (region-beginning) (region-end)))))
 
 ;; hippie
 (setq hippie-expand-try-functions-list
@@ -388,6 +396,12 @@ indent yanked text (with prefix arg don't indent)."
 ;; (setq-default grep-command "grep --color -nH -r -E ")
 (setq-default grep-highlight-matches t)
 (setq-default grep-scroll-output t)
+(when (executable-find "ag")
+  (my-require-package 'ag)
+  (my-require-package 'wgrep-ag)
+  (setq-default ag-highlight-search t)
+  (global-set-key (kbd "M-?") 'ag)
+  )
 
 ;; 设置默认浏览器为firefox
 ;; (setq browse-url-firefox-new-window-is-tab t)
@@ -640,6 +654,48 @@ the right."
 (editorconfig-mode +1)
 (diminish 'editorconfig-mode)
 
+;;; indent-guide
+(my-require-package 'indent-guide)
+(add-hook 'prog-mode-hook 'indent-guide-mode)
+(after-load 'indent-guide (diminish 'indent-guide-mode))
+
+;; multiple-cursors
+(my-require-package 'multiple-cursors)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+;; conflict witch text-scale-increase
+;; (global-set-key (kbd "C-+") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;; From active region to multiple cursors:
+(global-set-key (kbd "C-c m r") 'set-rectangular-region-anchor)
+(global-set-key (kbd "C-c m c") 'mc/edit-lines)
+(global-set-key (kbd "C-c m e") 'mc/edit-ends-of-lines)
+(global-set-key (kbd "C-c m a") 'mc/edit-beginnings-of-lines)
+
+;; smartparens
+(my-require-package 'smartparens)
+(require 'smartparens)
+(show-smartparens-global-mode +1)
+(add-hook 'nxml-mode-hook 'smartparens-mode)
+
+;; discover-my-major
+(my-require-package 'discover-my-major)
+
+;; symbol-overlay
+(my-require-package 'symbol-overlay)
+(dolist (hook '(prog-mode-hook html-mode-hook css-mode-hook))
+  (add-hook hook 'symbol-overlay-mode))
+(after-load 'symbol-overlay
+  (diminish 'symbol-overlay-mode "so")
+  (set-face-attribute 'symbol-overlay-temp-face nil
+                      :background
+                      (face-attribute 'isearch
+                                      :background)
+                      :foreground
+                      (face-attribute 'isearch
+                                      :foreground))
+  (define-key symbol-overlay-mode-map (kbd "M-n") 'symbol-overlay-jump-next)
+  (define-key symbol-overlay-mode-map (kbd "M-p") 'symbol-overlay-jump-prev))
 
 ;; flycheck
 ;; enable on-the-fly syntax checking
@@ -650,10 +706,10 @@ the right."
       (global-flycheck-mode +1)
       (add-hook 'prog-mode-hook 'flycheck-mode)
       (when (display-graphic-p)
-	(progn
-	  (my-require-package 'flycheck-pos-tip)
-	  (require 'flycheck-pos-tip)
-	  (flycheck-pos-tip-mode 1)))))
+    (progn
+      (my-require-package 'flycheck-pos-tip)
+      (require 'flycheck-pos-tip)
+      (flycheck-pos-tip-mode 1)))))
 
 ;; GTAGS
 (my-require-package 'ggtags)
@@ -695,7 +751,11 @@ the right."
     (interactive)
     (message "GTAGSLIBPATH=%s" (getenv "GTAGSLIBPATH"))))
 
-
+(diminish 'hide-ifdef-hiding)
+(diminish 'beacon-mode)
+(diminish 'helm-mode)
+(diminish 'editorconfig-mode)
+(diminish 'which-key-mode)
 
 ;; prog-mode-hook
 (setq-default goto-address-url-face 'underline)
@@ -839,7 +899,6 @@ FILENAME is deleted using `my/delete-file' function.."
   (insert (format-time-string "%Y/%m/%d %H:%M:%S" (current-time))))
 ;; (insert (format-time-string "%H:%M:%S" (current-time))))
 
-
 (defun my/dos2unix-remove-M()
   "Remove ^M in files."
   (interactive)
@@ -896,11 +955,6 @@ Compare them on count first,and in case of tie sort them alphabetically."
                            (substring formated 0 -2)))
         (message "No words.")))
     words))
-
-;; don't let the cursor go into minibuffer prompt
-;; Tip taken from Xah Lee: http://ergoemacs.org/emacs/emacs_stop_cursor_enter_prompt.html
-(setq minibuffer-prompt-properties
-      '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
 ;; Hack to fix a bug with tabulated-list.el
 ;; see: http://redd.it/2dgy52

@@ -24,8 +24,7 @@
 
 ;;; Code:
 (my-require-packages '(web-mode))
-(require 'web-mode)
-
+(add-to-list 'auto-mode-alist '("\\.xml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
@@ -37,8 +36,11 @@
 (add-to-list 'auto-mode-alist
 	     '("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode))
 
+
+
 ;; make web-mode play nice with smartparens
-(setq web-mode-enable-auto-pairing nil)
+(setq-default web-mode-enable-auto-pairing nil)
+(setq-default web-mode-indent-style 4)
 
 (sp-with-modes '(web-mode)
   (sp-local-pair "%" "%"

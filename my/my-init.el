@@ -44,9 +44,10 @@
 (defvar my-modules
   '(my-base
     my-utils
+    my-exec-path
     my-gui
-    my-window
     my-themes
+    my-window
 
     my-isearch
     my-avy
@@ -96,7 +97,8 @@
 
 (defun my-load (m)
   "Load feature M."
-  (load (locate-library (format "%s" m))))
+  (unless (load (locate-library (format "%s" m)))
+    (error "Loading %s failed" m)))
 
 (when (file-exists-p my-modules-dir)
   (add-to-list 'load-path my-modules-dir)

@@ -85,13 +85,13 @@
 ;;----------------------------------------------------------------------------
 ;; Rearrange split windows
 ;;----------------------------------------------------------------------------
-(defun my/split-window-horizontally ()
+(defun my/split-window-horizontally-instead ()
   (interactive)
   (save-excursion
     (delete-other-windows)
     (funcall (my-split-window-func-with-other-buffer 'split-window-horizontally))))
 
-(defun my/split-window-vertically ()
+(defun my/split-window-vertically-instead ()
   (interactive)
   (save-excursion
     (delete-other-windows)
@@ -116,6 +116,31 @@
     (message "Window %sdedicated to %s"
              (if was-dedicated "no longer " "")
              (buffer-name))))
+
+;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
+(defun my/split-window()
+  "Split the window to see the most recent buffer in the other window.
+Call a second time to restore the original window configuration."
+  (interactive)
+  (if (eq last-command 'my/split-window)
+      (progn
+        (jump-to-register :my/split-window)
+        (setq this-command 'my/unsplit-window))
+    (window-configuration-to-register :my/split-window)
+    (switch-to-buffer-other-window nil)))
+(global-set-key (kbd "<f7>") 'my/split-window)
+
+
+(defun my/toggle-current-window-dedication ()
+  "Toggle whether the current window is dedicated to its current buffer."
+  (interactive)
+  (let* ((window (selected-window))
+         (was-dedicated (window-dedicated-p window)))
+    (set-window-dedicated-p window (not was-dedicated))
+    (message "Window %sdedicated to %s"
+             (if was-dedicated "no longer " "")
+             (buffer-name))))
+(global-set-key (kbd "C-c <down>") 'my/toggle-current-window-dedication)
 
 
 (defun my/layout-triple-columns ()
@@ -211,6 +236,25 @@ Dedicated (locked) windows are left untouched."
     (call-interactively major-mode)
     ))
 (setq revert-buffer-function 'my--revert-buffer-function)
+
+(unless (memq window-system '(nt w32))
+  (windmove-default-keybindings 'control))
+
+(my-require-package 'default-text-scale)
+(global-set-key (kbd "C-M-=") 'default-text-scale-increase)
+(global-set-key (kbd "C-M--") 'default-text-scale-decrease)
+
+(defun my/maybe-adjust-visual-fill-column ()
+  "Readjust visual fill column when the global font size is modified.
+This is helpful for writeroom-mode, in particular."
+  ;; TODO: submit as patch
+  (if visual-fill-column-mode
+      (add-hook 'after-setting-font-hook 'visual-fill-column--adjust-window nil t)
+    (remove-hook 'after-setting-font-hook 'visual-fill-column--adjust-window t)))
+
+(add-hook 'visual-fill-column-mode-hook
+          'my/maybe-adjust-visual-fill-column)
+
 
 (provide 'my-window)
 ;;; my-window.el ends here

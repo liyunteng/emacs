@@ -161,15 +161,24 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company cmake-mode)
 
 (my|defvar-company-backends go-mode)
+(my-require-package 'company-go)
+(after-load 'go-mode
+  (require 'company-go))
 (push 'company-go company-backends-go-mode)
 (my|enable-company go-mode)
 
 (my|defvar-company-backends sh-mode)
+(my-require-package 'company-shell)
+(after-load 'sh-mode
+  (require 'company-shell))
 (push 'company-shell company-backends-sh-mode)
 (push 'company-shell-env company-backends-sh-mode)
 (my|enable-company sh-mode)
 
 (my|defvar-company-backends php-mode)
+(my-require-package 'company-php)
+(after-load 'php-mode
+  (require 'company-php))
 (push 'company-php company-backends-php-mode)
 (my|enable-company php-mode)
 
@@ -177,8 +186,15 @@ MODE parameter must match the parameter used in the call to
 (push 'company-css company-backends-css-mode)
 (my|enable-company css-mode)
 
+(my|defvar-company-backends nxml-mode)
+(push 'company-nxml company-backends-nxml-mode)
+(my|enable-company nxml-mode)
+
 (my|defvar-company-backends web-mode)
-(push 'company-nxml company-backends-web-mode)
+(my-require-package 'company-web)
+(after-load 'web-mode
+  (require 'company-web))
+(push 'company-web company-backends-web-mode)
 (my|enable-company web-mode)
 
 (my|defvar-company-backends emacs-lisp-mode)

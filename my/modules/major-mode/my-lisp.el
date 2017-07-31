@@ -31,6 +31,7 @@
 (my-require-package 'cl-lib-highlight)
 (my-require-package 'aggressive-indent)
 (my-require-package 'rainbow-mode)
+(my-require-package 'rainbow-delimiters)
 (my-require-package 'eldoc-eval)
 (my-require-package 'macrostep)
 (my-require-package 'highlight-quoted)
@@ -38,6 +39,8 @@
 (my-require-package 'elisp-slime-nav)
 (my-require-package 'auto-compile)
 
+(require 'elisp-slime-nav)
+(diminish 'elisp-slime-nav-mode)
 (dolist (hook '(emacs-lisp-mode-hook
                 ielm-mode-hook
                 help-mode-hook
@@ -45,9 +48,8 @@
                 completion-list-mode-hook
                 debugger-mode-hook))
   (add-hook hook 'turn-on-elisp-slime-nav-mode))
-(require 'elisp-slime-nav)
-(after-load 'elisp-slime-nav
-  (define-key elisp-slime-nav-mode-map (kbd "M-.") 'elisp-slime-nav-find-elisp-thing-at-point))
+(define-key elisp-slime-nav-mode-map (kbd "M-.") 'elisp-slime-nav-find-elisp-thing-at-point)
+
 
 ;; Make C-x C-e run 'eval-region if the region is active
 (defun my/eval-last-sexp-or-region (prefix)
@@ -57,9 +59,6 @@
       (eval-region (min (point) (mark)) (max (point) (mark)))
     (pp-eval-last-sexp prefix)))
 (global-set-key [remap eval-expression] 'pp-eval-expression)
-
-(after-load 'lisp-mode
-  (define-key emacs-lisp-mode-map (kbd "C-x C-e") 'my/eval-last-sexp-or-region))
 
 (ipretty-mode 1)
 
@@ -169,19 +168,20 @@
 ;;   (when (bound-and-true-p indent-guide-mode)
 ;;     (indent-guide-mode -1)))
 
-(defvar my-lispy-modes-hook
-  '(
-    turn-on-eldoc-mode
-    ;; hl-sexp-mode
-    aggressive-indent-mode
-    ;; my-disable-indent-guide
-    my-enable-check-parens-on-save
-    )
-  "Hook run in all Lisp modes.")
-
-(defun my-lisp-setup ()
-  "Enable features useful in any Lisp mode."
-  (run-hooks 'my-lispy-modes-hook))
+(defun my-lispy-modes-setup ()
+  "My lispy mode hooks."
+  (turn-on-eldoc-mode)
+  ;; hl-sexp-mode
+  (aggressive-indent-mode)
+  ;; my-disable-indent-guide
+  (my-enable-check-parens-on-save)
+  (turn-on-smartparens-strict-mode)
+  (rainbow-mode +1)
+  (rainbow-delimiters-mode +1)
+  (local-set-key (kbd "C-c C-b") 'eval-buffer)
+  (local-set-key (kbd "C-c C-c") 'eval-defun)
+  (local-set-key (kbd "C-x C-e") 'my/eval-last-sexp-or-region)
+  )
 
 (defun my-emacs-lisp-setup ()
   "Enable features useful when working with elisp."
@@ -199,7 +199,7 @@
 (require 'derived)
 
 (dolist (hook (mapcar #'derived-mode-hook-name my-lispy-modes))
-  (add-hook hook 'my-lisp-setup))
+  (add-hook hook 'my-lispy-modes-setup))
 
 (dolist (hook (mapcar #'derived-mode-hook-name my-elispy-modes))
   (add-hook hook 'my-emacs-lisp-setup))
@@ -326,6 +326,8 @@
     (lisp-interaction-mode)
     (insert ";; Happy hacking " (or user-login-name "") " - Emacs ♥ you!\n\n")
     (current-buffer)))
+
+
 
 
 (provide 'my-lisp)

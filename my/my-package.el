@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
@@ -32,31 +32,7 @@
 (setq package-user-dir my-packages-save-dir)
 (package-initialize)
 
-(defvar my-packages '(anzu
-		      browse-kill-ring
-		      crux
-		      dash
-		      discover-my-major
-		      diff-hl
-		      diminish
-		      easy-kill
-		      editorconfig
-		      elisp-slime-nav
-		      expand-region
-		      flycheck
-		      git-timemachine
-		      gitconfig-mode
-		      gitignore-mode
-		      imenu-anywhere
-		      projectile
-		      magit
-		      move-text
-		      smartparens
-		      undo-tree
-		      helm
-		      helm-directory
-		      whitespace-cleanup-mode
-		      ))
+(defvar my-packages '(dash))
 
 (defun my-packages-installed-p ()
   "Check if all packages in `my-packages' are installed."

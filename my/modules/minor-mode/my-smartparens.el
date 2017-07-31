@@ -25,6 +25,14 @@
 ;;; Code:
 
 (after-load 'smartparens
+  (require 'smartparens-config)
+  ;; (sp-use-paredit-bindings)
+  (setq sp-base-key-bindings 'smartparens)
+  (setq sp-autoskip-closing-pair 'always)
+  (setq sp-hybrid-kill-entire-symbol nil)
+  (sp-use-smartparens-bindings)
+  (setq blink-matching-paren nil)
+
   (setq sp-show-pair-delay 0.2
         sp-show-pair-form-inside t
         sp-cancel-autoskip-on-backward-movement nil
@@ -32,10 +40,10 @@
         sp-highlight-wrap-overlay nil
         sp-highlight-wrap-tag-overlay nil)
   (sp-with-modes
-   '(c++-mode objc-mode c-mode python-mode go-mode)
-   (sp-local-pair "{" "}"
-		  :unless '(sp-in-comment-p sp-in-string-p)
-		  :post-handlers '(:add ("||" "RET"))))
+      '(c++-mode objc-mode c-mode python-mode go-mode)
+    (sp-local-pair "{" "}"
+		   :unless '(sp-in-comment-p sp-in-string-p)
+		   :post-handlers '(:add ("||" "RET"))))
   (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
 
   (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)
@@ -44,13 +52,6 @@
   (define-key smartparens-mode-map [remap backward-kill-sexp] 'sp-backward-kill-sexp)
   )
 
-(require 'smartparens-config)
-;; (sp-use-paredit-bindings)
-(setq sp-base-key-bindings 'smartparens)
-(setq sp-autoskip-closing-pair 'always)
-(setq sp-hybrid-kill-entire-symbol nil)
-(sp-use-smartparens-bindings)
-(show-smartparens-global-mode +1)
-(setq blink-matching-paren nil)
+
 (provide 'my-smartparens)
 ;;; my-smartparens.el ends here

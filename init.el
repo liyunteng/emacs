@@ -39,4 +39,4 @@
 (load-file (concat user-emacs-directory "my/my-load-path.el"))
 (require 'my-init)
 
-
+;;; init.el ends here

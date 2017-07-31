@@ -23,6 +23,9 @@
 ;;
 
 ;;; Code:
+(my-require-package 'move-text)
+(my-require-package 'imenu-anywhere)
+(my-require-package 'crux)
 (require 'easymenu)
 (require 'imenu-anywhere)
 (require 'crux)
