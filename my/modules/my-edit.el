@@ -757,7 +757,6 @@ the right."
 
 (diminish 'hide-ifdef-hiding)
 (diminish 'beacon-mode)
-(diminish 'helm-mode)
 (diminish 'editorconfig-mode)
 (diminish 'which-key-mode)
 (diminish 'rainbow-mode)

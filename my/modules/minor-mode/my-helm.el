@@ -38,6 +38,7 @@
 (require 'helm-smex)
 (require 'helm-swoop)
 
+(diminish 'helm-mode)
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
 

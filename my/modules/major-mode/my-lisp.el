@@ -40,8 +40,7 @@
 (my-require-package 'auto-compile)
 
 (require 'elisp-slime-nav)
-(diminish 'elisp-slime-nav-mode)
-
+(diminish 'elisp-slime-nav-mode "Nav")
 (dolist (hook '(emacs-lisp-mode-hook
                 ielm-mode-hook
                 help-mode-hook

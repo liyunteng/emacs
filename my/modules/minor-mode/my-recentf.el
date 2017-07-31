@@ -31,8 +31,9 @@
  recentf-max-menu-items 15
  recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
                    "/TAGS$" "/GTAGS$" "/GRAGS" "/GPATH$"))
-(add-hook 'after-init-hook
-          'recentf-load-list 'recentf-cleanup)
+;; (add-hook 'after-init-hook 'recentf-load-list)
+(add-hook 'after-init-hook 'recentf-cleanup)
+
 (recentf-mode +1)
 
 (provide 'my-recentf)

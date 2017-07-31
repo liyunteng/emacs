@@ -47,6 +47,8 @@
   (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
 
   (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)
+  (define-key smartparens-mode-map (kbd "C-M-a") nil)
+  (define-key smartparens-mode-map (kbd "C-M-e") nil)
   (define-key smartparens-mode-map [remap backward-delete-char] 'sp-backward-delete-char)
   (define-key smartparens-mode-map [remap backward-kill-word] 'sp-backward-kill-word)
   (define-key smartparens-mode-map [remap backward-kill-sexp] 'sp-backward-kill-sexp)
