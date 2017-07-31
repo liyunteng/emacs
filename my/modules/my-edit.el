@@ -155,6 +155,13 @@
                           (concat " ("user-full-name ")"))
                       " - Emacs ♥ you!\n\n"))
 
+;; activate save-place for all buffers
+(require 'saveplace)
+(if (< emacs-major-version 25)
+    (progn (require 'saveplace)
+           (setq-default save-place t))
+  (save-place-mode 1))
+
 
 ;; linum
 ;;显示行列号
@@ -218,12 +225,6 @@
 
 ;; enable winner-mode to manage window configurations
 (winner-mode +1)
-
-;; activate it for all buffers
-(if (< emacs-major-version 25)
-    (progn (require 'saveplace)
-           (setq-default save-place t))
-  (save-place-mode 1))
 
 ;; use shift + arrow keys to switch between visible buffers
 (require 'windmove)

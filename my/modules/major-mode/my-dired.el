@@ -51,7 +51,7 @@
               dired-recursive-copies 'top
               ;; dired忽略的上限
               dired-omit-mode t
-              dired-omit-file "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
+              dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
               )
 
 ;;; 使用！来使用外部程序打开

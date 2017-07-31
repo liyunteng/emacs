@@ -28,7 +28,8 @@
 (defvar my-modules-dir (expand-file-name  "modules" my-dir))
 (defvar my-forks-dir (expand-file-name "forks" my-dir))
 (defvar my-libs-dir (expand-file-name "libs" my-dir))
-(defvar my-cache-dir (expand-file-name "cache" my-dir))
+
+(defvar my-cache-dir (expand-file-name "cache" user-emacs-directory))
 
 (defvar my-personal-dir (expand-file-name "personal" user-emacs-directory))
 (defvar my-personal-info-file (expand-file-name "person-info.el" my-personal-dir))

@@ -24,46 +24,16 @@
 
 ;;; Code:
 
-(my-require-package 'session)
 (require 'desktop)
-;; save a bunch of variables to the desktop file
-;; for lists specify the len of the maximal saved data also
-(setq-default desktop-globals-to-save
-              (append '((comint-input-ring        . 50)
-                        (compile-history          . 30)
-                        desktop-missing-file-warning
-                        (dired-regexp-history     . 20)
-                        (extended-command-history . 30)
-                        (face-name-history        . 20)
-                        (file-name-history        . 100)
-                        (grep-find-history        . 30)
-                        (grep-history             . 30)
-                        (ido-buffer-history       . 100)
-                        (ido-last-directory-list  . 100)
-                        (ido-work-directory-list  . 100)
-                        (ido-work-file-list       . 100)
-                        (ivy-history              . 100)
-                        (magit-read-rev-history   . 50)
-                        (minibuffer-history       . 50)
-                        (org-clock-history        . 50)
-                        (org-refile-history       . 50)
-                        (org-tags-history         . 50)
-                        (query-replace-history    . 60)
-                        (read-expression-history  . 60)
-                        (regexp-history           . 60)
-                        (regexp-search-ring       . 20)
-                        (search-ring              . 20)
-                        (shell-command-history    . 50)
-                        tags-file-name
-                        tags-table-list)))
+
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
 (setq desktop-path (list my-cache-dir))
 (setq desktop-auto-save-timeout 600)
 (setq desktop-missing-file-warning t)
 (setq desktop-restore-in-current-display t)
-(setq desktop-save 'if-exists)
+(setq desktop-save 'ask-if-new)
 (setq-default desktop-buffers-not-to-save "\\` \\|^*my-debug*$")
-(desktop-save-mode t)
+(desktop-save-mode +1)
 
 (defadvice desktop-read (around time-restore activate)
   (let ((start-time (current-time)))
@@ -96,16 +66,7 @@
       savehist-autosave-interval 60)
 (savehist-mode +1)
 
-(setq-default history-length 1000)
-
-(require 'session)
-(setq-default session-save-file (expand-file-name "session" my-cache-dir))
-(setq-default session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\\\|^/ssh:\\|^ftp:\\|^rsync:)")
-(setq-default session-set-file-name-exclude-regexp "[/\\]\\.overview\\|[/\\]\\.session\\|News[/\\]\\|^/ssh:\\|^ftp:\\|^rsync:")
-(add-hook 'after-init-hook 'session-initialize)
-
-
-
+(setq history-length 1000)
 
 ;; automatically save buffers associated with files on buffer switch
 ;; and on windows switch
@@ -119,14 +80,45 @@
 
 ;; advise all window switching functions
 (my|advise-commands "auto-save"
-		    (switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
-		    before
-		    (my-auto-save-command))
+					(switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
+					before
+					(my-auto-save-command))
 
 (add-hook 'mouse-leave-buffer-hook 'my-auto-save-command)
 
 (when (version<= "24.4" emacs-version)
   (add-hook 'focus-out-hook 'my-auto-save-command))
 
+
+;; save a bunch of variables to the desktop file
+;; for lists specify the len of the maximal saved data also
+(setq-default desktop-globals-to-save
+              (append '((comint-input-ring        . 50)
+                        (compile-history          . 30)
+                        desktop-missing-file-warning
+                        (dired-regexp-history     . 20)
+                        (extended-command-history . 30)
+                        (face-name-history        . 20)
+                        (file-name-history        . 100)
+                        (grep-find-history        . 30)
+                        (grep-history             . 30)
+                        (ido-buffer-history       . 100)
+                        (ido-last-directory-list  . 100)
+                        (ido-work-directory-list  . 100)
+                        (ido-work-file-list       . 100)
+                        (ivy-history              . 100)
+                        (magit-read-rev-history   . 50)
+                        (minibuffer-history       . 50)
+                        (org-clock-history        . 50)
+                        (org-refile-history       . 50)
+                        (org-tags-history         . 50)
+                        (query-replace-history    . 60)
+                        (read-expression-history  . 60)
+                        (regexp-history           . 60)
+                        (regexp-search-ring       . 20)
+                        (search-ring              . 20)
+                        (shell-command-history    . 50)
+                        tags-file-name
+                        tags-table-list)))
 (provide 'my-session)
 ;;; my-session.el ends here
