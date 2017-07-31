@@ -80,10 +80,12 @@
 (setq-default projectile-cache-file (expand-file-name  "projectile.cache" my-cache-dir))
 
 ;; eshell
+(setq-default eshell-directory-name
+			  (expand-file-name "eshell" my-cache-dir))
 
 ;; semantic
 (setq-default semanticdb-default-save-directory
-	      (expand-file-name "semanticdb" my-cache-dir))
+			  (expand-file-name "semanticdb" my-cache-dir))
 ;; tramp cache files
 (setq-default tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
 

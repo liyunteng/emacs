@@ -86,19 +86,27 @@
           :foreground "red" :weight bold))))
    `(company-template-field
      ((t (:background
-	  ,(color-darken-name (face-attribute 'default :background) 20)))))
+		  ,(color-darken-name (face-attribute 'default :background) 10)))))
    ))
 
-(after-load 'my-company
-  (if (eq (display-color-cells) 8)
-      (progn
-        (custom-theme-set-faces
-         'zenburn
-         `(company-tooltip ((t (:background "#000000"))))
-         `(company-tooltip-selection ((t (:background "#00FFFF" :weight bold))))
-         `(company-tooltip-search ((t (:background "#000000" :foreground "red"))))
-         `(company-tooltip-search-selection ((t (:background "#0000FF" :foreground "red" :weight bold))))
-         ))))
+
+(if ;; (eq (display-color-cells) 8)
+	(not (display-graphic-p))
+	(progn
+	  (after-load 'company
+		(custom-theme-set-faces
+		 'zenburn
+		 `(company-tooltip ((t (:background "#000000"))))
+		 `(company-tooltip-selection ((t (:background "#00FFFF" :weight bold))))
+		 `(company-tooltip-search ((t (:background "#000000" :foreground "red"))))
+		 `(company-tooltip-search-selection ((t (:background "#0000FF" :foreground "red" :weight bold))))
+		 ))
+	  (after-load 'helm
+	  	(custom-theme-set-faces
+	  	 'zenburn
+	  	 `(helm-selection ((t (:background "#00FFFF" :weight bold :foreground "#FFFF00"))))))
+	  )
+  )
 
 ;; (custom-set-faces
 ;;  `(company-tooltip-mouse ((t (:background "#2b2b2b"))))
