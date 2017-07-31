@@ -58,7 +58,7 @@
 to do any setup that needs to have the display system initialized."
   (progn
     (dolist (fn (reverse my--after-display-system-init-alist))
-      (funcal fn))
+      (funcall fn))
     (ad-disable-advice 'server-create-window-system-frame
                        'after
                        'my-init-display)

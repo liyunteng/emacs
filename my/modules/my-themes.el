@@ -90,8 +90,7 @@
    ))
 
 
-(if ;; (eq (display-color-cells) 8)
-	(not (display-graphic-p))
+(if (eq (display-color-cells) 8)
 	(progn
 	  (after-load 'company
 		(custom-theme-set-faces
