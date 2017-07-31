@@ -150,11 +150,11 @@ Removes the automatic guessing of the initial value based on thing at point."
 (add-hook 'helm-minibuffer-set-up-hook 'my--helm-hide-minibuffer-maybe)
 
 (setq-default helm-split-window-in-side-p t
-	      helm-buffers-fuzzy-matching t
+			  helm-buffers-fuzzy-matching t
               helm-move-to-line-cycle-in-source t
               helm-ff-search-library-in-sexp t
-	      helm-ff-file-compressed-list t
-	      helm-ff-file-name-history-use-recentf t
+			  helm-ff-file-compressed-list t
+			  helm-ff-file-name-history-use-recentf t
               helm-scroll-amount 8
               helm-echo-input-in-header-line nil)
 
@@ -187,6 +187,7 @@ Removes the automatic guessing of the initial value based on thing at point."
 (global-set-key (kbd "C-h f") 'helm-apropos)
 (global-set-key (kbd "C-h r") 'helm-info-emacs)
 (global-set-key (kbd "C-h C-l") 'helm-locate-library)
+(global-set-key (kbd "C-h i") 'helm-info)
 (define-key my-mode-map (kbd "C-c f") 'helm-recentf)
 
 (define-key helm-command-prefix (kbd "o")     'helm-occur)
@@ -194,6 +195,7 @@ Removes the automatic guessing of the initial value based on thing at point."
 (define-key helm-command-prefix (kbd "C-c w") 'helm-wikipedia-suggest)
 (define-key helm-command-prefix (kbd "SPC")   'helm-all-mark-rings)
 (define-key helm-command-prefix (kbd "x") 'my/helm-faces)
+(define-key helm-command-prefix (kbd "m") 'helm-man-woman)
 
 (define-key helm-find-files-map (kbd "C-c C-e") 'my/helm-find-files-edit)
 (define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)

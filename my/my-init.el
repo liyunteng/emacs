@@ -26,7 +26,7 @@
 
 (require 'my-debug)
 (require 'my-package)
-(setq debug-on-error t)
+(setq debug-on-error nil)
 
 ;; Always load newest byte code
 (setq load-prefer-newer t)
