@@ -46,8 +46,7 @@
     (setq auto-save-file-name-transforms
           `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'"
              ,autosave-dir t)))
-    (add-to-list 'auto-save-file-name-transforms
-                 `(".*" ,autosave-dir t))))
+	))
 
 ;; 将保存的文件移动到.emacs.d/目录中
 (setq-default recentf-save-file  (expand-file-name "recentf" user-emacs-directory))
