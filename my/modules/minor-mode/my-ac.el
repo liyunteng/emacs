@@ -90,6 +90,20 @@
 (define-key company-search-map (kbd "C-n") 'company-select-next)
 (define-key company-search-map (kbd "C-p") 'company-select-previous)
 
+;; fix company-candidates-length is 0 will start company
+(defun company-manual-begin ()
+  (interactive)
+  (company-assert-enabled)
+  (setq company--manual-action t)
+  (unwind-protect
+      (let ((company-minimum-prefix-length 1))
+        (or company-candidates
+            (company-auto-begin)))
+    (unless company-candidates
+      (setq company--manual-action nil))))
+
+
+
 ;; copy from spacemacs
 (defvar my-default-company-backends
   '((company-yasnippet)
