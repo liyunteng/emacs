@@ -183,6 +183,8 @@
   (local-set-key (kbd "C-c C-c") 'eval-defun)
   (local-set-key (kbd "C-x C-e") 'my/eval-last-sexp-or-region)
 
+  (if (boundp 'yas-minor-mode)
+      (yas-minor-mode -1))
   (if (eq major-mode 'emacs-lisp-mode)
       (setq mode-name "EL"))
   (if (eq major-mode 'lisp-interaction-mode)

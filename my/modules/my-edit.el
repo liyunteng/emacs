@@ -150,9 +150,9 @@
 ;; initial scarch message
 (setq-default initial-scratch-message
               (concat ";; Happy hacking, "
+		      user-login-name
 		      (if user-full-name
-			  user-full-name
-			user-login-name)
+			  (concat " ("user-full-name ")"))
 		      " - Emacs ♥ you!\n\n"))
 
 
