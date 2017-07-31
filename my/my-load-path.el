@@ -20,19 +20,20 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
 (defvar my-dir (expand-file-name "my" user-emacs-directory))
 (defvar my-modules-dir (expand-file-name  "modules" my-dir))
-(defvar my-custom-file (expand-file-name "custom.el" my-dir))
-
 (defvar my-forks-dir (expand-file-name "forks" my-dir))
 (defvar my-libs-dir (expand-file-name "libs" my-dir))
 (defvar my-cache-dir (expand-file-name "cache" my-dir))
-(defvar my-personal-dir (expand-file-name "personal" my-dir))
-(defvar my-personal-info (expand-file-name "info.el" my-personal-dir))
+
+(defvar my-personal-dir (expand-file-name "personal" user-emacs-directory))
+(defvar my-personal-info-file (expand-file-name "person-info.el" my-personal-dir))
+
+(defvar my-custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 (unless (file-exists-p my-cache-dir)
   (make-directory my-cache-dir))

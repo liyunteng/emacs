@@ -40,6 +40,8 @@
 
 
 (setq-default custom-file my-custom-file)
+(when (file-exists-p my-personal-info-file)
+  (load my-personal-info-file))
 
 (defvar my-modules
   '(my-base

@@ -198,7 +198,7 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company web-mode)
 
 (my|defvar-company-backends emacs-lisp-mode)
-(push 'company-capf company-backends-emacs-lisp-mode)
+(push '(company-elisp company-capf) company-backends-emacs-lisp-mode)
 (my|enable-company emacs-lisp-mode)
 
 (my|defvar-company-backends java-mode)

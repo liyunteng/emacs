@@ -23,10 +23,14 @@
 ;;
 
 ;;; Code:
+(defvar my-dir)
+(defvar my-pinned-packages-file (expand-file-name "my-pinned-packages.el" my-dir))
+(when (file-exists-p my-pinned-packages-file)
+  (load my-pinned-packages-file))
 
 (require 'cl)
 (require 'package)
-(require 'my-pinned-packages nil t)
+
 (defvar my-packages-save-dir (expand-file-name "elpa" user-emacs-directory))
 
 (setq package-user-dir my-packages-save-dir)

@@ -41,6 +41,7 @@
 
 (require 'elisp-slime-nav)
 (diminish 'elisp-slime-nav-mode)
+
 (dolist (hook '(emacs-lisp-mode-hook
                 ielm-mode-hook
                 help-mode-hook
@@ -49,7 +50,6 @@
                 debugger-mode-hook))
   (add-hook hook 'turn-on-elisp-slime-nav-mode))
 (define-key elisp-slime-nav-mode-map (kbd "M-.") 'elisp-slime-nav-find-elisp-thing-at-point)
-
 
 ;; Make C-x C-e run 'eval-region if the region is active
 (defun my/eval-last-sexp-or-region (prefix)
@@ -76,6 +76,7 @@
     (view-mode 1)))
 
 (add-hook 'emacs-lisp-mode-hook 'my-maybe-set-bundled-elisp-readonly)
+
 
 ;; Use C-c C-z to toggle between elisp files and an ielm session
 ;; I might generalise this to ruby etc., or even just adopt the repl-toggle package.
@@ -181,6 +182,11 @@
   (local-set-key (kbd "C-c C-b") 'eval-buffer)
   (local-set-key (kbd "C-c C-c") 'eval-defun)
   (local-set-key (kbd "C-x C-e") 'my/eval-last-sexp-or-region)
+
+  (if (eq major-mode 'emacs-lisp-mode)
+      (setq mode-name "EL"))
+  (if (eq major-mode 'lisp-interaction-mode)
+      (setq mode-name "LI"))
   )
 
 (defun my-emacs-lisp-setup ()

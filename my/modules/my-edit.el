@@ -149,7 +149,11 @@
                              "%b"))))
 ;; initial scarch message
 (setq-default initial-scratch-message
-              (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
+              (concat ";; Happy hacking, "
+		      (if user-full-name
+			  user-full-name
+			user-login-name)
+		      " - Emacs ♥ you!\n\n"))
 
 
 ;; linum
@@ -756,6 +760,8 @@ the right."
 (diminish 'helm-mode)
 (diminish 'editorconfig-mode)
 (diminish 'which-key-mode)
+(diminish 'rainbow-mode)
+(diminish 'page-break-lines-mode)
 
 ;; prog-mode-hook
 (setq-default goto-address-url-face 'underline)

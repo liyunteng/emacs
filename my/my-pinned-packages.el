@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
@@ -35,5 +35,4 @@
              '(switch-window . "melpa-stable"))
 
 
-(provide 'my-pinned-packages)
 ;;; my-pinned-packages.el ends here

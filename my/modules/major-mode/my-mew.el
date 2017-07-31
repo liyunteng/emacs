@@ -43,46 +43,11 @@
 (setq-default mew-refile-auto-refile-skip-any-mark nil)
 (setq-default mew-use-fast-refile t)
 
-(setq-default mew-refile-guess-alist
-              '(
-                ;; ("To:" ("liyunteng@streamocean.com" "+to/liyunteng"))
-                ("From:"
-                 ("jzang@streamocean.com"   . "+from/joanna")
-                 ("ali@streamocean.com"     . "+from/ali")
-                 ("songwei@streamocean.com" . "+from/hr")
-                 ("wenfeng@streamocean.com" . "+from/hr")
-                 ;; ("@streamocean.com"        . "+from/streamocean")
-                 (".*"                      . "+inbox")
-                 )))
-
-(setq-default mew-config-alist
-              '(("default"
-                 ("name" . "liyunteng")
-                 ("user" . "liyunteng")
-                 ("mail-domain" . "streamocean.com")
-                 ("mailbox-type" . pop)
-                 ("smtp-server" . "smtp.qiye.163.com")
-                 ("smtp-port" . "25")
-                 ("smtp-auth" . pass)
-                 ("smtp-auth-list" . ("PLAIN" "LOGIN" "CRAM-MD5"))
-
-                 ("pop-user" . "liyunteng@streamocean.com")
-                 ("pop-server" . "pop.qiye.163.com")
-                 ("pop-port" . "110")
-                 ("pop-auth" . pass)
-                 ("pop-auth-list" . ("PLAIN" "LOGIN"))
-
-                 ;; ("imap-user" . "liyunteng")
-                 ;; ("imap-auth" . "PASSWD")
-                 ;; ("imap-server" . "imap.streamocean.com")
-                 ;; ("imap-port" . "143")
-                 )))
-
 (after-load 'mew
   (add-to-list 'mew-cite-fields "Message-ID:")
 
   (defun my-mew-mode-hook ()
-    (my/no-trailing-whitespace)
+    (my-no-trailing-whitespace)
     (auto-image-file-mode t))
 
   (add-hook 'mew-summary-mode-hook 'my-mew-mode-hook)
