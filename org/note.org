@@ -1,0 +1,13 @@
+* NOTES
+** Address  <2017-06-15 Thu 15:19>                                        :NOTE:
+
+      | Location |                   Ip | User | Passwd           |
+      |----------+----------------------+------+------------------|
+      | bejing   |          47.94.17.50 | root | Yudong*2017      |
+      | shanghai |       139.196.101.57 | root | YuDong*2017      |
+      | jinan    | 124.126.126.194(202) | root | Elmeast!@#-SO    |
+      | hongkong |         128.1.170.74 | root | 4gOgb1Lbm*mN$9cz |
+      | dongjing |          47.74.15.82 | root | 12位             |
+
+** abc  <2017-06-30 Fri 12:17>                                            :NOTE:
+   file:~/.emacs.d/org/note.org

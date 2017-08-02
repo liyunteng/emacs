@@ -1,0 +1,75 @@
+* FINISHED
+** DONE this is from todo.  <2016-11-29 Tue 00:10>
+   CLOSED: [2016-11-29 Tue 00:18] DEADLINE: <2016-12-01 Thu> SCHEDULED: <2016-11-29 Tue>
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2016-11-29 Tue 00:18]
+   :END:
+** DONE <2016-11-29 Tue 00:15>
+   CLOSED: [2016-11-29 Tue 18:22]
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2016-11-29 Tue 18:22]
+   :END:
+** CANCELLED [2016-11-29 Tue 00:11]
+   CLOSED: [2016-11-29 Tue 00:21]
+   :LOGBOOK:
+   - State "CANCELLED"  from "DELEGATED"  [2016-11-29 Tue 00:21] \\
+     don't want go on.
+   - State "DELEGATED"  from ""           [2016-11-29 Tue 00:19]
+   :END:
+** DONE fix can't setMonitorLayout not in meeting <2016-11-29 Tue 15:09>
+   CLOSED: [2016-11-29 Tue 18:23] DEADLINE: <2016-11-29 Tue> SCHEDULED: <2016-11-29 Tue>
+   :LOGBOOK:
+   - State "DONE"       from "PROJECT"    [2016-11-29 Tue 18:23]
+   - State "PROJECT"    from "DONE"       [2016-11-29 Tue 18:23]
+   - State "DONE"       from "PROJECT"    [2016-11-29 Tue 18:23]
+   :END:
+** DONE [#A] add compose interfaces to c9sdk <2016-11-29 Tue 18:18>
+   CLOSED: [2016-12-04 Sun 20:29]
+   :LOGBOOK:
+   - State "DONE"       from "DONE"       [2016-12-04 Sun 20:29]
+   - State "DONE"       from "TODO"       [2016-12-04 Sun 20:29]
+   :END:
+** DONE [#A] add condition for main assi compose of c9sdk <2016-11-29 Tue 18:18>
+   CLOSED: [2016-12-04 Sun 20:30]
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2016-12-04 Sun 20:30]
+   :END:
+** DONE [#C] update c9service with sdk 20161128 <2016-11-29 Tue 15:12>
+   CLOSED: [2016-11-29 Tue 18:28]
+   :LOGBOOK:
+   CLOCK: [2017-06-30 Fri 10:52]--[2017-06-30 Fri 10:54] =>  0:02
+   - State "DONE"       from "TODO"       [2016-11-29 Tue 18:28]
+   :END:
+** DONE [#B] change ihi-desktop_edu use peer mode <2016-11-29 Tue 18:17> :@work:
+   CLOSED: [2017-06-30 Fri 11:05] DEADLINE: <2016-12-06 Tue> SCHEDULED: <2016-11-29 Tue>
+   :LOGBOOK:
+   - State "DONE"       from ""           [2017-06-30 Fri 11:05]
+   :END:
+** DONE [#C] 教育使用对等模式 <2016-12-06 Tue 18:24>
+   CLOSED: [2017-06-30 Fri 12:20]
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2017-06-30 Fri 12:20]
+   :END:
+** DONE [#C] 修复打包机？？ <2016-12-06 Tue 18:24>
+   CLOSED: [2017-06-30 Fri 12:21]
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2017-06-30 Fri 12:21]
+   :END:
+
+
+* DROP
+** CANCELLED [#C] 发布使用新service的普通版本给柴亚伟 <2016-12-06 Tue 18:23>
+   CLOSED: [2017-07-13 Thu 13:59] DEADLINE: <2016-12-07 Wed> SCHEDULED: <2016-12-07 Wed>
+   :LOGBOOK:
+   - State "CANCELLED"  from "TODO"       [2017-07-13 Thu 13:59]
+   :END:
+** CANCELLED [#C] 发布使用新service的普通版本给柴亚伟 <2016-12-06 Tue 18:23>
+   CLOSED: [2017-07-13 Thu 14:00] DEADLINE: <2016-12-07 Wed> SCHEDULED: <2016-12-07 Wed>
+   :LOGBOOK:
+   - State "CANCELLED"  from "TODO"       [2017-07-13 Thu 14:00]
+   :END:
+** CANCELLED [#A] 流加密的更新 <2016-12-06 Tue 18:23>
+   CLOSED: [2017-07-13 Thu 14:00]
+   :LOGBOOK:
+   - State "CANCELLED"  from "TODO"       [2017-07-13 Thu 14:00]
+   :END:

@@ -33,7 +33,7 @@
 ;; (require 'org-agenda)
 ;; (require 'org-clock)
 
-(setq-default org-directory (expand-file-name "org" my-dir))
+(setq-default org-directory (expand-file-name "org" user-emacs-directory))
 (defvar my-org-inbox-file (expand-file-name "inbox.org" org-directory))
 (defvar my-org-task-file (expand-file-name "task.org" org-directory))
 (defvar my-org-note-file (expand-file-name "note.org" org-directory))

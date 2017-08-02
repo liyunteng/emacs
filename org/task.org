@@ -1,0 +1,22 @@
+* TASKS
+** TODO [#A] va add monitor interface                                    :@work:
+   SCHEDULED: <2017-07-13 Thu> DEADLINE: <2017-07-15 Sat>
+
+   add monitor interface for va to sosp/joyplus
+#+BEGIN_SRC json
+{
+    "rp": 1,
+    "ad": "adHash",
+    "zone": "",
+    "dm": "iPhone6",
+    "i": devid,
+    "ip": "127.0.0.1",
+    "chnl": os-guid,
+    "cp": "cp",
+    "sp": "sp",
+}
+#+END_SRC
+
+#+BEGIN_SRC
+http://106.75.55.63/advapi/v1/monitor?rq=1&ad=f3fb000b05f11d4162044815db68a0cc&zone=fa9edb6280%207a5548e4e4e6c7bae7faed&dm=a&i=123d225fa4bc2d46c3&ip=10.23.24.12&CP=cntv&SP=njt&ex=%ex%
+#+END_SRC

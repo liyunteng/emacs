@@ -1,0 +1,218 @@
+#+TITLE:神器中的神器 org-mode 之入门篇
+* 本文参考
+ * [[http:www.baidu.com][来自百度]]
+ * [[www.cnblogs.com][来自CNBLOG]]
+* 简介
+  Org-mode: Your Life in Plain Text.
+  Org-模式(org-mode)是文本编辑器软件Emacs的一种支持内容分级显示的编辑
+  模式。这种模式支持写to-do列表，日志管理，做笔记，做工程计划或者写网
+  页。比如，todo列表可以给每一件事分别赋上不同的优先级和最后完成期限，
+  每一个todo项目有可以细分为次级todo列表或者核对表，而起每一个项目还都
+  可以分别加标签或者属性。除此之外，org-模式还算可以自动生成某一段时间
+  内的日程表。
+
+  我开始使用主要的被所见所的，只专注与自己的思绪的神奇之处所吸引。至于
+  高手们所说的中哦那种其实都还没有概念，我相信通过不断深入的学习，我也
+  会发出这样的赞叹：太TM的神奇了。
+* 安装及简单配置                                                         :@home:
+  Emacs23之后已经默认包含有org-mode了，但是网上都说新版的比较好，我于
+  是就下了目前最新的稳定版本，解压到site-lisp目录下后，在.emacs中配置
+  如下：
+
+
+  #+BEGIN_SRC emacs-lisp
+(setq load-path (cons "E:/emacs-23.4/site-lisp/org-7.8.11/lisp"
+        load-path))
+(require 'org-install)
+  #+END_SRC
+
+  现在如果你新建一个.org格式的文件，如果在minibuffer中显示Org的字样，
+  就意味着你已经成功了。
+* 简单操作
+** 标题
+   文章中的标题可以通过=#+TITLE:=来设置标题。 如：
+
+   #+BEGIN_SRC
+#+TITLE: 神器中的神器org-mode之入门篇
+   #+END_SRC
+   正文的标题可以通过*,后面要有空格，然后在输入想要的标题就可以了。一
+   个*表示一级，两个*表示二级标题。(最多10个*)。
+** 段落
+   这里与我们想象的很不一样，在win下只要你Enter，就换行成为新的一段了。
+   但是这里要开始新的段落需要回车两次，当你回车一次，当你发布时，只相
+   当于中间有个空格而已。还有一种方法就是在需要空格的地方输入\\。
+   #+BEGIN_SRC
+段落1
+
+段落二\\
+段落三
+   #+END_SRC
+** 字体
+   #+BEGIN_SRC
+*粗体*
+/斜体/
++删除线+
+_下划线_
+下标：H_2 O(这里必须留一个空格要不然2和0都成为小目标，目前还不知道怎么去掉空格)
+上标: E=mc^2
+等宽: =git=
+   #+END_SRC
+   效果为：
+   *粗体*
+   /斜体/
+   +删除线+
+   _下划线_
+   下标： H_2 O(这里必须留一个空格要不然2和0都成为小目标，目前还不知道怎么去掉空格)
+   上标: E=mc^2
+   等宽: =git=
+** 列表
+   1.这里有有序和无序两种，还有一种描述列表
+     - 无序列表以'-'、'+'或者'*'开头
+     - 有序列表以'1.'或者'1)'开头
+     - 描述列表用'::'
+     2.注意事项
+     - 列表符号后面要有空格
+     - 同级别的列表缩进要相同
+     - 如果想要加入同级别的列表，可以M-RET
+     - 空两行之后列表结束，如果空一行执行M-RET，实际上还是输入同级项
+*** 实例:
+    #+BEGIN_EXAMPLE
+    Lord of the Rings
+    My favorite scenes are (in this order)
+    1. The attack of the Rohirrim
+    2. Eowyn's fight with the witch king
+      + this was already my favorite scene in the book
+      + I really like Miranda Otto.
+    3. Peter Jackson being shot by Legolas
+      - on DVD only
+      He makes a really funny face when it happens.
+    ORG-LIST-END-MARKER
+    But in the end, no individual scenes matter but the film as a whole.
+    Important actors in this film are:
+    - Elijah Wood :: He plays Frodo
+    - Sean Austin :: He plays Sam, Frodo's friend.  I still remember
+     him very well from his role as Mikey Walsh in The Goonies.
+    ORG-LIST-END-MARKER
+    #+END_EXAMPLE
+    Lord of the Rings
+    My favorite scenes are (in this order)
+   1. The attack of the Rohirrim
+   2. Eowyn's fight with the witch king
+      + this was already my favorite scene in the book
+      + I really like Miranda Otto.
+   3. Peter Jackson being shot by Legolas
+      - on DVD only
+      He makes a really funny face when it happens.
+   ORG-LIST-END-MARKER
+   But in the end, no individual scenes matter but the film as a whole.
+   Important actors in this film are:
+   - Elijah Wood :: He plays Frodo
+   - Sean Austin :: He plays Sam, Frodo's friend.  I still remember
+                    him very well from his role as Mikey Walsh in The Goonies.
+   ORG-LIST-END-MARKER
+**** 列表/标题快捷键
+ - 折叠
+ | 快捷键  | 说明                                               |
+ | S-TAB  | 循环切换整个文档的大纲状态(折叠，打开下一级，打开全部) |
+ | TAB    | 循环切换光标所在的大纲状态                             |
+ - 大纲或者列表之间移动
+ | 快捷键    | 说明                      |
+ | C-c C-n/p | 移动到下/上一个标题       |
+ | C-c C-f/b | 移动到同一级别的下/上标题 |
+ | C-c C-u   | 移动到上一级标题          |
+ | C-c C-j   | 切换到大纲预览状态                 |
+ - 基于大纲/标题的编辑
+ | 快捷键         | 说明                             |
+ | M-RET          | 插入同一级别的标题      |
+ | M-S-RET        | 插入同一级别的TODO标题  |
+ | M-LEFT/RIGHT   | 将当前标题升/降级        |
+ | M-S-LEFT/RIGHT | 将子树升/降级              |
+ | M-S-UP/DOWN    | 将子树上/下移动           |
+ | C-c *          | 将本行设为标题或者正文 |
+ | C-c C-w        | 将子树或者区域移动到另一个标题处 |
+ | C-c C-x b      | 在心缓冲区显示当前分支           |
+ | C-c /          | 只列出包含搜索结果的大纲，并高亮 |
+*** 潜入元数据
+***** 内容元数据
+      org-mode中有一下几种
+      #+BEGIN_EXAMPLE
+      s       #+beng_src ... #+end_src
+      e       #+begin_example ... #+end_example
+      q       #+begin_quote ... #+end_quote
+      v       #+begin_verse ... #+end_verse
+      c       #+begin_center ... #+end_center
+      l       #+begin_latex ... #+end_latex
+      L       #+latex:
+      h       #+begin_html ... #+end_html
+      H       #+html:
+      a       #+begin_ascii ... #+end_ascii
+      A       #+ascii:
+      i       #+index: line
+      I       #+include: line
+      #+END_EXAMPLE
+
+ + 代码
+ 上面的但字母作为快捷键，如输入一个<s然后tab后就变为
+ #+BEGIN_EXAMPLE
+ #+begin_src
+
+ #+end_src
+ #+END_EXAMPLE
+ 上面的代码我们还可以加入一些参数， 如
+ #+BEGIN_EXAMPLE
+ #+begin_src c -n -t -h 7 -w 40
+ #+end_src
+ c 为添加的语言
+ -n 显示行号
+ -t 清除格式
+ -h 7 设置高度为7
+ -w 40 设置宽度为40
+ #+END_EXAMPLE
+ + 注释
+ 以'#'开头的行都被看作注释，不会被到处取款注释采用如下写法
+ #+BEGIN_EXAMPLE
+ #+BEGIN_COMMENT
+ ...
+ #+END_COMMENT
+ #+END_EXAMPLE
+ + 表格与图片
+ 对于表格和图片，可以在前面增加标题和标签的说明， 以便交叉引用。比如在
+ 表格的前面添加：
+ #+BEGIN_EXAMPLE
+ #+CAPTION: This is the caption for the next table (or link)
+ #+END_EXAMPLE
+ 则在需要的地方可以通过
+ #+BEGIN_EXAMPLE
+ \ref{table1}
+ #+END_EXAMPLE
+ 来引用该表格
+ + 嵌入html
+ 对于到处html以及发布，嵌入html代码就很有用。比如下面的例子使用与格式化
+ 为cnblogs的代码快
+ #+BEGIN_EXAMPLE
+ #+BEGIN_HTML html
+ <div class="cnblogs_Highlighter">
+ <pre class="brush::cpp">
+ int main ()
+ {
+ return 0;
+ }
+ </pre>
+ </div>
+ #+END_EXAMPLE
+ 相当于在cnblogs的网页编辑器中插入"c++"代码
+ + 包含文件
+ 当导出文档时，你可以包含其他文件中的内容。比如，想包含你的".emacs"文件，
+ 你可以用
+ #+BEGIN_CENTER
+ #+INCLUDE: "~/.emacs.d/init.el" src eamcs-lisp
+ #+END_CENTER
+ 可选的第二个和第三个参数是组织方式(例如， "quote", "example", 或者
+ "src"),如果是"src",语言用来格式化内容。 组织方式是可选的，如果不给出，
+ 文本会被当作Org模式的正常处理。用C-c,可以访问包含的文件
+ #+INCLUDE: "~/.emacs.d/org/test.org" src emacs-lisp
+[fn:1]
+
+* Footnotes
+
+[fn:1]
