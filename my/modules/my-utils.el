@@ -230,6 +230,7 @@ Supported properties:
      (when def-key
        `((dolist (val ',def-key)
            (define-key (eval (car val)) (kbd (cdr val)) ',func)))))))
+
 (defvar my-toggles '()
   "List of all declared toggles. The structure of an element is a
 property list (name :func FUNCTION :doc STRING :key STRING).")
@@ -274,13 +275,13 @@ All properties supported by `my--create-key-binding-form' can be
 used.
 
 For example:
-(my|add-toggle company-mode
+\(my|add-toggle company-mode
   :status (not (equal company-mode nil))
   :on (company-mode 1)
   :off (company-mode -1)
   :define-key  (lisp-interaction-mode-map . \"C-x i\")
   :global-key \"C-# i\"
-  )
+  \)
 "
   (declare (indent 1))
   (let* ((wrapper-func (intern (format "my/toggle-%s"
@@ -368,8 +369,8 @@ Example:
                   mode))
        (defun ,func ()
          (setq my-jump-handlers
-               (append ,handlers-list
-                       my-default-jump-handlers))
+			   (append ,handlers-list
+					   my-default-jump-handlers))
          (message "handlers-list: %s" ,handlers-list))
        (add-hook ',mode-hook ',func)
        ;; (with-eval-after-load 'bind-map
@@ -406,6 +407,11 @@ Example:
     (switch-to-buffer-other-window (current-buffer))
     (goto-char pos)
     (my/jump-to-definition)))
+
+(my|define-jump-handlers lisp-interaction-mode elisp-slime-nav-find-elisp-thing-at-point)
+(my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
+(my|define-jump-handlers c-mode semantic-ia-fast-jump find-tag)
+(my|define-jump-handlers c++-mode semantic-ia-fast-jump find-tag)
 
 
 ;; use package
