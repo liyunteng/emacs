@@ -31,11 +31,6 @@
 ;;      `(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant
 ;;      normal :weight normal :height 113 :width normal))))))
 
-(my-require-package 'zenburn-theme)
-(require 'zenburn-theme)
-(defvar my-theme 'zenburn)
-(load-theme my-theme t)
-
 (my-require-package 'smart-mode-line)
 (require 'smart-mode-line)
 (setq sml/no-confirm-load-theme t)

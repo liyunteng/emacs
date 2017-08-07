@@ -92,6 +92,7 @@
     ;; my-qt
     ;; my-header
 
+	my-jump
     my-global-keybind
     my-session
     my-locales

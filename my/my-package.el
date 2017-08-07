@@ -25,13 +25,12 @@
 ;;; Code:
 (defvar my-dir)
 (defvar my-pinned-packages-file (expand-file-name "my-pinned-packages.el" my-dir))
-(when (file-exists-p my-pinned-packages-file)
-  (load my-pinned-packages-file))
+(defvar my-packages-save-dir (expand-file-name "elpa" user-emacs-directory))
 
 (require 'cl)
 (require 'package)
-
-(defvar my-packages-save-dir (expand-file-name "elpa" user-emacs-directory))
+(when (file-exists-p my-pinned-packages-file)
+  (load my-pinned-packages-file))
 
 (setq package-user-dir my-packages-save-dir)
 (package-initialize)
@@ -153,6 +152,77 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
      (unless (package-installed-p package)
        (my|auto-install extension package mode))))
  my-auto-install-alist)
+
+
+;; use package
+(my-require-package 'bind-key)
+(my-require-package 'use-package)
+(require 'use-package)
+(setq use-package-verbose init-file-debug
+      use-package-inject-hooks t)
+
+(defconst my--use-package-add-hook-keywords '(:pre-init
+                                              :post-init
+                                              :pre-config
+                                              :post-config)
+  "Use package `add-abbrev' keywords.")
+(defmacro my|use-package-add-hook (name &rest plist)
+  "Add post hooks to `:init' or `:config' arguments of an existing
+configuration.
+
+In order to use this macro the variable `use-package-inject-hooks'
+must be non-nil.
+
+This is useful in the dotfile to override the default configuration
+of a package.
+
+Usage:
+
+  (my|use-package-add-hook package-name
+     [:keyword [option]]...)
+
+:pre-init      Code to run before the default `:init' configuration.
+:post-init     Code to run after the default `:init' configuration.
+:pre-config    Code to run before the default `:config' configuration.
+:post-config   Code to run after the default `:config' configuration.
+
+In practice the most useful hook is the `:post-config' where you can
+override lazy-loaded settings."
+  (declare (indent 1))
+  (let ((name-symbol (if (stringp name) (intern name) name))
+        (expanded-forms '()))
+    (dolist (keyword my--use-package-add-hook-keywords)
+      (let ((body (my-mplist-get plist keyword)))
+        (when body
+          (let ((hook (intern (format "use-package--%S--%s-hook"
+                                      name-symbol
+                                      (substring (format "%s" keyword) 1)))))
+            (push `(add-hook ',hook (lambda nil ,@body t)) expanded-forms)))))
+    `(progn ,@expanded-forms)))
+
+
+
+;; test
+;; (my|use-package-add-hook multi-term
+;;   :pre-init
+;;   (message "pre-init multi-term")
+;;   :post-init
+;;   (message "post-init multi-term")
+;;   :pre-config
+;;   (message "pre-config multi-term")
+;;   :post-config
+;;   (message "post-config multi-term")
+;;   )
+;; (use-package multi-term
+;;   :defer t
+;;   :init
+;;   (progn
+;;     (message "use-package init multi-term")
+;;     ;; (my-require-package 'multi-term)
+;;     )
+;;   :config
+;;   (message "use-package config multi-term")
+;;   :demand t)
 
 (provide 'my-package)
 ;;; my-package.el ends here

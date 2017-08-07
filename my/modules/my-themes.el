@@ -27,9 +27,11 @@
 (my-require-package 'color-theme-sanityinc-solarized)
 (my-require-package 'color-theme-sanityinc-tomorrow)
 (my-require-package 'monokai-theme)
+(my-require-package 'zenburn-theme)
 (require 'color)
 ;; (require 'color-theme)
 (require 'zenburn-theme)
+(defvar my-theme 'zenburn)
 
 (defvar my-zenburn-override-colors-alist
   '(("zenburn-fg+1"     . "#FFFFFF")
