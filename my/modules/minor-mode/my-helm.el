@@ -56,6 +56,7 @@
       helm-swoop-speed-or-color t
       helm-swoop-split-window-function 'helm-default-display-buffer
       helm-swoop-pre-input-function (lambda () ""))
+(global-set-key (kbd "M-s e") 'helm-swoop)
 
 (defun my/helm-swoop-region-or-symbol ()
   "Call `helm-swoop' with default input."
