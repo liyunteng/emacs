@@ -65,10 +65,6 @@ This is useful when followed by an immediate kill."
   (isearch-exit)
   (goto-char isearch-other-end))
 
-(my-require-package 'swiper)
-(require 'swiper)
-
-(global-set-key (kbd "M-s s") 'swiper)
 ;; DEL during isearch should edit the search string, not jump back to the previous result
 (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 ;; Activate occur easily inside isearch
