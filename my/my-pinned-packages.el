@@ -27,10 +27,12 @@
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (setq package-archives '(
-                         ("melpa" . "http://elpa.emacs-china.org/melpa/")
-                         ("melpa-stable" . "http://elpa.emacs-china.org/melpa-stable/")
-                         ("gnu" . "http://elpa.emacs-china.org/gnu/")
-                         ("org" . "http://elpa.emacs-china.org/org/")))
+                         ("melpa" . "http://mirrors.163.com/elpa/melpa/")
+                         ("melpa-stable" . "http://mirrors.163.com/elpa/melpa-stable/")
+                         ("gnu" . "http://mirrors.163.com/elpa/gnu/")
+                         ("org" . "http://mirrors.163.com/elpa/org/")
+						 ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")
+						 ))
 (add-to-list 'package-pinned-packages
              '(switch-window . "melpa-stable"))
 
