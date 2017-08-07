@@ -180,6 +180,7 @@ Removes the automatic guessing of the initial value based on thing at point."
 (global-set-key (kbd "C-h r") 'helm-info-emacs)
 (global-set-key (kbd "C-h C-l") 'helm-locate-library)
 (global-set-key (kbd "C-h i") 'helm-info)
+(global-set-key (kbd "M-U") 'helm-resume)
 (define-key my-mode-map (kbd "C-c f") 'helm-recentf)
 
 (define-key helm-command-prefix (kbd "o")     'helm-occur)

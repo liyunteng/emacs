@@ -91,7 +91,7 @@
 ;; (global-set-key (kbd "C-c d") 'my/kill-back-to-indentation)
 
 ;; 在当前行上，打开新的一行， M-o在当前行下打开新行
-(global-set-key (kbd "C-o") 'my/open-line-with-reindent)
+;; (global-set-key (kbd "C-o") 'my/open-line-with-reindent)
 
 ;; 删除并格式化
 (global-set-key (kbd "C-M-<backspace>") 'my/kill-back-to-indentation)
