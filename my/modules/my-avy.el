@@ -30,6 +30,7 @@
 (defvar avy-command-prefix)
 (define-prefix-command 'avy-command-prefix)
 (global-set-key (kbd "C-x j") 'avy-command-prefix)
+(define-key avy-command-prefix (kbd "j") 'avy-goto-char)
 (define-key avy-command-prefix (kbd "c") 'avy-goto-char)
 (define-key avy-command-prefix (kbd "w") 'avy-goto-word-1)
 (define-key avy-command-prefix (kbd "s") 'avy-goto-symbol-1)
