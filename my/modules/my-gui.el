@@ -211,5 +211,6 @@ The return value is nil if no font was found, truthy otherwise."
   (xterm-mouse-mode 1) ; Mouse in a terminal (Use shift to paste with middle button)
   (when (fboundp 'mwheel-install)
     (mwheel-install)))
+
 (provide 'my-gui)
 ;;; my-gui.el ends here

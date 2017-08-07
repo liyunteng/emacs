@@ -40,16 +40,16 @@
 
 (diminish 'helm-mode)
 (when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
+  (setq-default helm-google-suggest-use-curl-p t))
 
-;; See https://github.com/bbatsov/prelude/pull/670 for a detailed
-;; discussion of these options.
-(setq helm-split-window-in-side-p           t
-      helm-buffers-fuzzy-matching           t
-      helm-move-to-line-cycle-in-source     t
-      helm-ff-search-library-in-sexp        t
-      helm-ff-file-name-history-use-recentf t)
-
+(setq-default helm-split-window-in-side-p t
+			  helm-buffers-fuzzy-matching t
+              helm-move-to-line-cycle-in-source t
+              helm-ff-search-library-in-sexp t
+			  helm-ff-file-compressed-list t
+			  helm-ff-file-name-history-use-recentf t
+              helm-scroll-amount 8
+              helm-echo-input-in-header-line nil)
 
 (setq helm-swoop-split-with-multiple-windows t
       helm-swoop-split-direction 'split-window-vertically
@@ -125,7 +125,7 @@ Removes the automatic guessing of the initial value based on thing at point."
                       (t (expand-file-name (helm-current-directory))))))
     (set-text-properties 0 (length input) nil input)
     (helm-find-files-1 input)))
-(global-set-key [remap helm-find-files] 'my/helm-find-files)
+;; (global-set-key [remap helm-find-files] 'my/helm-find-files)
 
 (defun my--helm-find-files-edit (candidate)
   "Opens a dired buffer and immediately switches to editable mode."
@@ -146,17 +146,7 @@ Removes the automatic guessing of the initial value based on thing at point."
                    (let ((bg-color (face-background 'default nil)))
                      `(:background ,bg-color :foreground ,bg-color)))
       (setq-local cursor-type nil))))
-
 (add-hook 'helm-minibuffer-set-up-hook 'my--helm-hide-minibuffer-maybe)
-
-(setq-default helm-split-window-in-side-p t
-			  helm-buffers-fuzzy-matching t
-              helm-move-to-line-cycle-in-source t
-              helm-ff-search-library-in-sexp t
-			  helm-ff-file-compressed-list t
-			  helm-ff-file-name-history-use-recentf t
-              helm-scroll-amount 8
-              helm-echo-input-in-header-line nil)
 
 (add-hook 'helm-cleanup-hook 'my--helm-cleanup)
 (after-load 'helm-locate
@@ -226,7 +216,7 @@ Removes the automatic guessing of the initial value based on thing at point."
               (substitute-key-definition 'eshell-list-history 'helm-eshell-history eshell-mode-map)))
 
 (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-(setq projectile-completion-system 'helm)
+(setq-default projectile-completion-system 'helm)
 (helm-descbinds-mode)
 (helm-mode 1)
 

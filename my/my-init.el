@@ -51,12 +51,12 @@
     my-themes
     my-window
 
+    my-edit
     my-isearch
     my-avy
     my-register
     ;; my-ido
     ;; my-ivy
-    my-edit
 
     ;; minor
     my-mode
