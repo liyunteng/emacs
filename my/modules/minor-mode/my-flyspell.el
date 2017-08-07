@@ -3,7 +3,7 @@
 ;; Copyright (C) 2017  liyunteng
 
 ;; Author: liyunteng <li_yunteng@163.com>
-;; Keywords:
+;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

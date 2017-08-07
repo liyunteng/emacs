@@ -42,5 +42,6 @@
 
 ;; fullscreen
 ;; (setq-default magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+
 (provide 'my-magit)
 ;;; my-magit.el ends here

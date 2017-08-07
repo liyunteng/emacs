@@ -1,8 +1,8 @@
 ;;; my-ibuffer.el --- ibuffer                        -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015  liyunteng
+;; Copyright (C) 2017  liyunteng
 
-;; Author: liyunteng;; TODO: enhance ibuffer-fontification-alist <li_yunteng@163.com>
+;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify

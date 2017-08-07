@@ -1,8 +1,8 @@
-;;; my-web.el --- web mode                           -*- lexical-binding: t; -*-
+;;; my-web.el --- web-mode                           -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017
+;; Copyright (C) 2017  liyunteng
 
-;; Author:  <lyt@gentoo>
+;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+
 (my-require-packages '(web-mode))
 (add-to-list 'auto-mode-alist '("\\.xml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))

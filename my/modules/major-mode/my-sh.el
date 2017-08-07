@@ -1,9 +1,9 @@
-;;; my-sh.el --- shell
+;;; my-sh.el --- sh-mode                             -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014  liyunteng
+;; Copyright (C) 2017  liyunteng
 
 ;; Author: liyunteng <li_yunteng@163.com>
-;; Keywords: comm, lisp, lisp
+;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

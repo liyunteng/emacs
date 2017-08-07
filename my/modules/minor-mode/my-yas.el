@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014  liyunteng
 
 ;; Author: liyunteng <li_yunteng@163.com>
-;; Keywords: comm
+;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -151,5 +151,6 @@
 
 ;; (yas-reload-all)
 ;; (yas-minor-mode t)
+
 (provide 'my-yas)
 ;;; my-yas.el ends here

@@ -1,9 +1,9 @@
-;;; my-mew.el ---                                    -*- lexical-binding: t; -*-
+;;; my-mew.el --- mew                                -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  liyunteng
 
 ;; Author: liyunteng <li_yunteng@163.com>
-;; Keywords: abbrev
+;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+
 (my-require-package 'mew)
 
 (setq-default mew-use-cached-passwd t)
@@ -52,5 +53,6 @@
 
   (add-hook 'mew-summary-mode-hook 'my-mew-mode-hook)
   (add-hook 'mew-message-mode-hook 'my-mew-mode-hook))
+
 (provide 'my-mew)
 ;;; my-mew.el ends here

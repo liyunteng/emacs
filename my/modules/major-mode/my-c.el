@@ -1,6 +1,6 @@
-;;; my-c.el --- c
+;;; my-c.el --- c-mode                               -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014  liyunteng
+;; Copyright (C) 2017  liyunteng
 
 ;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp
@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+
 (my-require-package 'xcscope)
 
 (defconst my-kernel-include-path

@@ -1,8 +1,8 @@
-;;; my-mode.el --- my mode                           -*- lexical-binding: t; -*-
+;;; my-mode.el --- my-mode                           -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017
+;; Copyright (C) 2017  liyunteng
 
-;; Author:  <lyt@gentoo>
+;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+
 (my-require-package 'move-text)
 (my-require-package 'imenu-anywhere)
 (my-require-package 'crux)
@@ -140,5 +141,6 @@
 (define-globalized-minor-mode global-my-mode my-mode turn-on-my-mode)
 
 (global-my-mode +1)
+
 (provide 'my-mode)
 ;;; my-mode.el ends here

@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+
 (my-require-package 'multi-term)
 ;; (autoload 'multi-term-next "multi-term" nil)
 

@@ -1,6 +1,6 @@
-;;; my-hideshow.el --- hideshow
+;;; my-hideshow.el --- hideshow                      -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014  liyunteng
+;; Copyright (C) 2017  liyunteng
 
 ;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp

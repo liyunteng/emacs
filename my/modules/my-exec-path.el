@@ -1,8 +1,8 @@
 ;;; my-exec-path.el --- exec path                    -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017
+;; Copyright (C) 2017  liyunteng
 
-;; Author:  <lyt@gentoo>
+;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify

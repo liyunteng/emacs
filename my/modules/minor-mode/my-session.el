@@ -120,5 +120,6 @@
                         (shell-command-history    . 50)
                         tags-file-name
                         tags-table-list)))
+
 (provide 'my-session)
 ;;; my-session.el ends here

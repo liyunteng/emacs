@@ -1,8 +1,8 @@
-;;; my-pinned-packages.el ---                        -*- lexical-binding: t; -*-
+;;; my-pinned-packages.el --- package pinned packages  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017  root
+;; Copyright (C) 2017  liyunteng
 
-;; Author: root <root@gentoo>
+;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (setq package-archives '(
@@ -36,5 +35,5 @@
 (add-to-list 'package-pinned-packages
              '(switch-window . "melpa-stable"))
 
-
+(provide 'my-pinned-packages)
 ;;; my-pinned-packages.el ends here

@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-;; elisp version of try...catch...finally
 
 ;; after-load
 (if (fboundp 'with-eval-after-load)
@@ -34,7 +33,7 @@
     `(eval-after-load ,feature
        '(progn ,@body))))
 
-
+;; elisp version of try...catch...finally
 (defmacro safe-wrap (fn &rest clean-up)
   `(unwind-protect
        (let (retval)

@@ -1,8 +1,8 @@
-;;; my-themes.el --- my themes                       -*- lexical-binding: t; -*-
+;;; my-themes.el --- themes                          -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016  lyt
+;; Copyright (C) 2017  liyunteng
 
-;; Author: lyt <>
+;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify

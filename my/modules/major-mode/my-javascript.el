@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+
 (my-require-package 'js-comint)
 (my-require-package 'skewer-mode)
 (if (not (version< emacs-version "25"))

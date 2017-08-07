@@ -1,8 +1,8 @@
 ;;; my-modules.el --- my modules                     -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016  liyunteng
+;; Copyright (C) 2017  liyunteng
 
-;; Author: liyunteng;;; Code: <li_yunteng@163.com>
+;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify

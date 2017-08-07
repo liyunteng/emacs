@@ -1,8 +1,8 @@
-;;; my-global-keybind.el --- my global key binds     -*- lexical-binding: t; -*-
+;;; my-global-keybind.el --- global keybind          -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016  lyt
+;; Copyright (C) 2017  liyunteng
 
-;; Author: lyt <lyt@lyt-arch>
+;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-
 
 ;;
 
@@ -248,4 +247,4 @@
 (define-key 'help-command (kbd "C-i") 'info-display-manual)
 
 (provide 'my-global-keybind)
-;;; my-global-keybind.el ends `'here
+;;; my-global-keybind.el ends here

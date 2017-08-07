@@ -334,8 +334,5 @@
     (insert ";; Happy hacking " (or user-login-name "") " - Emacs ♥ you!\n\n")
     (current-buffer)))
 
-
-
-
 (provide 'my-lisp)
 ;;; my-lisp.el ends here
