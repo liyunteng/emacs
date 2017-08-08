@@ -73,6 +73,7 @@
                   ("gnus" ((or
                             (mode . message-mode)
                             (mode . mail-mode)
+							(mode . gnus-server-mode)
                             (mode . gnus-group-mode)
                             (mode . gnus-summary-mode)
                             (mode . gnus-article-mode))))

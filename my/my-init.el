@@ -89,6 +89,7 @@
     my-javascript
     my-term
     my-mew
+	my-gnus
     ;; my-qt
     ;; my-header
 
