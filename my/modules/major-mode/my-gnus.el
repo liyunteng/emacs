@@ -25,28 +25,28 @@
 ;;; Code:
 (require 'gnus)
 
-(defvar my-gnus-home "~/Gnus")
-(setq-default gnus-startup-file (expand-file-name "newsrc" my-gnus-home)
-			  gnus-default-directory  my-gnus-home
-			  gnus-home-directory  my-gnus-home
-			  gnus-dribble-directory my-gnus-home
+;; (defvar my-gnus-home "~/Gnus")
+;; (setq-default gnus-startup-file (expand-file-name "newsrc" my-gnus-home)
+;; 			  gnus-default-directory  my-gnus-home
+;; 			  gnus-home-directory  my-gnus-home
+;; 			  gnus-dribble-directory my-gnus-home
 
-			  gnus-directory (expand-file-name "News/" my-gnus-home)
-			  gnus-article-save-directory  gnus-directory
-			  gnus-kill-files-directory (expand-file-name "trash" gnus-directory)
-			  gnus-agent-directory (expand-file-name "agent" gnus-directory)
-			  gnus-cache-directory (expand-file-name "cache" gnus-directory)
-			  gnus-cache-active-file (expand-file-name "active" gnus-cache-directory)
+;; 			  gnus-directory (expand-file-name "News/" my-gnus-home)
+;; 			  gnus-article-save-directory  gnus-directory
+;; 			  gnus-kill-files-directory (expand-file-name "trash" gnus-directory)
+;; 			  gnus-agent-directory (expand-file-name "agent" gnus-directory)
+;; 			  gnus-cache-directory (expand-file-name "cache" gnus-directory)
+;; 			  gnus-cache-active-file (expand-file-name "active" gnus-cache-directory)
 
 
-			  message-directory (expand-file-name "Mail" my-gnus-home)
-			  message-auto-save-directory (expand-file-name "drafts" message-directory)
-			  mail-source-directory (expand-file-name "incoming" message-directory)
+;; 			  message-directory (expand-file-name "Mail" my-gnus-home)
+;; 			  message-auto-save-directory (expand-file-name "drafts" message-directory)
+;; 			  mail-source-directory (expand-file-name "incoming" message-directory)
 
-			  nnml-newsgroups-file (expand-file-name "newsgroup" message-directory)
-			  nnmail-message-id-cache-file (expand-file-name "nnmail-cache" my-gnus-home)
-              mml-default-directory (expand-file-name "Attachment" my-gnus-home)
-			  )
+;; 			  nnml-newsgroups-file (expand-file-name "newsgroup" message-directory)
+;; 			  nnmail-message-id-cache-file (expand-file-name "nnmail-cache" my-gnus-home)
+;;               mml-default-directory (expand-file-name "Attachment" my-gnus-home)
+;; 			  )
 
 ;;
 ;; 关闭默认的archive 这个方法不好控制
@@ -54,12 +54,12 @@
 (setq gnus-message-archive-group nil)
 
 ;; 设置存档目录
-(setq gnus-outgoing-message-group
-	  '(nnml "archive"
-			 (nnml-directory   (expand-file-name "archive" gnus-directory))
-			 (nnml-active-file (expand-file-name "active" nnml-directory))
-			 (nnml-get-new-mail nil)
-			 (nnml-inhibit-expiry t)))
+;; (setq gnus-outgoing-message-group
+;; 	  '(nnml "archive"
+;; 			 (nnml-directory   (expand-file-name "archive" gnus-directory))
+;; 			 (nnml-active-file (expand-file-name "active" nnml-directory))
+;; 			 (nnml-get-new-mail nil)
+;; 			 (nnml-inhibit-expiry t)))
 
 ;;;; 一个老外的例子，可以参考
 ;;;;A function that selects a reasonable group for Gcc'ing this mail.
@@ -81,11 +81,12 @@
 
 ;; 新闻组
 ;;cn99
-(setq nnspool-spool-directory gnus-directory)
-(setq nnspool-lib-dir gnus-directory)
+;; (setq nnspool-spool-directory gnus-directory)
+;; (setq nnspool-lib-dir gnus-directory)
 ;; (setq nnspool-active-file (expand-file-name "active" gnus-directory))
-(setq nnspool-active-file  nil )
-(setq gnus-select-method '(nnspool ""))
+;; (setq nnspool-active-file  nil )
+
+(setq gnus-select-method '(nndoc "gnus-help"))
 ;; (setq gnus-select-method '(nntp "localhost"))
 
 ;;告诉gnus如何存放接收来的邮件，gnus把这个叫做backend，最常用的方式
@@ -99,14 +100,14 @@
 					  (nnimap-stream ssl)
 					  (nnimap-user "li_yunteng")
 					  ))
-;; (add-to-list 'gnus-secondary-select-methods
-;; 			 '(nnimap "streamocean"
-;; 					  (nnimap-address "imap.163.qiye.com")
-;; 					  (nnimap-server-port "imaps")
-;; 					  (nnimap-stream ssl)
-;; 					  (nnimap-user "liyunteng@streamocean.com")))
+(add-to-list 'gnus-secondary-select-methods
+			 '(nnimap "streamocean"
+					  (nnimap-address "imap.qiye.163.com")
+					  (nnimap-server-port "imaps")
+					  (nnimap-stream ssl)
+					  (nnimap-user "liyunteng@streamocean.com")))
 (add-to-list 'gnus-secondary-select-methods '(nntp "news.newsfan.net"))
-(add-to-list 'gnus-secondary-select-methods '(nnml "mails"))
+;; (add-to-list 'gnus-secondary-select-methods '(nnml "mails"))
 
 ;;首先我们设置POP3服务器：
 ;; Gmail
@@ -138,16 +139,17 @@
 (require 'smtpmail)
 (setq message-send-mail-function 'smtpmail-send-it
 	  send-mail-function 'smtpmail-send-it
-	  smtpmail-smtp-server "smtp.163.com"
-	  smtpmail-stream-type 'ssl
-	  smtpmail-smtp-service 994		;ssl 994/465
-	  smtpmail-smtp-user "li_yunteng"
+	  ;; smtpmail-smtp-server "smtp.163.com"
+	  ;; smtpmail-stream-type 'ssl
+	  ;; smtpmail-smtp-service 994		;ssl 994/465
+	  ;; smtpmail-smtp-user "li_yunteng"
 
+	  user-mail-address "liyunteng@streamocean.com"
+	  smtpmail-smtp-server "smtp.qiye.163.com"
+	  smtpmail-stream-type 'starttls
+	  smtpmail-smtp-service 25		;ssl 994/465
+	  smtpmail-smtp-user "liyunteng@streamocean.com"
 
-	  ;; smtpmail-smtp-server "smtp.qiye.163.com"
-	  ;; smtpmail-stream-type 'plain
-	  ;; smtpmail-smtp-service 25		;ssl 994/465
-	  ;; smtpmail-smtp-user "liyunteng@streamocean.com"
 	  ;; smtpmail-local-domain "localhost"
 	  ;; smtpmail-sendto-domain "smtp.qiye.163.com"
 	  ;; smtpmail-debug-info t
@@ -182,15 +184,16 @@
 ;;(gnus-agentize)                                   ;旧格式，已废弃！
 (setq gnus-agent t)                                 ;开启代理功能, 以支持离线浏览
 (setq gnus-inhibit-startup-message t)               ;关闭启动时的画面
-;; (setq gnus-novice-user nil)                         ;关闭新手设置, 不进行确认
-;; (setq gnus-expert-user nil)                           ;不询问用户
+(setq gnus-novice-user nil)                         ;关闭新手设置, 不进行确认
+(setq gnus-expert-user t)                           ;不询问用户
 (setq gnus-show-threads t)                          ;显示邮件线索
 (setq gnus-interactive-exit nil)                    ;退出时不进行交互式询问
-(setq gnus-use-dribble-file nil)                    ;不创建恢复文件
-(setq gnus-always-read-dribble-file nil)            ;不读取恢复文件
+(setq gnus-use-dribble-file t)                      ;不创建恢复文件
+(setq gnus-always-read-dribble-file t)              ;不读取恢复文件
 (setq gnus-asynchronous t)                          ;异步操作
 (setq gnus-large-newsgroup 100)                     ;设置大容量的新闻组默认显示的大小
 (setq gnus-large-ephemeral-newsgroup nil)           ;和上面的变量一样, 只不过对于短暂的新闻组
+(setq gnus-suppress-duplicates t)
 (setq gnus-summary-ignore-duplicates t)             ;忽略具有相同ID的消息
 (setq gnus-treat-fill-long-lines t)                 ;如果有很长的行, 不提示
 (setq message-confirm-send t)                       ;防止误发邮件, 发邮件前需要确认
@@ -201,18 +204,23 @@
 (setq nnmairix-allowfast-default t)                 ;加快进入搜索结果的组
 (setq gnus-summary-display-while-building 100)       ;
 
+(setq gnus-summary-line-format "%4P %U%R%z%O %{%5k%} %{%14&user-date;%}   %{%-20,20n%} %{%ua%} %B %(%I%-60,60s%)\n")
+
 ;;
 ;; 显示设置
 ;;
 ;; (setq mm-text-html-renderer 'w3m)                     ;用W3M显示HTML格式的邮件
-(setq mm-text-html-renderer 'gnus-w3m)
-(setq mm-inline-large-images t)                       ;显示内置图片
-;; Inline images?
-(setq mm-attachment-override-types '("image/.*"))
-
+(after-load 'mm-decode
+  (setq mm-text-html-renderer 'gnus-w3m)
+  (setq mm-inline-large-images t)                       ;显示内置图片
+  ;; Inline images?
+  (setq mm-attachment-override-types '("image/.*"))
+  (add-to-list 'mm-discouraged-alternatives "text/html")
+  (add-to-list 'mm-discouraged-alternatives "text/richtext")
+  )
 ;; 概要显示设置
 (setq gnus-summary-gather-subject-limit 'fuzzy) ;聚集题目用模糊算法
-(setq gnus-summary-line-format "%4P %U%R%z%O %{%5k%} %{%14&user-date;%}   %{%-20,20n%} %{%ua%} %B %(%I%-60,60s%)\n")
+
 
 (defun gnus-user-format-function-a (header) ;用户的格式函数 `%ua'
   (let ((myself (concat "<" "my-mail" ">"))
@@ -387,12 +395,16 @@
 		((zerop unread) . my-group-face-4)
 		(t . my-group-face-5)))
 
-;; (setq gnus-group-line-format
-;; 	  "%M\%S\%p\%P\%5y: %(%-40,40g%) %ud\n")
-(setq gnus-topic-topology '(("Gnus" visible)
-							(("Mail" visible)
-							 ("Emacs" visible))
-							))
+(setq gnus-group-line-format
+	  "%M\%S\%p\%P\%5y: %B%(%-40,40g%) %d\n")
+;; (setq-default gnus-topic-topology'(("Mail" visible)
+;; 								   ("Emacs" visible)
+;; 								   (("Misc" visible))))
+;; (setq-default gnus-topic-alist '(("nnimap+163:已发送"
+;; 								  "nnimap+163:INBOX"
+;; 								  "nnimap+streamocean:INBOX"
+;; 								  "nnimap+streamocean:已发送"
+;; 								  "nndraft:drafts" "Mail")))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 (add-hook 'mail-citation-hook 'sc-cite-original)
 
@@ -470,14 +482,14 @@
 ;;cache中保存起来，即使服务器那边删除了帖子，也没关系了。如
 ;;果不想要了，用`Meta-*'就可以把帖子从缓存中删掉。
 ;;
-(setq gnus-use-cache 'passive)
+;; (setq gnus-use-cache 'passive)
 
 ;;
 ;;中文！中文！永远都是头痛的事儿...Emacs23终于解决的这个问题 :-)
 ;;
 ;; 设置编码，这个是改变了整个emacs的编码！太恐怖了
 ;; (set-language-environment 'Chinese-GBK)
-(setq gnus-default-charset 'gbk)
+(setq gnus-default-charset 'utf-8)
 (add-to-list 'gnus-group-charset-alist
 			 '("\\(^\\|:\\)cn\\>\\|\\<chinese\\>" gbk))
 (setq gnus-summary-show-article-charset-alist
