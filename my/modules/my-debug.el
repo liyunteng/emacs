@@ -179,13 +179,13 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 ;;         )
 ;;       )))
 
+(when my-debug (my-debug-init))
 
 (defun my-show-init-time ()
   "Show init time."
   (message "Emacs startup time: %.2fms"
            (my-time-subtract-millis after-init-time before-init-time)))
 
-(when my-debug (my-debug-init))
 (add-hook 'after-init-hook
           (lambda () (run-at-time 0 nil 'my-show-init-time)))
 

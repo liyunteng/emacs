@@ -24,16 +24,17 @@
 
 ;;; Code:
 
-(require 'desktop)
-
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
-(setq desktop-path (list my-cache-dir))
-(setq desktop-auto-save-timeout 600)
-(setq desktop-missing-file-warning t)
-(setq desktop-restore-in-current-display t)
-(setq desktop-save 'ask-if-new)
-(setq-default desktop-buffers-not-to-save "\\` \\|^*my-debug*$")
-(desktop-save-mode +1)
+(setq-default desktop-path (list my-cache-dir))
+(setq-default desktop-auto-save-timeout 600)
+(setq-default desktop-missing-file-warning t)
+(setq-default desktop-restore-in-current-display t)
+(setq-default desktop-save 'ask-if-new)
+
+(require 'desktop)
+;; fix if no deskop-file desktop-read will close all window
+(unless (or (not (desktop-full-file-name)) my-debug)
+  (desktop-save-mode +1))
 
 (defadvice desktop-read (around time-restore activate)
   (let ((start-time (current-time)))

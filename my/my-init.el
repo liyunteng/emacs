@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-
 (require 'my-debug)
 (require 'my-package)
 (setq debug-on-error nil)
@@ -88,7 +87,7 @@
     my-syslog
     my-javascript
     my-term
-    my-mew
+    ;; my-mew
 	my-gnus
     ;; my-qt
     ;; my-header
