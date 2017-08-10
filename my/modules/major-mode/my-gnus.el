@@ -106,7 +106,7 @@
 					  (nnimap-server-port "imaps")
 					  (nnimap-stream ssl)
 					  (nnimap-user "liyunteng@streamocean.com")))
-(add-to-list 'gnus-secondary-select-methods '(nntp "news.newsfan.net"))
+;; (add-to-list 'gnus-secondary-select-methods '(nntp "news.newsfan.net"))
 ;; (add-to-list 'gnus-secondary-select-methods '(nnml "mails"))
 
 ;;首先我们设置POP3服务器：
@@ -162,20 +162,21 @@
 	  nnmail-crosspost nil ; 同一个邮件不要到多个组
 	  nnmail-split-fancy-match-partial-words t ; 单词部分匹配也算成功匹配
 	  nnmail-split-methods 'nnmail-split-fancy ; 这个分类方法比较灵活
-	  nnmail-split-fancy
-	  '(|	; 根据 mailing list 分类
+	  nnmail-split-fancy ; 根据 mailing list 分类
+	  '(|
 	  	(any ".*@streamocean.com" "streamocean")
 	  	(any ".*@163.com" "163")
 	  	(any ".*@gmail.com" "gmail")
-	  	(to "liyunteng@streamocean.com\\|li_yunteng@163.com" "To-me") ;;这个似乎没起作用？！
-	  	"other")
+		(from "liyunteng@streamocean.com\\|liyunteng@163.com" "From-me")
+		(to "liyunteng@streamocean.com\\|li_yunteng@163.com" "To-me")
+	  	"misc")
 	  )
 ;; 这里或许是 junk 了
 
 ;;
 ;;总是显示mail组，如何显示所有组呢？
 ;;
-(setq gnus-permanently-visible-groups '"nn*")
+(setq gnus-permanently-visible-groups '"nnimap*")
 
 
 ;;--------------------------------------------------------------------------------------
@@ -315,12 +316,19 @@
 				 (string-match myself message-id)))
 		"X" "│")))
 
-(setq gnus-user-date-format-alist                ;用户的格式列表 `user-date'
-	  '(((gnus-seconds-today) . "TD %H:%M")   ;当天
-		(604800 . "W%w %H:%M")                ;七天之内
-		((gnus-seconds-month) . "M%d %H:%M")      ;当月
-		((gnus-seconds-year) . "%m-%d %H:%M")    ;今年
-		(t . "%y-%m-%d %H:%M")))
+(defun gnus-seconds-week ()
+  "Return the number of seconds passed this month."
+  (let ((now (decode-time (current-time))))
+    (+ (car now) (* (car (cdr now)) 60) (* (car (nthcdr 2 now)) 3600)
+       (* (- (car (nthcdr 6 now)) 1) 3600 24))))
+
+(setq gnus-user-date-format-alist                     ;用户的格式列表 `user-date'
+	  '(((gnus-seconds-today) . "今天 %H:%M")         ;当天
+		((+ (gnus-seconds-today) 86400) . "昨天 %H:%M")
+		((gnus-seconds-week) . "星期%w %H:%M")	      ;七天之内
+		((gnus-seconds-month) . "%m/%d %H:%M")        ;当月
+		((gnus-seconds-year) . "%m/%d %H:%M")         ;今年
+		(t . "%y/%m/%d %H:%M")))
 
 ;;其他
 ;; 线程的可视化外观, `%B'
@@ -498,18 +506,18 @@
 		(5 . gn2312)
 		(6 . utf-7)))
 
-(setq gnus-group-name-charset-group-alist
-	  '(("\\.com\\.cn:" . gbk)
-		("news\\.newsfan\\.net" . gbk)))
+;; (setq gnus-group-name-charset-group-alist
+;; 	  '(("\\.com\\.cn:" . gbk)
+;; 		("news\\.newsfan\\.net" . gbk)))
 
-(setq gnus-group-name-charset-method-alist
-	  '(((nntp "news.cn99.net") . gbk)))
+;; (setq gnus-group-name-charset-method-alist
+;; 	  '(((nntp "news.cn99.net") . gbk)))
 
-(setq gnus-group-name-charset-method-alist
-	  '(((nntp "news.newsfan.net") . gbk)))
+;; (setq gnus-group-name-charset-method-alist
+;; 	  '(((nntp "news.newsfan.net") . gbk)))
 
-(setq gnus-newsgroup-ignored-charsets
-	  '(unknown-8bit x-unknown x-gbk gb18030))
+;; (setq gnus-newsgroup-ignored-charsets
+;; 	  '(unknown-8bit x-unknown x-gbk gb18030))
 
 ;; 显示编码格式
 (add-hook 'gnus-startup-hook
@@ -521,48 +529,48 @@
 						   gnus-visible-headers))))
 
 ;;设置发送风格
-;; (setq gnus-posting-styles
-;; 	  '(
-;; 		;; all
-;; 		(".*"
-;; 		 (name "liyunteng")
-;; 		 (address "li_yunteng@163.com")
-;; 		 ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
-;; 		 (organization "StreamOcean")
-;; 		 (signature "
-;; oooOOOOoo...
-;; >  Life is too short ! ...")
-;; 		 (eval (setq mm-coding-system-priorities
-;; 					 '(iso-8859-1 gb2312 gbk gb18030 utf-8)))
-;; 		 ;;(body "")
-;; 		 )
-;; 		;;cn.bbs.com
-;; 		("^cn\\.bbs\\.comp"
-;; 		 (name "liyunteng")
-;; 		 (address "li_yunteng@163.com")
-;; 		 ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
-;; 		 (organization "lyt")
-;; 		 (signature "
-;; oooOOOOoo...
-;; >  Life is too short ! ...")
-;; 		 (eval (setq mm-coding-system-priorities
-;; 					 '(iso-8859-1 gb2312 gbk gb18030 utf-8)))
-;; 		 ;;(body "")
-;; 		 )
-;; 		;;tw
-;; 		("^tw\\.comp"
-;; 		 (name "abc")
-;; 		 ;; (address "yourname@gmail.com")
-;; 		 ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
-;; 		 (organization "abc")
-;; 		 (signature "
-;; oooOOOOoo...
-;; >  Life is too short ! ...")
-;; 		 (eval (setq mm-coding-system-priorities
-;; 					 '(iso-8859-1 big5 utf-8)))
-;; 		 ;;(body "")
-;; 		 )
-;; 		))
+(setq gnus-posting-styles
+	  '(
+		;; all
+		(".*"
+		 (name "liyunteng")
+		 (address "li_yunteng@163.com")
+		 ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
+		 (organization "StreamOcean")
+		 (signature "
+oooOOOOoo...
+>  Life is too short ! ...")
+		 (eval (setq mm-coding-system-priorities
+					 '(utf-8 iso-8859-1 gb2312 gbk gb18030)))
+		 ;;(body "")
+		 )
+		;;cn.bbs.com
+		("^cn\\.bbs\\.comp"
+		 (name "liyunteng")
+		 (address "li_yunteng@163.com")
+		 ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
+		 (organization "lyt")
+		 (signature "
+oooOOOOoo...
+>  Life is too short ! ...")
+		 (eval (setq mm-coding-system-priorities
+					 '(utf-8 iso-8859-1 gb2312 gbk gb18030)))
+		 ;;(body "")
+		 )
+		;;tw
+		("^tw\\.comp"
+		 (name "abc")
+		 ;; (address "yourname@gmail.com")
+		 ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
+		 (organization "abc")
+		 (signature "
+oooOOOOoo...
+>  Life is too short ! ...")
+		 (eval (setq mm-coding-system-priorities
+					 '(utf-8 iso-8859-1 big5 utf-8)))
+		 ;;(body "")
+		 )
+		))
 
 
 ;;
