@@ -54,12 +54,12 @@
 (setq gnus-message-archive-group nil)
 
 ;; 设置存档目录
-;; (setq gnus-outgoing-message-group
-;; 	  '(nnml "archive"
-;; 			 (nnml-directory   (expand-file-name "archive" gnus-directory))
-;; 			 (nnml-active-file (expand-file-name "active" nnml-directory))
-;; 			 (nnml-get-new-mail nil)
-;; 			 (nnml-inhibit-expiry t)))
+(setq gnus-outgoing-message-group
+	  '(nnml "archive"
+			 (nnml-directory   (expand-file-name "archive" gnus-directory))
+			 (nnml-active-file (expand-file-name "active" nnml-directory))
+			 (nnml-get-new-mail nil)
+			 (nnml-inhibit-expiry t)))
 
 ;;;; 一个老外的例子，可以参考
 ;;;;A function that selects a reasonable group for Gcc'ing this mail.
@@ -202,9 +202,7 @@
 (setq message-syntax-checks '((sender . disabled))) ;语法检查
 (setq nnmail-expiry-wait 7)                         ;邮件自动删除的期限 (单位: 天)
 (setq nnmairix-allowfast-default t)                 ;加快进入搜索结果的组
-(setq gnus-summary-display-while-building 100)       ;
-
-(setq gnus-summary-line-format "%4P %U%R%z%O %{%5k%} %{%14&user-date;%}   %{%-20,20n%} %{%ua%} %B %(%I%-60,60s%)\n")
+(setq gnus-summary-display-while-building t)       ;
 
 ;;
 ;; 显示设置
@@ -218,38 +216,6 @@
   (add-to-list 'mm-discouraged-alternatives "text/html")
   (add-to-list 'mm-discouraged-alternatives "text/richtext")
   )
-;; 概要显示设置
-(setq gnus-summary-gather-subject-limit 'fuzzy) ;聚集题目用模糊算法
-
-
-(defun gnus-user-format-function-a (header) ;用户的格式函数 `%ua'
-  (let ((myself (concat "<" "my-mail" ">"))
-		(references (mail-header-references header))
-		(message-id (mail-header-id header)))
-	(if (or (and (stringp references)
-				 (string-match myself references))
-			(and (stringp message-id)
-				 (string-match myself message-id)))
-		"X" "│")))
-
-(setq gnus-user-date-format-alist             ;用户的格式列表 `user-date'
-	  '(((gnus-seconds-today) . "TD %H:%M")   ;当天
-		(604800 . "W%w %H:%M")                ;七天之内
-		((gnus-seconds-month) . "%d %H:%M")   ;当月
-		((gnus-seconds-year) . "%m-%d %H:%M") ;今年
-		(t . "%y-%m-%d %H:%M")))
-
-;;其他
-;; 线程的可视化外观, `%B'
-(setq gnus-summary-same-subject "")
-(setq gnus-sum-thread-tree-indent "    ")
-(setq gnus-sum-thread-tree-single-indent "◎ ")
-(setq gnus-sum-thread-tree-root "● ")
-(setq gnus-sum-thread-tree-false-root "☆")
-(setq gnus-sum-thread-tree-vertical "│")
-(setq gnus-sum-thread-tree-leaf-with-other "├─► ")
-(setq gnus-sum-thread-tree-single-leaf "╰─► ")
-
 
 ;; 用 Supercite 显示多种多样的引文形式
 ;; (setq sc-attrib-selection-list nil
@@ -289,16 +255,6 @@
 (add-hook 'gnus-switch-on-after-hook 'gnus-group-first-unread-group) ;gnus切换时
 (add-hook 'gnus-summary-exit-hook 'gnus-group-first-unread-group) ;退出Summary时
 
-;; 自动更新新消息，功能不错，但在我的机器上会很慢...
-;; (add-hook 'gnus-summary-exit-hook 'gnus-notify+)        ;退出summary模式后
-;; (add-hook 'gnus-group-catchup-group-hook 'gnus-notify+) ;当清理当前组后
-;; (add-hook 'mail-notify-pre-hook 'gnus-notify+)          ;更新邮件时
-
-;; 斑纹化
-(setq gnus-summary-stripe-regexp        ;设置斑纹化匹配的正则表达式
-	  (concat "^[^"
-			  gnus-sum-thread-tree-vertical
-			  "]*"))
 
 ;;------------------------------------------------------------------------------------
 ;; 其他的一些设置
@@ -322,18 +278,19 @@
 (gnus-add-configuration
  '(article
    (horizontal 1.0
-			   (vertical 35
-						 (group 1.0))
+			   ;; (vertical 35
+			   ;; 			 (group 1.0))
 			   (vertical 1.0
 						 (summary 0.35 point)
 						 (article 1.0)))))
-(gnus-add-configuration
- '(summary
-   (horizontal 1.0
-			   (vertical 35
-						 (group 1.0))
-			   (vertical 1.0
-						 (summary 1.0 point)))))
+;; (gnus-add-configuration
+;;  '(summary
+;;    (horizontal 1.0
+;; 			   (vertical 35
+;; 			   			 (group 1.0))
+;; 			   (vertical 1.0
+;; 						 (summary 1.0 point)))))
+
 
 ;;
 ;;不喜欢 Summary buffer 的样子，如何调整？
@@ -347,6 +304,47 @@
 ;;
 
 ;; (setq gnus-summary-line-format ":%U%R %B %s %-60=|%4L |%-20,20f |%&user-date; \n")
+(setq gnus-summary-line-format "%4P %U%R%z%O %{%5k%} %{%14&user-date;%}   %{%-20,20n%} %{%ua%} %B %(%I%-60,60s%)\n")
+(defun gnus-user-format-function-a (header) ;用户的格式函数 `%ua'
+  (let ((myself (concat "<" user-mail-address ">"))
+		(references (mail-header-references header))
+		(message-id (mail-header-id header)))
+	(if (or (and (stringp references)
+				 (string-match myself references))
+			(and (stringp message-id)
+				 (string-match myself message-id)))
+		"X" "│")))
+
+(setq gnus-user-date-format-alist                ;用户的格式列表 `user-date'
+	  '(((gnus-seconds-today) . "TD %H:%M")   ;当天
+		(604800 . "W%w %H:%M")                ;七天之内
+		((gnus-seconds-month) . "M%d %H:%M")      ;当月
+		((gnus-seconds-year) . "%m-%d %H:%M")    ;今年
+		(t . "%y-%m-%d %H:%M")))
+
+;;其他
+;; 线程的可视化外观, `%B'
+(setq gnus-summary-same-subject "")
+(setq gnus-sum-thread-tree-indent "    ")
+(setq gnus-sum-thread-tree-single-indent "◎ ")
+(setq gnus-sum-thread-tree-root "● ")
+(setq gnus-sum-thread-tree-false-root "☆")
+(setq gnus-sum-thread-tree-vertical "│")
+(setq gnus-sum-thread-tree-leaf-with-other "├─► ")
+(setq gnus-sum-thread-tree-single-leaf "╰─► ")
+;; 概要显示设置
+(setq gnus-summary-gather-subject-limit 'fuzzy) ;聚集题目用模糊算法
+
+;; 自动更新新消息，功能不错，但在我的机器上会很慢...
+;; (add-hook 'gnus-summary-exit-hook 'gnus-notify+)        ;退出summary模式后
+;; (add-hook 'gnus-group-catchup-group-hook 'gnus-notify+) ;当清理当前组后
+;; (add-hook 'mail-notify-pre-hook 'gnus-notify+)          ;更新邮件时
+
+;; 斑纹化
+(setq gnus-summary-stripe-regexp        ;设置斑纹化匹配的正则表达式
+	  (concat "^[^"
+			  gnus-sum-thread-tree-vertical
+			  "]*"))
 
 ;;Article Buffer设置
 ;;设定要显示的头消息格式
