@@ -7,7 +7,7 @@
 ;; Created: 2003-03-17 18:50:12 Harley Gorrell
 ;; Version: 2.2
 ;; Package-Version: 20170107.1517
-;; Last-Updated: 2017/07/24 02:50:17
+;; Last-Updated: 2017/08/10 15:33:59
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/syslog-mode
 ;; Keywords: unix
@@ -759,7 +759,7 @@ The ARG and SEARCH-STRING arguments are the same as for `whois'."
     ("[[:digit:]]\\{1,3\\}\\.[[:digit:]]\\{1,3\\}\\.[[:digit:]]\\{1,3\\}\\.[[:digit:]]\\{1,3\\}" 0 'syslog-ip append)
 
     ;; URL
-    ("[[:alpha:]]\\{1,4\\}://[[:graph:]]*" 0 'syslog-ip append)
+    ;; ("[[:alpha:]]\\{1,4\\}://[[:graph:]]*" 0 'syslog-ip append)
 
     ;; ("\"[^\"]*\"" . 'font-lock-string-face)
     ;; ("'[^']*'" . 'font-lock-string-face)

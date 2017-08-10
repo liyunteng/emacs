@@ -26,12 +26,22 @@
 
 ;; syslog-mode
 (my-require-package 'hide-lines)
-(unless (package-installed-p 'syslog-mode)
-  (package-install 'syslog-mode))
+;; (unless (package-installed-p 'syslog-mode)
+;;   (package-install 'syslog-mode))
 
+(autoload 'syslog-mode "syslog-mode")
 (add-to-list
  'auto-mode-alist
  '("\\(messages\\(\\.[0-9]\\)?\\|SYSLOG\\|dmesg\\|\\.log.*\\)\\'" . syslog-mode))
+
+(defun my-enable-goto-address-mode ()
+  "Enable goto address mode."
+  (goto-address-mode t))
+
+(after-load 'syslog-mode
+  (after-load 'goto-addr
+	(add-hook 'syslog-mode-hook 'my-enable-goto-address-mode)
+	))
 
 (provide 'my-syslog)
 ;;; my-syslog.el ends here

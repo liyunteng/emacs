@@ -52,7 +52,7 @@
 (my-add-subfolders-to-load-path my-dir)
 ;;(my-add-subfolders-to-load-path my-modules-dir)
 ;;(my-add-subfolders-to-load-path my-libs-dir)
-;;(my-add-subfolders-to-load-path my-forks-dir)
+(my-add-subfolders-to-load-path my-forks-dir)
 
 ;; (when (file-exists-p my-personal-dir)
 ;;  (my-add-subfolders-to-load-path my-personal-dir))
