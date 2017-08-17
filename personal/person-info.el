@@ -29,6 +29,9 @@
 ;; 设置个人邮箱
 (setq user-mail-address "li_yunteng@163.com")
 
+(unless (getenv "ORGANIZATION")
+  (setenv "ORGANIZATION" "StreamOcean"))
+
 ;; gnus
 ;; imap
 (with-eval-after-load 'gnus

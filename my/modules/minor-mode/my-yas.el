@@ -28,10 +28,11 @@
 (my-require-package 'dropdown-list)
 (require 'yasnippet)
 
-(defvar my-yas-dir (expand-file-name "yasnippets" my-dir))
-(if (and (file-exists-p my-yas-dir)
-         (not (member my-yas-dir yas-snippet-dirs)))
-    (add-to-list 'yas-snippet-dirs my-yas-dir))
+;; (defvar my-yas-dir (expand-file-name "snippets" user-emacs-directory))
+;; (if (and (file-exists-p my-yas-dir)
+;;          (not (member my-yas-dir yas-snippet-dirs)))
+;;     (add-to-list 'yas-snippet-dirs my-yas-dir t))
+(setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))
 (yas-reload-all)
 
 ;; (yas-global-mode t)

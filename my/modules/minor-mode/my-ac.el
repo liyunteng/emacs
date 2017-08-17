@@ -75,6 +75,7 @@
 
 (define-key company-mode-map (kbd "C-M-/") 'company-other-backend)
 (define-key company-mode-map (kbd "C-M-?") 'company-begin-backend)
+(define-key company-mode-map (kbd "M-SPC") 'company-other-backend)
 (define-key company-mode-map (kbd "M-/") 'hippie-expand)
 (define-key company-mode-map (kbd "TAB") 'company-indent-or-complete-common)
 (define-key company-active-map (kbd "TAB") 'company-complete-common)

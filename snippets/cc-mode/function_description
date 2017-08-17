@@ -4,7 +4,6 @@
 #key: docf
 #group: doxygen
 # --
-
 /**
  *  @brief ${1:function description}
  *  @param ${2:param}

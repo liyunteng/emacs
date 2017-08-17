@@ -2,4 +2,4 @@
 # name: compile
 # key: compile
 # --
-`(concat comment-start)`-*- compile-command: "${1:gcc -Wall -o ${2:dest} ${3:file}}" -*-
+`comment-start`-*- compile-command: "${1:gcc -Wall -o ${2:dest} ${3:file}}" -*-`comment-end`
