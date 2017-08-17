@@ -332,6 +332,7 @@ clang++ -Wall编译"
   (auto-fill-mode -1)
   ;; (c-toggle-auto-newline t)
   (hide-ifdef-mode t)
+  (hide-ifdefs)
   ;; (setq hide-ifdef-hiding t)
   ;; (setq hide-ifdef-shadow t)
   ;; (helm-cscope-mode t)
