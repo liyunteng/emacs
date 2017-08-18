@@ -127,7 +127,7 @@
 (global-set-key (kbd "C-x 3") 'my/split-window-horizontally-then-switch)
 (global-set-key (kbd "C-x |") 'my/split-window-horizontally-instead)
 (global-set-key (kbd "C-x _") 'my/split-window-vertically-instead)
-(global-set-key (kbd "C-x <down>") 'my/toggle-current-window-dedication)
+(global-set-key (kbd "C-x C-n") 'my/toggle-current-window-dedication)
 (global-set-key [mouse-4] (lambda () (interactive) (scroll-down 1)))
 (global-set-key [mouse-5] (lambda () (interactive) (scroll-up 1)))
 
