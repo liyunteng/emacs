@@ -37,10 +37,12 @@
 (setq-default x-select-enable-clipboard t)
 
 ;; smooth scrolling
-(setq scroll-margin 0
+(setq scroll-margin 3
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
 
+;; default major mode
+(setq-default default-major-mode 'text-mode)
 
 ;; 光标靠近鼠标指针时，鼠标指针自动让开
 (mouse-avoidance-mode 'animate)
@@ -75,6 +77,8 @@
 
 ;; 显示80行就换行
 (setq-default default-fill-column 80)
+(setq-default adaptive-fill-regexp
+			  "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
 
 ;; Show column number in mode line
 (setq column-number-mode t)
@@ -128,6 +132,7 @@
 
 ;; Single space between sentences is more widespread than double
 (setq-default sentence-end-double-space nil)
+(setq-default sentence-end "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*")
 
 ;; don't let the cursor go into minibuffer prompt
 (setq minibuffer-prompt-properties

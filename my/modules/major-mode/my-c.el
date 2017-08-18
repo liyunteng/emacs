@@ -268,7 +268,7 @@ clang++ -Wall编译"
 ;;   (c-mode)
 ;;   (c-set-style "K&R")
 ;;   (setq tab-width 8)
-;;   (setq indent-tabs-mode t)
+;;   (setq indent-tabs-mode nil)
 ;;   (setq c-basic-offset 8))
 ;; (setq auto-mode-alist (cons '("/usr/src/linux.*/.*\\.[ch]$" . linux-c-mode)
 ;;                             auto-mode-alist))

@@ -25,7 +25,8 @@
 ;;; Code:
 
 (setq-default tramp-verbose 0)
-(setq-default tramp-default-method "ssh")
+;; (setq-default tramp-default-method "ssh")
+(setq-default tramp-default-method "rcp")
 (setq-default tramp-default-user "root")
 (setq-default tramp-default-host "127.0.0.1")
 
