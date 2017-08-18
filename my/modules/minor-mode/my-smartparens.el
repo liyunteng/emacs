@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-
 (after-load 'smartparens
   (require 'smartparens-config)
   ;; (sp-use-paredit-bindings)
@@ -33,17 +32,19 @@
   (sp-use-smartparens-bindings)
   (setq blink-matching-paren nil)
 
+
   (setq sp-show-pair-delay 0.2
-        sp-show-pair-form-inside t
-        sp-cancel-autoskip-on-backward-movement nil
-        sp-highlight-pair-overlay nil
-        sp-highlight-wrap-overlay nil
-        sp-highlight-wrap-tag-overlay nil)
+        sp-show-pair-from-inside nil
+        sp-cancel-autoskip-on-backward-movement t
+        sp-highlight-pair-overlay t
+        sp-highlight-wrap-overlay t
+        sp-highlight-wrap-tag-overlay t)
+
   (sp-with-modes
       '(c++-mode objc-mode c-mode python-mode go-mode)
     (sp-local-pair "{" "}"
-		   :unless '(sp-in-comment-p sp-in-string-p)
-		   :post-handlers '(:add ("||" "RET"))))
+  				   :unless '(sp-in-comment-p sp-in-string-p)
+  				   :post-handlers '(:add ("||" "RET"))))
   (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
 
   (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)

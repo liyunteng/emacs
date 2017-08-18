@@ -74,6 +74,13 @@
   (require 'dired+)
   (require 'dired-sort)
 
+  ;; goto parent dir
+  (defadvice dired-kill-subdir (around back-to-parent-dir activate)
+	(let ((dirname (car (diredp-this-subdir))))
+	  ad-do-it
+	  (if dirname
+		  (dired-goto-file  dirname))))
+
   (defun my/dired-view-file-other-window ()
     "In Dired, view this file or directory in another window."
     (interactive)

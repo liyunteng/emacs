@@ -115,7 +115,11 @@
     (set-window-dedicated-p window (not was-dedicated))
     (message "Window %sdedicated to %s"
              (if was-dedicated "no longer " "")
-             (buffer-name))))
+             (buffer-name))
+	(if was-dedicated
+		(setq-local mode-line-process " ")
+	  (setq-local mode-line-process " [D]"))))
+
 
 ;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
 (defun my/split-window()
