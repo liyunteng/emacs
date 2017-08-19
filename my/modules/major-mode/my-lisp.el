@@ -24,7 +24,6 @@
 
 ;;; Code:
 
-(my-require-package 'lively)
 (my-require-package 'ipretty)
 ;; (my-require-package 'hl-sexp)
 (my-require-package 'immortal-scratch)

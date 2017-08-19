@@ -1,3 +1,11 @@
+2017-08-20  liyunteng  <liyunteng@streamocean.com>
+
+	* my/modules/major-mode/my-lisp.el (ipretty): delete lively
+
+	* my/modules/major-mode/my-org.el (org-todo-keywords): change bindings, change org-todo-keywords
+
+	* my/modules/my-edit.el (initial-scratch-message): Happy hacking => Happy Hacking
+
 2017-08-08  liyunteng  <li_yunteng@163.com>
 
 	* my/modules/my-avy.el (avy-command-prefix): add C-x j for avy-goto-char
