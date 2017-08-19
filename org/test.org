@@ -1,8 +1,9 @@
 #+TITLE:神器中的神器 org-mode 之入门篇
-* 本文参考
+
+* 本文参考[fn:2]
  * [[http:www.baidu.com][来自百度]]
  * [[www.cnblogs.com][来自CNBLOG]]
-* 简介
+* 简介[fn:1]
   Org-mode: Your Life in Plain Text.
   Org-模式(org-mode)是文本编辑器软件Emacs的一种支持内容分级显示的编辑
   模式。这种模式支持写to-do列表，日志管理，做笔记，做工程计划或者写网
@@ -25,6 +26,9 @@
         load-path))
 (require 'org-install)
   #+END_SRC
+
+  #+RESULTS:
+  : org-install
 
   现在如果你新建一个.org格式的文件，如果在minibuffer中显示Org的字样，
   就意味着你已经成功了。
@@ -211,8 +215,18 @@ _下划线_
  "src"),如果是"src",语言用来格式化内容。 组织方式是可选的，如果不给出，
  文本会被当作Org模式的正常处理。用C-c,可以访问包含的文件
  #+INCLUDE: "~/.emacs.d/org/test.org" src emacs-lisp
-[fn:1]
+
+#+BEGIN_SRC emacs-lisp :cache yes
+  (format "%s" (buffer-file-name))
+#+END_SRC
+
+#+RESULTS[691a88cd3e7d919473d18cd6274b2d902dfa7f3f]:
+: /home/lyt/.emacs.d/org/test.org
+
+
 
 * Footnotes
 
-[fn:1]
+[fn:1] abc
+
+[fn:2] bbb

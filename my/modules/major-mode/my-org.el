@@ -136,6 +136,7 @@ typical word processor."
 ;;; To-do settings
 (setq-default org-todo-keywords
               (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
+					  (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
                       (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
                       (sequence "WAITING(w@/!)" "DELEGATED(e!)" "HOLD(h)" "|" "CANCELLED(c@/!)")))
               org-todo-repeat-to-state "NEXT")
@@ -303,8 +304,6 @@ typical word processor."
                 ("INBOX" . ?p)
                 ))
 
-(setq-default org-src-fontify-natively t)
-
 (defun my/prettify-org-buffer ()
   "Apply visual enchantments to the current buffer.
 The buffer's major mode should be `org-mode'."
@@ -409,7 +408,7 @@ If EXPAND-SCOPE is `all' then run `outline-show-all' at the matched line."
   (after-load 'org-agenda
     (add-to-list 'org-agenda-after-show-hook 'org-show-entry)
     (add-hook 'org-agenda-mode-hook 'hl-line-mode)
-    (define-key org-agenda-mode-map (kbd "p") 'org-pomodoro)
+    ;; (define-key org-agenda-mode-map (kbd "p") 'org-pomodoro)
     )
 
   (org-babel-do-load-languages
@@ -443,7 +442,7 @@ If EXPAND-SCOPE is `all' then run `outline-show-all' at the matched line."
                 (3 font-lock-comment-face prepend))))
 
   (define-key org-mode-map (kbd "C-M-<up>") 'org-up-element)
-  (define-key org-mode-map (kbd "C-c C-.") 'org-priority)
+  (define-key org-mode-map (kbd "C-c C-.") 'org-time-stamp-inactive)
   )
 
 (provide 'my-org)

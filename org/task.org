@@ -1,6 +1,21 @@
 * TASKS
-** TODO [#A] va add monitor interface                                    :@work:
+** TODO [#A] va add monitor interface									 :@work:
    SCHEDULED: <2017-07-13 Thu> DEADLINE: <2017-07-15 Sat>
+   :LOGBOOK:
+   - State "TODO"       from "DONE"       [2017-08-20 Sun 03:28]
+   - State "DONE"       from "TODO"       [2017-08-20 Sun 03:28]
+   - State "TODO"       from "DONE"       [2017-08-20 Sun 02:48]
+   - State "DONE"       from "TODO"       [2017-08-20 Sun 02:48]
+   - State "TODO"       from "DONE"       [2017-08-20 Sun 02:39]
+   - State "DONE"       from "TODO"       [2017-08-20 Sun 02:39]
+   :END:
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2017-08-20 Sun 03:30
+   :ARCHIVE_FILE: ~/.emacs.d/org/task.org
+   :ARCHIVE_OLPATH: TASKS
+   :ARCHIVE_CATEGORY: task
+   :ARCHIVE_TODO: TODO
+   :END:
 
    add monitor interface for va to sosp/joyplus
 #+BEGIN_SRC json
@@ -20,3 +35,40 @@
 #+BEGIN_SRC
 http://106.75.55.63/advapi/v1/monitor?rq=1&ad=f3fb000b05f11d4162044815db68a0cc&zone=fa9edb6280%207a5548e4e4e6c7bae7faed&dm=a&i=123d225fa4bc2d46c3&ip=10.23.24.12&CP=cntv&SP=njt&ex=%ex%
 #+END_SRC
+** TODO [#C] Update Emacs <2017-08-20 Sun 02:50> [0/4]					 :@home:
+   :LOGBOOK:
+   CLOCK: [2017-08-20 Sun 03:35]--[2017-08-20 Sun 03:36] =>  0:01
+   :END:
+   file:~/.emacs.d/org/task.org::*va%20add%20monitor%20interface
+
+*** TODO use use-package [0%]
+	 :LOGBOOK:
+	 - State "TODO"       from "DONE"       [2017-08-20 Sun 02:52]
+	 - State "DONE"       from "NEXT"       [2017-08-20 Sun 02:52]
+	 :END:
+	- [ ] how to use use-package
+	- [ ] replace my-require-package and require
+	- [ ] change other config
+
+*** TODO update company
+
+*** TODO update toggle
+
+*** TODO update jump-to-define <2017-08-20 Sun>
+	 SCHEDULED: <2017-08-20 Sun>
+   	:PROPERTIES:
+   	:CATEGORY: eamcs
+   	:LOGGING:  t
+   	:ARCHIVE_TIME: 2017-08-20 Sun 03:30
+   	:ARCHIVE_FILE: ~/.emacs.d/org/task.org
+   	:ARCHIVE_OLPATH: TASKS/Update Emacs <2017-08-20 Sun 02:50>
+   	:ARCHIVE_CATEGORY: eamcs
+   	:ARCHIVE_TODO: TODO
+   	:ARCHIVE_ITAGS: @home
+   	:END:
+
+** TODO Check Weekly <2017-08-20 Sun 03:10>
+   SCHEDULED: <2017-08-27 Sun +1w>
+   :LOGBOOK:
+   CLOCK: [2017-08-20 Sun 03:19]--[2017-08-20 Sun 03:20] =>  0:01
+   :END:

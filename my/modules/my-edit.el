@@ -154,7 +154,7 @@
                              "%b"))))
 ;; initial scarch message
 (setq-default initial-scratch-message
-              (concat ";; Happy hacking, "
+              (concat ";; Happy Hacking, "
                       user-login-name
                       (if user-full-name
                           (concat " ("user-full-name ")"))

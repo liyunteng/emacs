@@ -1,5 +1,11 @@
 * NOTES
-** Address  <2017-06-15 Thu 15:19>                                        :NOTE:
+** Address  <2017-06-15 Thu 15:19>										  :NOTE:
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2017-08-20 Sun 03:27
+   :ARCHIVE_FILE: ~/.emacs.d/org/note.org_archive
+   :ARCHIVE_OLPATH: Archive
+   :ARCHIVE_CATEGORY: note
+   :END:
 
       | Location |                   Ip | User | Passwd           |
       |----------+----------------------+------+------------------|
@@ -8,6 +14,3 @@
       | jinan    | 124.126.126.194(202) | root | Elmeast!@#-SO    |
       | hongkong |         128.1.170.74 | root | 4gOgb1Lbm*mN$9cz |
       | dongjing |          47.74.15.82 | root | 12位             |
-
-** abc  <2017-06-30 Fri 12:17>                                            :NOTE:
-   file:~/.emacs.d/org/note.org

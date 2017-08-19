@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+
 (after-load 'smartparens
   (require 'smartparens-config)
   ;; (sp-use-paredit-bindings)
