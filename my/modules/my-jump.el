@@ -53,7 +53,8 @@ Example:
 		 (setq my-jump-handlers
 			   (append ,handlers-list
 					   my-default-jump-handlers))
-		 (message "handlers-list: %s" ,handlers-list))
+		 ;; (message "handlers-list: %s" ,handlers-list)
+		 )
 	   (add-hook ',mode-hook ',func)
 	   ;; (with-eval-after-load 'bind-map
 	   ;;   (spacemacs/set-leader-keys-for-major-mode ',mode

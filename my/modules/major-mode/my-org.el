@@ -25,10 +25,14 @@
 ;;; Code:
 
 (when (< emacs-major-version 24)
-  (my-require-package 'org))
-(my-require-package 'org-fstree)
-(my-require-package 'org-cliplink)
-(my-require-package 'org-pomodoro)
+  (use-package org
+	:ensure t))
+(use-package org-fstree
+  :ensure t)
+(use-package org-cliplink
+  :ensure t)
+(use-package org-pomodoro
+  :ensure t)
 ;; (require 'org)
 ;; (require 'org-agenda)
 ;; (require 'org-clock)

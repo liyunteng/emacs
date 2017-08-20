@@ -23,24 +23,27 @@
 ;;
 
 ;;; Code:
-(my-require-package 'anzu)
-(require 'anzu)
-(global-anzu-mode +1)
-(setq anzu-mode-lighter "")
-(global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
-(global-set-key [remap query-replace] 'anzu-query-replace)
-
-(defun my-anzu-update-mode-line (here total)
-  "Custom update function which does not propertize the status."
-  (when anzu--state
-    (let ((status (cl-case anzu--state
-                    (search (format "(%s/%d%s)"
-                                    (anzu--format-here-position here total)
-                                    total (if anzu--overflow-p "+" "")))
-                    (replace-query (format "(%d replace)" total))
-                    (replace (format "(%d/%d)" here total)))))
-      status)))
-(setq anzu-mode-line-update-function 'my-anzu-update-mode-line)
+(use-package anzu
+  :ensure t
+  :bind (([remap query-replace-regexp] . anzu-query-replace-regexp)
+		 ([remap query-relace] . anzu-query-replace)
+		 )
+  :defines anzu-mode-line-update-function anzu--state
+  :config
+  (defun my-anzu-update-mode-line (here total)
+	"Custom update function which does not propertize the status."
+	(when anzu--state
+	  (let ((status (cl-case anzu--state
+					  (search (format "(%s/%d%s)"
+									  (anzu--format-here-position here total)
+									  total (if anzu--overflow-p "+" "")))
+					  (replace-query (format "(%d replace)" total))
+					  (replace (format "(%d/%d)" here total)))))
+		status)))
+  (setq anzu-mode-line-update-function 'my-anzu-update-mode-line)
+  (setq anzu-mode-lighter "")
+  (global-anzu-mode +1)
+  )
 
 ;; Search back/forth for the symbol at point
 ;; See http://www.emacswiki.org/emacs/SearchAtPoint

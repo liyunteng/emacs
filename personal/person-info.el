@@ -27,65 +27,67 @@
 (setq user-full-name "liyunteng")
 
 ;; 设置个人邮箱
-(setq user-mail-address "li_yunteng@163.com")
+(setq user-mail-address "liyunteng@streamocean.com")
 
 (unless (getenv "ORGANIZATION")
   (setenv "ORGANIZATION" "StreamOcean"))
 
 ;; gnus
 ;; imap
-(with-eval-after-load 'gnus
-  (add-to-list 'gnus-secondary-select-methods
-			   '(nnimap "163"
-						(nnimap-address "imap.163.com")
-						(nnimap-server-port "imaps")
-						(nnimap-stream ssl)
-						(nnimap-user "li_yunteng")
-						))
-  (add-to-list 'gnus-secondary-select-methods
-			   '(nnimap "streamocean"
-						(nnimap-address "imap.qiye.163.com")
-						(nnimap-server-port "imaps")
-						(nnimap-stream ssl)
-						(nnimap-user "liyunteng@streamocean.com"))))
+;; (with-eval-after-load 'gnus
+;;   (add-to-list 'gnus-secondary-select-methods
+;; 			   '(nnimap "163"
+;; 						(nnimap-address "imap.163.com")
+;; 						(nnimap-server-port "imaps")
+;; 						(nnimap-stream ssl)
+;; 						(nnimap-user "li_yunteng")
+;; 						))
+;;   (add-to-list 'gnus-secondary-select-methods
+;; 			   '(nnimap "streamocean"
+;; 						(nnimap-address "imap.qiye.163.com")
+;; 						(nnimap-server-port "imaps")
+;; 						(nnimap-stream ssl)
+;; 						(nnimap-user "liyunteng@streamocean.com")))
+;;   )
 ;; pop
-(setq-default mail-sources
-			  '(
-				;; (pop :server "pop.163.com"
-				;; 	 :user "li_yunteng"
-				;; 	 :password "yun1988"
-				;; 	 )
+;; (setq-default mail-sources
+;; 			  '(
+;; 				;; (pop :server "pop.163.com"
+;; 				;; 	 :user "li_yunteng"
+;; 				;; 	 :password "yun1988"
+;; 				;; 	 )
 
-				;; (pop :server "pop.163.qiye.com"
-				;; 	 :user "liyunteng@streamocean.com"
-				;; 	 :password "Lyt532482644")
-				))
+;; 				;; (pop :server "pop.163.qiye.com"
+;; 				;; 	 :user "liyunteng@streamocean.com"
+;; 				;; 	 :password "Lyt532482644")
+;; 				))
 ;; smtp
-(setq-default message-send-mail-function 'smtpmail-send-it
-			  send-mail-function 'smtpmail-send-it
-			  ;; smtpmail-smtp-server "smtp.163.com"
-			  ;; smtpmail-stream-type 'ssl
-			  ;; smtpmail-smtp-service 994		;ssl 994/465
-			  ;; smtpmail-smtp-user "li_yunteng"
+;; (setq-default message-send-mail-function 'smtpmail-send-it
+;; 			  send-mail-function 'smtpmail-send-it
+;; 			  ;; smtpmail-smtp-server "smtp.163.com"
+;; 			  ;; smtpmail-stream-type 'ssl
+;; 			  ;; smtpmail-smtp-service 994		;ssl 994/465
+;; 			  ;; smtpmail-smtp-user "li_yunteng"
 
-			  smtpmail-smtp-server "smtp.qiye.163.com"
-			  smtpmail-stream-type 'starttls
-			  smtpmail-smtp-service 25		;ssl 994/465
-			  smtpmail-smtp-user "liyunteng@streamocean.com"
+;; 			  smtpmail-smtp-server "smtp.qiye.163.com"
+;; 			  smtpmail-stream-type 'starttls
+;; 			  smtpmail-smtp-service 25		;ssl 994/465
+;; 			  smtpmail-smtp-user "liyunteng@streamocean.com"
 
-			  ;; smtpmail-local-domain "localhost"
-			  ;; smtpmail-sendto-domain "smtp.qiye.163.com"
-			  ;; smtpmail-debug-info t
-			  )
+;; 			  ;; smtpmail-local-domain "localhost"
+;; 			  ;; smtpmail-sendto-domain "smtp.qiye.163.com"
+;; 			  ;; smtpmail-debug-info t
+;; 			  )
 
-(setq-default nnmail-split-fancy
-			  '(|
-				(any ".*@streamocean.com" "streamocean")
-				(any ".*@163.com" "163")
-				(any ".*@gmail.com" "gmail")
-				(from "liyunteng@streamocean.com\\|liyunteng@163.com" "From-me")
-				(to "liyunteng@streamocean.com\\|li_yunteng@163.com" "To-me")
-				"misc"))
+;; (setq-default nnmail-split-fancy
+;; 			  '(|
+;; 				(any ".*@streamocean.com" "streamocean")
+;; 				(any ".*@163.com" "163")
+;; 				(any ".*@gmail.com" "gmail")
+;; 				(from "liyunteng@streamocean.com\\|liyunteng@163.com" "From-me")
+;; 				(to "liyunteng@streamocean.com\\|li_yunteng@163.com" "To-me")
+;; 				"misc"))
+
 ;; mew
 ;; (setq-default mew-refile-guess-alist
 ;;               '(

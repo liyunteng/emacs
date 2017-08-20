@@ -24,8 +24,10 @@
 
 ;;; Code:
 
-(my-require-package 'ibuffer-vc)
-(my-require-package 'ibuffer-projectile)
+(use-package ibuffer-vc
+  :ensure t)
+(use-package ibuffer-projectile
+  :ensure t)
 
 (after-load 'ibuf-ext
   ;; (require-package 'ibuffer-git)

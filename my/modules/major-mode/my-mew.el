@@ -24,7 +24,8 @@
 
 ;;; Code:
 
-(my-require-package 'mew)
+(use-package mew
+  :ensure t)
 
 (setq-default mew-use-cached-passwd t)
 (setq-default mew-passwd-timer-unit 999)

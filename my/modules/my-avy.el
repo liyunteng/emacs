@@ -23,7 +23,8 @@
 ;;
 
 ;;; Code:
-(my-require-package 'avy)
+(use-package avy
+  :ensure t)
 (require 'avy)
 (setq avy-background t)
 (setq avy-style 'at-full)

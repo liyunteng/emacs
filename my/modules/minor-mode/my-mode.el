@@ -24,9 +24,12 @@
 
 ;;; Code:
 
-(my-require-package 'move-text)
-(my-require-package 'imenu-anywhere)
-(my-require-package 'crux)
+(use-package move-text
+  :ensure t)
+(use-package imenu-anywhere
+  :ensure t)
+(use-package crux
+  :ensure t)
 (require 'easymenu)
 (require 'imenu-anywhere)
 (require 'crux)

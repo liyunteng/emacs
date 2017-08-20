@@ -23,33 +23,218 @@
 ;;
 
 ;;; Code:
-(after-load 'gnus
 
-  ;;--------------------------------------------------------------------------------------
+(use-package message
+  :config
+  (use-package sendmail
+	:config
+	(setq send-mail-function 'smtpmail-send-it
+		  )
+	)
+  (use-package smtpmail
+	:config
+	(setq
+	 ;; smtpmail-smtp-server "smtp.163.com"
+	 ;; smtpmail-stream-type 'ssl
+	 ;; smtpmail-smtp-service 994		;ssl 994/465
+	 ;; smtpmail-smtp-user "li_yunteng"
+	 smtpmail-smtp-server "smtp.qiye.163.com"
+	 smtpmail-stream-type 'starttls
+	 smtpmail-smtp-service 25		;ssl 994/465
+	 smtpmail-smtp-user "liyunteng@streamocean.com"
+
+	 ;; smtpmail-local-domain "localhost"
+	 ;; smtpmail-sendto-domain "smtp.qiye.163.com"
+	 ;; smtpmail-debug-info t
+	 )
+	)
+
+  (setq message-confirm-send t						;防止误发邮件, 发邮件前需要确认
+		message-kill-buffer-on-exit t				;设置发送邮件后删除buffer
+		message-from-style 'angles					;`From' 头的显示风格
+		message-syntax-checks '((sender . disabled));语法检查
+		message-send-mail-function 'smtpmail-send-it
+
+		message-cite-function 'message-cite-original-without-signature ;;引用设置：不要原来的签名，引用全文
+
+		message-kill-buffer-on-exit t
+		message-elide-ellipsis "[...]\n"
+		)
+  (add-hook 'mail-citation-hook 'sc-cite-original)
+  ;;写消息时如何打开自动折行 (word-wrap) ？
+  ;; (add-hook 'message-mode-hook
+  ;; 			(lambda ()
+  ;; 			  (setq fill-column 80)
+  ;; 			  (turn-on-auto-fill)))
+  )
+
+(use-package gnus
+  :config
+  (use-package gnus-sum
+	:config
+	(setq gnus-show-threads t                          ;显示邮件线索
+		  gnus-summary-ignore-duplicates t
+		  gnus-summary-display-while-building t
+		  gnus-fetch-old-headers 'some                 ;抓取老的标题以联系线程
+
+		  gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject ;聚集函数根据标题聚集
+		  gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
+		  )
+
+	;; 排序
+	(setq gnus-thread-sort-functions
+		  '(
+			(not gnus-thread-sort-by-date)    ;时间的逆序
+			(not gnus-thread-sort-by-number)  ;跟踪的数量
+			))
+
+	;; 线程的可视化外观, `%B'
+	(setq gnus-summary-same-subject "")
+	(setq gnus-sum-thread-tree-indent "    ")
+	(setq gnus-sum-thread-tree-single-indent "◎ ")
+	(setq gnus-sum-thread-tree-root "● ")
+	(setq gnus-sum-thread-tree-false-root "☆")
+	(setq gnus-sum-thread-tree-vertical "│")
+	(setq gnus-sum-thread-tree-leaf-with-other "├─► ")
+	(setq gnus-sum-thread-tree-single-leaf "╰─► ")
+	;; 概要显示设置
+	(setq gnus-summary-gather-subject-limit 'fuzzy) ;聚集题目用模糊算法
+
+
+	(defun gnus-user-format-function-a (header) ;用户的格式函数 `%ua'
+	  (let ((myself (concat "<" user-mail-address ">"))
+			(references (mail-header-references header))
+			(message-id (mail-header-id header)))
+		(if (or (and (stringp references)
+					 (string-match myself references))
+				(and (stringp message-id)
+					 (string-match myself message-id)))
+			"X" "│")))
+
+	(defun gnus-seconds-week ()
+	  "Return the number of seconds passed this month."
+	  (let ((now (decode-time (current-time))))
+		(+ (car now) (* (car (cdr now)) 60) (* (car (nthcdr 2 now)) 3600)
+		   (* (- (car (nthcdr 6 now)) 1) 3600 24))))
+
+	(setq gnus-user-date-format-alist                     ;用户的格式列表 `user-date'
+		  '(((gnus-seconds-today) . "今天 %H:%M")         ;当天
+			((+ (gnus-seconds-today) 86400) . "昨天 %H:%M")
+			((gnus-seconds-week) . "星期%w %H:%M")	      ;七天之内
+			((gnus-seconds-month) . "%m/%d %H:%M")        ;当月
+			((gnus-seconds-year) . "%m/%d %H:%M")         ;今年
+			(t . "%y/%m/%d %H:%M")))
+	)
+
+  (use-package gnus-art
+	:config
+	(setq gnus-treat-fill-long-lines t)                 ;如果有很长的行, 不提示
+
+	;;设定要显示的头消息格式
+	(setq gnus-visible-headers
+		  "^\\(^From:\\|^To:\\|^CC:\\|^Subject:\\|^Date:\\|^Followup-To:
+  \\|^X-Newsreader:\\|^X-Mailer:\\|^X-Sender:
+  \\|^User-Agent:\\|^Content-Type:\\|^Content-Transfer-Encoding:
+  \\|Line:\\|Lines:\\|^NNTP-Posting-Host\\)")
+
+	)
+  (use-package gnus-async
+	:config
+	(setq gnus-asynchronous t					;异步操作
+		  )
+	)
+
+  (use-package gnus-topic
+	:config
+	(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+	)
+
+  (use-package gnus-start
+	:config
+	(setq gnus-use-dribble-file nil					;不创建恢复文件
+		  gnus-always-read-dribble-file	 nil		;不读取恢复文件
+		  gnus-read-active-file nil
+		  )
+	)
+
+  (use-package gnus-cache
+	:config
+	(setq gnus-cache-active-file nil)
+	)
+
+  (use-package gnus-score
+	:config
+	(setq  gnus-score-find-score-files-function
+		   '(gnus-score-find-hierarchical
+			 gnus-score-find-bnews
+			 bbdb/gnus-score)
+		   gnus-use-adaptive-scoring t)
+	)
+
+  (use-package gnus-salt
+	:config
+	(setq gnus-tree-minimize-window nil                ;用最小窗口显示
+		  gnus-generate-tree-function 'gnus-generate-horizontal-tree             ;生成水平树
+		  )
+	)
+
+  (use-package gnus-msg
+	:config
+	(setq gnus-confirm-mail-reply-to-news t)
+	)
+
+  (use-package nnml
+	:config
+	(setq nnml-use-compressed-files t				;压缩保存的邮件
+		  )
+	)
+
+  (use-package nnmail
+	:config
+	(setq nnmail-expiry-wait 7 			;邮件自动删除的期限 (单位: 天)
+
+		  ;; 邮件分类,使用 nnmail-split-fancy方法更为灵活
+		  nnmail-treat-duplicates 'delete				; 如果由重复，删除！
+		  nnmail-crosspost nil							; 同一个邮件不要到多个组
+		  nnmail-split-fancy-match-partial-words t		; 单词部分匹配也算成功匹配
+		  nnmail-split-methods 'nnmail-split-fancy		; 这个分类方法比较灵活
+		  )
+	)
+
+  (use-package nnmairix
+	:config
+	(setq nnmairix-allowfast-default t ;加快进入搜索结果的组
+		  )
+	)
+
+  ;; 显示设置
+  (use-package mm-decode
+	:config
+	;; (setq mm-text-html-renderer 'w3m)                    ;用W3M显示HTML格式的邮件
+	(setq mm-text-html-renderer 'gnus-w3m
+		  mm-inline-large-images t							;显示内置图片
+		  mm-attachment-override-types '("image/.*")		; Inline images?
+		  )
+
+	(add-to-list 'mm-discouraged-alternatives "text/html")
+	(add-to-list 'mm-discouraged-alternatives "text/richtext"))
+
   ;; 一些常规设置
-  ;;
-  (setq gnus-agent t)                                 ;开启代理功能, 以支持离线浏览
-  (setq gnus-inhibit-startup-message t)               ;关闭启动时的画面
-  (setq gnus-novice-user nil)                         ;关闭新手设置, 不进行确认
-  (setq gnus-expert-user t)                           ;不询问用户
-  (setq gnus-show-threads t)                          ;显示邮件线索
-  (setq gnus-interactive-exit nil)                    ;退出时不进行交互式询问
-  (setq gnus-use-dribble-file t)                      ;不创建恢复文件
-  (setq gnus-always-read-dribble-file t)              ;不读取恢复文件
-  (setq gnus-asynchronous t)                          ;异步操作
-  (setq gnus-large-newsgroup 100)                     ;设置大容量的新闻组默认显示的大小
-  (setq gnus-large-ephemeral-newsgroup nil)           ;和上面的变量一样, 只不过对于短暂的新闻组
-  (setq gnus-suppress-duplicates t)
-  (setq gnus-summary-ignore-duplicates t)             ;忽略具有相同ID的消息
-  (setq gnus-treat-fill-long-lines t)                 ;如果有很长的行, 不提示
-  (setq message-confirm-send t)                       ;防止误发邮件, 发邮件前需要确认
-  (setq message-kill-buffer-on-exit t)                ;设置发送邮件后删除buffer
-  (setq message-from-style 'angles)                   ;`From' 头的显示风格
-  (setq message-syntax-checks '((sender . disabled))) ;语法检查
-  (setq nnmail-expiry-wait 7)                         ;邮件自动删除的期限 (单位: 天)
-  (setq nnmairix-allowfast-default t)                 ;加快进入搜索结果的组
-  (setq gnus-summary-display-while-building t)       ;
+  (setq gnus-agent t                                 ;开启代理功能, 以支持离线浏览
+		gnus-inhibit-startup-message t               ;关闭启动时的画面
+		gnus-novice-user nil                         ;关闭新手设置, 不进行确认
+		gnus-expert-user t                           ;不询问用户
+		gnus-interactive-exit nil                    ;退出时不进行交互式询问
+		gnus-large-newsgroup 100                     ;设置大容量的新闻组默认显示的大小
+		gnus-large-ephemeral-newsgroup nil           ;和上面的变量一样, 只不过对于短暂的新闻组
+		gnus-suppress-duplicates t					 ;忽略具有相同ID的消息
 
+		gnus-use-trees t                                                       ;联系老的标题
+		gnus-fetch-old-ephemeral-headers 'some
+		)
+
+
+										;
   ;; (defvar my-gnus-home "~/Gnus")
   ;; (setq-default gnus-startup-file (expand-file-name "newsrc" my-gnus-home)
   ;; 			  gnus-default-directory  my-gnus-home
@@ -76,32 +261,34 @@
   ;;
   ;; 关闭默认的archive 这个方法不好控制
   ;;
-  (setq gnus-message-archive-group nil)
+  ;; (setq gnus-message-archive-group nil)
+  ;; (setq gnus-message-archive-group
+  ;; 		'((if (message-news-p)
+  ;; 			  "nnml:Send-News"
+  ;; 			"nnml:Send-Mail")))
 
   ;; 设置存档目录
-  (setq gnus-outgoing-message-group
-		'(nnml "archive"
-			   (nnml-directory   (expand-file-name "archive" gnus-directory))
-			   (nnml-active-file (expand-file-name "active" nnml-directory))
-			   (nnml-get-new-mail nil)
-			   (nnml-inhibit-expiry t)))
+  ;; (setq gnus-outgoing-message-group
+  ;; 		'(nnml "archive"
+  ;; 			   (nnml-directory   (expand-file-name "archive" gnus-directory))
+  ;; 			   (nnml-active-file (expand-file-name "active" nnml-directory))
+  ;; 			   (nnml-get-new-mail nil)
+  ;; 			   (nnml-inhibit-expiry t)))
 
-;;;; 一个老外的例子，可以参考
-;;;;A function that selects a reasonable group for Gcc'ing this mail.
-
-  ;;(defun MySendedMail ()
-  ;;  (cond ((and gnus-newsgroup-name
-  ;;              (not (message-news-p))
-  ;;              (stringp gnus-newsgroup-name))
-  ;;         gnus-newsgroup-name)
-  ;;        (t ted-default-gcc-group)))
-;;;; Use it.
-  ;;(setq gnus-outgoing-message-group "nnml:SendMails")
+  ;; ;;;; 一个老外的例子，可以参考
+  ;; ;;;;A function that selects a reasonable group for Gcc'ing this mail.
+  ;; (defun MySendedMail ()
+  ;; 	(cond ((and gnus-newsgroup-name
+  ;; 				(not (message-news-p))
+  ;; 				(stringp gnus-newsgroup-name))
+  ;; 		   gnus-newsgroup-name)
+  ;; 		  (t ted-default-gcc-group)))
+  ;; (setq gnus-outgoing-message-group "nnml:SendMails")
 
   ;; (defun MySended ()
-  ;;   (if (message-news-p)
-  ;; 	  "nnml:SendNews"
-  ;; 	"nnml:SendMails"))
+  ;; 	(if (message-news-p)
+  ;; 		"nnml:SendNews"
+  ;; 	  "nnml:SendMails"))
   ;; (setq gnus-outgoing-message-group 'MySended)
 
   ;; 新闻组
@@ -112,44 +299,39 @@
   ;; (setq nnspool-active-file  nil )
 
 
-  ;; (setq gnus-select-method '(nntp "localhost"))
+  ;;   ;; (setq gnus-select-method '(nntp "localhost"))
   (setq gnus-select-method '(nndoc "gnus-help"))
-
 
   ;;告诉gnus如何存放接收来的邮件，gnus把这个叫做backend，最常用的方式
   ;;是nnfolder，另外还有nnmbox, nnml等其它几种方式，我们选择其中一种就可以了：
   ;;雅科\新帆
   ;; (add-to-list 'gnus-secondary-select-methods '(nntp "news.newsfan.net"))
   ;; (add-to-list 'gnus-secondary-select-methods '(nnml "mails"))
+  ;; (add-to-list 'gnus-secondary-select-methods '(nnspool "" (nnspool-directory "~/Mail/")))
+  (add-to-list 'gnus-secondary-select-methods
+			   '(nnimap "163"
+						(nnimap-address "imap.163.com")
+						(nnimap-server-port "imaps")
+						(nnimap-stream ssl)
+						(nnimap-user "li_yunteng")
 
+						))
 
-  ;;
-  ;; 邮件分类,使用 nnmail-split-fancy方法更为灵活
-  ;;
-  (setq nnmail-treat-duplicates 'delete				; 如果由重复，删除！
-		nnmail-crosspost nil						; 同一个邮件不要到多个组
-		nnmail-split-fancy-match-partial-words t	; 单词部分匹配也算成功匹配
-		nnmail-split-methods 'nnmail-split-fancy	; 这个分类方法比较灵活
-		)
+  (add-to-list 'gnus-secondary-select-methods
+			   '(nnimap "streamocean"
+						(nnimap-address "imap.qiye.163.com")
+						(nnimap-server-port "imaps")
+						(nnimap-stream ssl)
+						(nnimap-user "liyunteng@streamocean.com")
 
+						(nnimap-split-methods nnmail-split-fancy)
+						(nnimap-authenticator login)
+						(nnimap-fetch-partial-articles t)
+						))
 
-  ;;
   ;;总是显示mail组，如何显示所有组呢？
-  ;;
   (setq gnus-permanently-visible-groups '"nnimap*")
 
-  ;;
-  ;; 显示设置
-  ;;
-  ;; (setq mm-text-html-renderer 'w3m)                     ;用W3M显示HTML格式的邮件
-  (after-load 'mm-decode
-	(setq mm-text-html-renderer 'gnus-w3m)
-	(setq mm-inline-large-images t)                       ;显示内置图片
-	;; Inline images?
-	(setq mm-attachment-override-types '("image/.*"))
-	(add-to-list 'mm-discouraged-alternatives "text/html")
-	(add-to-list 'mm-discouraged-alternatives "text/richtext")
-	)
 
   ;; 用 Supercite 显示多种多样的引文形式
   ;; (setq sc-attrib-selection-list nil
@@ -164,39 +346,16 @@
   ;; 	  sc-preferred-header-style 4
   ;; 	  sc-use-only-preference-p nil)
 
-  ;; 线程设置
-  (setq
-   gnus-use-trees t                                                       ;联系老的标题
-   gnus-tree-minimize-window nil                                          ;用最小窗口显示
-   gnus-fetch-old-headers 'some                                           ;抓取老的标题以联系线程
-   gnus-generate-tree-function 'gnus-generate-horizontal-tree             ;生成水平树
-   gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject ;聚集函数根据标题聚集
-   ;; gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
-   )
 
-  ;;
   ;; 时间显示
-  ;;
   (add-hook 'gnus-article-prepare-hook 'gnus-article-date-local) ;将邮件的发出时间转换为本地时间
   (add-hook 'gnus-select-group-hook 'gnus-group-set-timestamp)   ;跟踪组的时间轴
 
   ;; 新闻组分组
-  ;; 排序
-  (setq gnus-thread-sort-functions
-		'(
-		  (not gnus-thread-sort-by-date)    ;时间的逆序
-		  (not gnus-thread-sort-by-number)  ;跟踪的数量
-		  )
-		)
 
   ;; 自动跳到第一个没有阅读的组
   (add-hook 'gnus-switch-on-after-hook 'gnus-group-first-unread-group) ;gnus切换时
   (add-hook 'gnus-summary-exit-hook 'gnus-group-first-unread-group) ;退出Summary时
-
-
-  ;;------------------------------------------------------------------------------------
-  ;; 其他的一些设置
-  ;;
 
   ;;
   ;;不喜欢 Summary buffer 和 Article buffer 的版面，如何改变？或者三个
@@ -216,21 +375,19 @@
   (gnus-add-configuration
    '(article
 	 (horizontal 1.0
-				 ;; (vertical 35
-				 ;; 			 (group 1.0))
+				 (vertical 35
+						   (group 1.0))
 				 (vertical 1.0
 						   (summary 0.35 point)
 						   (article 1.0)))))
-  ;; (gnus-add-configuration
-  ;;  '(summary
-  ;;    (horizontal 1.0
-  ;; 			   (vertical 35
-  ;; 			   			 (group 1.0))
-  ;; 			   (vertical 1.0
-  ;; 						 (summary 1.0 point)))))
+  (gnus-add-configuration
+   '(summary
+	 (horizontal 1.0
+				 (vertical 35
+						   (group 1.0))
+				 (vertical 1.0
+						   (summary 1.0 point)))))
 
-
-  ;;
   ;;不喜欢 Summary buffer 的样子，如何调整？
   ;;那么你需要和变量 gnus-summary-line-format 玩一玩，它得值是一个符号
   ;;串，比如作者，日期，主题等。手册 "Summary Buffer Lines" 中有可用的
@@ -242,81 +399,19 @@
   ;;
 
   ;; (setq gnus-summary-line-format ":%U%R %B %s %-60=|%4L |%-20,20f |%&user-date; \n")
-  (setq gnus-summary-line-format "%4P %U%R%z%O %{%5k%} %{%14&user-date;%}   %{%-20,20n%} %{%ua%} %B %(%I%-60,60s%)\n")
-  (defun gnus-user-format-function-a (header) ;用户的格式函数 `%ua'
-	(let ((myself (concat "<" user-mail-address ">"))
-		  (references (mail-header-references header))
-		  (message-id (mail-header-id header)))
-	  (if (or (and (stringp references)
-				   (string-match myself references))
-			  (and (stringp message-id)
-				   (string-match myself message-id)))
-		  "X" "│")))
+  (setq gnus-summary-line-format "%4P %U%R%z%O %{%5k%} %{%14&user-date;%} %{%-20,20n%} %{%ua%} %B %(%I%-60,60s%)\n")
 
-  (defun gnus-seconds-week ()
-	"Return the number of seconds passed this month."
-	(let ((now (decode-time (current-time))))
-	  (+ (car now) (* (car (cdr now)) 60) (* (car (nthcdr 2 now)) 3600)
-		 (* (- (car (nthcdr 6 now)) 1) 3600 24))))
-
-  (setq gnus-user-date-format-alist                     ;用户的格式列表 `user-date'
-		'(((gnus-seconds-today) . "今天 %H:%M")         ;当天
-		  ((+ (gnus-seconds-today) 86400) . "昨天 %H:%M")
-		  ((gnus-seconds-week) . "星期%w %H:%M")	      ;七天之内
-		  ((gnus-seconds-month) . "%m/%d %H:%M")        ;当月
-		  ((gnus-seconds-year) . "%m/%d %H:%M")         ;今年
-		  (t . "%y/%m/%d %H:%M")))
 
   ;;其他
-  ;; 线程的可视化外观, `%B'
-  (setq gnus-summary-same-subject "")
-  (setq gnus-sum-thread-tree-indent "    ")
-  (setq gnus-sum-thread-tree-single-indent "◎ ")
-  (setq gnus-sum-thread-tree-root "● ")
-  (setq gnus-sum-thread-tree-false-root "☆")
-  (setq gnus-sum-thread-tree-vertical "│")
-  (setq gnus-sum-thread-tree-leaf-with-other "├─► ")
-  (setq gnus-sum-thread-tree-single-leaf "╰─► ")
-  ;; 概要显示设置
-  (setq gnus-summary-gather-subject-limit 'on) ;聚集题目用模糊算法
 
   ;; 自动更新新消息，功能不错，但在我的机器上会很慢...
   ;; (add-hook 'gnus-summary-exit-hook 'gnus-notify+)        ;退出summary模式后
   ;; (add-hook 'gnus-group-catchup-group-hook 'gnus-notify+) ;当清理当前组后
   ;; (add-hook 'mail-notify-pre-hook 'gnus-notify+)          ;更新邮件时
 
-  ;; 斑纹化
-  (setq gnus-summary-stripe-regexp        ;设置斑纹化匹配的正则表达式
-		(concat "^[^"
-				gnus-sum-thread-tree-vertical
-				"]*"))
-
-  ;;Article Buffer设置
-  ;;设定要显示的头消息格式
-  (setq gnus-visible-headers
-		"^\\(^To:\\|^CC:\\|^From:\\|^Subject:\\|^Date:\\|^Followup-To:
-\\|^X-Newsreader:\\|^User-Agent:\\|^X-Mailer:
-\\|Line:\\|Lines:\\|Content-Type:\\|NNTP-Posting-Host\\)")
-
-  ;;
-  ;;写消息时如何打开自动折行 (word-wrap) ？
-  ;;
-  ;; (add-hook 'message-mode-hook (lambda ()
-  ;; 							   (setq fill-column 80)
-  ;; 							   (turn-on-auto-fill)))
-
-  ;;引用设置：不要原来的签名，引用全文
-  (setq message-cite-function 'message-cite-original-without-signature)
-  (add-hook 'mail-citation-hook 'sc-cite-original)
 
 
-  ;;
-  ;;如果开启了主题视图，只看未读邮件是令人讨厌的，在 ~/.gnus 里面加如这行：
-  ;;
-  (setq gnus-fetch-old-headers 'some)
-  ;;
   ;; topic mode 参考这里：(info "(gnus)Group Topics")
-  ;;
   (cond (window-system
 		 (setq custom-background-mode 'light)
 		 (defface my-group-face-1
@@ -329,43 +424,52 @@
 		 (defface my-group-face-4
 		   '((t (:foreground "SteelBlue" :bold t))) "Fourth group face")
 		 (defface my-group-face-5
-		   '((t (:foreground "Blue" :bold t))) "Fifth group face")))
-
-  (setq gnus-group-highlight
-		'(((> unread 200) . my-group-face-1)
-		  ((and (< level 3) (zerop unread)) . my-group-face-2)
-		  ((< level 3) . my-group-face-3)
-		  ((zerop unread) . my-group-face-4)
-		  (t . my-group-face-5)))
-
+		   '((t (:foreground "Blue" :bold t))) "Fifth group face")
+		 (setq gnus-group-highlight
+			   '(((> unread 200) . my-group-face-1)
+				 ((and (< level 3) (zerop unread)) . my-group-face-2)
+				 ((< level 3) . my-group-face-3)
+				 ((zerop unread) . my-group-face-4)
+				 (t . my-group-face-5)))
+		 ))
   (setq gnus-group-line-format
-		"%M\%S\%p\%P\%5y: %B%(%-40,40g%) %d\n")
-  ;; (setq-default gnus-topic-topology'(("Mail" visible)
-  ;; 								   ("Emacs" visible)
-  ;; 								   (("Misc" visible))))
-  ;; (setq-default gnus-topic-alist '(("nnimap+163:已发送"
-  ;; 								  "nnimap+163:INBOX"
-  ;; 								  "nnimap+streamocean:INBOX"
-  ;; 								  "nnimap+streamocean:已发送"
-  ;; 								  "nndraft:drafts" "Mail")))
-  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-  (add-hook 'mail-citation-hook 'sc-cite-original)
+		"%P%M%S%p%P[%5t]%5y: %B%(%-40g%) %d\n")
 
-  ;;
-  ;;压缩保存的邮件
-  ;;
-  (setq nnml-use-compressed-files t)
+  ;; (add-hook 'gnus-topic-mode-hook
+  ;; 			'(lambda ()
+  ;; 			   (progn
+  ;; 				 (setq gnust-opic-topology '(("Gnus" visible nil nil) (("163" visible nil nil)) (("StreamOcean" visible nil nil)) (("misc" visible nil nil))))
+  ;; 				 (setq gnus-topic-alist '(("Gnus")
+  ;; 										  ("163"
+  ;; 										   "nnimap+163:INBOX"
+  ;; 										   "nnimap+163:已发送"
+  ;; 										   "nnimap+163:草稿箱"
+  ;; 										   "nnimap+163:已删除"
+  ;; 										   "nnimap+163:订阅邮件"
+  ;; 										   "nnimap+163:广告邮件"
+  ;; 										   "nnimap+163:垃圾邮件"
+  ;; 										   "nnimap+163:病毒文件夹")
+  ;; 										  ("StreamOcean"
+  ;; 										   "nnimap+streamocean:INBOX"
+  ;; 										   "nnimap+streamocean:已发送"
+  ;; 										   "nnimap+streamocean:禅道"
+  ;; 										   "nnimap+streamocean:草稿箱"
+  ;; 										   "nnimap+streamocean:已删除"
+  ;; 										   "nnimap+streamocean:垃圾邮件"
+  ;; 										   "nnimap+streamocean:病毒文件夹")
+  ;; 										  ("misc"
+  ;; 										   "nndraft:queue"
+  ;; 										   "nndraft:drafts"))))))
 
-  ;;
+
+
   ;;开启记分
-  ;;
-  ;; (setq gnus-use-adaptive-scoring t)
-  ;;   (setq gnus-save-score t)
-  ;;   (add-hook 'mail-citation-hook 'sc-cite-original)
-  ;;   (add-hook 'message-sent-hook 'gnus-score-followup-article)
-  ;;   (add-hook 'message-sent-hook 'gnus-score-followup-thread)
+  (setq gnus-use-adaptive-scoring t)
+  (setq gnus-save-score t)
+  (add-hook 'message-sent-hook 'gnus-score-followup-article)
+  (add-hook 'message-sent-hook 'gnus-score-followup-thread)
 
-  ;;   (defvar gnus-default-adaptive-score-alist
+  ;; (defvar gnus-default-adaptive-score-alist
   ;; 	'((gnus-kill-file-mark (from -10))
   ;; 	  (gnus-unread-mark)
   ;; 	  (gnus-read-mark (from 10) (subject 30))
@@ -375,15 +479,9 @@
   ;; 	  (gnus-ticked-mark (from 10))
   ;; 	  (gnus-dormant-mark (from 5))))
 
-  ;;   (setq  gnus-score-find-score-files-function
-  ;; 		 '(gnus-score-find-hierarchical gnus-score-find-bnews bbdb/gnus-score)
-  ;; 		 gnus-use-adaptive-scoring t)
 
-  ;; ;;;
-  ;;   (setq gnus-confirm-mail-reply-to-news t
-  ;; 		message-kill-buffer-on-exit t
-  ;; 		message-elide-ellipsis "[...]\n"
-  ;; 		)
+  ;;
+
 
   ;;
   ;;    如何存档有趣的消息？我将这个函数绑定在了F6键上
@@ -414,7 +512,7 @@
   ;;
   ;;    当然，也可以使用缓冲：
   ;;
-  (setq gnus-use-cache t)
+  (setq gnus-use-cache nil)
 
   ;;
   ;;    这样，你只需设置 tick 或者 dormant 标记来保存，在缓冲中设置已读标记
@@ -432,85 +530,73 @@
   ;;
   ;; 设置编码，这个是改变了整个emacs的编码！太恐怖了
   ;; (set-language-environment 'Chinese-GBK)
-  (setq gnus-default-charset 'utf-8)
-  (add-to-list 'gnus-group-charset-alist
-			   '("\\(^\\|:\\)cn\\>\\|\\<chinese\\>" gbk))
-  (setq gnus-summary-show-article-charset-alist
-		'((1 . utf-8)
-		  (2 . big5)
-		  (3 . gb18030)
-		  (4 . gbk)
-		  (5 . gn2312)
-		  (6 . utf-7)))
+  ;; (setq gnus-default-charset 'utf-8)
+  ;; (setq gnus-group-name-charset-group-alist '((".*" . utf-8)))
+  ;; ;; (add-to-list 'gnus-group-charset-alist '("\\(^\\|:\\)cn\\>\\|\\<chinese\\>" gbk))
+  ;; (setq gnus-summary-show-article-charset-alist
+  ;; 		'((1 . utf-8)
+  ;; 		  (2 . gbk)
+  ;; 		  (3 . gb18030)
+  ;; 		  (4 . gb2312)
+  ;; 		  (5 . big5)
+  ;; 		  (6 . utf-7)
+  ;; 		  (7 . raw-text)))
 
   ;; (setq gnus-group-name-charset-group-alist
-  ;; 	  '(("\\.com\\.cn:" . gbk)
-  ;; 		("news\\.newsfan\\.net" . gbk)))
+  ;; 		'(("\\.com\\.cn:" . gbk)
+  ;; 		  ("news\\.newsfan\\.net" . gbk)))
 
   ;; (setq gnus-group-name-charset-method-alist
-  ;; 	  '(((nntp "news.cn99.net") . gbk)))
+  ;; 		'(((nntp "news.cn99.net") . gbk)))
 
   ;; (setq gnus-group-name-charset-method-alist
-  ;; 	  '(((nntp "news.newsfan.net") . gbk)))
+  ;; 		'(((nntp "news.newsfan.net") . gbk)))
 
   ;; (setq gnus-newsgroup-ignored-charsets
-  ;; 	  '(unknown-8bit x-unknown x-gbk gb18030))
-
-  ;; 显示编码格式
-  (add-hook 'gnus-startup-hook
-			'(lambda ()
-			   (setq gnus-visible-headers
-					 (concat "^User-Agent:\\|^Content-Type:\\|"
-							 "Content-Transfer-Encoding:\\|"
-							 "^X-mailer:\\|^X-Newsreader:\\|^X-Sender:\\|"
-							 gnus-visible-headers))))
+  ;; 		'(unknown-8bit x-unknown x-gbk gb18030))
 
   ;;设置发送风格
-  (setq gnus-posting-styles
-		'(
-		  ;; all
-		  (".*"
-		   (name "liyunteng")
-		   (address "li_yunteng@163.com")
-		   ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
-		   (organization "StreamOcean")
-		   (signature "
-oooOOOOoo...
->  Life is too short ! ...")
-		   (eval (setq mm-coding-system-priorities
-					   '(utf-8 iso-8859-1 gb2312 gbk gb18030)))
-		   ;;(body "")
-		   )
-		  ;;cn.bbs.com
-		  ("^cn\\.bbs\\.comp"
-		   (name "liyunteng")
-		   (address "li_yunteng@163.com")
-		   ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
-		   (organization "lyt")
-		   (signature "
-oooOOOOoo...
->  Life is too short ! ...")
-		   (eval (setq mm-coding-system-priorities
-					   '(utf-8 iso-8859-1 gb2312 gbk gb18030)))
-		   ;;(body "")
-		   )
-		  ;;tw
-		  ("^tw\\.comp"
-		   (name "abc")
-		   ;; (address "yourname@gmail.com")
-		   ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
-		   (organization "abc")
-		   (signature "
-oooOOOOoo...
->  Life is too short ! ...")
-		   (eval (setq mm-coding-system-priorities
-					   '(utf-8 iso-8859-1 big5 utf-8)))
-		   ;;(body "")
-		   )
-		  ))
+  ;; (setq gnus-posting-styles
+  ;; 		'((".*"
+  ;; 		   (name "liyunteng")
+  ;; 		   (address "liyunteng@streamocean.com")
+  ;; 		   ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
+  ;; 		   (organization "StreamOcean")
+  ;; 		   (signature "
+  ;; oooOOOOoo...
+  ;; >  Life is too short ! ...")
+  ;; 		   (eval (setq mm-coding-system-priorities
+  ;; 					   '(utf-8 iso-8859-1 gb2312 gbk gb18030)))
+  ;; 		   ;;(body "")
+  ;; 		   )
+  ;; 		  ;;cn.bbs.com
+  ;; 		  ("^cn\\.bbs\\.comp"
+  ;; 		   (name "liyunteng")
+  ;; 		   (address "li_yunteng@163.com")
+  ;; 		   ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
+  ;; 		   (organization "lyt")
+  ;; 		   (signature "
+  ;; oooOOOOoo...
+  ;; >  Life is too short ! ...")
+  ;; 		   (eval (setq mm-coding-system-priorities
+  ;; 					   '(utf-8 iso-8859-1 gb2312 gbk gb18030)))
+  ;; 		   ;;(body "")
+  ;; 		   )
+  ;; 		  ;;tw
+  ;; 		  ("^tw\\.comp"
+  ;; 		   (name "abc")
+  ;; 		   ;; (address "yourname@gmail.com")
+  ;; 		   ;; (face (gnus-convert-png-to-face (concat emacsHome "/Gnus/xface.png")))
+  ;; 		   (organization "abc")
+  ;; 		   (signature "
+  ;; oooOOOOoo...
+  ;; >  Life is too short ! ...")
+  ;; 		   (eval (setq mm-coding-system-priorities
+  ;; 					   '(utf-8 iso-8859-1 big5 utf-8)))
+  ;; 		   ;;(body "")
+  ;; 		   )
+  ;; 		  ))
 
-
-  ;;
   ;; 多窗口处理
   ;;
   ;;
@@ -606,14 +692,6 @@ oooOOOOoo...
   ;; 				nil)))))
 
   ;;(gnus-compile)                          ;编译一些选项, 加快速度
-
-
-  ;; 最后设置
-  ;;
-
-  ;; (gnus-compile)                          ;编译一些选项, 加快速度
-
   )
-
 (provide 'my-gnus)
 ;;; my-gnus.el ends here

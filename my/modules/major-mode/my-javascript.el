@@ -24,10 +24,13 @@
 
 ;;; Code:
 
-(my-require-package 'js-comint)
-(my-require-package 'skewer-mode)
+(use-package js-comint
+  :ensure t)
+(use-package skewer-mode
+  :ensure t)
 (if (not (version< emacs-version "25"))
-    (my-require-package 'xref-js2))
+    (use-package xref-js2
+	  :ensure t))
 
 (defcustom preferred-javascript-mode
   (first (remove-if-not #'fboundp '(js2-mode js-mode)))

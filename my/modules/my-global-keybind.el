@@ -119,8 +119,6 @@
 (global-set-key (kbd "C-M-;") 'comment-kill)
 
 ;; ==================== WINDOW ====================
-;; switch window
-(global-set-key (kbd "C-x o") 'switch-window)
 (global-set-key (kbd "C-x 0") 'delete-window)
 (global-set-key (kbd "C-x 1") 'my/toggle-delete-other-windows)
 (global-set-key (kbd "C-x 2") 'my/split-window-vertically-then-switch)
@@ -132,7 +130,7 @@
 (global-set-key [mouse-5] (lambda () (interactive) (scroll-up 1)))
 
 ;; 调整window大小
-(global-set-key (kbd "C-M-=") 'balance-windows)
+(global-set-key (kbd "C-M-)") 'balance-windows)
 (global-set-key (kbd "C-M-+") 'enlarge-window)
 (global-set-key (kbd "C-M-_") 'shrink-window)
 (global-set-key (kbd "C-M-<") 'enlarge-window-horizontally)

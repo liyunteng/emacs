@@ -24,13 +24,20 @@
 
 ;;; Code:
 
-(my-require-package 'helm)
-;;(my-require-package 'helm-directory)
-(my-require-package 'helm-ag)
-(my-require-package 'helm-descbinds)
-(my-require-package 'helm-smex)
-(my-require-package 'helm-swoop)
-(my-require-package 'helm-projectile)
+(use-package helm
+  :ensure t)
+;;(use-package helm-directory)
+(use-package helm-ag
+  :ensure t)
+(use-package helm-descbinds
+  :ensure t)
+(use-package helm-smex
+  :ensure t)
+(use-package helm-swoop
+  :ensure t)
+(use-package helm-projectile
+  :ensure t
+  )
 (require 'helm)
 (require 'helm-config)
 (require 'helm-ag)
@@ -224,7 +231,9 @@ Removes the automatic guessing of the initial value based on thing at point."
 (helm-mode 1)
 
 ;; enable Helm version of Projectile with replacment commands
-(helm-projectile-on)
+(add-hook
+ 'after-init-hook
+ 'helm-projectile-on)
 
 (provide 'my-helm)
 ;;; my-helm.el ends here

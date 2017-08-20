@@ -23,91 +23,80 @@
 ;;
 
 ;;; Code:
-(my-require-package 'color-theme)
-(my-require-package 'color-theme-sanityinc-solarized)
-(my-require-package 'color-theme-sanityinc-tomorrow)
-(my-require-package 'monokai-theme)
-(my-require-package 'zenburn-theme)
-(require 'color)
-;; (require 'color-theme)
-(require 'zenburn-theme)
-(defvar my-theme 'zenburn)
-
-(defvar my-zenburn-override-colors-alist
-  '(("zenburn-fg+1"     . "#FFFFFF")
-    ("zenburn-fg"       . "#FFFFFF")
-    ("zenburn-fg-1"     . "#FFFF00")
-    ("zenburn-bg-2"     . "#FFFF00")
-    ("zenburn-bg-1"     . "#FFFF00")
-    ("zenburn-bg-05"    . "#FFFF00")
-    ("zenburn-bg"       . "#000000")
-    ("zenburn-bg+05"    . "#0000FF")
-    ("zenburn-bg+1"     . "#0000FF")
-    ("zenburn-bg+2"     . "#0000FF")
-    ("zenburn-bg+3"     . "#FFFFFF")
-    ("zenburn-red+1"    . "#FFFF00")
-    ("zenburn-red"      . "#FF0000")
-    ("zenburn-red-1"    . "#FFFFFF")
-    ("zenburn-red-2"    . "#FFFFFF")
-    ("zenburn-red-3"    . "#FF0000")
-    ("zenburn-red-4"    . "#FF0000")
-    ("zenburn-orange"   . "#FFFF00")
-    ("zenburn-yellow"   . "#FFFF00")
-    ("zenburn-yellow-1" . "#FFFF00")
-    ("zenburn-yellow-2" . "#FFFF00")
-    ("zenburn-green-1"  . "#00FF00")
-    ("zenburn-green"    . "#00FF00")
-    ("zenburn-green+1"  . "#00FF00")
-    ("zenburn-green+2"  . "#00FF00")
-    ("zenburn-green+3"  . "#00FF00")
-    ("zenburn-green+4"  . "#00FF00")
-    ("zenburn-cyan"     . "#00FFFF")
-    ("zenburn-blue+1"   . "#0000FF")
-    ("zenburn-blue"     . "#FFFFFF")
-    ("zenburn-blue-1"   . "#0000FF")
-    ("zenburn-blue-2"   . "#0000FF")
-    ("zenburn-blue-3"   . "#0000FF")
-    ("zenburn-blue-4"   . "#0000FF")
-    ("zenburn-blue-5"   . "#0000FF")
-    ("zenburn-magenta"  . "#FF00FF")))
-
-(if (eq (display-color-cells) 8)
-    (setq-default zenburn-override-colors-alist my-zenburn-override-colors-alist))
-(load-theme 'zenburn t)
-
-(after-load 'zenburn-theme
-  (custom-theme-set-faces
-   'zenburn
-   `(company-tooltip-search
-     ((t (:background
-          ,(color-darken-name (face-attribute 'default :background) 40)
-          :foreground "red"))))
-   `(company-tooltip-search-selection
-     ((t (:background
-          ,(color-darken-name (face-attribute 'default :background) 20)
-          :foreground "red" :weight bold))))
-   `(company-template-field
-     ((t (:background
-		  ,(color-darken-name (face-attribute 'default :background) 10)))))
-   ))
-
-
-(if (eq (display-color-cells) 8)
-	(progn
-	  (after-load 'company
-		(custom-theme-set-faces
-		 'zenburn
-		 `(company-tooltip ((t (:background "#000000"))))
-		 `(company-tooltip-selection ((t (:background "#00FFFF" :weight bold))))
-		 `(company-tooltip-search ((t (:background "#000000" :foreground "red"))))
-		 `(company-tooltip-search-selection ((t (:background "#0000FF" :foreground "red" :weight bold))))
-		 ))
-	  (after-load 'helm
-	  	(custom-theme-set-faces
-	  	 'zenburn
-	  	 `(helm-selection ((t (:background "#00FFFF" :weight bold :foreground "#FFFF00"))))))
-	  )
+;; (use-package color-theme
+;;   :ensure t
+;;   :disabled t)
+;; (use-package color-theme-sanityinc-solarized
+;;   :ensure t
+;;   :disabled t)
+;; (use-package color-theme-sanityinc-tomorrow
+;;   :ensure t
+;;   :disabled t)
+;; (use-package monokai-theme
+;;   :ensure t
+;;   :disabled t)
+(use-package color)
+(use-package zenburn-theme
+  :ensure t
+  :if (eq (display-color-cells) 8)
+  :init
+  (defvar my-zenburn-override-colors-alist
+  	'(("zenburn-fg+1"     . "#FFFFFF")
+  	  ("zenburn-fg"       . "#FFFFFF")
+  	  ("zenburn-fg-1"     . "#FFFF00")
+  	  ("zenburn-bg-2"     . "#FFFF00")
+  	  ("zenburn-bg-1"     . "#FFFF00")
+  	  ("zenburn-bg-05"    . "#FFFF00")
+  	  ("zenburn-bg"       . "#000000")
+  	  ("zenburn-bg+05"    . "#0000FF")
+  	  ("zenburn-bg+1"     . "#0000FF")
+  	  ("zenburn-bg+2"     . "#0000FF")
+  	  ("zenburn-bg+3"     . "#FFFFFF")
+  	  ("zenburn-red+1"    . "#FFFF00")
+  	  ("zenburn-red"      . "#FF0000")
+  	  ("zenburn-red-1"    . "#FFFFFF")
+  	  ("zenburn-red-2"    . "#FFFFFF")
+  	  ("zenburn-red-3"    . "#FF0000")
+  	  ("zenburn-red-4"    . "#FF0000")
+  	  ("zenburn-orange"   . "#FFFF00")
+  	  ("zenburn-yellow"   . "#FFFF00")
+  	  ("zenburn-yellow-1" . "#FFFF00")
+  	  ("zenburn-yellow-2" . "#FFFF00")
+  	  ("zenburn-green-1"  . "#00FF00")
+  	  ("zenburn-green"    . "#00FF00")
+  	  ("zenburn-green+1"  . "#00FF00")
+  	  ("zenburn-green+2"  . "#00FF00")
+  	  ("zenburn-green+3"  . "#00FF00")
+  	  ("zenburn-green+4"  . "#00FF00")
+  	  ("zenburn-cyan"     . "#00FFFF")
+  	  ("zenburn-blue+1"   . "#0000FF")
+  	  ("zenburn-blue"     . "#FFFFFF")
+  	  ("zenburn-blue-1"   . "#0000FF")
+  	  ("zenburn-blue-2"   . "#0000FF")
+  	  ("zenburn-blue-3"   . "#0000FF")
+  	  ("zenburn-blue-4"   . "#0000FF")
+  	  ("zenburn-blue-5"   . "#0000FF")
+  	  ("zenburn-magenta"  . "#FF00FF")))
+  (setq zenburn-override-colors-alist my-zenburn-override-colors-alist)
+  :config
+  (after-load 'company
+  	(custom-theme-set-faces
+  	 'zenburn
+  	 `(company-tooltip ((t (:background "#000000"))))
+  	 `(company-tooltip-selection ((t (:background "#00FFFF" :weight bold))))
+  	 `(company-tooltip-search ((t (:background "#000000" :foreground "red"))))
+  	 `(company-tooltip-search-selection ((t (:background "#0000FF" :foreground "red" :weight bold))))
+  	 ))
+  (after-load 'helm
+  	(custom-theme-set-faces
+  	 'zenburn
+  	 `(helm-selection ((t (:background "#00FFFF" :weight bold :foreground "#FFFF00"))))))
   )
+
+(defcustom my-theme 'zenburn
+  "My theme.")
+
+(load-theme my-theme t)
 
 ;; (custom-set-faces
 ;;  `(company-tooltip-mouse ((t (:background "#2b2b2b"))))

@@ -31,19 +31,25 @@
 ;;      `(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant
 ;;      normal :weight normal :height 113 :width normal))))))
 
-(my-require-package 'smart-mode-line)
-(require 'smart-mode-line)
-(setq sml/no-confirm-load-theme t)
-(setq sml/theme nil)
-(add-hook 'after-init-hook #'sml/setup)
+(use-package smart-mode-line
+  :ensure t
+  :init
+  (add-hook 'after-init-hook #'sml/setup)
+  :config
+  (setq sml/no-confirm-load-theme t)
+  (setq sml/theme nil)
+  )
 
-(my-require-package 'beacon)
-(require 'beacon)
-(beacon-mode +1)
+(use-package beacon
+  :ensure t
+  :config
+  (beacon-mode +1)
+  )
 
-(my-require-package 'which-key)
-(require 'which-key)
-(which-key-mode +1)
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode +1))
 
 (defvar my--after-display-system-init-alist '())
 (defadvice server-create-window-system-frame

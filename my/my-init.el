@@ -105,7 +105,6 @@
 
 (when (file-exists-p my-modules-dir)
   (add-to-list 'load-path my-modules-dir)
-  (message "Loading my configuration files")
   ;; (dolist (module my-modules)
   ;;   (message "Loading %s" module)
   ;;   (require module)

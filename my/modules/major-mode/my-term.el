@@ -24,7 +24,8 @@
 
 ;;; Code:
 
-(my-require-package 'multi-term)
+(use-package multi-term
+  :ensure t)
 ;; (autoload 'multi-term-next "multi-term" nil)
 
 (after-load 'comint

@@ -24,8 +24,9 @@
 
 ;;; Code:
 
-(my-require-package 'hideshow)
-(require 'hideshow)
+(use-package hideshow
+  :ensure t)
+;; (require 'hideshow)
 
 ;;代码折叠
 (dolist (hook '(prog-mode-hook

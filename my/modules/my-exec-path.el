@@ -23,15 +23,16 @@
 ;;
 
 ;;; Code:
-(my-require-package 'exec-path-from-shell)
-
-(after-load 'exec-path-from-shell
+(use-package exec-path-from-shell
+  :ensure t
+  :config
   (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE"))
-	(add-to-list 'exec-path-from-shell-variables var)))
+	(add-to-list 'exec-path-from-shell-variables var))
 
-
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
+  :if (memq window-system '(mac ns x))
+  :config
+  (exec-path-from-shell-initialize)
+  )
 
 (provide 'my-exec-path)
 ;;; my-exec-path.el ends here

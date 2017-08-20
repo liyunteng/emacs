@@ -38,10 +38,11 @@
 (setq-default ido-cur-item nil)
 (setq-default ido-default-item nil)
 (setq-default ido-cur-list nil)
-(my-require-package 'ido-ubiquitous)
-(require 'ido-ubiquitous)
+(use-package ido-ubiquitous
+  :ensure t)
 (setq-default ido-ubiquitous-mode t)
-(my-require-package 'idomenu)
+(use-package idomenu
+  :ensure t)
 
 ;; Allow the same buffer to be open in different frames
 (setq-default ido-default-buffer-method 'selected-window)

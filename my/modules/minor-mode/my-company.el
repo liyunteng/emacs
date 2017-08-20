@@ -24,18 +24,18 @@
 
 ;;; Code:
 
-(my-require-package 'company)
-(my-require-package 'company-web)
-(my-require-package 'company-shell)
-(my-require-package 'company-php)
-(my-require-package 'company-go)
+(use-package company)
+(use-package company-web)
+(use-package company-shell)
+(use-package company-php)
+(use-package company-go)
 (require 'company)
 (require 'company-web)
 (require 'company-shell)
 (require 'company-php)
 (require 'company-go)
 
-;; (my-require-package 'company-quickhelp)
+;; (use-package company-quickhelp)
 ;; (require 'company-quickhelp)
 ;; (setq-default company-quickhelp-use-propertized-text t)
 ;; (setq-default company-quickhelp-delay 0.5)

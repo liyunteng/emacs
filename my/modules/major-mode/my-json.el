@@ -23,7 +23,8 @@
 ;;
 
 ;;; Code:
-(my-require-package 'json-mode)
+(use-package json-mode
+  :ensure t)
 
 (provide 'my-json)
 ;;; my-json.el ends here

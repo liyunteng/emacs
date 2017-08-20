@@ -24,12 +24,12 @@
 
 ;;; Code:
 
-(my-require-package 'ivy)
-(my-require-package 'flx)
-(my-require-package 'counsel)
-(require 'ivy)
-(require 'flx)
-(require 'counsel)
+(use-package ivy
+  :ensure t)
+(use-package flx
+  :ensure t)
+(use-package counsel
+  :ensure t)
 
 (diminish 'ivy-mode)
 

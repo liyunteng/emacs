@@ -24,17 +24,19 @@
 
 ;;; Code:
 
-(require 'recentf)
 
-(setq
- recentf-max-saved-items 1000
- recentf-max-menu-items 15
- recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
-                   "/TAGS$" "/GTAGS$" "/GRAGS" "/GPATH$"))
-;; (add-hook 'after-init-hook 'recentf-load-list)
-(add-hook 'after-init-hook 'recentf-cleanup)
 
-(recentf-mode +1)
+(use-package recentf
+  :config
+  (setq
+   recentf-max-saved-items 1000
+   recentf-max-menu-items 15
+   recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
+					 "/TAGS$" "/GTAGS$" "/GRAGS" "/GPATH$"))
+  ;; (add-hook 'after-init-hook 'recentf-load-list)
+  ;; (add-hook 'after-init-hook 'recentf-cleanup)
+  ;; (recentf-mode +1)
+  )
 
 (provide 'my-recentf)
 ;;; my-recentf.el ends here

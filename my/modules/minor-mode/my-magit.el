@@ -24,10 +24,14 @@
 
 ;;; Code:
 
-(my-require-package 'magit)
-(my-require-package 'git-timemachine)
-(my-require-package 'gitconfig-mode)
-(my-require-package 'gitignore-mode)
+(use-package magit
+  :ensure t)
+(use-package git-timemachine
+  :ensure t)
+(use-package gitconfig-mode
+  :ensure t)
+(use-package gitignore-mode
+  :ensure t)
 
 (setq-default magit-branch-read-upstream-first 'fallback)
 (setq-default magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))

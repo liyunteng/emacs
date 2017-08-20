@@ -25,7 +25,8 @@
 ;;; Code:
 
 ;; syslog-mode
-(my-require-package 'hide-lines)
+(use-package hide-lines
+  :ensure t)
 ;; (unless (package-installed-p 'syslog-mode)
 ;;   (package-install 'syslog-mode))
 

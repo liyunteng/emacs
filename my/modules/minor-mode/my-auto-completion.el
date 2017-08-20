@@ -24,17 +24,17 @@
 
 ;;; Code:
 
-(my-require-package 'auto-complete)
-(my-require-package 'popup)
-(my-require-package 'ac-c-headers)
-(my-require-package 'auto-complete-clang)
-(my-require-package 'ac-dabbrev)
-(my-require-package 'pos-tip)
-(my-require-package 'fuzzy)
-;;(my-require-package 'auto-complete-clang-async)
-;;(my-require-package 'ac-etags)
-(my-require-package 'go-autocomplete)
-(my-require-package 'go-eldoc)
+(use-package auto-complete)
+(use-package popup)
+(use-package ac-c-headers)
+(use-package auto-complete-clang)
+(use-package ac-dabbrev)
+(use-package pos-tip)
+(use-package fuzzy)
+;;(use-package auto-complete-clang-async)
+;;(use-package ac-etags)
+(use-package go-autocomplete)
+(use-package go-eldoc)
 
 (require 'auto-complete-config)
 (require 'popup)

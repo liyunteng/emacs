@@ -24,7 +24,43 @@
 
 ;;; Code:
 
-(my-require-package 'xcscope)
+(use-package xcscope
+  :ensure t
+  :config
+  (defvar my-cscope-origin-buffer nil)
+  (defadvice cscope-call (before my-save-cscope-origin-buffer activate)
+	(setq my-cscope-origin-buffer (current-buffer)))
+  (defun my-cscope-quit ()
+	"My cscope quit."
+	(interactive)
+	(cscope-quit)
+	(switch-to-buffer my-cscope-origin-buffer)
+	(delete-other-windows))
+
+  (cscope-setup)
+  (cscope-minor-mode t)
+  (setq cscope-truncate-lines nil)
+  (setq cscope-use-relative-paths nil)
+  (setq cscope-index-recursively t)
+  (setq cscope-name-line-width -45)
+  (setq cscope-display-cscope-buffer t)
+  (setq cscope-close-window-after-select nil)
+
+  :bind
+  (:map cscope-minor-mode-keymap
+		("C-c s G" . cscope-find-global-definition)
+		:map cscope-list-entry-keymap
+		("C-p" . cscope-history-backward-file)
+		("C-n" . cscope-history-forward-file)
+		("C-M-p" . cscope-history-backward-result)
+		("C-M-n" . cscope-history-forward-result)
+		("C-k" . cscope-history-kill-file)
+		("C-M-k" . cscope-history-kill-result)
+		("d" . cscope-find-global-definition-no-prompting)
+		("G" . cscope-find-global-definition)
+		("q" . my-cscope-quit)
+		)
+  )
 
 (defconst my-kernel-include-path
   (list
@@ -56,7 +92,7 @@
                            "../../../export")
   "My local include path.")
 
-;; (my-require-package 'helm-cscope)
+;; (use-package helm-cscope)
 ;; (require 'helm-cscope)
 ;; (after-load 'helm-cscope
 ;;   (define-key helm-cscope-mode-map (kbd "C-c s s")
@@ -85,51 +121,6 @@
 
 ;; (require 'xcscope)
 
-(defvar my-cscope-origin-buffer nil)
-(defadvice cscope-call (before my-save-cscope-origin-buffer activate)
-  (setq my-cscope-origin-buffer (current-buffer)))
-
-(defun my-cscope-quit ()
-  "My cscope quit."
-  (interactive)
-  (cscope-quit)
-  (switch-to-buffer my-cscope-origin-buffer)
-  (delete-other-windows))
-
-(after-load 'xcscope
-  (cscope-setup)
-  (cscope-minor-mode t)
-
-  (setq cscope-truncate-lines nil)
-  (setq cscope-use-relative-paths nil)
-  (setq cscope-index-recursively t)
-  (setq cscope-name-line-width -45)
-  (setq cscope-display-cscope-buffer t)
-  (setq cscope-close-window-after-select nil)
-
-  (define-key cscope-minor-mode-keymap (kbd "C-c s d")
-    'cscope-find-global-definition-no-prompting)
-  (define-key cscope-minor-mode-keymap (kbd "C-c s G")
-    'cscope-find-global-definition)
-  (define-key cscope-list-entry-keymap (kbd "C-p")
-    'cscope-history-backward-file)
-  (define-key cscope-list-entry-keymap (kbd "C-n")
-    'cscope-history-forward-file)
-  (define-key cscope-list-entry-keymap (kbd "C-M-p")
-    'cscope-history-backward-result)
-  (define-key cscope-list-entry-keymap (kbd "C-M-n")
-    'cscope-history-forward-result)
-  (define-key cscope-list-entry-keymap (kbd "C-k")
-    'cscope-history-kill-file)
-  (define-key cscope-list-entry-keymap (kbd "C-M-k")
-    'cscope-history-kill-result)
-  (define-key cscope-list-entry-keymap (kbd "d")
-    'cscope-find-global-definition-no-prompting)
-  (define-key cscope-list-entry-keymap (kbd "G")
-    'cscope-find-global-definition)
-  (define-key cscope-list-entry-keymap (kbd "q")
-    'my-cscope-quit)
-  )
 
 ;;comment
 (defun my/comment-dwim-line (&optional arg)
@@ -151,12 +142,13 @@ at the end of the line."
   (indent-according-to-mode))
 
 ;; (require 'etags)
-(after-load 'etags
+(use-package etags
+  :init
   ;;设置TAGS文件
   (if (file-exists-p "/usr/include/TAGS")
       (add-to-list 'tags-table-list
                    "/usr/include/TAGS"))
-
+  :config
   (defun my/tags-search (&optional regexp  file-list-form)
     "My tags search, if REGEXP is nil, use selected word.
 FILE-LIST-FORM used by\"tags-loop-continue\"."
@@ -168,51 +160,52 @@ FILE-LIST-FORM used by\"tags-loop-continue\"."
         (tags-loop-continue nil)
       (setq tags-loop-scan `(re-search-forward ',regexp nil t)
             tags-loop-operate nil)
-      (tags-loop-continue (or file-list-form t))))
-  )
+      (tags-loop-continue (or file-list-form t)))))
 
 ;; (require 'compile)
-(defun my/smart-compile()
-  "比较智能的C/C++编译命令
+(use-package compile
+  :config
+  (defun my/smart-compile()
+	"比较智能的C/C++编译命令
 如果当前目录有makefile则用make -k编译，否则，如果是
 处于c-mode，就用clang -Wall编译，如果是c++-mode就用
 clang++ -Wall编译"
-  (interactive)
-  ;; do save
-  (setq-default compilation-directory default-directory)
-  (save-some-buffers (not compilation-ask-about-save)
-                     compilation-save-buffers-predicate)
-  ;; find compile-command
-  (let ((command (eval compile-command))
-        (candidate-make-file-name '("makefile" "Makefile" "GNUmakefile" "GNUMakefile")))
-    (if (string= command "make -k ")
-        (if (find t candidate-make-file-name :key
-                  '(lambda (f) (file-readable-p f)))
-            (setq command "make -k ")
-          (if (eq major-mode 'c-mode)
-              (setq command
-                    (concat "clang -Wall -o "
-                            (file-name-sans-extension
-                             (file-name-nondirectory buffer-file-name))
-                            " "
-                            (file-name-nondirectory buffer-file-name)
-                            " -g "))
-            ;; c++-mode
-            (if (eq major-mode 'c++-mode)
-                (setq command
-                      (concat "clang++ -Wall -o "
-                              (file-name-sans-extension
-                               (file-name-nondirectory buffer-file-name))
-                              " "
-                              (file-name-nondirectory buffer-file-name)
-                              " -g "
-                              ))
-              (message "Unknow mode")))))
-    (unless (equal command (eval compile-command))
-      (setq-local compile-command command))
-    (setq-default compilation-directory default-directory)
-    (compilation-start (compilation-read-command command))
-    ))
+	(interactive)
+	;; do save
+	(setq-local compilation-directory default-directory)
+	(save-some-buffers (not compilation-ask-about-save)
+					   compilation-save-buffers-predicate)
+	;; find compile-command
+	(let ((command (eval compile-command))
+		  (candidate-make-file-name '("makefile" "Makefile" "GNUmakefile" "GNUMakefile")))
+	  (if (string= command "make -k ")
+		  (if (find t candidate-make-file-name :key
+					'(lambda (f) (file-readable-p f)))
+			  (setq command "make -k ")
+			(if (eq major-mode 'c-mode)
+				(setq command
+					  (concat "clang -Wall -o "
+							  (file-name-sans-extension
+							   (file-name-nondirectory buffer-file-name))
+							  " "
+							  (file-name-nondirectory buffer-file-name)
+							  " -g "))
+			  ;; c++-mode
+			  (if (eq major-mode 'c++-mode)
+				  (setq command
+						(concat "clang++ -Wall -o "
+								(file-name-sans-extension
+								 (file-name-nondirectory buffer-file-name))
+								" "
+								(file-name-nondirectory buffer-file-name)
+								" -g "
+								))
+				(message "Unknow mode")))))
+	  (unless (equal command (eval compile-command))
+		(setq-local compile-command command))
+	  (setq-local compilation-directory default-directory)
+	  (compilation-start (compilation-read-command command))
+	  )))
 
 ;;自动给头文件添加ifndef
 ;; (defun get-include-guard ()
@@ -282,14 +275,17 @@ clang++ -Wall编译"
                 (statement-cont . (c-lineup-assignments +)))))
 
 ;; (require 'cmacexp)
-(after-load 'cmacexp
-  (setq-default c-macro-shrink-window-flag t)
-  (setq-default c-macro-prompt-flag t))
+(use-package cmacexp
+  :config
+  (setq c-macro-shrink-window-flag t)
+  (setq c-macro-prompt-flag t)
+  )
 
 ;; (require 'find-file)
-(after-load 'find-file
+(use-package find-file
+  :config
   (dolist (var my-include-path)
-    (add-to-list 'cc-search-directories var))
+	(add-to-list 'cc-search-directories var))
   (dolist (var my-src-path)
     (add-to-list 'cc-search-directories var))
   (dolist (var '(("\\c\\'" (".h" ".hpp" ".hxx"))
@@ -298,14 +294,15 @@ clang++ -Wall编译"
                  ("\\.hxx\\'" (".cpp" ".cxx" ".c"))))
     (add-to-list 'cc-other-file-alist var)))
 
-(after-load 'hideif
+(use-package hideif
+  :config
   ;; fix can't use = with string
   (defun hif-mathify (val)
-    "Treat VAL as a number: if it's t or nil, use 1 or 0."
-    (cond ((stringp val) (string-to-number val))
-          ((eq val t) 1)
-          ((null val) 0)
-          (t val)))
+	"Treat VAL as a number: if it's t or nil, use 1 or 0."
+	(cond ((stringp val) (string-to-number val))
+		  ((eq val t) 1)
+		  ((null val) 0)
+		  (t val)))
 
   (setq hide-ifdef-hiding t)
   (setq hide-ifdef-shadow t))

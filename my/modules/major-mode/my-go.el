@@ -24,35 +24,42 @@
 
 ;;; Code:
 
-(my-require-package 'go-mode)
-(my-require-package 'go-eldoc)
 
+(use-package go-mode
+  :ensure t
+  :init
+  (use-package go-eldoc
+	:ensure t)
+  (use-package gotest
+	:ensure t)
+  :bind (:map go-mode-map
+			  ("C-c C-a" . go-test-current-project)
+			  ("C-c C-t" . go-test-current-file)
+			  ("C-c C-." . go-test-current-test)
 
-(after-load 'go-mode
-  (define-key go-mode-map (kbd "C-c C-a") 'go-test-current-project)
-  (define-key go-mode-map (kbd "C-c C-t") 'go-test-current-file)
-  (define-key go-mode-map (kbd "C-c C-.") 'go-test-current-test)
+			  ("C-h f" . helm-apropos)
+			  ("C-c C-d" . godoc-at-point)
+			  ("C-c d" . godoc)
+			  ("C-M-\\" . gofmt)
+			  ("C-c C-c" . go-run)
 
-  (define-key go-mode-map (kbd "C-h f") 'helm-apropos)
-  (define-key go-mode-map (kbd "C-c C-d") 'godoc-at-point)
-  (define-key go-mode-map (kbd "C-c d") 'godoc)
-  (define-key go-mode-map (kbd "C-M-\\") 'gofmt)
-  (define-key go-mode-map (kbd "C-c C-c") 'go-run)
+			  ("C-c RET" . go-import-add)
+			  ("C-c SPC" . go-remove-unused-imports)
 
-  (define-key go-mode-map (kbd "C-c RET") 'go-import-add)
-  (define-key go-mode-map (kbd "C-c SPC") 'go-remove-unused-imports)
+			  ("C-c j" . godef-jump)
+			  ("C-c C-j" . godef-jump-other-window)
+			  ("M-." . godef-jump)
+			  ("C-c C-b" . xref-pop-marker-stack)
+			  ("C-c C-p" . godef-describe)
+			  ("C-c C-l" . godef-describe)
+			  )
 
-  (define-key go-mode-map (kbd "C-c C-j") 'godef-jump)
-  (define-key go-mode-map (kbd "M-.") 'godef-jump)
-  (define-key go-mode-map (kbd "C-c C-b") 'xref-pop-marker-stack)
-  (define-key go-mode-map (kbd "C-c C-p") 'godef-describe)
-  (define-key go-mode-map (kbd "C-c C-l") 'godef-describe)
-
+  :config
   (defun my-go-mode-hook ()
-    "My go mode hook."
-    (progn
-      (go-eldoc-setup)
-      ))
+	"My go mode hook."
+	(progn
+	  (go-eldoc-setup)
+	  ))
 
   (add-hook 'go-mode-hook 'my-go-mode-hook))
 

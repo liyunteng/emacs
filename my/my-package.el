@@ -33,9 +33,12 @@
   (load my-pinned-packages-file))
 
 (setq package-user-dir my-packages-save-dir)
+(setq package-enable-at-startup t)
 (package-initialize)
+(unless package-archive-contents
+ (package-refresh-contents))
 
-(defvar my-packages '(dash))
+(defvar my-packages '())
 
 (defun my-packages-installed-p ()
   "Check if all packages in `my-packages' are installed."
@@ -63,10 +66,10 @@ Missing packages are installed automatically."
     ;; install the missing packages
     (my-require-packages my-packages)))
 
-;; run package installation
-(my-install-packages)
+;; ;; run package installation
+;; (my-install-packages)
 
-(defun my-list-foreign-packages ()
+(defun my/list-foreign-packages ()
   "Browse third-party packages not bundled with My.
 
 Behaves similarly to `package-list-packages', but shows only the packages that
@@ -155,11 +158,16 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
 
 
 ;; use package
+;;(my-require-package 'diminish)
 (my-require-package 'bind-key)
 (my-require-package 'use-package)
+;;(require 'diminish)
+(require 'bind-key)
 (require 'use-package)
-(setq use-package-verbose init-file-debug
-      use-package-inject-hooks t)
+(setq
+ use-package-always-ensure nil
+ use-package-verbose init-file-debug
+ use-package-inject-hooks t)
 
 (defconst my--use-package-add-hook-keywords '(:pre-init
                                               :post-init
@@ -218,7 +226,7 @@ override lazy-loaded settings."
 ;;   :init
 ;;   (progn
 ;;     (message "use-package init multi-term")
-;;     ;; (my-require-package 'multi-term)
+;;     ;; (use-package multi-term)
 ;;     )
 ;;   :config
 ;;   (message "use-package config multi-term")

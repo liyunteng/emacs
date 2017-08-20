@@ -24,55 +24,61 @@
 
 ;;; Code:
 
-(my-require-package 'dired+)
-(my-require-package 'dired-sort)
-
 ;; Prefer g-prefixed coreutils version of standard utilities when available
 (let ((gls (executable-find "gls")))
   (when gls (setq insert-directory-program gls)))
 
-;;传给ls的参数
-(if (or (eq system-type 'linux)
-        (eq system-type 'gnu/linux))
-    (setq-default dired-listing-switches "-alhcDF")
-  (setq-default dired-listing-switches "-alh"))
+(use-package dired
+  :config
+  (use-package dired+
+	:ensure t
+	:config
+	(setq diredp-hide-details-initially-flag nil
+		  diredp-hide-details-propagate-flag nil
+		  dired-hide-details-mode nil
+		  global-dired-hide-details-mode nil
+		  )
+	;; 重用buffer，避免产生过多的dired buffer
+	(defun my--turn-on-diredp-find-reuse-dir ()
+	  (toggle-diredp-find-file-reuse-dir t))
+	(add-hook 'dired-mode-hook 'my--turn-on-diredp-find-reuse-dir)
+	)
 
-;; (setq dired-ls-sorting-switches "SXU")
-(setq-default dired-isearch-filenames 'dwim
-              dired-omit-verbose nil
-              dired-dwim-target t
-              diredp-hide-details-initially-flag nil
-              diredp-hide-details-propagate-flag nil
-              dired-hide-details-mode nil
-              global-dired-hide-details-mode nil
-              ;;; 重用buffer，避免产生过多的dired buffer
-              toggle-diredp-find-file-reuse-dir t
-              dired-recursive-deletes 'top
-              dired-recursive-copies 'top
-              ;; dired忽略的上限
-              dired-omit-mode t
-              dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
-              )
+  (use-package dired-aux
+	:config
+	(setq dired-isearch-filenames 'dwim)
+	)
 
-;;; 使用！来使用外部程序打开
-;; (setq dired-guess-shell-alist-user
-;;       '(("\\.avi\\'" "totem &")
-;;         ("\\.rmvb\\'" "totem &")
-;;         ("\\.mkv\\'" "totem &")
-;;         ("\\.mp4\\'" "totem &")
-;;         ("\\.htm\\'" "firefox &")
-;;         ("\\.html\\'" "firefox &")
-;;         ("\\.pdf\\'" "evince &")
-;;         ("\\.chm\\'" "xchm &")))
+  (use-package dired-x
+	:config
+	(setq dired-omit-verbose nil
+		  ;; dired忽略的上限
+		  dired-omit-mode t
+		  dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
+		  )
+	(dolist (ex '(".cache" ".o" ".ui"))
+	  (add-to-list 'dired-omit-extensions ex))
+	)
 
-(after-load 'dired-x
-  (dolist (ex '(".cache" ".o" ".ui"))
-    (add-to-list 'dired-omit-extensions ex)))
+  (use-package dired-sort
+	:ensure t)
 
-(after-load 'dired
-  (require 'dired-x)
-  (require 'dired+)
-  (require 'dired-sort)
+  (use-package diff-hl
+	:ensure t
+	:defines diff-hl-dired-mode
+	:config
+	(add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+	)
+
+  (setq
+   dired-dwim-target t
+   dired-recursive-deletes 'top
+   dired-recursive-copies 'top)
+  ;;传给ls的参数
+  (if (or (eq system-type 'linux)
+		  (eq system-type 'gnu/linux))
+	  (setq dired-listing-switches "-alhcDF")
+	(setq dired-listing-switches "-alh"))
 
   ;; goto parent dir
   (defadvice dired-kill-subdir (around back-to-parent-dir activate)
@@ -122,10 +128,22 @@ if no files marked, always operate on current line in dired-mode."
   (define-key dired-mode-map (kbd "\\") 'my/dired-run-git-command)
   ;; (define-key dired-mode-map (kbd "=") 'dired-compare-directories)
 
-  (when (boundp 'diff-hl-dired-mode)
-    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
   )
 
+
+;; (setq dired-ls-sorting-switches "SXU")
+
+
+;;; 使用！来使用外部程序打开
+;; (setq dired-guess-shell-alist-user
+;;       '(("\\.avi\\'" "totem &")
+;;         ("\\.rmvb\\'" "totem &")
+;;         ("\\.mkv\\'" "totem &")
+;;         ("\\.mp4\\'" "totem &")
+;;         ("\\.htm\\'" "firefox &")
+;;         ("\\.html\\'" "firefox &")
+;;         ("\\.pdf\\'" "evince &")
+;;         ("\\.chm\\'" "xchm &")))
 
 (provide 'my-dired)
 ;;; my-dired.el ends here

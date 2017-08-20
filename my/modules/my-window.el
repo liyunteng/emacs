@@ -30,9 +30,6 @@
 
 ;; Make "C-x o" prompt for a target window when there are more than 2
 
-(my-require-package 'switch-window)
-(my-require-package 'window-numbering)
-
 (setq-default display-buffer-reuse-frames t)
 (setq-default split-height-threshold 80)
 (setq-default split-width-threshold 160)
@@ -42,10 +39,25 @@
 ;; important for golden-ratio to better work
 (setq window-combination-resize t)
 
-(setq-default switch-window-shortcut-style 'alphabet)
-(setq-default switch-window-timeout nil)
+(use-package switch-window
+  :ensure t
+  :bind
+  ("C-x o" . switch-window)
+  :config
+  (setq switch-window-shortcut-style 'alphabet)
+  (setq switch-window-timeout nil)
+  )
 
-(window-numbering-mode t)
+(use-package window-numbering
+  :ensure t
+  :config
+  (window-numbering-mode t)
+  )
+
+(use-package default-text-scale
+  :ensure t
+  :bind (("C-M-=" . default-text-scale-increase)
+		 ("C-M--" . default-text-scale-decrease)))
 
 (defun my/adjust-opacity (frame incr)
   "Adjust the background opacity of FRAME by increment INCR."
@@ -243,10 +255,6 @@ Dedicated (locked) windows are left untouched."
 
 (unless (memq window-system '(nt w32))
   (windmove-default-keybindings 'control))
-
-(my-require-package 'default-text-scale)
-(global-set-key (kbd "C-M-=") 'default-text-scale-increase)
-(global-set-key (kbd "C-M--") 'default-text-scale-decrease)
 
 (defun my/maybe-adjust-visual-fill-column ()
   "Readjust visual fill column when the global font size is modified.

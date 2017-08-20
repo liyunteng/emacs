@@ -24,7 +24,8 @@
 
 ;;; Code:
 
-(my-require-package 'flyspell-lazy)
+(use-package flyspell-lazy
+  :ensure t)
 ;; flyspell setup for web-mode
 (defun web-mode-flyspell-verify ()
   (let* ((f (get-text-property (- (point) 1) 'face))

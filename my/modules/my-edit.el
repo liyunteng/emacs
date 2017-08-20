@@ -330,12 +330,17 @@
              newline
              newline-mark))
 ;; (global-whitespace-mode +1)
-(my-require-package 'whitespace-cleanup-mode)
-(require 'whitespace-cleanup-mode)
-(global-whitespace-cleanup-mode +1)
-(diminish 'whitespace-cleanup-mode)
-(add-hook 'before-save-hook 'whitespace-cleanup )
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(use-package whitespace-cleanup-mode
+  :ensure t
+  :diminish whitespace-cleanup-moed
+  :init
+  (global-whitespace-cleanup-mode +1)
+  :config
+  (add-hook 'before-save-hook 'whitespace-cleanup )
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  )
+;; (require 'whitespace-cleanup-mode)
+
 
 ;;拷贝来的代码自动格式化
 (defvar my-indent-sensitive-modes
@@ -410,10 +415,14 @@ indent yanked text (with prefix arg don't indent)."
 (setq-default grep-highlight-matches t)
 (setq-default grep-scroll-output t)
 (when (executable-find "ag")
-  (my-require-package 'ag)
-  (my-require-package 'wgrep-ag)
-  (setq-default ag-highlight-search t)
-  (global-set-key (kbd "M-?") 'ag)
+  (use-package ag
+	:ensure t
+    :bind ("M-?" . ag)
+	:config
+	(setq ag-highlight-search t)
+	)
+  (use-package wgrep-ag
+	:ensure t)
   )
 
 ;; 设置默认浏览器为firefox
@@ -613,156 +622,221 @@ the right."
 (my|create-align-repeat-x "backslash" "\\\\")
 
 
-(my-require-package 'diminish)
-(require 'diminish)
+(use-package diminish
+  :ensure t)
+;; (require 'diminish)
 
 ;; expand-region
-(my-require-package 'expand-region)
-(require 'expand-region)
-(setq expand-region-contract-fast-key ",")
-(setq expand-region-smart-cursor nil)
+(use-package expand-region
+  :ensure t
+  :config
+  (setq expand-region-contract-fast-key ",")
+  (setq expand-region-smart-cursor nil)
+  )
+;; (require 'expand-region)
 
 ;; page-break-lines
-(my-require-package 'page-break-lines)
-(require 'page-break-lines)
-(global-page-break-lines-mode t)
+(use-package page-break-lines
+  :ensure t
+  :config
+  (global-page-break-lines-mode t))
+;; (require 'page-break-lines)
+
 
 ;; smarter kill-ring navigation
-(my-require-package 'browse-kill-ring)
-(require 'browse-kill-ring)
-(browse-kill-ring-default-keybindings)
-(global-set-key (kbd "M-y") 'browse-kill-ring)
+(use-package browse-kill-ring
+  :ensure t
+  :bind (("M-y" . browse-kill-ring))
+  :config
+  (browse-kill-ring-default-keybindings)
+  )
+;; (require 'browse-kill-ring)
+;; (global-set-key (kbd "M-y") 'browse-kill-ring)
 
 ;; projectile
-(my-require-package 'projectile)
-(require 'projectile)
-(projectile-mode +1)
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-mode +1)
+  )
+;; (require 'projectile)
+;; (projectile-mode +1)
 
 ;; diff-hl
-(my-require-package 'diff-hl)
-(require 'diff-hl)
-(global-diff-hl-mode +1)
-(add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-(add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+(use-package diff-hl
+  :ensure t
+  :config
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  (global-diff-hl-mode +1)
+  )
+;; (require 'diff-hl)
 
 ;; undo-tree
-(my-require-package 'undo-tree)
-(require 'undo-tree)
-(setq undo-tree-visualizer-timestamps t
-      undo-tree-visualizer-diff t
-      undo-tree-auto-save-history t)
-(global-undo-tree-mode +1)
-(diminish 'undo-tree-mode)
+(use-package undo-tree
+  :ensure t
+  :diminish undo-tree-mode
+  :config
+  (setq undo-tree-visualizer-timestamps t
+		undo-tree-visualizer-diff t
+		undo-tree-auto-save-history t)
+  (global-undo-tree-mode +1)
+  )
+;; (require 'undo-tree)
 
 ;; easy-kill
-(my-require-package 'easy-kill)
-(require 'easy-kill)
-(global-set-key [remap kill-ring-save] 'easy-kill)
+(use-package easy-kill
+  :ensure t
+  :bind (([remap kill-ring-save] . easy-kill))
+  )
+;; (require 'easy-kill)
+;; (global-set-key [remap kill-ring-save] 'easy-kill)
 ;; (global-set-key [remap mark-sexp] 'easy-mark)
 
-
 ;; use settings from .editorconfig file when present
-(my-require-package 'editorconfig)
-(require 'editorconfig)
-(editorconfig-mode +1)
-(diminish 'editorconfig-mode)
+(use-package editorconfig
+  :ensure t
+  :diminish editorconfig-mode
+  :config
+  (editorconfig-mode +1)
+  )
+
+;; (require 'editorconfig)
 
 ;;; indent-guide
-(my-require-package 'indent-guide)
-(add-hook 'prog-mode-hook 'indent-guide-mode)
-(after-load 'indent-guide (diminish 'indent-guide-mode))
+(use-package indent-guide
+  :ensure t
+  :diminish indent-guide-mode
+  :config
+  (add-hook 'prog-mode-hook 'indent-guide-mode)
+  )
+;; (after-load 'indent-guide (diminish 'indent-guide-mode))
 
 ;; multiple-cursors
-(my-require-package 'multiple-cursors)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(use-package multiple-cursors
+  :ensure t
+  :bind (("C-<" . mc/mark-previous-like-this)
+		 ("C->" . mc/mark-next-like-this)
+		 ("C-c C-<" . mc/mark-all-like-this)
+		 ("C-c m r" . set-rectangular-region-anchor)
+		 ("C-c m c" . mc/edit-lines)
+		 ("C-c m e" . mc/edit-ends-of-lines)
+		 ("C-c m a" . mc/edit-beginnings-of-lines)
+		 ))
+;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 ;; conflict witch text-scale-increase
 ;; (global-set-key (kbd "C-+") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 ;; From active region to multiple cursors:
-(global-set-key (kbd "C-c m r") 'set-rectangular-region-anchor)
-(global-set-key (kbd "C-c m c") 'mc/edit-lines)
-(global-set-key (kbd "C-c m e") 'mc/edit-ends-of-lines)
-(global-set-key (kbd "C-c m a") 'mc/edit-beginnings-of-lines)
+;; (global-set-key (kbd "C-c m r") 'set-rectangular-region-anchor)
+;; (global-set-key (kbd "C-c m c") 'mc/edit-lines)
+;; (global-set-key (kbd "C-c m e") 'mc/edit-ends-of-lines)
+;; (global-set-key (kbd "C-c m a") 'mc/edit-beginnings-of-lines)
 
 ;; smartparens
-(my-require-package 'smartparens)
-(require 'smartparens)
-(show-smartparens-global-mode +1)
-(add-hook 'nxml-mode-hook 'smartparens-mode)
+(use-package smartparens
+  :ensure t
+  :config
+  (show-smartparens-global-mode +1)
+  )
+;; (require 'smartparens)
+;; (add-hook 'nxml-mode-hook 'smartparens-mode)
 
 ;; discover-my-major
-(my-require-package 'discover-my-major)
+(use-package discover-my-major
+  :ensure t)
 
 ;; symbol-overlay
-(my-require-package 'symbol-overlay)
-(dolist (hook '(prog-mode-hook html-mode-hook css-mode-hook))
-  (add-hook hook 'symbol-overlay-mode))
-(after-load 'symbol-overlay
-  (diminish 'symbol-overlay-mode "so")
+(use-package symbol-overlay
+  :ensure t
+  :diminish "so"
+  :bind (:map symbol-overlay-mode-map
+			  ("M-n" . symbol-overlay-jump-next)
+			  ("M-p" . symbol-overlay-jump-prev))
+  :init
+  (dolist (hook '(prog-mode-hook html-mode-hook css-mode-hook))
+	(add-hook hook 'symbol-overlay-mode))
+  :config
   (set-face-attribute 'symbol-overlay-temp-face nil
-                      :background
-                      (face-attribute 'isearch
-                                      :background)
-                      :foreground
-                      (face-attribute 'isearch
-                                      :foreground))
-  (define-key symbol-overlay-mode-map (kbd "M-n") 'symbol-overlay-jump-next)
-  (define-key symbol-overlay-mode-map (kbd "M-p") 'symbol-overlay-jump-prev))
+					  :background
+					  (face-attribute 'isearch
+									  :background)
+					  :foreground
+					  (face-attribute 'isearch
+									  :foreground))
+  )
 
 ;; flycheck
 ;; enable on-the-fly syntax checking
-(my-require-package 'flycheck)
-(require 'flycheck)
-(if (fboundp 'global-flycheck-mode)
-    (progn
-      (global-flycheck-mode +1)
-      (add-hook 'prog-mode-hook 'flycheck-mode)
-      (when (display-graphic-p)
-        (progn
-          (my-require-package 'flycheck-pos-tip)
-          (require 'flycheck-pos-tip)
-          (flycheck-pos-tip-mode 1)))))
+(use-package flycheck
+  :ensure t
+  :if (fboundp 'global-flycheck-mode)
+  :init
+  (add-hook 'prog-mode-hook 'flycheck-mode)
+  :config
+  (global-flycheck-mode +1)
+  (when (display-graphic-p)
+	(use-package flycheck-pos-tip
+	  :ensure t
+	  :config
+	  (flycheck-pos-tip-mode 1)
+	  ))
+  )
+
+
+;; (require 'flycheck)
+;; (if (fboundp 'global-flycheck-mode)
+;;     (progn
+;;       (global-flycheck-mode +1)
+;;       (add-hook 'prog-mode-hook 'flycheck-mode)
+;;       (when (display-graphic-p)
+;;         (progn
+;;           (use-package flycheck-pos-tip)
+;;           (require 'flycheck-pos-tip)
+;;           (flycheck-pos-tip-mode 1)))))
 
 ;; GTAGS
-(my-require-package 'ggtags)
-(after-load 'ggtags
+(use-package ggtags
+  :ensure t
+  :config
   (defun my-gtags-ext-produce-tags-if-needed (dir)
-    (if (not (= 0 (call-process "global" nil nil nil " -p"))) ; tagfile doesn't exist?
-        (let ((default-directory dir))
-          (shell-command "gtags")
-          (message "tagfile created by GNU Global"))
-      ;;  tagfile already exists; update it
-      (shell-command "global -u")
-      (message "tagfile updated by GNU Global")))
+	(if (not (= 0 (call-process "global" nil nil nil " -p"))) ; tagfile doesn't exist?
+		(let ((default-directory dir))
+		  (shell-command "gtags")
+		  (message "tagfile created by GNU Global"))
+	  ;;  tagfile already exists; update it
+	  (shell-command "global -u")
+	  (message "tagfile updated by GNU Global")))
 
   ;; @see http://emacs-fu.blogspot.com.au/2008/01/navigating-through-source-code-using.html
   (defun my/gtags-ext-create-or-update ()
-    "create or update the gnu global tag file"
-    (interactive)
-    (my-gtags-ext-produce-tags-if-needed (read-directory-name
-                                          "gtags: top of source tree:" default-directory)))
+	"create or update the gnu global tag file"
+	(interactive)
+	(my-gtags-ext-produce-tags-if-needed (read-directory-name
+										  "gtags: top of source tree:" default-directory)))
 
   (defun my/gtags-ext-add-gtagslibpath (libdir &optional del)
-    "add external library directory to environment variable GTAGSLIBPATH.\ngtags will can that directory if needed.\nC-u M-x add-gtagslibpath will remove the directory from GTAGSLIBPATH."
-    (interactive "DDirectory containing GTAGS:\nP")
-    (let (sl)
-      (if (not (file-exists-p (concat (file-name-as-directory libdir) "GTAGS")))
-          ;; create tags
-          (let ((default-directory libdir))
-            (shell-command "gtags")
-            (message "tagfile created by GNU Global")))
+	"add external library directory to environment variable GTAGSLIBPATH.\ngtags will can that directory if needed.\nC-u M-x add-gtagslibpath will remove the directory from GTAGSLIBPATH."
+	(interactive "DDirectory containing GTAGS:\nP")
+	(let (sl)
+	  (if (not (file-exists-p (concat (file-name-as-directory libdir) "GTAGS")))
+		  ;; create tags
+		  (let ((default-directory libdir))
+			(shell-command "gtags")
+			(message "tagfile created by GNU Global")))
 
-      (setq libdir (directory-file-name libdir)) ;remove final slash
-      (setq sl (split-string (if (getenv "GTAGSLIBPATH") (getenv "GTAGSLIBPATH") "")  ":" t))
-      (if del (setq sl (delete libdir sl)) (add-to-list 'sl libdir t))
-      (setenv "GTAGSLIBPATH" (mapconcat 'identity sl ":"))
-      ))
+	  (setq libdir (directory-file-name libdir)) ;remove final slash
+	  (setq sl (split-string (if (getenv "GTAGSLIBPATH") (getenv "GTAGSLIBPATH") "")  ":" t))
+	  (if del (setq sl (delete libdir sl)) (add-to-list 'sl libdir t))
+	  (setenv "GTAGSLIBPATH" (mapconcat 'identity sl ":"))
+	  ))
 
   (defun my/gtags-ext-print-gtagslibpath ()
-    "print the GTAGSLIBPATH (for debug purpose)"
-    (interactive)
-    (message "GTAGSLIBPATH=%s" (getenv "GTAGSLIBPATH"))))
+	"print the GTAGSLIBPATH (for debug purpose)"
+	(interactive)
+	(message "GTAGSLIBPATH=%s" (getenv "GTAGSLIBPATH")))
+  )
 
 (diminish 'hide-ifdef-hiding)
 (diminish 'beacon-mode)

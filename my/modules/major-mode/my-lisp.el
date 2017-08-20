@@ -24,19 +24,31 @@
 
 ;;; Code:
 
-(my-require-package 'ipretty)
-;; (my-require-package 'hl-sexp)
-(my-require-package 'immortal-scratch)
-(my-require-package 'cl-lib-highlight)
-(my-require-package 'aggressive-indent)
-(my-require-package 'rainbow-mode)
-(my-require-package 'rainbow-delimiters)
-(my-require-package 'eldoc-eval)
-(my-require-package 'macrostep)
-(my-require-package 'highlight-quoted)
-(my-require-package 'flycheck-package)
-(my-require-package 'elisp-slime-nav)
-(my-require-package 'auto-compile)
+(use-package ipretty
+  :ensure t)
+;; (use-package hl-sexp)
+(use-package immortal-scratch
+  :ensure t)
+(use-package cl-lib-highlight
+  :ensure t)
+(use-package aggressive-indent
+  :ensure t)
+(use-package rainbow-mode
+  :ensure t)
+(use-package rainbow-delimiters
+  :ensure t)
+(use-package eldoc-eval
+  :ensure t)
+(use-package macrostep
+  :ensure t)
+(use-package highlight-quoted
+  :ensure t)
+(use-package flycheck-package
+  :ensure t)
+(use-package elisp-slime-nav
+  :ensure t)
+(use-package auto-compile
+  :ensure t)
 
 (require 'elisp-slime-nav)
 (diminish 'elisp-slime-nav-mode "Nav")
@@ -282,7 +294,8 @@
   (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode))
 
 (when (require 'flycheck)
-  (my-require-package 'flycheck-package)
+  (use-package flycheck-package
+	:ensure t)
   (after-load 'flycheck
     (flycheck-package-setup)))
 
