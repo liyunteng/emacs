@@ -58,6 +58,7 @@
 		  )
 	(dolist (ex '(".cache" ".o" ".ui"))
 	  (add-to-list 'dired-omit-extensions ex))
+    (add-hook 'dired-mode-hook 'dired-omit-mode)
 	)
 
   (use-package dired-sort

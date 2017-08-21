@@ -49,6 +49,7 @@
 
 
 (use-package speedbar
+  :defer t
   :config
   (use-package semantic/sb)
 
@@ -67,6 +68,7 @@
   )
 
 (use-package semantic
+  :defer t
   :config
   ;;global-semantic-decoration-mode
   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
@@ -92,6 +94,7 @@
 
 
   (use-package semantic/mru-bookmark
+	:defer t
 	:config
 	;;修复向回跳转的问题
 	(defadvice semantic-ia--fast-jump-helper (around my-semantic-ia-fast-jump-push-mark activate)
@@ -116,6 +119,7 @@
 	)
 
   (use-package semantic/idle
+	:defer t
 	:defines (semantic-idle-scheduler-idle-time
 			  semantic-idle-scheduler-max-buffer-size
 			  semantic-idle-scheduler-work-idle-time
@@ -149,6 +153,7 @@
 
 
   (use-package semantic/dep
+	:defer t
 	:config
 	(setq-mode-local c-mode semantic-dependency-system-include-path
 					 (semantic-gcc-get-include-paths "c"))
@@ -160,11 +165,13 @@
   ;; 设置头文件路径
 
   (use-package semantic/senator
+	:defer t
 	:config
 	(setq senator-highlight-found t))
 
   ;; ;;;semantic Database
   (use-package semantic/db
+	:defer t
 	:config
 	(setq semanticdb-search-system-databases t)
 
@@ -172,6 +179,7 @@
 	)
 
   (use-package semantic/db-find
+	:defer t
 	:config
 	(setq-mode-local c-mode semanticdb-find-default-throttle
 					 '(project local unloaded system recursive))
@@ -180,6 +188,7 @@
 	)
 
   (use-package semantic/db-global
+	:defer t
 	:config
 	(semanticdb-enable-gnu-global-databases 'c-mode)
 	(semanticdb-enable-gnu-global-databases 'c++-mode)
