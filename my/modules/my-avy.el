@@ -24,24 +24,25 @@
 
 ;;; Code:
 (use-package avy
-  :ensure t)
-(require 'avy)
-(setq avy-background t)
-(setq avy-style 'at-full)
-(defvar avy-command-prefix)
-(define-prefix-command 'avy-command-prefix)
-(global-set-key (kbd "C-x j") 'avy-command-prefix)
-(define-key avy-command-prefix (kbd "j") 'avy-goto-char)
-(define-key avy-command-prefix (kbd "c") 'avy-goto-char)
-(define-key avy-command-prefix (kbd "w") 'avy-goto-word-1)
-(define-key avy-command-prefix (kbd "s") 'avy-goto-symbol-1)
-(define-key avy-command-prefix (kbd ".") 'avy-goto-word-or-subword-1)
-(define-key avy-command-prefix (kbd "l") 'avy-goto-line)
-(define-key avy-command-prefix (kbd "m") 'avy-move-line)
-(define-key avy-command-prefix (kbd "p") 'avy-copy-line)
-(define-key avy-command-prefix (kbd "b") 'avy-pop-mark)
-(define-key avy-command-prefix (kbd "r") 'avy-resume)
-(define-key isearch-mode-map (kbd "C-j") 'avy-isearch)
+  :ensure t
+  :config
+  (setq avy-background t)
+  (setq avy-style 'at-full)
+  (defvar avy-command-prefix)
+  (define-prefix-command 'avy-command-prefix)
+  (global-set-key (kbd "C-x j") 'avy-command-prefix)
+  (define-key avy-command-prefix (kbd "j") 'avy-goto-char)
+  (define-key avy-command-prefix (kbd "c") 'avy-goto-char)
+  (define-key avy-command-prefix (kbd "w") 'avy-goto-word-1)
+  (define-key avy-command-prefix (kbd "s") 'avy-goto-symbol-1)
+  (define-key avy-command-prefix (kbd ".") 'avy-goto-word-or-subword-1)
+  (define-key avy-command-prefix (kbd "l") 'avy-goto-line)
+  (define-key avy-command-prefix (kbd "m") 'avy-move-line)
+  (define-key avy-command-prefix (kbd "p") 'avy-copy-line)
+  (define-key avy-command-prefix (kbd "b") 'avy-pop-mark)
+  (define-key avy-command-prefix (kbd "r") 'avy-resume)
+  (define-key isearch-mode-map (kbd "C-j") 'avy-isearch)
+  )
 
 (provide 'my-avy)
 ;;; my-avy.el ends here

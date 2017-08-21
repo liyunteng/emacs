@@ -27,12 +27,12 @@
 (use-package move-text
   :ensure t)
 (use-package imenu-anywhere
-  :ensure t)
+  :ensure t
+  :config
+  (use-package easymenu)
+  )
 (use-package crux
   :ensure t)
-(require 'easymenu)
-(require 'imenu-anywhere)
-(require 'crux)
 
 (defvar my-mode-map
   (let ((map (make-sparse-keymap)))

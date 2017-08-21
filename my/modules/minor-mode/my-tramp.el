@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2015  liyunteng
 
-;; Author: liyunteng(require 'tramp) <li_yunteng@163.com>
+;; Author: liyunteng <li_yunteng@163.com>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify

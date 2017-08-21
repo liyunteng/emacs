@@ -143,9 +143,11 @@
 (transient-mark-mode +1)
 
 ;; 现实电池状态
-(require 'battery)
-(if (fboundp 'battery-status-function)
-    (display-battery-mode t) nil)
+(use-package battery
+  :config
+  (if (fboundp 'battery-status-function)
+	  (display-battery-mode t) nil)
+  )
 
 ;; 在标题栏提示当前位置
 (setq frame-title-format
@@ -160,98 +162,100 @@
                           (concat " ("user-full-name ")"))
                       " - Emacs ♥ you!\n\n"))
 
-;; activate save-place for all buffers
-(require 'saveplace)
-(if (< emacs-major-version 25)
-    (progn (require 'saveplace)
-           (setq-default save-place t))
-  (save-place-mode 1))
-
-
 ;; linum
 ;;显示行列号
-(require 'linum)
-(setq linum-format 'dynamic)
-(global-linum-mode 'linum-mode)
-(defvar my-linum-mode-inhibit-modes-list
-  '(eshell-mode
-    shell-mode
-    profiler-report-mode
-    ffip-diff-mode
-    dictionary-mode
-    erc-mode
-    browse-kill-ring-mode
-    etags-select-mode
-    dired-mode
-    help-mode
-    text-mode
-    fundamental-mode
-    jabber-roster-mode
-    jabber-chat-mode
-    inferior-js-mode
-    inferior-python-mode
-    inferior-scheme-mode
-    ivy-occur-grep-mode ; for better performance
-    twittering-mode
-    compilation-mode
-    weibo-timeline-mode
-    woman-mode
-    Info-mode
-    calc-mode
-    calc-trail-mode
-    comint-mode
-    gnus-group-mode
-    inf-ruby-mode
-    gud-mode
-    org-mode
-    vc-git-log-edit-mode
-    log-edit-mode
-    term-mode
-    w3m-mode
-    speedbar-mode
-    gnus-summary-mode
-    gnus-article-mode
-    calendar-mode))
-(defadvice linum-on (around my-linum-on-inhibit-for-modes)
-  "Stop the load of `linum-mode' for some major modes."
-  (unless (member major-mode my-linum-mode-inhibit-modes-list)
-    ad-do-it))
-(ad-activate 'linum-on)
+(use-package linum
+  :config
+  (setq linum-delay t)
+  (setq linum-format 'dynamic)
 
-(setq-default linum-delay t)
-(defadvice linum-schedule (around my-linum-schedule () activate)
-  "Updated line number every second."
-  (run-with-idle-timer 1 nil #'linum-update-current))
+  (defvar my-linum-mode-inhibit-modes-list
+	'(eshell-mode
+	  shell-mode
+	  profiler-report-mode
+	  ffip-diff-mode
+	  dictionary-mode
+	  erc-mode
+	  browse-kill-ring-mode
+	  etags-select-mode
+	  dired-mode
+	  help-mode
+	  text-mode
+	  fundamental-mode
+	  jabber-roster-mode
+	  jabber-chat-mode
+	  inferior-js-mode
+	  inferior-python-mode
+	  inferior-scheme-mode
+	  ivy-occur-grep-mode ; for better performance
+	  twittering-mode
+	  compilation-mode
+	  weibo-timeline-mode
+	  woman-mode
+	  Info-mode
+	  calc-mode
+	  calc-trail-mode
+	  comint-mode
+	  gnus-group-mode
+	  inf-ruby-mode
+	  gud-mode
+	  org-mode
+	  vc-git-log-edit-mode
+	  log-edit-mode
+	  term-mode
+	  w3m-mode
+	  speedbar-mode
+	  gnus-summary-mode
+	  gnus-article-mode
+	  calendar-mode))
+
+  (defadvice linum-on (around my-linum-on-inhibit-for-modes)
+	"Stop the load of `linum-mode' for some major modes."
+	(unless (member major-mode my-linum-mode-inhibit-modes-list)
+	  ad-do-it))
+  (ad-activate 'linum-on)
+
+  (defadvice linum-schedule (around my-linum-schedule () activate)
+	"Updated line number every second."
+	(run-with-idle-timer 1 nil #'linum-update-current))
+  (global-linum-mode 'linum-mode)
+  )
 
 ;; 启用cua
-(require 'cua-base)
-(setq cua-auto-mark-last-change t)
-(cua-selection-mode t)
+(use-package cua-base
+  :config
+  (setq cua-auto-mark-last-change t)
+  (cua-selection-mode t))
 
 ;; enable winner-mode to manage window configurations
 (winner-mode +1)
 
 ;; use shift + arrow keys to switch between visible buffers
-(require 'windmove)
-(windmove-default-keybindings)
+(use-package windmove
+  :config
+  (windmove-default-keybindings))
 
 ;;
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-(setq uniquify-separator "/")
-(setq uniquify-after-kill-buffer-p t)
-(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+(use-package uniquify
+  :config
+  (setq uniquify-buffer-name-style 'forward)
+  (setq uniquify-separator "/")
+  (setq uniquify-after-kill-buffer-p t)
+  (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+  )
 
 ;; ediff
 (setq-default ediff-split-window-function 'split-window-horizontally
               ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;; clean up obsolete buffers automatically
-(require 'midnight)
+(use-package midnight)
 
 ;; bookmark
-(require 'bookmark)
-(setq bookmark-save-flag 1)
+(use-package bookmark
+  :config
+  (setq bookmark-save-flag 1)
+  )
 
 ;; abbrev config
 (add-hook 'text-mode-hook 'abbrev-mode)
@@ -261,18 +265,17 @@
           'executable-make-buffer-file-executable-if-script-p)
 
 ;; saner regex syntax
-(require 're-builder)
-(setq reb-re-syntax 'string)
-
+(use-package re-builder
+  :config
+  (setq reb-re-syntax 'string))
 
 ;; Auto revert
-(require 'autorevert)
-(global-auto-revert-mode t)
-;; Also auto refresh dired, but be quiet about it
-(setq global-auto-revert-non-file-buffers t
-      auto-revert-verbose nil)
-(add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode)
-
+(use-package autorevert
+  :config
+  (setq global-auto-revert-non-file-buffers t
+		auto-revert-verbose nil)
+  (global-auto-revert-mode t)
+  (add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode))
 
 ;; (setq ring-bell-function 'ignore
 ;;       visible-bell nil)
@@ -284,12 +287,12 @@
 (setq ring-bell-function 'my--flash-mode-line)
 
 ;; which func
-(require 'which-func)
-(which-function-mode +1)
+(use-package which-func
+  :config
+  (which-function-mode +1))
 
 ;; whitespace 设置
-(require 'whitespace)
-(setq-default show-trailing-whitespace 1)
+(setq show-trailing-whitespace 1)
 (set-face-attribute 'trailing-whitespace nil
 					:background
 					(face-attribute 'font-lock-comment-face
@@ -302,7 +305,6 @@
 ;; 					:background nil)
 ;; (set-face-attribute 'whitespace-indentation nil
 ;; 					:background nil)
-
 (defun my-no-trailing-whitespace ()
   "Turn off display of trailing whitespace in this buffer."
   (setq-local show-trailing-whitespace nil))
@@ -321,26 +323,25 @@
                 term-mode-hook))
   (add-hook hook #'my-no-trailing-whitespace))
 
-(setq whitespace-line-column fill-column)
-(setq whitespace-style
-      '(face tabs tab-mark spaces space-mark
-             trailling lines-tail
-             indentation::space
-             indentation:tab
-             newline
-             newline-mark))
-;; (global-whitespace-mode +1)
+(use-package whitespace
+  :config
+  (setq whitespace-line-column fill-column)
+  (setq whitespace-style
+		'(face tabs tab-mark spaces space-mark
+			   trailling lines-tail
+			   indentation::space
+			   indentation:tab
+			   newline
+			   newline-mark)))
+
 (use-package whitespace-cleanup-mode
   :ensure t
   :diminish whitespace-cleanup-moed
-  :init
-  (global-whitespace-cleanup-mode +1)
   :config
   (add-hook 'before-save-hook 'whitespace-cleanup )
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (global-whitespace-cleanup-mode +1)
   )
-;; (require 'whitespace-cleanup-mode)
-
 
 ;;拷贝来的代码自动格式化
 (defvar my-indent-sensitive-modes
@@ -491,27 +492,31 @@ indent yanked text (with prefix arg don't indent)."
   (interactive
    (list (not (region-active-p)))))
 
-;; Compilation from Emacs
-(defun my-colorize-compilation-buffer ()
-  "Colorize a compilation mode buffer."
-  (interactive)
-  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
-  (when (eq major-mode 'compilation-mode)
-    (let ((inhibit-read-only t))
-      (ansi-color-apply-on-region (point-min) (point-max)))))
-(require 'compile)
-(setq compilation-ask-about-save nil  ; Just save before compiling
-      compilation-always-kill t       ; Just kill old compile processes before
+(use-package compile
+  :config
+  (use-package ansi-color)
+  (setq compilation-ask-about-save nil  ; Just save before compiling
+		compilation-always-kill t       ; Just kill old compile processes before
                                         ; starting the new one
-      compilation-scroll-output 'first-error ; Automatically scroll to first
+		compilation-scroll-output 'first-error ; Automatically scroll to first
                                         ; error
-      )
-(require 'ansi-color)
-(add-hook 'compilation-filter-hook #'my-colorize-compilation-buffer)
+		)
 
+  ;; Compilation from Emacs
+  (defun my-colorize-compilation-buffer ()
+	"Colorize a compilation mode buffer."
+	(interactive)
+	;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
+	(when (eq major-mode 'compilation-mode)
+	  (let ((inhibit-read-only t))
+		(ansi-color-apply-on-region (point-min) (point-max)))))
+
+  (add-hook 'compilation-filter-hook #'my-colorize-compilation-buffer)
+  )
 
 ;; highlight
-(after-load 'hi-lock
+(use-package hi-lock
+  :config
   (define-key hi-lock-map (kbd "C-c o l") 'highlight-lines-matching-regexp)
   (define-key hi-lock-map (kbd "C-c o i") 'hi-lock-find-patterns)
   (define-key hi-lock-map (kbd "C-c o r") 'highlight-regexp)
@@ -576,55 +581,63 @@ When nil, never request confirmation.")
 
 
 ;; align
-(defun my/align-repeat (start end regexp &optional justify-right after)
-  "Repeat alignment with respect to the given regular expression.
+(use-package align
+  :config
+  (defun my/align-repeat (start end regexp &optional justify-right after)
+	"Repeat alignment with respect to the given regular expression.
 If JUSTIFY-RIGHT is non nil justify to the right instead of the
 left. If AFTER is non-nil, add whitespace to the left instead of
 the right."
-  (interactive "r\nsAlign regexp: ")
-  (let* ((ws-regexp (if (string-empty-p regexp)
-                        "\\(\\s-+\\)"
-                      "\\(\\s-*\\)"))
-         (complete-regexp (if after
-                              (concat regexp ws-regexp)
-                            (concat ws-regexp regexp)))
-         (group (if justify-right -1 1)))
-    (message "%S" complete-regexp)
-    (align-regexp start end complete-regexp group 1 t)))
+	(interactive "r\nsAlign regexp: ")
+	(let* ((ws-regexp (if (string-empty-p regexp)
+						  "\\(\\s-+\\)"
+						"\\(\\s-*\\)"))
+		   (complete-regexp (if after
+								(concat regexp ws-regexp)
+							  (concat ws-regexp regexp)))
+		   (group (if justify-right -1 1)))
+	  (message "%S" complete-regexp)
+	  (align-regexp start end complete-regexp group 1 t)))
+  (defun my/align-repeat-decimal (start end)
+	"Align a table of numbers on decimal points and dollar signs (both optional) from START to END."
+	(interactive "r")
+	(align-region start end nil
+				  '((nil (regexp . "\\([\t ]*\\)\\$?\\([\t ]+[0-9]+\\)\\.?")
+						 (repeat . t)
+						 (group 1 2)
+						 (spacing 1 1)
+						 (justify nil t)))
+				  nil))
+  (defmacro my|create-align-repeat-x (name regexp &optional justify-right default-after)
+	(let ((new-func (intern (concat "my/align-repeat-" name))))
+	  `(defun ,new-func (start end switch)
+		 (interactive "r\nP")
+		 (let ((after (not (eq (if switch t nil) (if ,default-after t nil)))))
+		   (my/align-repeat start end ,regexp ,justify-right after)))))
 
-(defun my/align-repeat-decimal (start end)
-  "Align a table of numbers on decimal points and dollar signs (both optional) from START to END."
-  (interactive "r")
-  (require 'align)
-  (align-region start end nil
-                '((nil (regexp . "\\([\t ]*\\)\\$?\\([\t ]+[0-9]+\\)\\.?")
-                       (repeat . t)
-                       (group 1 2)
-                       (spacing 1 1)
-                       (justify nil t)))
-                nil))
-(defmacro my|create-align-repeat-x (name regexp &optional justify-right default-after)
-  (let ((new-func (intern (concat "my/align-repeat-" name))))
-    `(defun ,new-func (start end switch)
-       (interactive "r\nP")
-       (let ((after (not (eq (if switch t nil) (if ,default-after t nil)))))
-         (my/align-repeat start end ,regexp ,justify-right after)))))
-
-(my|create-align-repeat-x "comma" "," nil t)
-(my|create-align-repeat-x "semicolon" ";" nil t)
-(my|create-align-repeat-x "colon" ":" nil t)
-(my|create-align-repeat-x "equal" "=")
-(my|create-align-repeat-x "math-oper" "[+\\-*/]")
-(my|create-align-repeat-x "ampersand" "&")
-(my|create-align-repeat-x "bar" "|")
-(my|create-align-repeat-x "left-paren" "(")
-(my|create-align-repeat-x "right-paren" ")" t)
-(my|create-align-repeat-x "backslash" "\\\\")
+  (my|create-align-repeat-x "comma" "," nil t)
+  (my|create-align-repeat-x "semicolon" ";" nil t)
+  (my|create-align-repeat-x "colon" ":" nil t)
+  (my|create-align-repeat-x "equal" "=")
+  (my|create-align-repeat-x "math-oper" "[+\\-*/]")
+  (my|create-align-repeat-x "ampersand" "&")
+  (my|create-align-repeat-x "bar" "|")
+  (my|create-align-repeat-x "left-paren" "(")
+  (my|create-align-repeat-x "right-paren" ")" t)
+  (my|create-align-repeat-x "backslash" "\\\\")
+  )
 
 
 (use-package diminish
-  :ensure t)
-;; (require 'diminish)
+  :ensure t
+  :config
+  (diminish 'hide-ifdef-hiding)
+  (diminish 'beacon-mode)
+  (diminish 'editorconfig-mode)
+  (diminish 'which-key-mode)
+  (diminish 'rainbow-mode)
+  (diminish 'page-break-lines-mode)
+  )
 
 ;; expand-region
 (use-package expand-region
@@ -633,15 +646,12 @@ the right."
   (setq expand-region-contract-fast-key ",")
   (setq expand-region-smart-cursor nil)
   )
-;; (require 'expand-region)
 
 ;; page-break-lines
 (use-package page-break-lines
   :ensure t
   :config
   (global-page-break-lines-mode t))
-;; (require 'page-break-lines)
-
 
 ;; smarter kill-ring navigation
 (use-package browse-kill-ring
@@ -650,8 +660,6 @@ the right."
   :config
   (browse-kill-ring-default-keybindings)
   )
-;; (require 'browse-kill-ring)
-;; (global-set-key (kbd "M-y") 'browse-kill-ring)
 
 ;; projectile
 (use-package projectile
@@ -659,8 +667,6 @@ the right."
   :config
   (projectile-mode +1)
   )
-;; (require 'projectile)
-;; (projectile-mode +1)
 
 ;; diff-hl
 (use-package diff-hl
@@ -670,7 +676,6 @@ the right."
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
   (global-diff-hl-mode +1)
   )
-;; (require 'diff-hl)
 
 ;; undo-tree
 (use-package undo-tree
@@ -682,16 +687,15 @@ the right."
 		undo-tree-auto-save-history t)
   (global-undo-tree-mode +1)
   )
-;; (require 'undo-tree)
 
 ;; easy-kill
 (use-package easy-kill
   :ensure t
   :bind (([remap kill-ring-save] . easy-kill))
+  :config
+  ;; (global-set-key [remap kill-ring-save] 'easy-kill)
+  ;; (global-set-key [remap mark-sexp] 'easy-mark)
   )
-;; (require 'easy-kill)
-;; (global-set-key [remap kill-ring-save] 'easy-kill)
-;; (global-set-key [remap mark-sexp] 'easy-mark)
 
 ;; use settings from .editorconfig file when present
 (use-package editorconfig
@@ -701,8 +705,6 @@ the right."
   (editorconfig-mode +1)
   )
 
-;; (require 'editorconfig)
-
 ;;; indent-guide
 (use-package indent-guide
   :ensure t
@@ -710,7 +712,6 @@ the right."
   :config
   (add-hook 'prog-mode-hook 'indent-guide-mode)
   )
-;; (after-load 'indent-guide (diminish 'indent-guide-mode))
 
 ;; multiple-cursors
 (use-package multiple-cursors
@@ -723,16 +724,6 @@ the right."
 		 ("C-c m e" . mc/edit-ends-of-lines)
 		 ("C-c m a" . mc/edit-beginnings-of-lines)
 		 ))
-;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-;; conflict witch text-scale-increase
-;; (global-set-key (kbd "C-+") 'mc/mark-next-like-this)
-;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-;; From active region to multiple cursors:
-;; (global-set-key (kbd "C-c m r") 'set-rectangular-region-anchor)
-;; (global-set-key (kbd "C-c m c") 'mc/edit-lines)
-;; (global-set-key (kbd "C-c m e") 'mc/edit-ends-of-lines)
-;; (global-set-key (kbd "C-c m a") 'mc/edit-beginnings-of-lines)
 
 ;; smartparens
 (use-package smartparens
@@ -740,8 +731,6 @@ the right."
   :config
   (show-smartparens-global-mode +1)
   )
-;; (require 'smartparens)
-;; (add-hook 'nxml-mode-hook 'smartparens-mode)
 
 ;; discover-my-major
 (use-package discover-my-major
@@ -775,26 +764,14 @@ the right."
   :init
   (add-hook 'prog-mode-hook 'flycheck-mode)
   :config
-  (global-flycheck-mode +1)
   (when (display-graphic-p)
 	(use-package flycheck-pos-tip
 	  :ensure t
 	  :config
 	  (flycheck-pos-tip-mode 1)
 	  ))
+  (global-flycheck-mode +1)
   )
-
-
-;; (require 'flycheck)
-;; (if (fboundp 'global-flycheck-mode)
-;;     (progn
-;;       (global-flycheck-mode +1)
-;;       (add-hook 'prog-mode-hook 'flycheck-mode)
-;;       (when (display-graphic-p)
-;;         (progn
-;;           (use-package flycheck-pos-tip)
-;;           (require 'flycheck-pos-tip)
-;;           (flycheck-pos-tip-mode 1)))))
 
 ;; GTAGS
 (use-package ggtags
@@ -837,13 +814,6 @@ the right."
 	(interactive)
 	(message "GTAGSLIBPATH=%s" (getenv "GTAGSLIBPATH")))
   )
-
-(diminish 'hide-ifdef-hiding)
-(diminish 'beacon-mode)
-(diminish 'editorconfig-mode)
-(diminish 'which-key-mode)
-(diminish 'rainbow-mode)
-(diminish 'page-break-lines-mode)
 
 ;; prog-mode-hook
 (setq-default goto-address-url-face 'underline)

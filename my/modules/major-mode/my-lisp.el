@@ -24,8 +24,6 @@
 
 ;;; Code:
 
-(use-package ipretty
-  :ensure t)
 ;; (use-package hl-sexp)
 (use-package immortal-scratch
   :ensure t)
@@ -45,21 +43,29 @@
   :ensure t)
 (use-package flycheck-package
   :ensure t)
-(use-package elisp-slime-nav
-  :ensure t)
 (use-package auto-compile
   :ensure t)
 
-(require 'elisp-slime-nav)
-(diminish 'elisp-slime-nav-mode "Nav")
-(dolist (hook '(emacs-lisp-mode-hook
-                ielm-mode-hook
-                help-mode-hook
-                messages-buffer-mode-hook
-                completion-list-mode-hook
-                debugger-mode-hook))
-  (add-hook hook 'turn-on-elisp-slime-nav-mode))
-(define-key elisp-slime-nav-mode-map (kbd "M-.") 'elisp-slime-nav-find-elisp-thing-at-point)
+(use-package elisp-slime-nav
+  :ensure t
+  :diminish "Nav"
+  :bind (:map elisp-slime-nav-mode-map
+			  ("M-." . elisp-slime-nav-find-elisp-thing-at-point))
+  :config
+  (dolist (hook '(emacs-lisp-mode-hook
+				  ielm-mode-hook
+				  help-mode-hook
+				  messages-buffer-mode-hook
+				  completion-list-mode-hook
+				  debugger-mode-hook))
+	(add-hook hook 'turn-on-elisp-slime-nav-mode))
+  )
+
+(use-package ipretty
+  :ensure t
+  :config
+  (ipretty-mode +1)
+  )
 
 ;; Make C-x C-e run 'eval-region if the region is active
 (defun my/eval-last-sexp-or-region (prefix)
@@ -69,8 +75,6 @@
       (eval-region (min (point) (mark)) (max (point) (mark)))
     (pp-eval-last-sexp prefix)))
 (global-set-key [remap eval-expression] 'pp-eval-expression)
-
-(ipretty-mode 1)
 
 (defadvice pp-display-expression (after my-make-read-only (expression out-buffer-name) activate)
   "Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
@@ -84,39 +88,41 @@
              (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
     (setq buffer-read-only t)
     (view-mode 1)))
-
 (add-hook 'emacs-lisp-mode-hook 'my-maybe-set-bundled-elisp-readonly)
 
 
 ;; Use C-c C-z to toggle between elisp files and an ielm session
 ;; I might generalise this to ruby etc., or even just adopt the repl-toggle package.
-(defvar my-repl-original-buffer nil
-  "Buffer from which we jumped to this REPL.")
-(make-variable-buffer-local 'my-repl-original-buffer)
+(use-package ielm
+  :init
+  (defvar my-repl-original-buffer nil
+	"Buffer from which we jumped to this REPL.")
+  ;; (make-variable-buffer-local 'my-repl-original-buffer)
+  (defvar my-repl-switch-function 'switch-to-buffer-other-window)
+  (defun my/repl-switch-back ()
+	"Switch back to the buffer from which we reached this REPL."
+	(interactive)
+	(if my-repl-original-buffer
+		(funcall my-repl-switch-function my-repl-original-buffer)
+	  (error "No original buffer")))
 
-(defvar my-repl-switch-function 'switch-to-buffer-other-window)
+  (defun my/switch-to-ielm ()
+	"Switch to ielm."
+	(interactive)
 
-(defun my/switch-to-ielm ()
-  "Switch to ielm."
-  (interactive)
-  (let ((orig-buffer (current-buffer)))
-    (if (get-buffer "*ielm*")
-        (funcall my-repl-switch-function "*ielm*")
-      (ielm))
-    (setq my-repl-original-buffer orig-buffer)))
+	(let ((orig-buffer (current-buffer)))
+	  (if (get-buffer "*ielm*")
+		  (funcall my-repl-switch-function "*ielm*")
+		(ielm))
+	  (setq-local my-repl-original-buffer orig-buffer)))
 
-(defun my/repl-switch-back ()
-  "Switch back to the buffer from which we reached this REPL."
-  (interactive)
-  (if my-repl-original-buffer
-      (funcall my-repl-switch-function my-repl-original-buffer)
-    (error "No original buffer")))
-
-(define-key emacs-lisp-mode-map (kbd "C-c C-z") 'my/switch-to-ielm)
-(define-key lisp-interaction-mode-map (kbd "C-c C-z") 'my/switch-to-ielm)
-(after-load 'ielm
-  (define-key ielm-map (kbd "C-c C-z") 'my/repl-switch-back))
-
+  :bind (:map ielm-map
+			  ("C-c C-z" . my/repl-switch-back)
+			  :map emacs-lisp-mode-map
+			  ("C-c C-z" . my/switch-to-ielm)
+			  :map lisp-interaction-mode-map
+			  ("C-c C-z" . my/switch-to-ielm)
+			  ))
 
 ;; ----------------------------------------------------------------------------
 ;; Hippie-expand
@@ -181,7 +187,7 @@
 
 (defun my-lispy-modes-setup ()
   "My lispy mode hooks."
-  (turn-on-eldoc-mode)
+  (eldoc-mode +1)
   ;; hl-sexp-mode
   (aggressive-indent-mode)
   ;; my-disable-indent-guide

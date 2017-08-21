@@ -184,10 +184,12 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 	  (setq command-line-args (remove "--my-debug" command-line-args))))
 (if (member "--my-debug-with-profile" command-line-args)
 	(progn
+	  (setq my-debug t)
 	  (setq my-debug-with-profile t)
 	  (setq command-line-args (remove "--my-debug-with-profile" command-line-args))))
 (if (member "--my-debug-with-adv-timer" command-line-args)
 	(progn
+	  (setq my-debug t)
 	  (setq my-debug-with-adv-timers t)
 	  (setq command-line-args (remove "--my-debug-with-adv-timer"
 									  command-line-args))))

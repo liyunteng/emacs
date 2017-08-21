@@ -24,28 +24,29 @@
 
 ;;; Code:
 
-(after-load 'smartparens
-  (require 'smartparens-config)
+(use-package smartparens
+  :config
+  (use-package smartparens-config)
   ;; (sp-use-paredit-bindings)
-  (setq sp-base-key-bindings 'smartparens)
-  (setq sp-autoskip-closing-pair 'always)
-  (setq sp-hybrid-kill-entire-symbol nil)
-  (sp-use-smartparens-bindings)
-  (setq blink-matching-paren nil)
-
+  (setq sp-base-key-bindings 'smartparens
+		sp-autoskip-closing-pair 'always
+		sp-hybrid-kill-entire-symbol nil
+		blink-matching-paren nil
+		)
 
   (setq sp-show-pair-delay 0.2
-        sp-show-pair-from-inside nil
-        sp-cancel-autoskip-on-backward-movement t
-        sp-highlight-pair-overlay t
-        sp-highlight-wrap-overlay t
-        sp-highlight-wrap-tag-overlay t)
+		sp-show-pair-from-inside nil
+		sp-cancel-autoskip-on-backward-movement t
+		sp-highlight-pair-overlay t
+		sp-highlight-wrap-overlay t
+		sp-highlight-wrap-tag-overlay t)
 
+  (sp-use-smartparens-bindings)
   (sp-with-modes
-      '(c++-mode objc-mode c-mode python-mode go-mode)
-    (sp-local-pair "{" "}"
-  				   :unless '(sp-in-comment-p sp-in-string-p)
-  				   :post-handlers '(:add ("||" "RET"))))
+	  '(c++-mode objc-mode c-mode python-mode go-mode)
+	(sp-local-pair "{" "}"
+				   :unless '(sp-in-comment-p sp-in-string-p)
+				   :post-handlers '(:add ("||" "RET"))))
   (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
 
   (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)

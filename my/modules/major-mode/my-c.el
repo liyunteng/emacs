@@ -92,9 +92,8 @@
                            "../../../export")
   "My local include path.")
 
-;; (use-package helm-cscope)
-;; (require 'helm-cscope)
-;; (after-load 'helm-cscope
+;; (use-package helm-cscope
+;; :config
 ;;   (define-key helm-cscope-mode-map (kbd "C-c s s")
 ;;     'helm-cscope-find-this-symbol)
 ;;   (define-key helm-cscope-mode-map (kbd "C-c s =")
@@ -118,10 +117,6 @@
 ;;   (define-key helm-cscope-mode-map (kbd "C-c s u")
 ;;     'helm-cscope-pop-mark))
 
-
-;; (require 'xcscope)
-
-
 ;;comment
 (defun my/comment-dwim-line (&optional arg)
   "Replacement for the \"comment-dwim\" command.
@@ -141,7 +136,7 @@ at the end of the line."
     (comment-dwim arg))
   (indent-according-to-mode))
 
-;; (require 'etags)
+
 (use-package etags
   :init
   ;;设置TAGS文件
@@ -162,7 +157,7 @@ FILE-LIST-FORM used by\"tags-loop-continue\"."
             tags-loop-operate nil)
       (tags-loop-continue (or file-list-form t)))))
 
-;; (require 'compile)
+
 (use-package compile
   :config
   (defun my/smart-compile()
@@ -274,14 +269,12 @@ clang++ -Wall编译"
                (c-offsets-alist
                 (statement-cont . (c-lineup-assignments +)))))
 
-;; (require 'cmacexp)
 (use-package cmacexp
   :config
   (setq c-macro-shrink-window-flag t)
   (setq c-macro-prompt-flag t)
   )
 
-;; (require 'find-file)
 (use-package find-file
   :config
   (dolist (var my-include-path)
@@ -312,19 +305,13 @@ clang++ -Wall编译"
 
 (defun my-c-mode-hooks ()
   "My c common mode hooks."
-  (require 'hideif)
-  (require 'xcscope)
-  (require 'flycheck)
-  (require 'semantic)
+  (use-package cc-mode)
 
-  ;; 添加my-include-path
-  (setq-mode-local c-mode semantic-dependency-include-path
-                   my-include-path)
-  (setq-mode-local c++-mode semantic-dependency-include-path
-                   my-include-path)
-
-  (unless semantic-mode
-    (semantic-mode +1))
+  (use-package semantic
+	:config
+	(unless semantic-mode
+	  (semantic-mode +1))
+	)
 
   (auto-fill-mode -1)
   ;; (c-toggle-auto-newline t)
@@ -344,10 +331,14 @@ clang++ -Wall编译"
   (setq-local tab-width 8)
 
   ;; 设置头文件路径
-  (setq-local flycheck-checker 'c/c++-clang)
-  ;; (setq-default flycheck-clang-args '("-std=c++11"))
-  (dolist (item (append semantic-dependency-system-include-path my-include-path))
-    (add-to-list 'flycheck-clang-include-path item))
+  (use-package flycheck
+	:config
+	(use-package semantic/dep)
+	(setq-local flycheck-checker 'c/c++-clang)
+	;; (setq-default flycheck-clang-args '("-std=c++11"))
+	(dolist (item (append semantic-dependency-system-include-path my-include-path))
+	  (add-to-list 'flycheck-clang-include-path item))
+	)
 
   ;; (setq-default company-clang-arguments '("-std=c++11"))
   )

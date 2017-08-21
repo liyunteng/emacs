@@ -24,9 +24,6 @@
 
 ;;; Code:
 
-
-;; require see elpy-config
-
 (use-package python
   :config
   (use-package elpy

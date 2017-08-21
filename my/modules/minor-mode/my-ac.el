@@ -201,16 +201,12 @@ MODE parameter must match the parameter used in the call to
 (my|defvar-company-backends go-mode)
 (use-package company-go
   :ensure t)
-(after-load 'go-mode
-  (require 'company-go))
 (push 'company-go company-backends-go-mode)
 (my|enable-company go-mode)
 
 (my|defvar-company-backends sh-mode)
 (use-package company-shell
   :ensure t)
-(after-load 'sh-mode
-  (require 'company-shell))
 (push 'company-shell company-backends-sh-mode)
 (push 'company-shell-env company-backends-sh-mode)
 (my|enable-company sh-mode)
@@ -218,8 +214,6 @@ MODE parameter must match the parameter used in the call to
 (my|defvar-company-backends php-mode)
 (use-package company-php
   :ensure t)
-(after-load 'php-mode
-  (require 'company-php))
 (push 'company-php company-backends-php-mode)
 (my|enable-company php-mode)
 
@@ -234,8 +228,6 @@ MODE parameter must match the parameter used in the call to
 (my|defvar-company-backends web-mode)
 (use-package company-web
   :ensure t)
-(after-load 'web-mode
-  (require 'company-web))
 (push 'company-web company-backends-web-mode)
 (my|enable-company web-mode)
 

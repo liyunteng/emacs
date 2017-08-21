@@ -46,44 +46,28 @@
                              "/usr/src/linux")
   "My project roots to setq semanticdb-project-roots.")
 
-(after-load 'semantic/mru-bookmark
-  ;;修复向回跳转的问题
-  (defadvice semantic-ia--fast-jump-helper (around my-semantic-ia-fast-jump-push-mark activate)
-    (semantic-mrub-push semantic-mru-bookmark-ring
-                        (point)
-                        'mark)
-    (when (fboundp 'xref-push-marker-stack)
-      (xref-push-marker-stack (set-mark (point))))
-    ad-do-it
-    )
-  ;; (defadvice push-mark (around semantic-mru-bookmark activate)
-  ;;     "Push a mark at LOCATION with NOMSG and ACTIVATE passed to `push-mark'.
-  ;; If `semantic-mru-bookmark-mode' is active, also push a tag onto
-  ;; the mru bookmark stack."
-  ;;     (semantic-mrub-push semantic-mru-bookmark-ring
-  ;;                         (point)
-  ;;                         'mark)
-  ;;     (xref-push-marker-stack)
-  ;;     ad-do-it)
-  )
 
-(after-load 'speedbar
-  (require 'semantic/sb)
-  (add-hook 'speedbar-mode-hook
-            (lambda ()
-              (auto-raise-mode t)
-              (setq dframe-update-speed 1)
-              ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
-              ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
-              ))
 
-  (speedbar-add-supported-extension ".go")
+(use-package speedbar
+  :config
+  (use-package semantic/sb)
+
   (setq speedbar-show-unknown-files t)
   (setq speedbar-tag-hierarchy-method
-        '(speedbar-prefix-group-tag-hierarchy))
+		'(speedbar-prefix-group-tag-hierarchy))
+
+  (speedbar-add-supported-extension ".go")
+  (add-hook 'speedbar-mode-hook
+			(lambda ()
+			  (auto-raise-mode t)
+			  (setq dframe-update-speed 1)
+			  ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
+			  ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
+			  ))
   )
 
-(after-load 'semantic
+(use-package semantic
+  :config
   ;;global-semantic-decoration-mode
   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
@@ -107,59 +91,103 @@
   ;; (setq semantic-update-mode-line t)
 
 
-  (setq global-semantic-mru-bookmark-mode t)
+  (use-package semantic/mru-bookmark
+	:config
+	;;修复向回跳转的问题
+	(defadvice semantic-ia--fast-jump-helper (around my-semantic-ia-fast-jump-push-mark activate)
+	  (semantic-mrub-push semantic-mru-bookmark-ring
+						  (point)
+						  'mark)
+	  (when (fboundp 'xref-push-marker-stack)
+		(xref-push-marker-stack (set-mark (point))))
+	  ad-do-it
+	  )
+	;; (defadvice push-mark (around semantic-mru-bookmark activate)
+	;;     "Push a mark at LOCATION with NOMSG and ACTIVATE passed to `push-mark'.
+	;; If `semantic-mru-bookmark-mode' is active, also push a tag onto
+	;; the mru bookmark stack."
+	;;     (semantic-mrub-push semantic-mru-bookmark-ring
+	;;                         (point)
+	;;                         'mark)
+	;;     (xref-push-marker-stack)
+	;;     ad-do-it)
 
-  (require 'semantic/idle)
-  (setq semantic-idle-scheduler-idle-time 1)
-  (setq semantic-idle-scheduler-max-buffer-size 10240000)
-  (setq semantic-idle-scheduler-work-idle-time 60)
-  (setq semantic-idle-work-update-headers-flag t)
-  ;; (setq semantic-idle-work-parse-neighboring-files-flag t)
+	(setq global-semantic-mru-bookmark-mode t)
+	)
+
+  (use-package semantic/idle
+	:defines (semantic-idle-scheduler-idle-time
+			  semantic-idle-scheduler-max-buffer-size
+			  semantic-idle-scheduler-work-idle-time
+			  semantic-idle-work-update-headers-flag
+			  )
+	:config
+	(setq semantic-idle-scheduler-idle-time 1)
+	(setq semantic-idle-scheduler-max-buffer-size 10240000)
+	(setq semantic-idle-scheduler-work-idle-time 60)
+	(setq semantic-idle-work-update-headers-flag t)
+	;; (setq semantic-idle-work-parse-neighboring-files-flag t)
+
+	;; (add-hook 'semantic-init-hooks 'semantic-idle-completions-mode)
+	)
+
+
 
   ;;smart complitions
-  (require 'semantic/ia)
+  (use-package semantic/ia)
 
-  ;;   ;;Include settings
-  (require 'semantic/analyze)
-  ;;   ;; (require 'semantic/decorate/include)
-  (require 'semantic/bovine)
-  (require 'semantic/bovine/c)
-  (require 'semantic/bovine/gcc)
+  ;;Include settings
+  (use-package semantic/analyze)
+
+  ;; (require 'semantic/decorate/include)
+  (use-package semantic/bovine)
+  (use-package semantic/bovine/c)
+  (use-package semantic/bovine/gcc)
   ;;   ;; (require 'semantic/bovine/make)
   ;;   ;; (require 'semantic/bovine/c-by)
-  (require 'semantic/wisent)
+  (use-package semantic/wisent)
 
 
-  (require 'semantic/dep)
+  (use-package semantic/dep
+	:config
+	(setq-mode-local c-mode semantic-dependency-system-include-path
+					 (semantic-gcc-get-include-paths "c"))
+	(setq-mode-local c++-mode semantic-dependency-system-include-path
+					 (semantic-gcc-get-include-paths "c++"))
+	)
   ;; (require 'semantic/lex-spp)
   ;; (setq semantic-lex-maximum-depth 200)
   ;; 设置头文件路径
-  (setq-mode-local c-mode semantic-dependency-system-include-path
-                   (semantic-gcc-get-include-paths "c"))
-  (setq-mode-local c++-mode semantic-dependency-system-include-path
-                   (semantic-gcc-get-include-paths "c++"))
 
-
-  (require 'semantic/senator)
-  (setq senator-highlight-found t)
-  ;;   ;; (add-hook 'semantic-init-hooks 'semantic-idle-completions-mode)
+  (use-package semantic/senator
+	:config
+	(setq senator-highlight-found t))
 
   ;; ;;;semantic Database
-  (require 'semantic/db)
-  (require 'semantic/db-global)
-  (require 'semantic/db-file)
+  (use-package semantic/db
+	:config
+	(setq semanticdb-search-system-databases t)
 
-  ;;   ;; ;;;使用gnu global的TAGS
-  (setq semanticdb-search-system-databases t)
+	(setq semanticdb-project-roots my-project-roots)
+	)
 
-  (semanticdb-enable-gnu-global-databases 'c-mode)
-  (semanticdb-enable-gnu-global-databases 'c++-mode)
-  (setq-mode-local c-mode semanticdb-find-default-throttle
-                   '(project local unloaded system recursive))
-  (setq-mode-local c++-mode semanticdb-find-default-throttle
-                   '(project local unloaded system recursive))
+  (use-package semantic/db-find
+	:config
+	(setq-mode-local c-mode semanticdb-find-default-throttle
+					 '(project local unloaded system recursive))
+	(setq-mode-local c++-mode semanticdb-find-default-throttle
+					 '(project local unloaded system recursive))
+	)
 
-  (setq semanticdb-project-roots my-project-roots)
+  (use-package semantic/db-global
+	:config
+	(semanticdb-enable-gnu-global-databases 'c-mode)
+	(semanticdb-enable-gnu-global-databases 'c++-mode)
+	)
+
+
+
+
   ;; (require 'ede/cpp-root)
 
   ;; (require 'ede/cpp-root)
