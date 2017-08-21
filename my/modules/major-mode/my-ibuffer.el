@@ -25,6 +25,7 @@
 ;;; Code:
 
 (use-package ibuffer
+  :bind ("C-X C-b" . ibuffer)
   :config
   (use-package ibuf-ext
 	:config

@@ -36,6 +36,7 @@
 ;;   :ensure t
 ;;   :disabled t)
 (use-package color)
+
 (use-package zenburn-theme
   :ensure t
   :if (eq (display-color-cells) 8)

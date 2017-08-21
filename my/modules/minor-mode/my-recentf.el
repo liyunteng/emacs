@@ -36,6 +36,7 @@
   ;; (add-hook 'after-init-hook 'recentf-load-list)
   ;; (add-hook 'after-init-hook 'recentf-cleanup)
   ;; (recentf-mode +1)
+  (add-hook 'after-init-hook 'recentf-mode)
   )
 
 (provide 'my-recentf)

@@ -45,14 +45,26 @@
   ("C-x o" . switch-window)
   :config
   (setq switch-window-shortcut-style 'alphabet)
-  (setq switch-window-timeout nil)
-  )
+  (setq switch-window-timeout nil))
 
 (use-package window-numbering
   :ensure t
+  :defer t
   :config
-  (window-numbering-mode t)
-  )
+  (window-numbering-mode t))
+
+;; use shift + arrow keys to switch between visible buffers
+(use-package windmove
+  :defer t
+  :config
+  (windmove-default-keybindings))
+
+;; enable winner-mode to manage window configurations
+(use-package winner
+  :bind (("C-c <left>" . winner-undo)
+		 ("C-c <right>" . winner-redo))
+  :config
+  (winner-mode +1))
 
 (use-package default-text-scale
   :ensure t

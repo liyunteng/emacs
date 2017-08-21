@@ -29,6 +29,7 @@
   (when gls (setq insert-directory-program gls)))
 
 (use-package dired
+  :bind ("C-x d" . dired)
   :config
   (use-package dired+
 	:ensure t
@@ -66,7 +67,7 @@
 
   (use-package diff-hl
 	:ensure t
-	:defines diff-hl-dired-mode
+	:commands (diff-hl-dired-mode)
 	:config
 	(add-hook 'dired-mode-hook 'diff-hl-dired-mode)
 	)

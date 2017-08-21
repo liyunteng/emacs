@@ -46,6 +46,7 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
 (defvar auto-insert-license gpl-license)
 
 (use-package autoinsert
+  :commands (auto-insert auto-insert-mode)
   :config
   (use-package time-stamp
 	:config

@@ -166,8 +166,11 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
 (require 'use-package)
 (setq
  use-package-always-ensure nil
- use-package-verbose init-file-debug
- use-package-inject-hooks t)
+ ;; use-package-verbose init-file-debug
+ use-package-verbose nil
+ use-package-inject-hooks t
+ ;; use-package-always-defer t
+ )
 
 (defconst my--use-package-add-hook-keywords '(:pre-init
                                               :post-init

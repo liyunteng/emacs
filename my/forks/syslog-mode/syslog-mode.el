@@ -7,7 +7,7 @@
 ;; Created: 2003-03-17 18:50:12 Harley Gorrell
 ;; Version: 2.2
 ;; Package-Version: 20170107.1517
-;; Last-Updated: 2017/08/10 15:33:59
+;; Last-Updated: 2017/08/21 09:50:23
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/syslog-mode
 ;; Keywords: unix
@@ -766,7 +766,7 @@ The ARG and SEARCH-STRING arguments are the same as for `whois'."
     ("\\(\"[^\"]*\"\\)" 1 'font-lock-string-face append)
     ("\\(\'[^\']*\'\\)" 1 'font-lock-string-face append)
 
-    ("\\(([^\)]*)\\)" 1 'normal append)
+    ("\\(([^\)]*)\\)" 1 'default append)
     ("\\(\\[[^\]]*\\]\\)" 1 'font-lock-comment-face append)
     ("\\({[^\}]*}\\)" 1 'italic append)
     ;; ("\{[^}]*\}" . 'italic)

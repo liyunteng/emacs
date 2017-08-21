@@ -32,6 +32,7 @@
 (use-package aggressive-indent
   :ensure t)
 (use-package rainbow-mode
+  :diminish rainbow-mode
   :ensure t)
 (use-package rainbow-delimiters
   :ensure t)
@@ -48,10 +49,8 @@
 
 (use-package elisp-slime-nav
   :ensure t
-  :diminish "Nav"
-  :bind (:map elisp-slime-nav-mode-map
-			  ("M-." . elisp-slime-nav-find-elisp-thing-at-point))
-  :config
+  :diminish elisp-slime-nav-mode
+  :init
   (dolist (hook '(emacs-lisp-mode-hook
 				  ielm-mode-hook
 				  help-mode-hook

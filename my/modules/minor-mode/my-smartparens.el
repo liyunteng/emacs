@@ -25,6 +25,10 @@
 ;;; Code:
 
 (use-package smartparens
+  :commands (smartparens-mode
+			 smartparens-strict-mode
+			 smartparens-global-mode
+			 smartparens-global-strict-mode)
   :config
   (use-package smartparens-config)
   ;; (sp-use-paredit-bindings)

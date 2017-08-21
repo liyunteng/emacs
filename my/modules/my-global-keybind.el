@@ -24,11 +24,6 @@
 
 ;;; Code:
 
-;; ibuffer
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
-(global-set-key (kbd "C-x p") 'proced)
-
 ;; occur绑定为M-s o ;; (global-set-key (kbd "C-x M-o") 'occur)
 ;; (global-set-key (kbd "C-h o") 'occur)
 
@@ -94,9 +89,6 @@
 
 ;; 删除并格式化
 (global-set-key (kbd "C-M-<backspace>") 'my/kill-back-to-indentation)
-
-;; align
-(global-set-key (kbd "C-x \\") 'my/align-repeat)
 
 ;; count words
 (global-set-key (kbd "M-=") 'my/count-words-analysis)

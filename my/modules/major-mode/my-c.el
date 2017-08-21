@@ -138,6 +138,14 @@ at the end of the line."
 
 
 (use-package etags
+  :commands (xref-find-definitions
+             xref-find-definitions-other-window
+			 xref-find-definitions-other-frame
+             xref-find-apropos
+			 tags-loop-continue
+			 tags-search
+			 pop-tag-mark
+			 )
   :init
   ;;设置TAGS文件
   (if (file-exists-p "/usr/include/TAGS")
@@ -156,7 +164,6 @@ FILE-LIST-FORM used by\"tags-loop-continue\"."
       (setq tags-loop-scan `(re-search-forward ',regexp nil t)
             tags-loop-operate nil)
       (tags-loop-continue (or file-list-form t)))))
-
 
 (use-package compile
   :config

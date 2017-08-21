@@ -33,11 +33,10 @@
 
 (use-package smart-mode-line
   :ensure t
-  :init
-  (add-hook 'after-init-hook #'sml/setup)
   :config
   (setq sml/no-confirm-load-theme t)
   (setq sml/theme nil)
+  (add-hook 'after-init-hook #'sml/setup)
   )
 
 (use-package beacon

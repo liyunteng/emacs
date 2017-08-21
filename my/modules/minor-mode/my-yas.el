@@ -25,6 +25,7 @@
 ;;; Code:
 
 (use-package yasnippet
+  :commands (yas-expand)
   :ensure t
   :config
   (use-package dropdown-list

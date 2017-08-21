@@ -28,6 +28,7 @@
 (setq completion-cycle-threshold nil)
 
 (use-package company
+  :diminish company-mode
   :ensure t
   :bind
   (:map company-mode-map

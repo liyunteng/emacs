@@ -29,20 +29,23 @@
   :ensure t)
 ;; (unless (package-installed-p 'syslog-mode)
 ;;   (package-install 'syslog-mode))
-
 (autoload 'syslog-mode "syslog-mode")
-(add-to-list
- 'auto-mode-alist
- '("\\(messages\\(\\.[0-9]\\)?\\|SYSLOG\\|dmesg\\|\\.log.*\\)\\'" . syslog-mode))
+(use-package syslog-mode
+  :defines syslog-setup-on-load
+  :init (setq syslog-setup-on-load t)
+  :mode ("\\(messages\\(\\.[0-9]\\)?\\|SYSLOG\\|dmesg\\|\\.log.*\\)\\'" . syslog-mode)
+  :config
+  (use-package goto-addr)
+  (defun my-enable-goto-address-mode ()
+	"Enable goto address mode."
+	(goto-address-mode t))
 
-(defun my-enable-goto-address-mode ()
-  "Enable goto address mode."
-  (goto-address-mode t))
+  (add-hook 'syslog-mode-hook 'my-enable-goto-address-mode)
+  )
+;; (add-to-list
+;;  'auto-mode-alist
+;;  '("\\(messages\\(\\.[0-9]\\)?\\|SYSLOG\\|dmesg\\|\\.log.*\\)\\'" . syslog-mode))
 
-(after-load 'syslog-mode
-  (after-load 'goto-addr
-	(add-hook 'syslog-mode-hook 'my-enable-goto-address-mode)
-	))
 
 (provide 'my-syslog)
 ;;; my-syslog.el ends here

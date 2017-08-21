@@ -144,9 +144,9 @@
 
 ;; 现实电池状态
 (use-package battery
+  :if (boundp 'battery-status-function)
   :config
-  (if (fboundp 'battery-status-function)
-	  (display-battery-mode t) nil)
+  (display-battery-mode t)
   )
 
 ;; 在标题栏提示当前位置
@@ -227,14 +227,6 @@
   (setq cua-auto-mark-last-change t)
   (cua-selection-mode t))
 
-;; enable winner-mode to manage window configurations
-(winner-mode +1)
-
-;; use shift + arrow keys to switch between visible buffers
-(use-package windmove
-  :config
-  (windmove-default-keybindings))
-
 ;;
 (use-package uniquify
   :config
@@ -246,23 +238,34 @@
 
 ;; ediff
 (setq-default ediff-split-window-function 'split-window-horizontally
-              ediff-window-setup-function 'ediff-setup-windows-plain)
+			  ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;; clean up obsolete buffers automatically
 (use-package midnight)
 
 ;; bookmark
 (use-package bookmark
+  :bind (("C-x r b" . bookmark-jump)
+		 ("C-x r m" . bookmark-set)
+		 ("C-x r l" . list-bookmarks))
   :config
   (setq bookmark-save-flag 1)
   )
 
 ;; abbrev config
-(add-hook 'text-mode-hook 'abbrev-mode)
+(use-package abbrev
+  :if (file-exists-p abbrev-file-name)
+  :config
+  (abbrev-mode +1)
+  (add-hook 'text-mode-hook 'abbrev-mode)
+  )
+
 
 ;; make a shell script executable automatically on save
-(add-hook 'after-save-hook
-          'executable-make-buffer-file-executable-if-script-p)
+(use-package executable
+  :config
+  (add-hook 'after-save-hook
+			'executable-make-buffer-file-executable-if-script-p))
 
 ;; saner regex syntax
 (use-package re-builder
@@ -407,9 +410,13 @@ indent yanked text (with prefix arg don't indent)."
         try-complete-lisp-symbol))
 
 ;; proced
-(setq-default proced-auto-update-flag t)
-(setq-default proced-auto-update-interval 3)
-(setq-default proced-post-display-hook (quote (fit-window-to-buffer)))
+(use-package proced
+  :bind ("C-x p" . proced)
+  :config
+  (setq proced-auto-update-flag t)
+  (setq proced-auto-update-interval 3)
+  (setq proced-post-display-hook (quote (fit-window-to-buffer)))
+  )
 
 ;;; grep 默认递归查找
 ;; (setq-default grep-command "grep --color -nH -r -E ")
@@ -460,8 +467,9 @@ indent yanked text (with prefix arg don't indent)."
 (setq-default calendar-chinese-all-holidays-flag t)
 
 ;; etags
-(setq-default tags-revert-without-query t)
-(setq-default tags-case-fold-search nil) ;; t=case-insensitive, nil=case-sensitive
+(setq-default tags-revert-without-query t
+			  tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
+			  )
 
 
 ;; set buffer major mode accroding to auto-mode-alist
@@ -493,6 +501,7 @@ indent yanked text (with prefix arg don't indent)."
    (list (not (region-active-p)))))
 
 (use-package compile
+  :commands (compile)
   :config
   (use-package ansi-color)
   (setq compilation-ask-about-save nil  ; Just save before compiling
@@ -516,14 +525,16 @@ indent yanked text (with prefix arg don't indent)."
 
 ;; highlight
 (use-package hi-lock
-  :config
-  (define-key hi-lock-map (kbd "C-c o l") 'highlight-lines-matching-regexp)
-  (define-key hi-lock-map (kbd "C-c o i") 'hi-lock-find-patterns)
-  (define-key hi-lock-map (kbd "C-c o r") 'highlight-regexp)
-  (define-key hi-lock-map (kbd "C-c o p") 'highlight-phrase)
-  (define-key hi-lock-map (kbd "C-c o .") 'highlight-symbol-at-point)
-  (define-key hi-lock-map (kbd "C-c o u") 'unhighlight-regexp)
-  (define-key hi-lock-map (kbd "C-c o b") 'hi-lock-write-interactive-patterns))
+  :bind (:map hi-lock-map
+			  ("C-c o l" . highlight-lines-matching-regexp)
+			  ("C-c o i" . hi-lock-find-patterns)
+			  ("C-c o r" . highlight-regexp)
+			  ("C-c o p" . highlight-phrase)
+			  ("C-c o ." . highlight-symbol-at-point)
+			  ("C-c o u" . unhighlight-regexp)
+			  ("C-c o b" . hi-lock-write-interactive-patterns)
+			  )
+  )
 
 
 ;; 添加百度搜索
@@ -582,7 +593,9 @@ When nil, never request confirmation.")
 
 ;; align
 (use-package align
-  :config
+  :bind (("C-x \\" . my/align-repeat))
+  :commands (align align-regexp)
+  :init
   (defun my/align-repeat (start end regexp &optional justify-right after)
 	"Repeat alignment with respect to the given regular expression.
 If JUSTIFY-RIGHT is non nil justify to the right instead of the
@@ -630,17 +643,23 @@ the right."
 
 (use-package diminish
   :ensure t
-  :config
+  :init
+  (diminish 'hide-ifdef-mode)
   (diminish 'hide-ifdef-hiding)
   (diminish 'beacon-mode)
   (diminish 'editorconfig-mode)
   (diminish 'which-key-mode)
   (diminish 'rainbow-mode)
   (diminish 'page-break-lines-mode)
+  (diminish 'eldoc-mode)
+  (diminish 'abbrev-mode)
+  (diminish 'symbol-overlay-mode)
   )
 
 ;; expand-region
 (use-package expand-region
+  :bind (("C-=" . er/expand-region))
+  :commands (er/expand-region)
   :ensure t
   :config
   (setq expand-region-contract-fast-key ",")
@@ -649,6 +668,7 @@ the right."
 
 ;; page-break-lines
 (use-package page-break-lines
+  :diminish page-break-lines-mode
   :ensure t
   :config
   (global-page-break-lines-mode t))
@@ -663,8 +683,10 @@ the right."
 
 ;; projectile
 (use-package projectile
+  :bind-keymap ("C-c p" . projectile-command-map)
   :ensure t
   :config
+  (setq projectile-mode-line '(:eval  (format " PJ[%s]" (projectile-project-name))))
   (projectile-mode +1)
   )
 
@@ -672,13 +694,13 @@ the right."
 (use-package diff-hl
   :ensure t
   :config
-  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
   (global-diff-hl-mode +1)
   )
 
 ;; undo-tree
 (use-package undo-tree
+  :commands (undo-tree-undo undo-tree-redo undo-tree-visualizer)
   :ensure t
   :diminish undo-tree-mode
   :config
@@ -734,6 +756,7 @@ the right."
 
 ;; discover-my-major
 (use-package discover-my-major
+  :bind (("C-h RET" . discover-my-major))
   :ensure t)
 
 ;; symbol-overlay
@@ -776,6 +799,7 @@ the right."
 ;; GTAGS
 (use-package ggtags
   :ensure t
+  :defer t
   :config
   (defun my-gtags-ext-produce-tags-if-needed (dir)
 	(if (not (= 0 (call-process "global" nil nil nil " -p"))) ; tagfile doesn't exist?
