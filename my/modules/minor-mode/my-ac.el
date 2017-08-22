@@ -50,7 +50,9 @@
 		("C-n" . company-select-next)
 		("C-p" . company-select-previous)
 		)
-
+  :commands (global-company-mode company-mode)
+  :init
+  (global-company-mode -1)
   :config
   (when (display-graphic-p)
 	(use-package company-quickhelp
@@ -124,22 +126,20 @@
 	(add-hook 'company-completion-started-hook 'sanityinc/page-break-lines-disable)
 	(add-hook 'company-completion-finished-hook 'sanityinc/page-break-lines-maybe-reenable)
 	(add-hook 'company-completion-cancelled-hook 'sanityinc/page-break-lines-maybe-reenable))
-
-
-
-  (global-company-mode -1)
   )
 
 ;; copy from spacemacs
 (defvar my-default-company-backends
-  '((company-yasnippet)
+  '(
+	company-yasnippet
+	;; (company-yasnippet)
 	(company-dabbrev-code company-gtags company-etags company-keywords)
 	company-files company-dabbrev)
   "The list of default company backends used by spacemacs.
 This variable is used to configure mode-specific company backends in spacemacs.
 Backends in this list will always be active in these modes, as well as any
 backends added by individual spacemacs layers.")
-(defvar auto-completion-enable-snippets-in-popup t)
+(defvar company-enable-snippets-in-popup t)
 
 (defmacro my|defvar-company-backends (mode)
   "Define a MODE specific company backend variable with default backends.
@@ -150,14 +150,15 @@ The variable name format is company-backends-MODE."
 
 
 (defun my--show-snippets-in-company (backend)
-  (if (or (not auto-completion-enable-snippets-in-popup)
+  (if (or (not company-enable-snippets-in-popup)
 		  (and (listp backend) (member 'company-yasnippet backend)))
 	  backend
-	(append (if (consp backend) backend (list backend))
-			;; '(:with company-yasnippet)
-			)))
+	(append
+	 (if (consp backend) backend (list backend))
+	 '(:with company-yasnippet)
+	 )))
 
-(defmacro my|enable-company (mode)
+(defmacro my|enable-company (mode backends)
   "Enable company for the given MODE.
 MODE must match the symbol passed in `my|defvar-company-backends'.
 The initialization function is hooked to `MODE-hook'."
@@ -167,13 +168,12 @@ The initialization function is hooked to `MODE-hook'."
 	`(progn
 	   (defun ,func ()
 		 ,(format "Initialize company for %S" mode)
-		 (when auto-completion-enable-snippets-in-popup
+		 (when company-enable-snippets-in-popup
 		   (setq ,backend-list (mapcar 'my--show-snippets-in-company
 									   ,backend-list)))
-		 (set (make-variable-buffer-local 'auto-completion-front-end)
-			  'company)
 		 (set (make-variable-buffer-local 'company-backends)
 			  ,backend-list))
+       (setq ,backend-list (append ,backends ,backend-list))
 	   (add-hook ',mode-hook ',func t)
 	   (add-hook ',mode-hook 'company-mode t))))
 
@@ -187,62 +187,47 @@ MODE parameter must match the parameter used in the call to
 	   (remove-hook ',mode-hook ',func)
 	   (remove-hook ',mode-hook 'company-mode))))
 
-
-(my|defvar-company-backends c-mode)
-(my|defvar-company-backends c++-mode)
-(push '(company-semantic company-clang) company-backends-c-mode)
-(push '(company-semantic company-clang) company-backends-c++-mode)
-(my|enable-company c-mode)
-(my|enable-company c++-mode)
+(my|defvar-company-backends c-mode-common)
+(my|enable-company c-mode-common '(company-semantic company-clang))
+;; (my|enable-company c++-mode '(company-semantic company-clang))
 
 (my|defvar-company-backends cmake-mode)
-(push 'company-cmake company-backends-cmake-mode)
-(my|enable-company cmake-mode)
+(my|enable-company cmake-mode '(company-cmake))
 
-(my|defvar-company-backends go-mode)
 (use-package company-go
   :ensure t)
-(push 'company-go company-backends-go-mode)
-(my|enable-company go-mode)
+(my|defvar-company-backends go-mode)
+(my|enable-company go-mode '(company-go))
 
-(my|defvar-company-backends sh-mode)
 (use-package company-shell
   :ensure t)
-(push 'company-shell company-backends-sh-mode)
-(push 'company-shell-env company-backends-sh-mode)
-(my|enable-company sh-mode)
+(my|defvar-company-backends sh-mode)
+(my|enable-company sh-mode '(company-shell company-shell-env))
 
-(my|defvar-company-backends php-mode)
 (use-package company-php
   :ensure t)
-(push 'company-php company-backends-php-mode)
-(my|enable-company php-mode)
+(my|defvar-company-backends php-mode)
+(my|enable-company php-mode '(company-php))
 
 (my|defvar-company-backends css-mode)
-(push 'company-css company-backends-css-mode)
-(my|enable-company css-mode)
+(my|enable-company css-mode '(company-css))
 
 (my|defvar-company-backends nxml-mode)
-(push 'company-nxml company-backends-nxml-mode)
-(my|enable-company nxml-mode)
+(my|enable-company nxml-mode '(company-nxml))
 
-(my|defvar-company-backends web-mode)
 (use-package company-web
   :ensure t)
-(push 'company-web company-backends-web-mode)
-(my|enable-company web-mode)
+(my|defvar-company-backends web-mode)
+(my|enable-company web-mode '(company-web))
 
 (my|defvar-company-backends emacs-lisp-mode)
-(push '(company-elisp company-capf) company-backends-emacs-lisp-mode)
-(my|enable-company emacs-lisp-mode)
+(my|enable-company emacs-lisp-mode '((company-capf company-elisp)))
 
 (my|defvar-company-backends lisp-interaction-mode)
-(push '(company-elisp company-capf) company-backends-lisp-interaction-mode)
-(my|enable-company lisp-interaction-mode)
+(my|enable-company lisp-interaction-mode '((company-capf company-elisp)))
 
 (my|defvar-company-backends java-mode)
-(push 'company-eclim company-backends-java-mode)
-(my|enable-company java-mode)
+(my|enable-company java-mode '(company-eclim))
 
 (my|defvar-company-backends objc-mode)
 (my|defvar-company-backends idl-mode)

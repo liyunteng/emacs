@@ -178,31 +178,42 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 ;;         (message "load %s time %.2fms" feature time)
 ;;         )
 ;;       )))
-(if (member "--my-debug" command-line-args)
-	(progn
-	  (setq my-debug t)
-	  (setq command-line-args (remove "--my-debug" command-line-args))))
-(if (member "--my-debug-with-profile" command-line-args)
-	(progn
-	  (setq my-debug t)
-	  (setq my-debug-with-profile t)
-	  (setq command-line-args (remove "--my-debug-with-profile" command-line-args))))
-(if (member "--my-debug-with-adv-timer" command-line-args)
-	(progn
-	  (setq my-debug t)
-	  (setq my-debug-with-adv-timers t)
-	  (setq command-line-args (remove "--my-debug-with-adv-timer"
-									  command-line-args))))
 
+(defun my--parse-command-line (args)
+  "Handle specific command line ARGS.
+The reason why we don't use the Emacs hooks for processing user defined
+arguments is that we want to process these arguments as soon as possible."
+  (let ((i 0) new-args)
+    (while (< i (length args))
+      (let ((arg (nth i args))
+            (next-arg-digit
+             (when (< (1+ i) (length args))
+               (string-to-number (nth (1+ i) args)))))
+        (when (or (null next-arg-digit) (= 0 next-arg-digit))
+          (setq next-arg-digit nil))
+        (pcase arg
+		  ("--my-debug"
+		   (setq my-debug t))
+          ("--profile"
+		   (setq my-debug t)
+           (setq my-debug-with-profile t))
+          ("--time"
+           (setq my-debug-with-timed-requires t)
+           (when next-arg-digit
+             (setq my-debug-timer-threshold next-arg-digit
+                   i (1+ i)))
+           (setq my-debug t))
+          ("--adv-time"
+           (setq my-debug-with-adv-timers t)
+           (when next-arg-digit
+             (setq my-debug-timer-threshold next-arg-digit
+                   i (1+ 1)))
+           (setq my-debug t))
+          (_ (push arg new-args))))
+      (setq i (1+ i)))
+    (nreverse new-args)))
+(setq command-line-args (my--parse-command-line command-line-args))
 (when my-debug (my-debug-init))
-
-(defun my-show-init-time ()
-  "Show init time."
-  (message "Emacs startup time: %.2fms"
-           (my-time-subtract-millis after-init-time before-init-time)))
-
-(add-hook 'after-init-hook
-          (lambda () (run-at-time 0 nil 'my-show-init-time)))
 
 (provide 'my-debug)
 ;;; my-benchmarking.el ends here

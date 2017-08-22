@@ -25,6 +25,11 @@
 ;;; Code:
 (require 'my-debug)
 (require 'my-package)
+
+;; disable ad redefinition warning
+(setq ad-redefinition-action 'accept)
+
+;; toggle off debug-on-error
 (setq debug-on-error nil)
 
 ;; Always load newest byte code
@@ -56,6 +61,7 @@
     my-register
     ;; my-ido
     ;; my-ivy
+	my-auto
 
     ;; minor
     my-mode
@@ -65,6 +71,7 @@
     my-magit
     my-gud
     my-flyspell
+	my-flycheck
     my-auto-insert
     my-smartparens
     my-hideshow
@@ -72,7 +79,6 @@
     my-ac
     ;; my-company
     ;; my-auto-complete
-    my-recentf
 
     ;; major
     my-ibuffer
@@ -103,17 +109,27 @@
   (unless (load (locate-library (format "%s" m)))
     (error "Loading %s failed" m)))
 
-(when (file-exists-p my-modules-dir)
-  (add-to-list 'load-path my-modules-dir)
-  ;; (dolist (module my-modules)
-  ;;   (message "Loading %s" module)
-  ;;   (require module)
-  ;;   )
-  (mapc 'my-load my-modules)
-  )
+(defun my-show-init-time ()
+  "Show init time."
+  (message "Emacs startup time: %.2fms"
+           (my-time-subtract-millis after-init-time before-init-time)))
 
-(when (file-exists-p custom-file)
-  (load custom-file))
+(defun my-init ()
+  "Load my modules."
+  (when (file-exists-p my-modules-dir)
+	(add-to-list 'load-path my-modules-dir)
+	;; (dolist (module my-modules)
+	;;   (message "Loading %s" module)
+	;;   (require module)
+	;;   )
+	(mapc 'my-load my-modules)
+	)
+
+  (when (file-exists-p custom-file)
+	(load custom-file))
+  (add-hook 'after-init-hook
+			(lambda () (run-at-time 0 nil 'my-show-init-time)))
+  )
 
 (provide 'my-init)
 ;;; my-init.el ends here

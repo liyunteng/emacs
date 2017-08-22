@@ -24,9 +24,6 @@
 
 ;;; Code:
 
-;; disable ad redefinition warning
-(setq ad-redefinition-action 'accept)
-
 ;;打开图片显示功能
 (auto-image-file-mode t)
 
@@ -237,8 +234,24 @@
   )
 
 ;; ediff
-(setq-default ediff-split-window-function 'split-window-horizontally
-			  ediff-window-setup-function 'ediff-setup-windows-plain)
+(use-package ediff
+  :defer t
+  :init
+  (setq-default
+   ediff-window-setup-function 'ediff-setup-windows-plain
+   ediff-split-window-function 'split-window-horizontally
+   ediff-merge-split-window-function 'split-window-horizontally)
+  (require 'outline)
+  (add-hook 'ediff-prepare-buffer-hook #'show-all)
+  (add-hook 'ediff-quit-hook #'winner-undo)
+  )
+
+(use-package aggressive-indent
+  :ensure t
+  :defer t
+  :init
+  (aggressive-indent-mode +1)
+  )
 
 ;; clean up obsolete buffers automatically
 (use-package midnight)
@@ -330,12 +343,17 @@
   :config
   (setq whitespace-line-column fill-column)
   (setq whitespace-style
-		'(face tabs tab-mark spaces space-mark
-			   trailling lines-tail
-			   indentation::space
-			   indentation:tab
-			   newline
-			   newline-mark)))
+		'(face
+		  tabs
+		  tab-mark
+		  spaces
+		  space-mark
+		  trailling
+		  lines-tail
+		  indentation::space
+		  indentation:tab
+		  newline
+		  newline-mark)))
 
 (use-package whitespace-cleanup-mode
   :ensure t
@@ -419,7 +437,7 @@ indent yanked text (with prefix arg don't indent)."
   )
 
 ;;; grep 默认递归查找
-;; (setq-default grep-command "grep --color -nH -r -E ")
+(setq-default grep-command "grep --color -nH -r -E ")
 (setq-default grep-highlight-matches t)
 (setq-default grep-scroll-output t)
 (when (executable-find "ag")
@@ -525,6 +543,7 @@ indent yanked text (with prefix arg don't indent)."
 
 ;; highlight
 (use-package hi-lock
+  :diminish hi-lock-mode
   :bind (:map hi-lock-map
 			  ("C-c o l" . highlight-lines-matching-regexp)
 			  ("C-c o i" . hi-lock-find-patterns)
@@ -533,8 +552,7 @@ indent yanked text (with prefix arg don't indent)."
 			  ("C-c o ." . highlight-symbol-at-point)
 			  ("C-c o u" . unhighlight-regexp)
 			  ("C-c o b" . hi-lock-write-interactive-patterns)
-			  )
-  )
+			  ))
 
 
 ;; 添加百度搜索
@@ -687,6 +705,11 @@ the right."
   :ensure t
   :config
   (setq projectile-mode-line '(:eval  (format " PJ[%s]" (projectile-project-name))))
+  (setq projectile-sort-order 'recentf
+		projectile-cache-file (concat my-cache-dir
+									  "projectile.cache")
+		projectile-known-projects-file (concat my-cache-dir
+											   "projectile-bookmarks.eld"))
   (projectile-mode +1)
   )
 
@@ -777,23 +800,6 @@ the right."
 					  :foreground
 					  (face-attribute 'isearch
 									  :foreground))
-  )
-
-;; flycheck
-;; enable on-the-fly syntax checking
-(use-package flycheck
-  :ensure t
-  :if (fboundp 'global-flycheck-mode)
-  :init
-  (add-hook 'prog-mode-hook 'flycheck-mode)
-  :config
-  (when (display-graphic-p)
-	(use-package flycheck-pos-tip
-	  :ensure t
-	  :config
-	  (flycheck-pos-tip-mode 1)
-	  ))
-  (global-flycheck-mode +1)
   )
 
 ;; GTAGS

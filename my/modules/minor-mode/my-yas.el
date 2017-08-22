@@ -25,20 +25,9 @@
 ;;; Code:
 
 (use-package yasnippet
-  :commands (yas-expand)
+  :commands (yas-global-mode yas-minor-mode yas-minor-mode-on)
   :ensure t
-  :config
-  (use-package dropdown-list
-	:ensure t)
-
-  ;; (defvar my-yas-dir (expand-file-name "snippets" user-emacs-directory))
-  ;; (if (and (file-exists-p my-yas-dir)
-  ;;          (not (member my-yas-dir yas-snippet-dirs)))
-  ;;     (add-to-list 'yas-snippet-dirs my-yas-dir t))
-  (setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))
-  ;; (yas-reload-all)
-
-  ;; (yas-global-mode t)
+  :init
   (dolist (hook '(prog-mode-hook
 				  latex-mode-hook
 				  plain-text-mode
@@ -58,13 +47,20 @@
 				  udev-mode-hook
 				  ))
 	(add-hook hook 'yas-minor-mode-on))
+  :config
+  ;; (use-package dropdown-list
+  ;; 	:ensure t)
+  ;; (setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))
+  (setq yas-triggers-in-field t
+		yas-wrap-around-region t)
+  (setq yas-prompt-functions '(yas-completing-prompt))
+  ;; (yas-reload-all)
+  (yas-global-mode -1)
+  (add-hook 'yas-minor-mode-hook 'yas-reload-all)
 
-  (defun my/yas-reload-all ()
-	"My yas-realod-all and compile."
-	(interactive)
-	(yas-compile-directory (file-truename my-yas-dir))
-	(yas-reload-all)
-	(yas-minor-mode 1))
+  (defun my-disable-yas ()
+	(yas-minor-mode -1)
+	(setq yas-dont-activate t))
 
   ;; (defun my-yas-field-to-statement(str sep)
   ;;   "If STR=='a.b.c' and SEP=' && ',

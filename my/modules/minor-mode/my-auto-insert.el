@@ -47,6 +47,8 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
 
 (use-package autoinsert
   :commands (auto-insert auto-insert-mode)
+  :init
+  (auto-insert-mode t)
   :config
   (use-package time-stamp
 	:config
@@ -115,8 +117,6 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
 							 ))
 					 & ?\" | -10 "\n"))
 	  (my-header)))
-
-  (auto-insert-mode +1)
   )
 
 

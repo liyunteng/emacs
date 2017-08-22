@@ -25,13 +25,16 @@
 ;;; Code:
 
 (use-package message
+  :defer t
   :config
   (use-package sendmail
+	:defer t
 	:config
 	(setq send-mail-function 'smtpmail-send-it
 		  )
 	)
   (use-package smtpmail
+	:defer t
 	:config
 	(setq
 	 ;; smtpmail-smtp-server "smtp.163.com"
@@ -69,6 +72,8 @@
   )
 
 (use-package gnus
+  :defer t
+  :commands (gnus)
   :config
   (use-package gnus-sum
 	:config

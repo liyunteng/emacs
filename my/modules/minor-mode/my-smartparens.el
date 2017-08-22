@@ -30,7 +30,7 @@
 			 smartparens-global-mode
 			 smartparens-global-strict-mode)
   :config
-  (use-package smartparens-config)
+  (require'smartparens-config)
   ;; (sp-use-paredit-bindings)
   (setq sp-base-key-bindings 'smartparens
 		sp-autoskip-closing-pair 'always
@@ -46,6 +46,7 @@
 		sp-highlight-wrap-tag-overlay t)
 
   (sp-use-smartparens-bindings)
+  (show-smartparens-global-mode +1)
   (sp-with-modes
 	  '(c++-mode objc-mode c-mode python-mode go-mode)
 	(sp-local-pair "{" "}"

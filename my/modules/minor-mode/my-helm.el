@@ -30,20 +30,50 @@
 (use-package helm
   :ensure t
   :diminish helm-mode
+  :commands (helm-mode)
+  :init
+  (helm-mode +1)
   :config
   (use-package helm-config)
 
   (use-package helm-ag
-	:ensure t)
+	:ensure t
+	:bind
+	(("M-s s" . helm-ag)
+	 ("M-s M-s" . helm-do-ag)
+	 :map helm-ag-map
+	 ("C-M-n" . helm-ag--next-file)
+	 ("C-M-p" . helm-ag--previous-file)
+	 )
+	:config
+    (setq next-error-function 'next-error)
+	)
 
   (use-package helm-descbinds
-	:ensure t)
+	:ensure t
+	:init
+	(setq helm-descbinds-window-style 'split)
+	)
 
-  (use-package helm-smex
-	:ensure t)
+  ;; (use-package helm-smex
+  ;; 	:ensure t)
 
   (use-package helm-projectile
 	:ensure t
+	:commands (helm-projectile-switch-to-buffer
+			   helm-projectile-find-dir
+			   helm-projectile-dired-find-dir
+			   helm-projectile-recentf
+			   helm-projectile-find-file
+			   helm-projectile-grep
+			   helm-projectile
+			   helm-projectile-switch-project)
+	:init
+	(setq projectile-switch-project-action 'helm-projectile
+		  projectile-completion-system 'helm)
+
+	;; enable Helm version of Projectile with replacment commands
+	(add-hook 'helm-mode-hook 'helm-projectile-on)
 	)
 
   (use-package helm-swoop
@@ -81,6 +111,11 @@
 		helm-scroll-amount 8
 		helm-echo-input-in-header-line nil)
 
+  (setq helm-bookmark-show-location t
+		helm-display-header-line nil
+		helm-always-two-windows t
+		)
+
   (when (executable-find "curl")
 	(setq helm-net-prefer-curl t))
 
@@ -88,6 +123,7 @@
 	"Cleanup some helm related states when quitting."
 	;; deactivate any running transient map (transient-state)
 	(setq overriding-terminal-local-map nil))
+  (add-hook 'helm-cleanup-hook 'my--helm-cleanup)
 
   (defun my--helm-do-grep-region-or-symbol
 	  (&optional targs use-region-or-symbol-p)
@@ -162,8 +198,6 @@ Removes the automatic guessing of the initial value based on thing at point."
 		(setq-local cursor-type nil))))
   (add-hook 'helm-minibuffer-set-up-hook 'my--helm-hide-minibuffer-maybe)
 
-  (add-hook 'helm-cleanup-hook 'my--helm-cleanup)
-
   (helm-locate-set-command)
   (setq helm-locate-fuzzy-match (string-match "locate" helm-locate-command))
 
@@ -175,31 +209,49 @@ Removes the automatic guessing of the initial value based on thing at point."
 	)
   (add-hook 'helm-mode-hook 'my-helm-bookmark-keybindings)
 
+  (defun my/resume-last-search-buffer ()
+	"open last helm-ag or hgrep buffer."
+	(interactive)
+	(cond ((get-buffer "*helm ag results*")
+		   (switch-to-buffer-other-window "*helm ag results*"))
+		  ((get-buffer "*helm-ag*")
+		   (helm-resume "*helm-ag*"))
+		  ((get-buffer "*hgrep*")
+		   (switch-to-buffer-other-window "*hgrep*"))
+		  (t
+		   (message "No previous search buffer found"))))
+
   ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
   ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
   ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-  (global-set-key (kbd "C-c h") 'helm-command-prefix)
   (global-unset-key (kbd "C-x c"))
   (global-set-key (kbd "M-x") 'helm-M-x)
+
   (global-set-key (kbd "C-x C-m") 'helm-M-x)
   (global-set-key (kbd "C-x m") 'helm-M-x)
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "C-x b") 'helm-mini)
-  ;; (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+  (global-set-key (kbd "C-x r v") 'helm-register)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-h f") 'helm-apropos)
-  (global-set-key (kbd "C-h r") 'helm-info-emacs)
-  (global-set-key (kbd "C-h C-l") 'helm-locate-library)
-  (global-set-key (kbd "C-h i") 'helm-info)
-  (global-set-key (kbd "M-U") 'helm-resume)
-  (define-key my-mode-map (kbd "C-c f") 'helm-recentf)
+  (global-set-key (kbd "C-x r b") 'helm-bookmarks)
+  ;; (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "M-U") 'helm-resume)
+  (global-set-key (kbd "C-c f") 'helm-recentf)
+  (global-set-key (kbd "C-h o") 'helm-occur)
+
+  (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  (define-key helm-command-prefix (kbd "f") 'helm-apropos)
+  (define-key helm-command-prefix (kbd "r") 'helm-info-emacs)
+  (define-key helm-command-prefix (kbd "C-l") 'helm-locate-library)
+  (define-key helm-command-prefix (kbd "i") 'helm-info)
   (define-key helm-command-prefix (kbd "o")     'helm-occur)
   (define-key helm-command-prefix (kbd "g")     'helm-do-grep)
   (define-key helm-command-prefix (kbd "C-c w") 'helm-wikipedia-suggest)
   (define-key helm-command-prefix (kbd "SPC")   'helm-all-mark-rings)
   (define-key helm-command-prefix (kbd "x") 'my/helm-faces)
   (define-key helm-command-prefix (kbd "m") 'helm-man-woman)
+  (define-key helm-command-prefix (kbd "u") 'my/resume-last-search-buffer)
 
   (define-key helm-find-files-map (kbd "C-c C-e") 'my/helm-find-files-edit)
   (define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)
@@ -229,12 +281,6 @@ Removes the automatic guessing of the initial value based on thing at point."
 				(substitute-key-definition 'eshell-list-history 'helm-eshell-history eshell-mode-map)))
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-  (setq-default projectile-completion-system 'helm)
-  (helm-descbinds-mode)
-  (helm-mode 1)
-
-  ;; enable Helm version of Projectile with replacment commands
-  (add-hook 'after-init-hook 'helm-projectile-on)
   )
 
 (provide 'my-helm)

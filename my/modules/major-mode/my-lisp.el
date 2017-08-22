@@ -29,8 +29,6 @@
   :ensure t)
 (use-package cl-lib-highlight
   :ensure t)
-(use-package aggressive-indent
-  :ensure t)
 (use-package rainbow-mode
   :diminish rainbow-mode
   :ensure t)
@@ -46,6 +44,14 @@
   :ensure t)
 (use-package auto-compile
   :ensure t)
+
+(use-package eldoc
+  :defer t
+  :diminish eldoc-mode
+  :config
+  (add-hook 'eval-expression-minibuffer-setup-hook #'eldoc-mode)
+  (add-hook 'ielm-mode-hook #'eldoc-mode)
+  )
 
 (use-package elisp-slime-nav
   :ensure t
@@ -186,7 +192,7 @@
 
 (defun my-lispy-modes-setup ()
   "My lispy mode hooks."
-  (eldoc-mode +1)
+  ;; (eldoc-mode +1)
   ;; hl-sexp-mode
   (aggressive-indent-mode)
   ;; my-disable-indent-guide

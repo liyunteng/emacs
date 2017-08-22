@@ -341,8 +341,6 @@ For example:
        ,@bindkeys)))
 
 
-
-
 (defmacro my|advise-commands (advice-name commands class &rest body)
   "Apply advice named ADVICE-NAME to multiple COMMANDS.
 

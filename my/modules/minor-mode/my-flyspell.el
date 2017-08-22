@@ -27,8 +27,7 @@
 (use-package flyspell
   :defer t
   :ensure t
-  :config
-  ;; flyspell setup for web-mode
+  :config  ;; flyspell setup for web-mode
   (defun web-mode-flyspell-verify ()
 	(let* ((f (get-text-property (- (point) 1) 'face))
 		   rlt)

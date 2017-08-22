@@ -24,8 +24,35 @@
 
 ;;; Code:
 
+(use-package recentf
+  :init
+  (add-hook 'after-init-hook 'recentf-mode)
+  :config
+  (setq
+   recentf-max-saved-items 1000
+   recentf-max-menu-items 15
+   recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
+					 "/TAGS$" "/GTAGS$" "/GRAGS" "/GPATH$"))
+
+  (add-to-list 'recentf-exclude
+			   (expand-file-name my-cache-dir))
+  (add-to-list 'recentf-exclude
+			   (expand-file-name package-user-dir))
+  (add-to-list 'recentf-exclude
+			   "COMMIT_EDITMSG\\'")
+
+  ;; (add-hook 'after-init-hook 'recentf-load-list)
+  ;; (add-hook 'after-init-hook 'recentf-cleanup)
+  ;; (recentf-mode +1)
+  )
+
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
 (use-package desktop
+  :commands (desktop-full-file-name)
+  :init
+  ;; fix if no deskop-file desktop-read will close all window
+  (unless (or (not (desktop-full-file-name)) my-debug)
+	(desktop-save-mode +1))
   :config
   (setq desktop-path (list my-cache-dir))
   (setq desktop-auto-save-timeout 600)
@@ -64,10 +91,6 @@
 				  tags-file-name
 				  tags-table-list)))
 
-  ;; fix if no deskop-file desktop-read will close all window
-  (unless (or (not (desktop-full-file-name)) my-debug)
-	(desktop-save-mode +1))
-
   (defadvice desktop-read (around time-restore activate)
 	(let ((start-time (current-time)))
 	  (prog1
@@ -90,16 +113,24 @@
 
 ;; savehist keeps track of some history
 (use-package savehist
+  :init
+  (savehist-mode +1)
   :config
-  (setq savehist-additional-variables
-		;; search entries
-		'(search-ring regexp-search-ring)
+  (setq savehist-additional-variables '(mark-ring
+										global-mark-ring
+										search-ring
+										regexp-search-ring
+										extended-command-history
+										)
 		;; save every minute
 		savehist-autosave-interval 60
 		history-length 1000
-		)
-  (savehist-mode +1)
-  )
+		))
+
+(use-package saveplace
+  :init
+  (if (fboundp 'save-place-mode)
+	  (save-place-mode)))
 
 ;; automatically save buffers associated with files on buffer switch
 ;; and on windows switch

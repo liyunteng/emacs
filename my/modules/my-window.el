@@ -63,8 +63,22 @@
 (use-package winner
   :bind (("C-c <left>" . winner-undo)
 		 ("C-c <right>" . winner-redo))
+  :init
+  (winner-mode +1)
   :config
-  (winner-mode +1))
+  (setq winner-boring-buffers
+		(append winner-boring-buffers
+				'("*Completions*"
+				  "*Compile-Log*"
+				  "*inferior-lisp*"
+				  "*Fuzzy Completions*"
+				  "*Apropos*"
+				  "*Help*"
+				  "*cvs*"
+				  "*Buffer List*"
+				  "*Ibuffer*"
+				  "*esh command on file*"
+				  ))))
 
 (use-package default-text-scale
   :ensure t

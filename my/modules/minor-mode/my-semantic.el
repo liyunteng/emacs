@@ -102,7 +102,7 @@
 						  (point)
 						  'mark)
 	  (when (fboundp 'xref-push-marker-stack)
-		(xref-push-marker-stack (set-mark (point))))
+		(xref-push-marker-stack (push-mark (point))))
 	  ad-do-it
 	  )
 	;; (defadvice push-mark (around semantic-mru-bookmark activate)

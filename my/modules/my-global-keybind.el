@@ -159,14 +159,10 @@
 (global-set-key (kbd "C-x r .") 'point-to-register)
 (global-set-key (kbd "C-x r j") 'jump-to-register)
 ;; (global-set-key (kbd "C-x r v") 'view-register)
-(global-set-key (kbd "C-x r v") 'helm-register)
 (global-set-key (kbd "C-x r i") 'insert-register)
 (global-set-key (kbd "C-x r a") 'append-to-register)
 (global-set-key (kbd "C-x r p") 'prepend-to-register)
 ;; bookmark
-(global-set-key (kbd "C-x r b") 'helm-bookmarks)
-(global-set-key (kbd "C-h o") 'helm-occur)
-
 
 ;;multi-term
 (global-set-key (kbd "C-x x") 'my/multi-term-dedicated-toggle-and-select)
@@ -221,10 +217,6 @@
 
 ;; (global-set-key (kbd "C-x [") 'switch-to-prev-buffer)
 ;; (global-set-key (kbd "C-x ]") 'switch-to-next-buffer)
-
-
-(global-set-key (kbd "C-=") 'er/expand-region)
-
 
 ;; A complementary binding to the apropos-command (C-h a)
 (define-key 'help-command "A" 'apropos)
