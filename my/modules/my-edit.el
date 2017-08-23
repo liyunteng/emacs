@@ -529,6 +529,7 @@ indent yanked text (with prefix arg don't indent)."
   :config
   (setq tags-revert-without-query t
 		tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
+		tags-add-tables nil		  ;don't ask user
 		)
 
   (defun my/tags-search (&optional regexp  file-list-form)
