@@ -43,6 +43,7 @@
 
 (use-package beacon
   :ensure t
+  :commands (beacon-mode)
   :init
   (beacon-mode +1))
 

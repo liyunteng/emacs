@@ -35,26 +35,38 @@
 #+BEGIN_SRC
 http://106.75.55.63/advapi/v1/monitor?rq=1&ad=f3fb000b05f11d4162044815db68a0cc&zone=fa9edb6280%207a5548e4e4e6c7bae7faed&dm=a&i=123d225fa4bc2d46c3&ip=10.23.24.12&CP=cntv&SP=njt&ex=%ex%
 #+END_SRC
-** TODO [#C] Update Emacs <2017-08-20 Sun 02:50> [0/4]					 :@home:
+** DONE [#C] Update Emacs <2017-08-20 Sun 02:50> [4/4]					 :@home:
+   CLOSED: [2017-08-24 Thu 00:21]
    :LOGBOOK:
+   - State "DONE"       from "TODO"       [2017-08-24 Thu 00:21]
    CLOCK: [2017-08-20 Sun 03:35]--[2017-08-20 Sun 03:36] =>  0:01
    :END:
    file:~/.emacs.d/org/task.org::*va%20add%20monitor%20interface
 
-*** TODO use use-package [0%]
+*** DONE use use-package [100%]
+	 CLOSED: [2017-08-24 Thu 00:20]
 	 :LOGBOOK:
+	 - State "DONE"       from "TODO"       [2017-08-24 Thu 00:20]
 	 - State "TODO"       from "DONE"       [2017-08-20 Sun 02:52]
 	 - State "DONE"       from "NEXT"       [2017-08-20 Sun 02:52]
 	 :END:
-	- [ ] how to use use-package
-	- [ ] replace my-require-package and require
-	- [ ] change other config
+	- [X] how to use use-package
+	- [X] replace my-require-package and require
+	- [X] change other config
 
-*** TODO update company
+*** DONE update company
+	 CLOSED: [2017-08-24 Thu 00:20]
+	 :LOGBOOK:
+	 - State "DONE"       from "TODO"       [2017-08-24 Thu 00:20]
+	 :END:
 
-*** TODO update toggle
+*** DONE update toggle
+	 CLOSED: [2017-08-24 Thu 00:20]
+	 :LOGBOOK:
+	 - State "DONE"       from "TODO"       [2017-08-24 Thu 00:20]
+	 :END:
 
-*** TODO update jump-to-define <2017-08-20 Sun>
+*** DONE update jump-to-define <2017-08-20 Sun>
 	 SCHEDULED: <2017-08-20 Sun>
    	:PROPERTIES:
    	:CATEGORY: eamcs

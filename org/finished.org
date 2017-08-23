@@ -57,6 +57,50 @@
    :END:
 
 
+** DONE [#C] Update Emacs <2017-08-20 Sun 02:50> [4/4]					 :@home:
+   CLOSED: [2017-08-24 Thu 00:21]
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2017-08-24 Thu 00:21]
+   CLOCK: [2017-08-20 Sun 03:35]--[2017-08-20 Sun 03:36] =>  0:01
+   :END:
+   file:~/.emacs.d/org/task.org::*va%20add%20monitor%20interface
+
+*** DONE use use-package [100%]
+	 CLOSED: [2017-08-24 Thu 00:20]
+	 :LOGBOOK:
+	 - State "DONE"       from "TODO"       [2017-08-24 Thu 00:20]
+	 - State "TODO"       from "DONE"       [2017-08-20 Sun 02:52]
+	 - State "DONE"       from "NEXT"       [2017-08-20 Sun 02:52]
+	 :END:
+	- [X] how to use use-package
+	- [X] replace my-require-package and require
+	- [X] change other config
+
+*** DONE update company
+	 CLOSED: [2017-08-24 Thu 00:20]
+	 :LOGBOOK:
+	 - State "DONE"       from "TODO"       [2017-08-24 Thu 00:20]
+	 :END:
+
+*** DONE update toggle
+	 CLOSED: [2017-08-24 Thu 00:20]
+	 :LOGBOOK:
+	 - State "DONE"       from "TODO"       [2017-08-24 Thu 00:20]
+	 :END:
+
+*** DONE update jump-to-define <2017-08-20 Sun>
+	 SCHEDULED: <2017-08-20 Sun>
+   	:PROPERTIES:
+   	:CATEGORY: eamcs
+   	:LOGGING:  t
+   	:ARCHIVE_TIME: 2017-08-20 Sun 03:30
+   	:ARCHIVE_FILE: ~/.emacs.d/org/task.org
+   	:ARCHIVE_OLPATH: TASKS/Update Emacs <2017-08-20 Sun 02:50>
+   	:ARCHIVE_CATEGORY: eamcs
+   	:ARCHIVE_TODO: TODO
+   	:ARCHIVE_ITAGS: @home
+   	:END:
+
 * DROP
 ** CANCELLED [#C] 发布使用新service的普通版本给柴亚伟 <2016-12-06 Tue 18:23>
    CLOSED: [2017-07-13 Thu 13:59] DEADLINE: <2016-12-07 Wed> SCHEDULED: <2016-12-07 Wed>
