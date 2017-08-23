@@ -90,10 +90,9 @@
   ;; (setq semantic-update-mode-line t)
 
   (use-package semantic/mru-bookmark
-	:defer t
-	:config
+	:init
 	;;修复向回跳转的问题
-	(defadvice semantic-ia--fast-jump-helper (around my-semantic-ia-fast-jump-push-mark activate)
+	(defadvice semantic-ia-fast-jump (around my-semantic-ia-fast-jump-push-mark activate)
 	  (semantic-mrub-push semantic-mru-bookmark-ring
 						  (point)
 						  'mark)
@@ -115,13 +114,12 @@
 	)
 
   (use-package semantic/idle
-	:defer t
 	:defines (semantic-idle-scheduler-idle-time
 			  semantic-idle-scheduler-max-buffer-size
 			  semantic-idle-scheduler-work-idle-time
 			  semantic-idle-work-update-headers-flag
 			  )
-	:config
+	:init
 	(setq semantic-idle-scheduler-idle-time 1)
 	(setq semantic-idle-scheduler-max-buffer-size 10240000)
 	(setq semantic-idle-scheduler-work-idle-time 60)
@@ -149,8 +147,11 @@
 
 
   (use-package semantic/dep
-	:defer t
-	:config
+	:init
+	(setq-mode-local c-mode semantic-dependency-include-path
+					 my-include-path)
+	(setq-mode-local c++-mode semantic-dependency-include-path
+					 my-include-path)
 	(setq-mode-local c-mode semantic-dependency-system-include-path
 					 (semantic-gcc-get-include-paths "c"))
 	(setq-mode-local c++-mode semantic-dependency-system-include-path
@@ -161,22 +162,19 @@
   ;; 设置头文件路径
 
   (use-package semantic/senator
-	:defer t
-	:config
+	:init
 	(setq senator-highlight-found t))
 
   ;; ;;;semantic Database
   (use-package semantic/db
-	:defer t
-	:config
+	:init
 	(setq semanticdb-search-system-databases t)
 
 	(setq semanticdb-project-roots my-project-roots)
 	)
 
   (use-package semantic/db-find
-	:defer t
-	:config
+	:init
 	(setq-mode-local c-mode semanticdb-find-default-throttle
 					 '(project local unloaded system recursive))
 	(setq-mode-local c++-mode semanticdb-find-default-throttle
@@ -184,8 +182,7 @@
 	)
 
   (use-package semantic/db-global
-	:defer t
-	:config
+	:init
 	(semanticdb-enable-gnu-global-databases 'c-mode)
 	(semanticdb-enable-gnu-global-databases 'c++-mode)
 	)

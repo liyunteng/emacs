@@ -99,6 +99,7 @@
                        "../../src")
   "My local src path.")
 
+;;;###autoload
 (defconst my-include-path (list
                            "include"
                            "inc"
@@ -221,8 +222,6 @@
 ;; 				  (statement-cont . (c-lineup-assignments +)))))
 (defun my-c-mode-hooks ()
   "My c common mode hooks."
-  ;; (use-package cc-mode)
-
   (unless semantic-mode
 	(semantic-mode +1))
 
