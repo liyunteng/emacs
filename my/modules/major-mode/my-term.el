@@ -118,11 +118,13 @@
     (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
   (add-hook 'term-exec-hook 'my-term-use-utf8)
 
-  (defun my/toggle-term-mode ()
+  (defun my/term-mode-toggle-line-mode ()
     (interactive)
-    (if (term-in-char-mode)
-        (term-line-mode)
-      (term-char-mode)))
+    (if (eq major-mode 'term-mode)
+		(if (term-in-char-mode)
+			(term-line-mode)
+		  (term-char-mode))
+	  (message "not term-mode")))
 
   (add-hook 'term-mode-hook
             (lambda ()
@@ -161,14 +163,14 @@
   (add-to-list 'term-bind-key-alist '("C-c C-z" . term-send-raw))
   (add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-raw))
   (add-to-list 'term-bind-key-alist '("C-l" . term-send-raw))
-  (add-to-list 'term-bind-key-alist '("C-c C-m" . my/toggle-term-mode))
+  (add-to-list 'term-bind-key-alist '("C-c C-m" . my/term-mode-toggle-line-mode))
   (add-to-list 'term-bind-key-alist '("C-c C-p" . term-previous-prompt))
   (add-to-list 'term-bind-key-alist '("C-c C-n" . term-next-prompt))
 
   (add-to-list 'term-bind-key-alist '("C-x ." . multi-term-next))
   (add-to-list 'term-bind-key-alist '("C-x ," . multi-term-prev))
 
-  (define-key term-mode-map (kbd "C-c C-m") 'my/toggle-term-mode)
+  (define-key term-mode-map (kbd "C-c C-m") 'my/term-mode-toggle-line-mode)
   (define-key term-mode-map (kbd "C-l") 'term-send-raw)
   (define-key term-mode-map (kbd "C-c C-p") 'term-previous-prompt)
   (define-key term-mode-map (kbd "C-c C-n") 'term-next-prompt)

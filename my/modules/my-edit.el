@@ -36,7 +36,7 @@
 ;; smooth scrolling
 (setq scroll-margin 3
       scroll-conservatively 100000
-      scroll-preserve-screen-position 1)
+      scroll-preserve-screen-position t)
 
 ;; default major mode
 (setq-default default-major-mode 'text-mode)
@@ -85,7 +85,7 @@
 (global-hl-line-mode +1)
 
 ;; imenu
-(set-default 'imenu-auto-rescan t)
+(setq-default imenu-auto-rescan t)
 
 ;; no blink
 (blink-cursor-mode -1)
@@ -108,12 +108,9 @@
 ;; add final newline
 (setq require-final-newline t)
 
-(delete-selection-mode t)
+(delete-selection-mode +1)
 
 (setq set-mark-command-repeat-pop t)
-
-;; Scroll compilation to first error or end
-(setq-default compilation-scroll-output 'first-error)
 
 ;; Don't try to ping things that look like domain names
 (setq-default ffap-machine-p-known 'reject)
@@ -226,7 +223,8 @@
 
 ;;
 (use-package uniquify
-  :config
+  :defer t
+  :init
   (setq uniquify-buffer-name-style 'forward)
   (setq uniquify-separator "/")
   (setq uniquify-after-kill-buffer-p t)
@@ -235,7 +233,7 @@
 
 ;; ediff
 (use-package ediff
-  :defer t
+  :commands (ediff)
   :init
   (setq-default
    ediff-window-setup-function 'ediff-setup-windows-plain
@@ -246,15 +244,10 @@
   (add-hook 'ediff-quit-hook #'winner-undo)
   )
 
-(use-package aggressive-indent
-  :ensure t
-  :defer t
-  :init
-  (aggressive-indent-mode +1)
-  )
-
 ;; clean up obsolete buffers automatically
-(use-package midnight)
+(use-package midnight
+  :init
+  (midnight-mode +1))
 
 ;; bookmark
 (use-package bookmark
@@ -276,21 +269,24 @@
 
 ;; make a shell script executable automatically on save
 (use-package executable
-  :config
+  :commands (executable-make-buffer-file-executable-if-script-p)
+  :init
   (add-hook 'after-save-hook
 			'executable-make-buffer-file-executable-if-script-p))
 
 ;; saner regex syntax
 (use-package re-builder
+  :commands (re-builder regexp-builder)
   :config
   (setq reb-re-syntax 'string))
 
 ;; Auto revert
 (use-package autorevert
+  :init
+  (global-auto-revert-mode +1)
   :config
   (setq global-auto-revert-non-file-buffers t
 		auto-revert-verbose nil)
-  (global-auto-revert-mode t)
   (add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode))
 
 ;; (setq ring-bell-function 'ignore
@@ -304,7 +300,7 @@
 
 ;; which func
 (use-package which-func
-  :config
+  :init
   (which-function-mode +1))
 
 ;; whitespace 设置
@@ -358,7 +354,8 @@
 (use-package whitespace-cleanup-mode
   :ensure t
   :diminish whitespace-cleanup-moed
-  :config
+  :commands (whitespace-cleanup)
+  :init
   (add-hook 'before-save-hook 'whitespace-cleanup )
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (global-whitespace-cleanup-mode +1)
@@ -437,18 +434,30 @@ indent yanked text (with prefix arg don't indent)."
   )
 
 ;;; grep 默认递归查找
-(setq-default grep-command "grep --color -nH -r -E ")
-(setq-default grep-highlight-matches t)
-(setq-default grep-scroll-output t)
+(use-package grep
+  :commands (grep-mode
+			 grep
+			 grep-find
+			 find-grep
+			 lgrep
+			 rgrep
+			 zrgrep
+			 rzgrep)
+  :config
+  (setq grep-command "grep --color -nH -r -E "
+		grep-highlight-matches t
+		grep-scroll-output t
+		))
+
 (when (executable-find "ag")
   (use-package ag
 	:ensure t
     :bind ("M-?" . ag)
 	:config
+	(use-package wgrep-ag
+	  :ensure t)
 	(setq ag-highlight-search t)
 	)
-  (use-package wgrep-ag
-	:ensure t)
   )
 
 ;; 设置默认浏览器为firefox
@@ -472,6 +481,39 @@ indent yanked text (with prefix arg don't indent)."
 ;;;netstat命令的默认参数
 (setq-default netstat-program-options '("-nap"))
 
+(use-package etags
+  :commands (xref-find-definitions
+             xref-find-definitions-other-window
+			 xref-find-definitions-other-frame
+             xref-find-apropos
+			 tags-loop-continue
+			 tags-search
+			 pop-tag-mark
+			 )
+  :init
+  ;;设置TAGS文件
+  (if (file-exists-p "/usr/include/TAGS")
+      (add-to-list 'tags-table-list
+                   "/usr/include/TAGS"))
+
+  :config
+  (setq tags-revert-without-query t
+		tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
+		)
+
+  (defun my/tags-search (&optional regexp  file-list-form)
+    "My tags search, if REGEXP is nil, use selected word.
+FILE-LIST-FORM used by\"tags-loop-continue\"."
+    (interactive (find-tag-interactive "Search tags(regexp): "))
+    (if (and (equal regexp "")
+             (eq (car tags-loop-scan) 're-search-forward)
+             (null tags-loop-operate))
+        ;; Continue last tags-search as if by M-,.
+        (tags-loop-continue nil)
+      (setq tags-loop-scan `(re-search-forward ',regexp nil t)
+            tags-loop-operate nil)
+      (tags-loop-continue (or file-list-form t)))))
+
 ;; disable feature
 ;; (put 'set-goal-column 'disabled nil)
 ;; (put 'dired-find-alternate-file 'disabled nil)
@@ -483,12 +525,6 @@ indent yanked text (with prefix arg don't indent)."
 ;; calendar
 (setq-default calendar-date-style (quote iso))
 (setq-default calendar-chinese-all-holidays-flag t)
-
-;; etags
-(setq-default tags-revert-without-query t
-			  tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
-			  )
-
 
 ;; set buffer major mode accroding to auto-mode-alist
 (defadvice my-set-buffer-major-mode (after set-major-mode activate compile)
@@ -528,6 +564,48 @@ indent yanked text (with prefix arg don't indent)."
 		compilation-scroll-output 'first-error ; Automatically scroll to first
                                         ; error
 		)
+
+  (defun my/smart-compile()
+	"比较智能的C/C++编译命令
+如果当前目录有makefile则用make -k编译，否则，如果是
+处于c-mode，就用clang -Wall编译，如果是c++-mode就用
+clang++ -Wall编译"
+	(interactive)
+	;; do save
+	(setq-local compilation-directory default-directory)
+	(save-some-buffers (not compilation-ask-about-save)
+					   compilation-save-buffers-predicate)
+	;; find compile-command
+	(let ((command (eval compile-command))
+		  (candidate-make-file-name '("makefile" "Makefile" "GNUmakefile" "GNUMakefile")))
+	  (if (string= command "make -k ")
+		  (if (find t candidate-make-file-name :key
+					'(lambda (f) (file-readable-p f)))
+			  (setq command "make -k ")
+			(if (eq major-mode 'c-mode)
+				(setq command
+					  (concat "clang -Wall -o "
+							  (file-name-sans-extension
+							   (file-name-nondirectory buffer-file-name))
+							  " "
+							  (file-name-nondirectory buffer-file-name)
+							  " -g "))
+			  ;; c++-mode
+			  (if (eq major-mode 'c++-mode)
+				  (setq command
+						(concat "clang++ -Wall -o "
+								(file-name-sans-extension
+								 (file-name-nondirectory buffer-file-name))
+								" "
+								(file-name-nondirectory buffer-file-name)
+								" -g "
+								))
+				(message "Unknow mode")))))
+	  (unless (equal command (eval compile-command))
+		(setq-local compile-command command))
+	  (setq-local compilation-directory default-directory)
+	  (compilation-start (compilation-read-command command))
+	  ))
 
   ;; Compilation from Emacs
   (defun my-colorize-compilation-buffer ()
@@ -658,6 +736,41 @@ the right."
   (my|create-align-repeat-x "backslash" "\\\\")
   )
 
+(use-package newcomment
+  :commands (comment-line
+			 comment-indent-new-line
+			 comment-dwim
+			 comment-or-uncomment-region
+			 comment-box
+			 comment-region
+			 uncomment-region
+			 comment-kill
+			 comment-set-column
+			 comment-indent
+			 comment-indent-default
+			 )
+  :init
+  (defun my/comment-dwim-line (&optional arg)
+	"Replacement for the \"comment-dwim\" command.
+If no region is selected and current line is not blank and we are not
+at the end of the line,then comment current line,els use \"(comment-dwim ARG)\"
+Replaces default behaviour of comment-dwim, when it inserts comment
+at the end of the line."
+	(interactive "*P")
+	(comment-normalize-vars)
+	(if  (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
+
+		(if (comment-beginning)
+			(comment-or-uncomment-region (comment-beginning)
+										 (progn (backward-char) (search-forward comment-end)))
+		  (comment-or-uncomment-region (line-beginning-position)
+									   (line-end-position)))
+	  (comment-dwim arg))
+	(indent-according-to-mode))
+  :config
+  (setq comment-style (quote extra-line))
+  (setq comment-fill-column 80)
+  )
 
 (use-package diminish
   :ensure t
@@ -674,11 +787,40 @@ the right."
   (diminish 'symbol-overlay-mode)
   )
 
+(use-package fill-column-indicator
+  :ensure t
+  :commands (turn-on-fci-mode
+			 turn-off-fci-mode
+			 fci-mode)
+  :init
+  (my|add-toggle fill-column-indicator
+	:status fci-mode
+	:on (turn-on-fci-mode)
+	:off (turn-off-fci-mode)
+	:documentation "Display the fill column indicator"
+	:global-key "C-# i"
+	)
+  :config
+  (setq fci-rule-width 1
+		fci-rule-color "#D0BF8F")
+  (push '(fci-mode "") minor-mode-alist)
+  )
+
+(use-package aggressive-indent
+  :ensure t
+  :commands (aggressive-indent-mode)
+  :init
+  (aggressive-indent-mode +1)
+  :config
+  (my|add-toggle aggressive-indent
+	:mode aggressive-indent-mode
+	:documentation "Always keep code indent.")
+  )
 ;; expand-region
 (use-package expand-region
+  :ensure t
   :bind (("C-=" . er/expand-region))
   :commands (er/expand-region)
-  :ensure t
   :config
   (setq expand-region-contract-fast-key ",")
   (setq expand-region-smart-cursor nil)
@@ -688,14 +830,14 @@ the right."
 (use-package page-break-lines
   :diminish page-break-lines-mode
   :ensure t
-  :config
-  (global-page-break-lines-mode t))
+  :init
+  (global-page-break-lines-mode +1))
 
 ;; smarter kill-ring navigation
 (use-package browse-kill-ring
   :ensure t
   :bind (("M-y" . browse-kill-ring))
-  :config
+  :init
   (browse-kill-ring-default-keybindings)
   )
 
@@ -703,20 +845,17 @@ the right."
 (use-package projectile
   :bind-keymap ("C-c p" . projectile-command-map)
   :ensure t
+  :init
+  (projectile-mode +1)
   :config
   (setq projectile-mode-line '(:eval  (format " PJ[%s]" (projectile-project-name))))
-  (setq projectile-sort-order 'recentf
-		projectile-cache-file (concat my-cache-dir
-									  "projectile.cache")
-		projectile-known-projects-file (concat my-cache-dir
-											   "projectile-bookmarks.eld"))
-  (projectile-mode +1)
+  (setq projectile-sort-order 'recentf)
   )
 
 ;; diff-hl
 (use-package diff-hl
   :ensure t
-  :config
+  :init
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
   (global-diff-hl-mode +1)
   )
@@ -726,11 +865,12 @@ the right."
   :commands (undo-tree-undo undo-tree-redo undo-tree-visualizer)
   :ensure t
   :diminish undo-tree-mode
+  :init
+  (global-undo-tree-mode +1)
   :config
   (setq undo-tree-visualizer-timestamps t
 		undo-tree-visualizer-diff t
 		undo-tree-auto-save-history t)
-  (global-undo-tree-mode +1)
   )
 
 ;; easy-kill
@@ -746,7 +886,7 @@ the right."
 (use-package editorconfig
   :ensure t
   :diminish editorconfig-mode
-  :config
+  :init
   (editorconfig-mode +1)
   )
 
@@ -754,8 +894,10 @@ the right."
 (use-package indent-guide
   :ensure t
   :diminish indent-guide-mode
-  :config
+  :init
   (add-hook 'prog-mode-hook 'indent-guide-mode)
+  :config
+  (setq indent-guide-delay 0.3)
   )
 
 ;; multiple-cursors
@@ -769,13 +911,6 @@ the right."
 		 ("C-c m e" . mc/edit-ends-of-lines)
 		 ("C-c m a" . mc/edit-beginnings-of-lines)
 		 ))
-
-;; smartparens
-(use-package smartparens
-  :ensure t
-  :config
-  (show-smartparens-global-mode +1)
-  )
 
 ;; discover-my-major
 (use-package discover-my-major
@@ -801,6 +936,25 @@ the right."
 					  (face-attribute 'isearch
 									  :foreground))
   )
+
+(use-package google-translate
+  :ensure t
+  :config
+  (defun my/set-google-translate-languages (source target)
+	"Set source language for google translate.
+For instance pass En as source for English."
+	(interactive
+	 "sEnter source language (ie. en): \nsEnter target language (ie. zh-CN): "
+	 source target)
+	(message
+	 (format "Set google translate source language to %s and target to %s"
+			 source target))
+	(setq google-translate-default-source-language (downcase source))
+	(setq google-translate-default-target-language (downcase target)))
+  (setq google-translate-enable-ido-completion t)
+  (setq google-translate-show-phonetic t)
+  (setq google-translate-default-source-language "en")
+  (setq google-translate-default-target-language "zh-CN"))
 
 ;; GTAGS
 (use-package ggtags
@@ -844,60 +998,65 @@ the right."
 	(interactive)
 	(message "GTAGSLIBPATH=%s" (getenv "GTAGSLIBPATH")))
   )
+(use-package goto-addr
+  :config
+  (setq goto-address-url-face 'underline)
+  )
 
 ;; prog-mode-hook
-(setq-default goto-address-url-face 'underline)
-(defun my-local-comment-auto-fill ()
-  "Turn on comment auto fill."
-  (set (make-local-variable 'comment-auto-fill-only-comments) t))
-(defun my-font-lock-comment-annotations ()
-  "Highlight a bunch of well known comment annotations.
+(use-package prog-mode
+  :config
+  (defun my-local-comment-auto-fill ()
+	"Turn on comment auto fill."
+	(set (make-local-variable 'comment-auto-fill-only-comments) t))
+  (defun my-font-lock-comment-annotations ()
+	"Highlight a bunch of well known comment annotations.
 
 This functions should be added to the hooks of major modes for programming."
-  (font-lock-add-keywords
-   nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\):\\)"
-          1 font-lock-warning-face t))))
-(defun my-prog-mode-defaults ()
-  "Default coding hook, useful with any programming language."
-  (goto-address-prog-mode)
-  (bug-reference-prog-mode)
-  (smartparens-mode +1)
-  (my-local-comment-auto-fill)
-  (my-font-lock-comment-annotations))
-(add-hook 'prog-mode-hook 'my-prog-mode-defaults)
+	(font-lock-add-keywords
+	 nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\):\\)"
+			1 font-lock-warning-face t))))
+  (defun my-prog-mode-defaults ()
+	"Default coding hook, useful with any programming language."
+	(goto-address-prog-mode)
+	(bug-reference-prog-mode)
+	(smartparens-mode +1)
+	(my-local-comment-auto-fill)
+	(my-font-lock-comment-annotations))
+  (add-hook 'prog-mode-hook 'my-prog-mode-defaults))
 
 
-
-(defun my/rename-file (filename &optional new-filename)
-  "Rename FILENAME to NEW-FILENAME.
+  
+  (defun my/rename-file (filename &optional new-filename)
+	"Rename FILENAME to NEW-FILENAME.
 
 When NEW-FILENAME is not specified, asks user for a new name.
 
 Also renames associated buffer (if any exists), invalidates
 projectile cache when it's possible and update recentf list."
-  (interactive "f")
-  (when (and filename (file-exists-p filename))
-    (let* ((buffer (find-buffer-visiting filename))
-           (short-name (file-name-nondirectory filename))
-           (new-name (if new-filename new-filename
-                       (read-file-name
-                        (format "Rename %s to: " short-name)))))
-      (cond ((get-buffer new-name)
-             (error "A buffer named '%s' already exists!" new-name))
-            (t
-             (let ((dir (file-name-directory new-name)))
-               (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
-                 (make-directory dir t)))
-             (rename-file filename new-name 1)
-             (when buffer
-               (kill-buffer buffer)
-               (find-file new-name))
-             (when (fboundp 'recentf-add-file)
-               (recentf-add-file new-name)
-               (recentf-remove-if-non-kept filename))
-             (when (projectile-project-p)
-               (call-interactively #'projectile-invalidate-cache))
-             (message "File '%s' successfully renamed to '%s'" short-name (file-name-nondirectory new-name)))))))
+	(interactive "f")
+	(when (and filename (file-exists-p filename))
+	  (let* ((buffer (find-buffer-visiting filename))
+			 (short-name (file-name-nondirectory filename))
+			 (new-name (if new-filename new-filename
+						 (read-file-name
+						  (format "Rename %s to: " short-name)))))
+		(cond ((get-buffer new-name)
+			   (error "A buffer named '%s' already exists!" new-name))
+			  (t
+			   (let ((dir (file-name-directory new-name)))
+				 (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
+				   (make-directory dir t)))
+			   (rename-file filename new-name 1)
+			   (when buffer
+				 (kill-buffer buffer)
+				 (find-file new-name))
+			   (when (fboundp 'recentf-add-file)
+				 (recentf-add-file new-name)
+				 (recentf-remove-if-non-kept filename))
+			   (when (projectile-project-p)
+				 (call-interactively #'projectile-invalidate-cache))
+			   (message "File '%s' successfully renamed to '%s'" short-name (file-name-nondirectory new-name)))))))
 
 ;; from magnars
 (defun my/rename-current-buffer-file ()
@@ -1057,8 +1216,6 @@ It runs `tabulated-list-revert-hook', then calls `tabulated-list-print'."
   ;; hack is here
   ;; (tabulated-list-print t)
   (tabulated-list-print))
-;; Highlight and allow to open http link at point in programming buffers
-;; goto-address-prog-mode only highlights links in strings and comments
 
 (provide 'my-edit)
 ;;; my-edit.el ends here

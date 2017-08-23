@@ -27,11 +27,6 @@
 ;; occur绑定为M-s o ;; (global-set-key (kbd "C-x M-o") 'occur)
 ;; (global-set-key (kbd "C-h o") 'occur)
 
-;; org
-(global-set-key (kbd "C-x c") 'org-capture)
-(global-set-key (kbd "C-x l") 'org-store-link)
-(global-set-key (kbd "C-x a") 'org-agenda)
-
 ;;使用sudo 编辑文件
 (global-set-key (kbd "C-x M-f") 'find-file-root)
 
@@ -172,9 +167,6 @@
 (global-set-key (kbd "C-x t p") 'multi-term-prev)
 
 ;; ==================== MISC ====================
-;;speedbar
-(global-set-key (kbd "<f2>") 'speedbar-get-focus)
-;; (global-set-key [(f4)] 'speedbar)
 
 ;; woman
 (global-set-key (kbd "C-c h m") 'man)

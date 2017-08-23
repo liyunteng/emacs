@@ -29,11 +29,13 @@
   :ensure t)
 (use-package cl-lib-highlight
   :ensure t)
+
 (use-package rainbow-mode
   :diminish rainbow-mode
   :ensure t)
 (use-package rainbow-delimiters
   :ensure t)
+
 (use-package eldoc-eval
   :ensure t)
 (use-package macrostep
@@ -62,9 +64,10 @@
 				  help-mode-hook
 				  messages-buffer-mode-hook
 				  completion-list-mode-hook
-				  debugger-mode-hook))
-	(add-hook hook 'turn-on-elisp-slime-nav-mode))
-  )
+				  debugger-mode-hook
+				  special-
+				  ))
+	(add-hook hook 'turn-on-elisp-slime-nav-mode)))
 
 (use-package ipretty
   :ensure t

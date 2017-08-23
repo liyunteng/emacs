@@ -36,7 +36,9 @@
 			  ("m" . avy-move-line)
 			  ("p" . avy-copy-line)
 			  ("b" . avy-pop-mark)
-			  ("r" . avr-resume)
+			  ("r" . avy-resume)
+			  ("u" . my/avy-goto-url)
+			  ("o" . my/avy-open-url)
 			  :map isearch-mode-map
 			  ("C-j" . avy-isearch)
 			  )
@@ -46,6 +48,16 @@
   :config
   (setq avy-background t)
   (setq avy-style 'at-full)
+  (defun my/avy-goto-url()
+	"Use avy to go to an URL in the buffer."
+	(interactive)
+	(avy--generic-jump "https?://" nil 'pre))
+  (defun my/avy-open-url ()
+	"Use avy to select an URL in the buffer and open it."
+	(interactive)
+	(save-excursion
+	  (my/avy-goto-url)
+	  (browse-url-at-point)))
   )
 
 (provide 'my-avy)

@@ -25,7 +25,14 @@
 ;;; Code:
 
 (use-package move-text
-  :ensure t)
+  :ensure t
+  :bind (:map my-mode-map
+			  ([(control shift up)]  . move-text-up)
+			  ([(control shift down)] . move-text-down)
+			  ([(meta shift up)]  . move-text-up)
+			  ([(meta shift down)]  . move-text-down)
+			  )
+  )
 (use-package imenu-anywhere
   :ensure t
   :config
@@ -46,16 +53,12 @@
     (define-key map [(shift return)] 'crux-smart-open-line)
     (define-key map (kbd "M-o") 'crux-smart-open-line)
     (define-key map [(control shift return)] 'crux-smart-open-line-above)
-    (define-key map [(control shift up)]  'move-text-up)
-    (define-key map [(control shift down)]  'move-text-down)
-    (define-key map [(meta shift up)]  'move-text-up)
-    (define-key map [(meta shift down)]  'move-text-down)
+
     (define-key map (kbd "C-c n") 'crux-cleanup-buffer-or-region)
     (define-key map (kbd "C-c f")  'crux-recentf-ido-find-file)
     (define-key map (kbd "C-M-z") 'crux-indent-defun)
     (define-key map (kbd "C-c u") 'crux-view-url)
     (define-key map (kbd "C-c e") 'crux-eval-and-replace)
-    (define-key map (kbd "C-c s") 'crux-swap-windows)
     (define-key map (kbd "C-c D") 'crux-delete-file-and-buffer)
     (define-key map (kbd "C-c d") 'crux-duplicate-current-line-or-region)
     (define-key map (kbd "C-c M-d") 'crux-duplicate-and-comment-current-line-or-region)
@@ -66,6 +69,7 @@
     (define-key map (kbd "C-c I") 'crux-find-user-init-file)
     (define-key map (kbd "C-c S") 'crux-find-shell-init-file)
     (define-key map (kbd "C-c i") 'imenu-anywhere)
+	(define-key map (kbd "C-c C-s") 'crux-swap-windows)
     ;; extra prefix for projectile
     (define-key map (kbd "s-p") 'projectile-command-map)
     ;; make some use of the Super key

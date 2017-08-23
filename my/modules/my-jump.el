@@ -90,10 +90,15 @@ Example:
 	(goto-char pos)
 	(my/jump-to-definition)))
 
-(my|define-jump-handlers lisp-interaction-mode elisp-slime-nav-find-elisp-thing-at-point)
-(my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
+;; (my|define-jump-handlers lisp-interaction-mode elisp-slime-nav-find-elisp-thing-at-point)
+;; (my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
+(my|define-jump-handlers elisp-slime-nav-mode elisp-slime-nav-find-elisp-thing-at-point)
 (my|define-jump-handlers c-mode semantic-ia-fast-jump find-tag)
 (my|define-jump-handlers c++-mode semantic-ia-fast-jump find-tag)
+(my|define-jump-handlers go-mode godef-jump find-tag)
+(my|define-jump-handlers python-mode elpy-goto-definition find-tag)
+
+(global-set-key (kbd "M-.") 'my/jump-to-definition)
 
 
 (provide 'my-jump)

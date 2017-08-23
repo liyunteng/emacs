@@ -35,7 +35,6 @@
   :init (setq syslog-setup-on-load t)
   :mode ("\\(messages\\(\\.[0-9]\\)?\\|SYSLOG\\|dmesg\\|\\.log.*\\)\\'" . syslog-mode)
   :config
-  (use-package goto-addr)
   (defun my-enable-goto-address-mode ()
 	"Enable goto address mode."
 	(goto-address-mode t))

@@ -54,7 +54,6 @@
 
 (setq-default ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir))
 (setq-default ido-save-directory-list-file (expand-file-name "ido.last" my-cache-dir))
-(setq-default projectile-known-projects-file (expand-file-name "projectile-bookmarks" my-cache-dir))
 (setq-default smex-save-file (expand-file-name "smex-items" my-cache-dir))
 
 ;; abbrev
@@ -78,6 +77,7 @@
 
 ;; projectile
 (setq-default projectile-cache-file (expand-file-name  "projectile.cache" my-cache-dir))
+(setq-default projectile-known-projects-file (expand-file-name "projectile-bookmarks" my-cache-dir))
 
 ;; eshell
 (setq-default eshell-directory-name

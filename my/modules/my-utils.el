@@ -308,7 +308,7 @@ For example:
              my-toggles)
        ;; toggle function
        (defun ,wrapper-func ,(if prefix-arg-var (list prefix-arg-var) ())
-         ,(format "Toggle %s on and off." (symbol-name name))
+         ,(format "%s\nToggle %s on and off." doc (symbol-name name))
          ,(if prefix-arg-var '(interactive "P") '(interactive))
          (if (or (null ',condition)
                  (and (or (and (symbolp ',condition) (boundp ',condition))

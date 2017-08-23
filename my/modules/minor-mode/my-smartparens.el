@@ -25,10 +25,27 @@
 ;;; Code:
 
 (use-package smartparens
+  :ensure t
   :commands (smartparens-mode
 			 smartparens-strict-mode
 			 smartparens-global-mode
 			 smartparens-global-strict-mode)
+  :init
+  (defun my--conditionally-enable-smartparens-mode ()
+	"Enable `smartparens-mode' in the minibuffer, during `eval-expression'."
+	(if (or (eq this-command 'eval-expression)
+			(eq this-command 'pp-eval-expression)
+			)
+		(smartparens-mode)))
+  (add-hook 'minibuffer-setup-hook 'my--conditionally-enable-smartparens-mode)
+
+  (my|add-toggle smartparens
+	:mode smartparens-mode
+	:documentation "Enable smartparens.")
+  (my|add-toggle smartparens-strict-mode
+	:mode smartparens-strict-mode
+	:documentation "Enable smartparens strict.")
+
   :config
   (require'smartparens-config)
   ;; (sp-use-paredit-bindings)
@@ -47,13 +64,32 @@
 
   (sp-use-smartparens-bindings)
   (show-smartparens-global-mode +1)
-  (sp-with-modes
-	  '(c++-mode objc-mode c-mode python-mode go-mode)
-	(sp-local-pair "{" "}"
-				   :unless '(sp-in-comment-p sp-in-string-p)
-				   :post-handlers '(:add ("||" "RET"))))
-  (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+  (defun my--smartparens-pair-newline-and-indent (id action context)
+	(save-excursion
+	  (newline)
+	  (indent-according-to-mode)))
+  (defun my/smart-closing-parenthesis ()
+	(interactive)
+	(let* ((sp-navigate-close-if-unbalanced t)
+		   (current-pos (point))
+		   (current-line (line-number-at-pos current-pos))
+		   (next-pos (save-excursion
+					   (sp-up-sexp)
+					   (point)))
+		   (next-line (line-number-at-pos next-pos)))
+	  (cond
+	   ((and (= current-line next-line)
+			 (not (= current-pos next-pos)))
+		(sp-up-sexp))
+	   (t
+		(insert-char ?\))))))
 
+  (sp-pair "{" nil :post-handlers
+		   '(:add (my--smartparens-pair-newline-and-indent "RET")))
+  (sp-pair "[" nil :post-handlers
+		   '(:add (my--smartparens-pair-newline-and-indent "RET")))
+  (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+  (define-key smartparens-mode-map (kbd ")") 'my/smart-closing-parenthesis)
   (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)
   (define-key smartparens-mode-map (kbd "C-M-a") nil)
   (define-key smartparens-mode-map (kbd "C-M-e") nil)

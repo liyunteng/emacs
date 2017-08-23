@@ -61,6 +61,31 @@
 		("q" . my-cscope-quit)
 		)
   )
+;; (use-package helm-cscope
+;; :config
+;;   (define-key helm-cscope-mode-map (kbd "C-c s s")
+;;     'helm-cscope-find-this-symbol)
+;;   (define-key helm-cscope-mode-map (kbd "C-c s =")
+;;     'helm-cscope-find-assignments-to-this-symbol)
+;;   (define-key helm-cscope-mode-map (kbd "C-c s d")
+;;     'helm-cscope-find-global-definition)
+;;   (define-key helm-cscope-mode-map (kbd "C-c s c")
+;;     'helm-cscope-find-calling-this-function)
+;;   (define-key helm-cscope-mode-map (kbd "C-c s C")
+;;     'helm-cscope-find-called-function)
+;;   (define-key helm-cscope-mode-map (kbd "C-c s r")
+;;     'helm-cscope-find-called-function)
+;;   (define-key helm-cscope-mode-map (kbd "C-c s t")
+;;     'helm-cscope-find-this-text-string)
+;;   (define-key helm-cscope-mode-map (kbd "C-c s e")
+;;     'helm-cscope-find-egrep-pattern)
+;;   (define-key helm-cscope-mode-map (kbd "C-c s f")
+;;     'helm-cscope-find-this-file)
+;;   (define-key helm-cscope-mode-map (kbd "C-c s i")
+;;     'helm-cscope-find-files-including-file)
+;;   (define-key helm-cscope-mode-map (kbd "C-c s u")
+;;     'helm-cscope-pop-mark))
+
 
 (defconst my-kernel-include-path
   (list
@@ -91,123 +116,6 @@
                            "../../../inc"
                            "../../../export")
   "My local include path.")
-
-;; (use-package helm-cscope
-;; :config
-;;   (define-key helm-cscope-mode-map (kbd "C-c s s")
-;;     'helm-cscope-find-this-symbol)
-;;   (define-key helm-cscope-mode-map (kbd "C-c s =")
-;;     'helm-cscope-find-assignments-to-this-symbol)
-;;   (define-key helm-cscope-mode-map (kbd "C-c s d")
-;;     'helm-cscope-find-global-definition)
-;;   (define-key helm-cscope-mode-map (kbd "C-c s c")
-;;     'helm-cscope-find-calling-this-function)
-;;   (define-key helm-cscope-mode-map (kbd "C-c s C")
-;;     'helm-cscope-find-called-function)
-;;   (define-key helm-cscope-mode-map (kbd "C-c s r")
-;;     'helm-cscope-find-called-function)
-;;   (define-key helm-cscope-mode-map (kbd "C-c s t")
-;;     'helm-cscope-find-this-text-string)
-;;   (define-key helm-cscope-mode-map (kbd "C-c s e")
-;;     'helm-cscope-find-egrep-pattern)
-;;   (define-key helm-cscope-mode-map (kbd "C-c s f")
-;;     'helm-cscope-find-this-file)
-;;   (define-key helm-cscope-mode-map (kbd "C-c s i")
-;;     'helm-cscope-find-files-including-file)
-;;   (define-key helm-cscope-mode-map (kbd "C-c s u")
-;;     'helm-cscope-pop-mark))
-
-;;comment
-(defun my/comment-dwim-line (&optional arg)
-  "Replacement for the \"comment-dwim\" command.
-If no region is selected and current line is not blank and we are not
-at the end of the line,then comment current line,els use \"(comment-dwim ARG)\"
-Replaces default behaviour of comment-dwim, when it inserts comment
-at the end of the line."
-  (interactive "*P")
-  (comment-normalize-vars)
-  (if  (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
-
-      (if (comment-beginning)
-          (comment-or-uncomment-region (comment-beginning)
-                                       (progn (backward-char) (search-forward comment-end)))
-        (comment-or-uncomment-region (line-beginning-position)
-                                     (line-end-position)))
-    (comment-dwim arg))
-  (indent-according-to-mode))
-
-
-(use-package etags
-  :commands (xref-find-definitions
-             xref-find-definitions-other-window
-			 xref-find-definitions-other-frame
-             xref-find-apropos
-			 tags-loop-continue
-			 tags-search
-			 pop-tag-mark
-			 )
-  :init
-  ;;设置TAGS文件
-  (if (file-exists-p "/usr/include/TAGS")
-      (add-to-list 'tags-table-list
-                   "/usr/include/TAGS"))
-  :config
-  (defun my/tags-search (&optional regexp  file-list-form)
-    "My tags search, if REGEXP is nil, use selected word.
-FILE-LIST-FORM used by\"tags-loop-continue\"."
-    (interactive (find-tag-interactive "Search tags(regexp): "))
-    (if (and (equal regexp "")
-             (eq (car tags-loop-scan) 're-search-forward)
-             (null tags-loop-operate))
-        ;; Continue last tags-search as if by M-,.
-        (tags-loop-continue nil)
-      (setq tags-loop-scan `(re-search-forward ',regexp nil t)
-            tags-loop-operate nil)
-      (tags-loop-continue (or file-list-form t)))))
-
-(use-package compile
-  :config
-  (defun my/smart-compile()
-	"比较智能的C/C++编译命令
-如果当前目录有makefile则用make -k编译，否则，如果是
-处于c-mode，就用clang -Wall编译，如果是c++-mode就用
-clang++ -Wall编译"
-	(interactive)
-	;; do save
-	(setq-local compilation-directory default-directory)
-	(save-some-buffers (not compilation-ask-about-save)
-					   compilation-save-buffers-predicate)
-	;; find compile-command
-	(let ((command (eval compile-command))
-		  (candidate-make-file-name '("makefile" "Makefile" "GNUmakefile" "GNUMakefile")))
-	  (if (string= command "make -k ")
-		  (if (find t candidate-make-file-name :key
-					'(lambda (f) (file-readable-p f)))
-			  (setq command "make -k ")
-			(if (eq major-mode 'c-mode)
-				(setq command
-					  (concat "clang -Wall -o "
-							  (file-name-sans-extension
-							   (file-name-nondirectory buffer-file-name))
-							  " "
-							  (file-name-nondirectory buffer-file-name)
-							  " -g "))
-			  ;; c++-mode
-			  (if (eq major-mode 'c++-mode)
-				  (setq command
-						(concat "clang++ -Wall -o "
-								(file-name-sans-extension
-								 (file-name-nondirectory buffer-file-name))
-								" "
-								(file-name-nondirectory buffer-file-name)
-								" -g "
-								))
-				(message "Unknow mode")))))
-	  (unless (equal command (eval compile-command))
-		(setq-local compile-command command))
-	  (setq-local compilation-directory default-directory)
-	  (compilation-start (compilation-read-command command))
-	  )))
 
 ;;自动给头文件添加ifndef
 ;; (defun get-include-guard ()
@@ -268,21 +176,17 @@ clang++ -Wall编译"
 ;; (setq auto-mode-alist (cons '("/usr/src/linux.*/.*\\.[ch]$" . linux-c-mode)
 ;;                             auto-mode-alist))
 
-(c-add-style "ffmpeg"
-             '("k&r"
-               (c-basic-offset . 4)
-               (indent-tabs-mode . nil)
-               (show-trailing-whitespace . t)
-               (c-offsets-alist
-                (statement-cont . (c-lineup-assignments +)))))
-
 (use-package cmacexp
+  :defines (c-macro-shrink-window-flag
+			c-macro-promp-flag)
   :config
   (setq c-macro-shrink-window-flag t)
   (setq c-macro-prompt-flag t)
   )
 
 (use-package find-file
+  :defines (cc-search-directories
+			cc-other-file-alist)
   :config
   (dolist (var my-include-path)
 	(add-to-list 'cc-search-directories var))
@@ -295,6 +199,7 @@ clang++ -Wall编译"
     (add-to-list 'cc-other-file-alist var)))
 
 (use-package hideif
+  :commands (hide-ifdef-mode)
   :config
   ;; fix can't use = with string
   (defun hif-mathify (val)
@@ -307,19 +212,19 @@ clang++ -Wall编译"
   (setq hide-ifdef-hiding t)
   (setq hide-ifdef-shadow t))
 
-(setq comment-style (quote extra-line))
-(setq comment-fill-column 80)
-
+;; (c-add-style "ffmpeg"
+;; 			   '("k&r"
+;; 				 (c-basic-offset . 4)
+;; 				 (indent-tabs-mode . nil)
+;; 				 (show-trailing-whitespace . t)
+;; 				 (c-offsets-alist
+;; 				  (statement-cont . (c-lineup-assignments +)))))
 (defun my-c-mode-hooks ()
   "My c common mode hooks."
-  (use-package cc-mode)
+  ;; (use-package cc-mode)
 
-
-  (use-package semantic
-	:config
-	(unless semantic-mode
-	  (semantic-mode +1))
-	)
+  (unless semantic-mode
+	(semantic-mode +1))
 
   (auto-fill-mode -1)
 
@@ -350,12 +255,11 @@ clang++ -Wall编译"
 
   ;; (setq-default company-clang-arguments '("-std=c++11"))
   )
-
 (defun my-c-mode-keys ()
   "My c mode local key."
   ;; 快速跳转
-  (local-set-key (kbd "C-c j") 'semantic-ia-fast-jump)
-  (local-set-key (kbd "C-c C-j") 'semantic-ia-fast-jump)
+  (local-set-key (kbd "C-c j") 'my/jump-to-definition)
+  (local-set-key (kbd "C-c C-j") 'my/jump-to-definition-other-window)
   ;; 快速跳转定义与实现
   (local-set-key (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
   (local-set-key (kbd "C-c C-g") 'semantic-analyze-proto-impl-toggle)
@@ -440,7 +344,6 @@ clang++ -Wall编译"
 
   (local-set-key [(f9)] 'my/smart-compile)
   (local-set-key (kbd "C-c C-m") 'my/smart-compile))
-
 
 ;; 添加Kernel的Include
 ;; (let ((include-dirs my-kernel-include-path))

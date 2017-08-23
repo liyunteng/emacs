@@ -46,13 +46,10 @@
                              "/usr/src/linux")
   "My project roots to setq semanticdb-project-roots.")
 
-
-
 (use-package speedbar
-  :defer t
+  :commands (speedbar)
+  :bind (("<f2>" . speedbar))
   :config
-  (use-package semantic/sb)
-
   (setq speedbar-show-unknown-files t)
   (setq speedbar-tag-hierarchy-method
 		'(speedbar-prefix-group-tag-hierarchy))
@@ -64,12 +61,12 @@
 			  (setq dframe-update-speed 1)
 			  ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
 			  ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
-			  ))
-  )
+			  )))
 
 (use-package semantic
   :defer t
-  :config
+  :commands (semantic-mode)
+  :init
   ;;global-semantic-decoration-mode
   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
@@ -84,14 +81,13 @@
   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-edits-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-show-unmatched-syntax-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-show-parser-state-mode)
-
+  :config
   ;; for debug
   ;; (setq semantic-dump-parse t)
   ;; (setq semantic-edits-verbose-flag t)
   ;; (setq semantic-idle-scheduler-verbose-flag t)
   ;; (setq semantic-lex-debug-analyzers t)
   ;; (setq semantic-update-mode-line t)
-
 
   (use-package semantic/mru-bookmark
 	:defer t

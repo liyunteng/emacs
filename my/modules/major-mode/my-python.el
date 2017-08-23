@@ -25,6 +25,7 @@
 ;;; Code:
 
 (use-package python
+  :commands (python-mode run-python)
   :config
   (use-package elpy
 	:ensure t
