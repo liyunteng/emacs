@@ -145,20 +145,6 @@
   (save-excursion
     (funcall (my-split-window-func-with-other-buffer 'split-window-vertically))))
 
-(defun my/toggle-current-window-dedication ()
-  "Toggle whether the current window is dedicated to its current buffer."
-  (interactive)
-  (let* ((window (selected-window))
-         (was-dedicated (window-dedicated-p window)))
-    (set-window-dedicated-p window (not was-dedicated))
-    (message "Window %sdedicated to %s"
-             (if was-dedicated "no longer " "")
-             (buffer-name))
-	(if was-dedicated
-		(setq-local mode-line-process " ")
-	  (setq-local mode-line-process " [D]"))))
-
-
 ;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
 (defun my/split-window()
   "Split the window to see the most recent buffer in the other window.

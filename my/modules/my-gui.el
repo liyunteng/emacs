@@ -33,21 +33,22 @@
 
 (use-package smart-mode-line
   :ensure t
+  :commands (smart-mode-line-enable sml/setup)
+  :init
+  (add-hook 'after-init-hook #'sml/setup)
   :config
   (setq sml/no-confirm-load-theme t)
   (setq sml/theme nil)
-  (add-hook 'after-init-hook #'sml/setup)
   )
 
 (use-package beacon
   :ensure t
-  :config
-  (beacon-mode +1)
-  )
+  :init
+  (beacon-mode +1))
 
 (use-package which-key
   :ensure t
-  :config
+  :init
   (which-key-mode +1))
 
 (defvar my--after-display-system-init-alist '())

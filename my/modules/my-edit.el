@@ -73,19 +73,16 @@
 (setq line-spacing 0.0)
 
 ;; 显示80行就换行
-(setq-default default-fill-column 80)
+(setq fill-column 80)
 (setq-default adaptive-fill-regexp
 			  "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
 
 ;; Show column number in mode line
-(setq column-number-mode t)
-(setq line-number-mode t)
+(column-number-mode t)
+(line-number-mode t)
 
 ;; highlight current line
 (global-hl-line-mode +1)
-
-;; imenu
-(setq-default imenu-auto-rescan t)
 
 ;; no blink
 (blink-cursor-mode -1)
@@ -95,9 +92,6 @@
 
 ;; draw underline lower
 (setq x-underline-at-descent-line t)
-
-;; Keep focus while navigating help buffers
-(setq help-window-select 't)
 
 ;; tab width
 (setq-default default-tab-width 4)
@@ -111,9 +105,6 @@
 (delete-selection-mode +1)
 
 (setq set-mark-command-repeat-pop t)
-
-;; Don't try to ping things that look like domain names
-(setq-default ffap-machine-p-known 'reject)
 
 ;; Use system trash for file deletion
 ;; should work on Windows and Linux distros
@@ -136,12 +127,14 @@
 (setq truncate-partial-width-windows nil)
 (transient-mark-mode +1)
 
-;; 现实电池状态
-(use-package battery
-  :if (boundp 'battery-status-function)
-  :config
-  (display-battery-mode t)
-  )
+;; Keep focus while navigating help buffers
+(setq help-window-select 't)
+
+;; imenu
+(setq-default imenu-auto-rescan t)
+
+;; Don't try to ping things that look like domain names
+(setq-default ffap-machine-p-known 'reject)
 
 ;; 在标题栏提示当前位置
 (setq frame-title-format
@@ -156,9 +149,27 @@
                           (concat " ("user-full-name ")"))
                       " - Emacs ♥ you!\n\n"))
 
+;; 现实电池状态
+(use-package battery
+  :if (boundp 'battery-status-function)
+  :config
+  (display-battery-mode t)
+  )
+
+;; (setq ring-bell-function 'ignore
+;;       visible-bell nil)
+;; 响铃
+(defun my--flash-mode-line ()
+  "My visible bell."
+  (invert-face 'mode-line)
+  (run-with-timer 0.05 nil 'invert-face 'mode-line))
+(setq ring-bell-function 'my--flash-mode-line)
+
 ;; linum
 ;;显示行列号
 (use-package linum
+  :init
+  (global-linum-mode 'linum-mode)
   :config
   (setq linum-delay t)
   (setq linum-format 'dynamic)
@@ -212,14 +223,19 @@
   (defadvice linum-schedule (around my-linum-schedule () activate)
 	"Updated line number every second."
 	(run-with-idle-timer 1 nil #'linum-update-current))
-  (global-linum-mode 'linum-mode)
   )
 
 ;; 启用cua
 (use-package cua-base
+  :init
+  (cua-selection-mode t)
   :config
   (setq cua-auto-mark-last-change t)
-  (cua-selection-mode t))
+  ;; When called with no active region, do not activate mark.
+  (defadvice cua-exchange-point-and-mark (before deactivate-mark activate compile)
+	"When called with no active region, do not activate mark."
+	(interactive
+	 (list (not (region-active-p))))))
 
 ;;
 (use-package uniquify
@@ -235,7 +251,7 @@
 (use-package ediff
   :commands (ediff)
   :init
-  (setq-default
+  (setq
    ediff-window-setup-function 'ediff-setup-windows-plain
    ediff-split-window-function 'split-window-horizontally
    ediff-merge-split-window-function 'split-window-horizontally)
@@ -255,17 +271,14 @@
 		 ("C-x r m" . bookmark-set)
 		 ("C-x r l" . list-bookmarks))
   :config
-  (setq bookmark-save-flag 1)
-  )
+  (setq bookmark-save-flag 1))
 
 ;; abbrev config
 (use-package abbrev
   :if (file-exists-p abbrev-file-name)
   :config
   (abbrev-mode +1)
-  (add-hook 'text-mode-hook 'abbrev-mode)
-  )
-
+  (add-hook 'text-mode-hook 'abbrev-mode))
 
 ;; make a shell script executable automatically on save
 (use-package executable
@@ -287,16 +300,8 @@
   :config
   (setq global-auto-revert-non-file-buffers t
 		auto-revert-verbose nil)
-  (add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode))
-
-;; (setq ring-bell-function 'ignore
-;;       visible-bell nil)
-;; 响铃
-(defun my--flash-mode-line ()
-  "My visible bell."
-  (invert-face 'mode-line)
-  (run-with-timer 0.05 nil 'invert-face 'mode-line))
-(setq ring-bell-function 'my--flash-mode-line)
+  (add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode)
+  )
 
 ;; which func
 (use-package which-func
@@ -304,7 +309,7 @@
   (which-function-mode +1))
 
 ;; whitespace 设置
-(setq show-trailing-whitespace 1)
+(setq show-trailing-whitespace t)
 (set-face-attribute 'trailing-whitespace nil
 					:background
 					(face-attribute 'font-lock-comment-face
@@ -336,6 +341,11 @@
   (add-hook hook #'my-no-trailing-whitespace))
 
 (use-package whitespace
+  :commands (whitespace-mode)
+  :init
+  (my|add-toggle whitespace-mode
+	:mode whitespace-mode
+	:documentation "Show whitespace")
   :config
   (setq whitespace-line-column fill-column)
   (setq whitespace-style
@@ -359,6 +369,12 @@
   (add-hook 'before-save-hook 'whitespace-cleanup )
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (global-whitespace-cleanup-mode +1)
+  (my|add-toggle whitespace-cleanup
+	:mode whitespace-cleanup-mode
+	:documentation "White space cleanup")
+  (my|add-toggle global-whitespace-cleanup-mode
+	:mode global-whitespace-cleanup-mode
+	:documentation "Global white space cleanup")
   )
 
 ;;拷贝来的代码自动格式化
@@ -401,29 +417,32 @@ indent yanked text (with prefix arg don't indent)."
                           (yank-advised-indent-function (region-beginning) (region-end)))))
 
 ;; hippie
-(setq hippie-expand-try-functions-list
-      '(
-        ;; Try to expand word "dynamically", searching the current buffer.
-        try-expand-dabbrev
-        ;; Try to expand word "dynamically", searching all other buffers.
-        try-expand-dabbrev-all-buffers
-        ;; Try to expand word "dynamically", searching the kill ring.
-        try-expand-dabbrev-from-kill
-        ;; Try to complete text as a file name, as many characters as unique.
-        try-complete-file-name-partially
-        ;; Try to complete text as a file name.
-        try-complete-file-name
-        ;; Try to expand word before point according to all abbrev tables.
-        try-expand-all-abbrevs
-        ;; Try to complete the current line to an entire line in the buffer.
-        try-expand-list
-        ;; Try to complete the current line to an entire line in the buffer.
-        try-expand-line
-        ;; Try to complete as an Emacs Lisp symbol, as many characters as
-        ;; unique.
-        try-complete-lisp-symbol-partially
-        ;; Try to complete word as an Emacs Lisp symbol.
-        try-complete-lisp-symbol))
+(use-package hippie-exp
+  :commands (hippie-expand)
+  :config
+  (setq hippie-expand-try-functions-list
+		'(
+		  ;; Try to expand word "dynamically", searching the current buffer.
+		  try-expand-dabbrev
+		  ;; Try to expand word "dynamically", searching all other buffers.
+		  try-expand-dabbrev-all-buffers
+		  ;; Try to expand word "dynamically", searching the kill ring.
+		  try-expand-dabbrev-from-kill
+		  ;; Try to complete text as a file name, as many characters as unique.
+		  try-complete-file-name-partially
+		  ;; Try to complete text as a file name.
+		  try-complete-file-name
+		  ;; Try to expand word before point according to all abbrev tables.
+		  try-expand-all-abbrevs
+		  ;; Try to complete the current line to an entire line in the buffer.
+		  try-expand-list
+		  ;; Try to complete the current line to an entire line in the buffer.
+		  try-expand-line
+		  ;; Try to complete as an Emacs Lisp symbol, as many characters as
+		  ;; unique.
+		  try-complete-lisp-symbol-partially
+		  ;; Try to complete word as an Emacs Lisp symbol.
+		  try-complete-lisp-symbol)))
 
 ;; proced
 (use-package proced
@@ -480,7 +499,17 @@ indent yanked text (with prefix arg don't indent)."
 ;;               'lisp-interaction-mode)
 
 ;;;netstat命令的默认参数
-(setq-default netstat-program-options '("-nap"))
+(use-package net-utils
+  :commands (ifconfig iwconfig netstat-program-options arp route traceroute ping
+					  nslookup-host nslookup dns-lookup-host dig run-dig ftp
+					  finger  whois  network-connection-to-service
+					  network-connection)
+  :config
+  (setq netstat-program-options '("-nap")
+		ping-program-options '()
+		)
+  )
+
 
 (use-package etags
   :commands (xref-find-definitions
@@ -519,13 +548,15 @@ FILE-LIST-FORM used by\"tags-loop-continue\"."
 ;; (put 'set-goal-column 'disabled nil)
 ;; (put 'dired-find-alternate-file 'disabled nil)
 
-
-;; 禁用flyspell
-;;(setq-default my-flyspell nil)
-
 ;; calendar
-(setq-default calendar-date-style (quote iso))
-(setq-default calendar-chinese-all-holidays-flag t)
+(use-package calendar
+  :commands (calendar)
+  :config
+  (setq
+   calendar-date-style (quote iso)
+   calendar-mark-holidays-flag t
+   calendar-chinese-all-holidays-flag t)
+  )
 
 ;; set buffer major mode accroding to auto-mode-alist
 (defadvice my-set-buffer-major-mode (after set-major-mode activate compile)
@@ -545,9 +576,9 @@ FILE-LIST-FORM used by\"tags-loop-continue\"."
       (if mark-active
           (list (region-beginning) (region-end))
         (list (point-min) (point-max))))))
+(with-region-or-buffer align)
 (with-region-or-buffer indent-region)
 (with-region-or-buffer untabify)
-
 
 ;; When called with no active region, do not activate mark.
 (defadvice exchange-point-and-mark (before deactivate-mark activate compile)
@@ -622,6 +653,7 @@ clang++ -Wall编译"
 
 ;; highlight
 (use-package hi-lock
+  :commands (hi-lock-mode global-hi-lock-mode)
   :diminish hi-lock-mode
   :bind (:map hi-lock-map
 			  ("C-c o l" . highlight-lines-matching-regexp)
@@ -632,61 +664,6 @@ clang++ -Wall编译"
 			  ("C-c o u" . unhighlight-regexp)
 			  ("C-c o b" . hi-lock-write-interactive-patterns)
 			  ))
-
-
-;; 添加百度搜索
-(defun my-search (query-url prompt)
-  "Open the search url constructed with the QUERY-URL.
-PROMPT sets the `read-string prompt."
-  (browse-url
-   (concat query-url
-           (url-hexify-string
-            (if mark-active
-                (buffer-substring (region-beginning) (region-end))
-              (read-string prompt))))))
-
-(defmacro my|install-search-engine (search-engine-name search-engine-url search-engine-prompt)
-  "Given some information regarding a search engine, install the interactive command to search through them"
-  `(defun ,(intern (format "my/%s" search-engine-name)) ()
-     ,(format "Search %s with a query or region if any." search-engine-name)
-     (interactive)
-     (my-search ,search-engine-url ,search-engine-prompt)))
-(my|install-search-engine "baidu" "https://www.baidu.com/s?ie=UTF-8&w=" "Baidu: ")
-;; (my|install-search-engine "google"     "http://www.google.com/search?q="              "Google: ")
-;; (my|install-search-engine "youtube"    "http://www.youtube.com/results?search_query=" "Search YouTube: ")
-;; (my|install-search-engine "github"     "https://github.com/search?q="                 "Search GitHub: ")
-;; (my|install-search-engine "duckduckgo" "https://duckduckgo.com/?t=lm&q="              "Search DuckDuckGo: ")
-
-
-
-;; large file
-(defvar my-large-file-size large-file-warning-threshold
-  "Maximum size of file above which a confirmation is requested.
-When nil, never request confirmation.")
-(defcustom my-large-file-modes-list
-  '(archive-mode tar-mode jka-compr git-commit-mode image-mode
-                 doc-view-mode doc-view-mode-maybe ebrowse-tree-mode
-                 pdf-view-mode)
-  "Major modes which `spacemacs/check-large-file' will not be automatically applied to."
-  :group 'spacemacs
-  :type '(list symbol))
-;; check when opening large files - literal file open
-(defun my-check-large-file ()
-  "Check when opening large files - literal file open."
-  (let* ((filename (buffer-file-name))
-         (size (nth 7 (file-attributes filename))))
-    (when (and
-           (not (memq major-mode my-large-file-modes-list))
-           size (> size (* 1024 1024 my-large-file-size))
-           (y-or-n-p (format (concat "%s is a large file, open literally to "
-                                     "avoid performance issues?")
-                             filename)))
-      (setq buffer-read-only t)
-      (buffer-disable-undo)
-      (fundamental-mode))))
-;; Prompt to open file literally if large file.
-(add-hook 'find-file-hook 'my-check-large-file)
-
 
 ;; align
 (use-package align
@@ -737,6 +714,7 @@ the right."
   (my|create-align-repeat-x "backslash" "\\\\")
   )
 
+;; comment
 (use-package newcomment
   :commands (comment-line
 			 comment-indent-new-line
@@ -772,6 +750,7 @@ at the end of the line."
   (setq comment-style (quote extra-line))
   (setq comment-fill-column 80)
   )
+
 
 (use-package diminish
   :ensure t
@@ -794,7 +773,7 @@ at the end of the line."
 			 turn-off-fci-mode
 			 fci-mode)
   :init
-  (my|add-toggle fill-column-indicator
+  (my|add-toggle fci-mode
 	:status fci-mode
 	:on (turn-on-fci-mode)
 	:off (turn-off-fci-mode)
@@ -812,17 +791,18 @@ at the end of the line."
   :ensure t
   :commands (aggressive-indent-mode)
   :init
-  (aggressive-indent-mode +1)
-  :config
-  (my|add-toggle aggressive-indent
+  (my|add-toggle aggressive-indent-mode
 	:mode aggressive-indent-mode
 	:documentation "Always keep code indent.")
+  (aggressive-indent-mode +1)
+  :config
+
   )
 ;; expand-region
 (use-package expand-region
   :ensure t
-  :bind (("C-=" . er/expand-region))
   :commands (er/expand-region)
+  :bind (("C-=" . er/expand-region))
   :config
   (setq expand-region-contract-fast-key ",")
   (setq expand-region-smart-cursor nil)
@@ -830,8 +810,8 @@ at the end of the line."
 
 ;; page-break-lines
 (use-package page-break-lines
-  :diminish page-break-lines-mode
   :ensure t
+  :diminish page-break-lines-mode
   :init
   (global-page-break-lines-mode +1))
 
@@ -857,9 +837,17 @@ at the end of the line."
 ;; diff-hl
 (use-package diff-hl
   :ensure t
+  :commands (diff-hl-mode global-diff-hl-mode)
   :init
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  (my|add-toggle diff-hl-mode
+	:mode diff-hl-mode
+	:documentation "Highlight diff")
+  (my|add-toggle global-diff-hl-mode
+	:mode global-diff-hl-mode
+	:documentation "Global highlight diff")
+
   (global-diff-hl-mode +1)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
   )
 
 ;; undo-tree
@@ -878,6 +866,7 @@ at the end of the line."
 ;; easy-kill
 (use-package easy-kill
   :ensure t
+  :commands (easy-kill easy-mark)
   :bind (([remap kill-ring-save] . easy-kill))
   :config
   ;; (global-set-key [remap kill-ring-save] 'easy-kill)
@@ -897,6 +886,10 @@ at the end of the line."
   :ensure t
   :diminish indent-guide-mode
   :init
+  (my|add-toggle indent-guide-mode
+	:mode indent-guide-mode
+	:documentation "Show indent"
+	)
   (add-hook 'prog-mode-hook 'indent-guide-mode)
   :config
   (setq indent-guide-delay 0.3)
@@ -936,8 +929,7 @@ at the end of the line."
 									  :background)
 					  :foreground
 					  (face-attribute 'isearch
-									  :foreground))
-  )
+									  :foreground)))
 
 (use-package google-translate
   :ensure t
@@ -961,7 +953,7 @@ For instance pass En as source for English."
 ;; GTAGS
 (use-package ggtags
   :ensure t
-  :defer t
+  :commands (ggtags-mode ggtags-find-project ggtags-find-tag-dwim)
   :config
   (defun my-gtags-ext-produce-tags-if-needed (dir)
 	(if (not (= 0 (call-process "global" nil nil nil " -p"))) ; tagfile doesn't exist?
@@ -1000,7 +992,9 @@ For instance pass En as source for English."
 	(interactive)
 	(message "GTAGSLIBPATH=%s" (getenv "GTAGSLIBPATH")))
   )
+
 (use-package goto-addr
+  :commands (goto-address-prog-mode goto-address-mode)
   :config
   (setq goto-address-url-face 'underline)
   )
@@ -1028,37 +1022,90 @@ This functions should be added to the hooks of major modes for programming."
   (add-hook 'prog-mode-hook 'my-prog-mode-defaults))
 
 
-  
-  (defun my/rename-file (filename &optional new-filename)
-	"Rename FILENAME to NEW-FILENAME.
+
+;; 添加百度搜索
+(defun my-search (query-url prompt)
+  "Open the search url constructed with the QUERY-URL.
+PROMPT sets the `read-string prompt."
+  (browse-url
+   (concat query-url
+           (url-hexify-string
+            (if mark-active
+                (buffer-substring (region-beginning) (region-end))
+              (read-string prompt))))))
+
+(defmacro my|install-search-engine (search-engine-name search-engine-url search-engine-prompt)
+  "Given some information regarding a search engine, install the interactive command to search through them"
+  `(defun ,(intern (format "my/%s" search-engine-name)) ()
+     ,(format "Search %s with a query or region if any." search-engine-name)
+     (interactive)
+     (my-search ,search-engine-url ,search-engine-prompt)))
+(my|install-search-engine "baidu" "https://www.baidu.com/s?ie=UTF-8&w=" "Baidu: ")
+;; (my|install-search-engine "google"     "http://www.google.com/search?q="              "Google: ")
+;; (my|install-search-engine "youtube"    "http://www.youtube.com/results?search_query=" "Search YouTube: ")
+;; (my|install-search-engine "github"     "https://github.com/search?q="                 "Search GitHub: ")
+;; (my|install-search-engine "duckduckgo" "https://duckduckgo.com/?t=lm&q="              "Search DuckDuckGo: ")
+
+
+
+;; large file
+(defvar my-large-file-size large-file-warning-threshold
+  "Maximum size of file above which a confirmation is requested.
+When nil, never request confirmation.")
+(defcustom my-large-file-modes-list
+  '(archive-mode tar-mode jka-compr git-commit-mode image-mode
+                 doc-view-mode doc-view-mode-maybe ebrowse-tree-mode
+                 pdf-view-mode)
+  "Major modes which `spacemacs/check-large-file' will not be automatically applied to."
+  :group 'my
+  :type '(list symbol))
+;; check when opening large files - literal file open
+(defun my-check-large-file ()
+  "Check when opening large files - literal file open."
+  (let* ((filename (buffer-file-name))
+         (size (nth 7 (file-attributes filename))))
+    (when (and
+           (not (memq major-mode my-large-file-modes-list))
+           size (> size (* 1024 1024 my-large-file-size))
+           (y-or-n-p (format (concat "%s is a large file, open literally to "
+                                     "avoid performance issues?")
+                             filename)))
+      (setq buffer-read-only t)
+      (buffer-disable-undo)
+      (fundamental-mode))))
+;; Prompt to open file literally if large file.
+(add-hook 'find-file-hook 'my-check-large-file)
+
+(defun my/rename-file (filename &optional new-filename)
+  "Rename FILENAME to NEW-FILENAME.
 
 When NEW-FILENAME is not specified, asks user for a new name.
 
 Also renames associated buffer (if any exists), invalidates
 projectile cache when it's possible and update recentf list."
-	(interactive "f")
-	(when (and filename (file-exists-p filename))
-	  (let* ((buffer (find-buffer-visiting filename))
-			 (short-name (file-name-nondirectory filename))
-			 (new-name (if new-filename new-filename
-						 (read-file-name
-						  (format "Rename %s to: " short-name)))))
-		(cond ((get-buffer new-name)
-			   (error "A buffer named '%s' already exists!" new-name))
-			  (t
-			   (let ((dir (file-name-directory new-name)))
-				 (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
-				   (make-directory dir t)))
-			   (rename-file filename new-name 1)
-			   (when buffer
-				 (kill-buffer buffer)
-				 (find-file new-name))
-			   (when (fboundp 'recentf-add-file)
-				 (recentf-add-file new-name)
-				 (recentf-remove-if-non-kept filename))
-			   (when (projectile-project-p)
-				 (call-interactively #'projectile-invalidate-cache))
-			   (message "File '%s' successfully renamed to '%s'" short-name (file-name-nondirectory new-name)))))))
+  (interactive "f")
+  (when (and filename (file-exists-p filename))
+	(let* ((buffer (find-buffer-visiting filename))
+		   (short-name (file-name-nondirectory filename))
+		   (new-name (if new-filename new-filename
+					   (read-file-name
+						(format "Rename %s to: " short-name)))))
+	  (cond ((get-buffer new-name)
+			 (error "A buffer named '%s' already exists!" new-name))
+			(t
+			 (let ((dir (file-name-directory new-name)))
+			   (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
+				 (make-directory dir t)))
+			 (rename-file filename new-name 1)
+			 (when buffer
+			   (kill-buffer buffer)
+			   (find-file new-name))
+			 (when (fboundp 'recentf-add-file)
+			   (recentf-add-file new-name)
+			   (recentf-remove-if-non-kept filename))
+			 (when (projectile-project-p)
+			   (call-interactively #'projectile-invalidate-cache))
+			 (message "File '%s' successfully renamed to '%s'" short-name (file-name-nondirectory new-name)))))))
 
 ;; from magnars
 (defun my/rename-current-buffer-file ()
@@ -1205,6 +1252,19 @@ Compare them on count first,and in case of tie sort them alphabetically."
                            (substring formated 0 -2)))
         (message "No words.")))
     words))
+
+(defun my/toggle-current-window-dedication ()
+  "Toggle whether the current window is dedicated to its current buffer."
+  (interactive)
+  (let* ((window (selected-window))
+         (was-dedicated (window-dedicated-p window)))
+    (set-window-dedicated-p window (not was-dedicated))
+	(if was-dedicated
+		(setq-local mode-line-process nil)
+	  (setq-local mode-line-process " [D]"))
+	(message "Window %sdedicated to %s"
+             (if was-dedicated "no longer " "")
+             (buffer-name))))
 
 ;; Hack to fix a bug with tabulated-list.el
 ;; see: http://redd.it/2dgy52

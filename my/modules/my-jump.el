@@ -99,7 +99,7 @@ Example:
 (my|define-jump-handlers python-mode elpy-goto-definition find-tag)
 
 (global-set-key (kbd "M-.") 'my/jump-to-definition)
-
+(global-set-key (kbd "C-M-.") 'my/jump-to-definition-other-window)
 
 (provide 'my-jump)
 ;;; my-jump.el ends here
