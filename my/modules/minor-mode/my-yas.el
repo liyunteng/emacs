@@ -47,6 +47,10 @@
 				  udev-mode-hook
 				  ))
 	(add-hook hook 'yas-minor-mode-on))
+  (my|add-toggle yas-minor-mode
+	:mode yas-minor-mode
+	:documentation "yas minor mode")
+
   :config
   ;; (use-package dropdown-list
   ;; 	:ensure t)

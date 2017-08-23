@@ -66,8 +66,11 @@
   (show-smartparens-global-mode +1)
   (defun my--smartparens-pair-newline-and-indent (id action context)
 	(save-excursion
-	  (newline)
-	  (indent-according-to-mode)))
+      (newline)
+	  (indent-according-to-mode)
+	  )
+	(indent-according-to-mode)
+	)
   (defun my/smart-closing-parenthesis ()
 	(interactive)
 	(let* ((sp-navigate-close-if-unbalanced t)
@@ -84,10 +87,15 @@
 	   (t
 		(insert-char ?\))))))
 
-  (sp-pair "{" nil :post-handlers
+  (sp-pair "{" "}"
+		   :unless '(sp-in-comment-p sp-in-string-p)
+		   :post-handlers
 		   '(:add (my--smartparens-pair-newline-and-indent "RET")))
-  (sp-pair "[" nil :post-handlers
+  (sp-pair "[" "]"
+		   :unless '(sp-in-comment-p sp-in-string-p)
+		   :post-handlers
 		   '(:add (my--smartparens-pair-newline-and-indent "RET")))
+
   (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
   (define-key smartparens-mode-map (kbd ")") 'my/smart-closing-parenthesis)
   (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)

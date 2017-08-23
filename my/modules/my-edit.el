@@ -375,6 +375,7 @@
     python-mode
     yaml-mode)
   "Modes for which auto-indenting is suppressed.")
+
 (defvar my-yank-indent-threshold 3000)
 (defvar my-yank-indent-modes '(LaTex-mode TeX-mode))
 (dolist (mode '(latex-mode
@@ -802,7 +803,8 @@ at the end of the line."
 	)
   :config
   (setq fci-rule-width 1
-		fci-rule-color "#D0BF8F")
+		;; fci-rule-color "#D0BF8F"
+		)
   (push '(fci-mode "") minor-mode-alist)
   )
 
