@@ -93,8 +93,7 @@
     my-syslog
     my-javascript
     my-term
-    ;; my-mew
-	my-gnus
+	my-mu4e
     ;; my-qt
     ;; my-header
 
