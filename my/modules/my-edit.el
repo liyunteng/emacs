@@ -263,7 +263,7 @@
 ;; clean up obsolete buffers automatically
 (use-package midnight
   :init
-  (midnight-mode +1))
+  (setq midnight-mode t))
 
 ;; bookmark
 (use-package bookmark
