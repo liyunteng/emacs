@@ -8,9 +8,10 @@
 
 # Author: liyunteng <liyunteng@streamocean.com>
 # License: StreamOcean
-# Last-Updated: 2017/08/26 16:52:54
+# Last-Updated: 2017/08/27 02:06:05
 
 from subprocess import check_output, call
+from imapclient import imap_utf7
 import os
 import base64
 
@@ -54,22 +55,15 @@ Minimal validation of input, only works with trusted data"""
     return out
 
 
-def get_flodername(name):
-    return imaputf7decode(name).encode('utf-8')
-
-
 def imaputf7encode(s):
-    """"Encode a string into RFC2060 aka IMAP UTF7"""
-    s = s.replace('&', '&-')
-    unipart = out = ''
-    for c in s:
-        if 0x20 <= ord(c) <= 0x7f:
-            if unipart != '':
-                out += '&' + base64.b64encode(unipart.encode('utf-16-be')).decode('ascii').rstrip('=') + '-'
-                unipart = ''
-            out += c
-        else:
-            unipart += c
-    if unipart != '':
-        out += '&' + base64.b64encode(unipart.encode('utf-16-be')).decode('ascii').rstrip('=') + '-'
+    out = s.decode('utf-8').encode('utf-7')
+    out = out.replace('+', '&')
     return out
+
+
+def get_flodername(name):
+    if name.startswith('&'):
+        return imaputf7decode(name).encode('utf-8')
+    else:
+        return imaputf7encode(name)
+    # return imap_utf7.decode(name).encode('utf-8')

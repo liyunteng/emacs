@@ -1,6 +1,6 @@
 [general]
 pythonfile = ~/.emacs.d/personal/myofflineimap.py
-accounts = StreamOcean, 163
+accounts = 163, StreamOcean
 maxsyncaccounts = 10
 
 [Account StreamOcean]
@@ -14,12 +14,12 @@ remoterepository = 163-remote
 [Repository so-local]
 type = Maildir
 localfolders = ~/Maildir/streamocean
-
+nametrans = lambda flodername: get_flodername(flodername)
 
 [Repository 163-local]
 type = Maildir
 localfolders = ~/Maildir/163
-
+nametrans = lambda flodername: get_flodername(flodername)
 
 [Repository so-remote]
 type = IMAP
