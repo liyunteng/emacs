@@ -8,7 +8,7 @@
 
 # Author: liyunteng <liyunteng@streamocean.com>
 # License: StreamOcean
-# Last-Updated: 2017/08/27 03:49:15
+# Last-Updated: 2017/08/27 04:01:22
 
 from subprocess import check_output, call
 import os
@@ -18,10 +18,13 @@ import base64
 def get_pass(account):
     pri = os.path.expanduser('~/.emacs.d/personal/pri.key')
     p = os.path.expanduser('~/.emacs.d/personal/passwd.gpg')
-    cmd = 'gpg --batch --quiet --import %s ' % pri
+    cmd = 'gpg --list-key liyunteng'
     r = call(cmd.split())
     if r != 0:
-        return ''
+        cmd = 'gpg --batch --quiet --import %s ' % pri
+        r = call(cmd.split())
+        if r != 0:
+            return ''
     cmd = 'gpg -dq %s' % p
     all = check_output(cmd.split()).split('\n')
     if len(all) <= 0:
