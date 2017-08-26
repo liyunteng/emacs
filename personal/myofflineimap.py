@@ -8,10 +8,9 @@
 
 # Author: liyunteng <liyunteng@streamocean.com>
 # License: StreamOcean
-# Last-Updated: 2017/08/27 02:06:05
+# Last-Updated: 2017/08/27 03:49:15
 
 from subprocess import check_output, call
-from imapclient import imap_utf7
 import os
 import base64
 
