@@ -4,3 +4,4 @@ my/cache/
 cache/
 my/custom.el
 custom.el
+*.pyc
