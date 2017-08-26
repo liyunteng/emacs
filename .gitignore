@@ -5,3 +5,4 @@ cache/
 my/custom.el
 custom.el
 *.pyc
+*.elc
