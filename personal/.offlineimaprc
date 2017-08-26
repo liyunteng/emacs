@@ -1,0 +1,42 @@
+[general]
+pythonfile = ~/.emacs.d/personal/myofflineimap.py
+accounts = StreamOcean, 163
+maxsyncaccounts = 10
+
+[Account StreamOcean]
+localrepository = so-local
+remoterepository = so-remote
+
+[Account 163]
+localrepository = 163-local
+remoterepository = 163-remote
+
+[Repository so-local]
+type = Maildir
+localfolders = ~/Maildir/streamocean
+
+
+[Repository 163-local]
+type = Maildir
+localfolders = ~/Maildir/163
+
+
+[Repository so-remote]
+type = IMAP
+remotehost = imap.qiye.163.com
+remoteuser = liyunteng@streamocean.com
+remotepasseval = get_pass('StreamOcean')
+ssl = no
+maxconnections = 1
+realdelete = no
+nametrans = lambda flodername: get_flodername(flodername)
+
+[Repository 163-remote]
+type = IMAP
+remotehost = imap.163.com
+remoteuser = li_yunteng
+remotepasseval = get_pass('163')
+ssl = no
+maxconnections = 1
+realdelete = no
+nametrans = lambda flodername: get_flodername(flodername)

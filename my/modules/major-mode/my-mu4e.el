@@ -24,6 +24,11 @@
 
 ;;; Code:
 
+;; require:
+;; 1. offlineimap
+;; 2. pip install imapclient
+;;
+
 (use-package message
   :defer t
   :config
@@ -66,7 +71,7 @@
 		)
   (setq message-signature
 		(concat
-		 "李云腾 (Li Yunteng)\n"
+		 "\n李云腾 (Li Yunteng)\n"
 		 "Email: liyunteng@streamocean.com\n"))
 
   (add-hook 'mail-citation-hook 'sc-cite-original)
@@ -84,48 +89,64 @@
   (defvar mu4e-account-alist nil
 	"Account alist for custom multi-account compose.")
   :config
-  (use-package mu4e-vars
-	:config
-	(setq mu4e-maildir "~/Maildir"
-		  mu4e-trash-folder "/Trash"
-		  mu4e-refile-folder "/Archive"
-		  mu4e-sent-folder "/Sent"
-		  mu4e-drafts-folder "/Drafts"
-		  mu4e-get-mail-command "offlineimap"
-		  mu4e-update-interval nil
-		  mu4e-compose-signature-auto-include nil
-		  mu4e-view-show-images t
-		  mu4e-view-show-addresses t
-		  mu4e-view-prefer-html t
-		  )
+  (require 'mu4e-vars)
+  (require 'org-mu4e)
+  (setq
+   ;; mu4e-maildir "~/Maildir"
+   ;; mu4e-trash-folder "/Trash"
+   ;; mu4e-refile-folder "/Archive"
+   ;; mu4e-sent-folder "/Sent"
+   ;; mu4e-drafts-folder "/Drafts"
+   mu4e-get-mail-command "offlineimap"
+   mu4e-update-interval nil
+   mu4e-view-show-images t
+   mu4e-view-show-addresses t
+   mu4e-view-prefer-html t
+   mu4e-compose-signature message-signature
+   mu4e-compose-signature-auto-include t
+   )
 
-	(setq mu4e-maildir-shortcuts
-		  '(("/streamocean/INBOX" . ?t)
-			("/163/INBOX" . ?c)))
+  (setq mu4e-maildir-shortcuts
+		'(("/streamocean/INBOX" . ?t)
+		  ("/163/INBOX" . ?c)))
 
-	(setq mu4e-bookmarks
-		  `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
-			("date:today..now" "Today's messages" ?t)
-			("date:7d..now" "Last 7 days" ?w)
-			("mime:image/*" "Messages with images" ?p)
-			(,(mapconcat 'identity
-						 (mapcar
-						  (lambda (maildir)
-							(concat "maildir:" (car maildir)))
-						  mu4e-maildir-shortcuts) " OR ")
-			 "All inboxes" ?i)))
-	)
+  (setq mu4e-bookmarks
+		`(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
+		  ("date:today..now" "Today's messages" ?t)
+		  ("date:7d..now" "Last 7 days" ?w)
+		  ("mime:image/*" "Messages with images" ?p)
+		  (,(mapconcat 'identity
+					   (mapcar
+						(lambda (maildir)
+						  (concat "maildir:" (car maildir)))
+						mu4e-maildir-shortcuts) " OR ")
+		   "All inboxes" ?i)))
 
   (use-package mu4e-alert
     :defer t
 	:ensure t
-    :init (with-eval-after-load 'mu4e
-			(mu4e-alert-enable-notifications)
-			(mu4e-alert-enable-mode-line-display)))
+    :init
+	(mu4e-alert-enable-notifications)
+	(mu4e-alert-enable-mode-line-display))
+
   (use-package mu4e-maildirs-extension
     :defer t
 	:ensure t
-    :init (with-eval-after-load 'mu4e (mu4e-maildirs-extension-load)))
+    :init (mu4e-maildirs-extension-load))
+
+  (defun my-render-html-message ()
+	(let ((dom (libxml-parse-html-region (point-min) (point-max))))
+	  (erase-buffer)
+	  (shr-insert-document dom)
+	  (goto-char (point-min))))
+
+  (setq mu4e-html2text-command 'my-render-html-message)
+
+
+  (setq mu4e-completing-read-function 'completing-read)
+  (add-to-list 'mu4e-view-actions
+  			   '("View in browser" . mu4e-action-view-in-browser) t)
+
 
   (defun mu4e//search-account-by-mail-address (mailto)
 	"Return the account given an email address in MAILTO."
@@ -169,24 +190,19 @@ then fallback to the maildir."
 	"Reset mail account info to first."
 	(mu4e//map-set (cdar mu4e-account-alist)))
 
-
-  (setq mu4e-completing-read-function 'completing-read)
-  ;; (add-to-list 'mu4e-view-actions
-  ;; 			   '("View in browser" . mu4e-action-view-in-browser) t)
-
   (add-hook 'mu4e-compose-pre-hook 'mu4e/set-account)
   (add-hook 'message-sent-hook 'mu4e/mail-account-reset)
 
   (setq mu4e-account-alist
         '(("streamocean"
            ;; Under each account, set the account-specific variables you want.
-           (mu4e-sent-messages-behavior sent)
+           (mu4e-sent-messages-behavior 'sent)
            (mu4e-sent-folder "/streamocean/已发送")
            (mu4e-drafts-folder "/streamocean/草稿箱")
            (user-mail-address "liyunteng@streamocean.com")
            (user-full-name "liyunteng"))
           ("163"
-           (mu4e-sent-messages-behavior delete)
+           (mu4e-sent-messages-behavior 'sent)
            (mu4e-sent-folder "/163/已发送")
            (mu4e-drafts-folder "/163/草稿箱")
            (user-mail-address "li_yunteng@163.com")

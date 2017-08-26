@@ -29,6 +29,7 @@
   :config
   (use-package elpy
 	:ensure t
+	:commands (elpy-mode elpy-enable)
 	:init
 	(defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
 	(defvar my-python-virtualenv-workon-name "default")
@@ -38,7 +39,7 @@
 	(defvar my-python-elpy-dependency '("jedi" "importmagic" "autopep8" "yapf"))
 
 	(setenv "WORKON_HOME" my-python-virtualenv-dir)
-
+	(elpy-enable)
 	:config
 	(setq elpy-modules '(elpy-module-sane-defaults
 						 elpy-module-company
@@ -142,6 +143,7 @@
 	(local-set-key (kbd "C-c C-f") 'python-shell-send-file)
 	(local-set-key (kbd "C-c C-e") 'python-shell-send-defun)
 
+	(define-key elpy-mode-map (kbd "C-c C-d") 'elpy-doc)
 	(define-key elpy-mode-map (kbd "C-c C-j") 'elpy-goto-definition)
 	(define-key elpy-mode-map (kbd "C-c C-J") 'elpy-goto-definition-other-window)
 	(define-key elpy-mode-map (kbd "C-c C-b") 'pop-tag-mark)
