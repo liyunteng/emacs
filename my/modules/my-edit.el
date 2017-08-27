@@ -309,44 +309,38 @@
   (which-function-mode +1))
 
 ;; whitespace 设置
-(setq show-trailing-whitespace t)
-(set-face-attribute 'trailing-whitespace nil
-					:background
-					(face-attribute 'font-lock-comment-face
-									:foreground))
-;; (set-face-attribute 'whitespace-space nil
-;; 					:background nil
-;; 					:foreground (face-attribute 'font-lock-warning-face
-;; 												:foreground))
-;; (set-face-attribute 'whitespace-tab nil
-;; 					:background nil)
-;; (set-face-attribute 'whitespace-indentation nil
-;; 					:background nil)
-(defun my-no-trailing-whitespace ()
-  "Turn off display of trailing whitespace in this buffer."
-  (setq-local show-trailing-whitespace nil))
-;; But don't show trailing whitespace in SQLi, inf-ruby etc.
-(dolist (hook '(special-mode-hook
-                Info-mode-hook
-                eww-mode-hook
-                term-mode-hook
-                comint-mode-hook
-                compilation-mode-hook
-                twittering-mode-hook
-                minibuffer-setup-hook
-                calendar-mode-hook
-                eshell-mode-hook
-                shell-mode-hook
-                term-mode-hook))
-  (add-hook hook #'my-no-trailing-whitespace))
-
 (use-package whitespace
   :commands (whitespace-mode)
   :init
+  ;; (set-face-attribute 'trailing-whitespace nil
+  ;; 					  :background
+  ;; 					  (face-attribute 'font-lock-warning-face
+  ;; 									  :foreground))
+  (my|add-toggle show-trailing-whitespace
+	:status show-trailing-whitespace
+	:on (setq-local show-trailing-whitespace +1)
+	:off (setq-local show-trailing-whitespace nil)
+	:documentation "Show trailing-whitespace")
+  (add-hook 'prog-mode-hook #'my/toggle-show-trailing-whitespace-on)
+
+  (dolist (hook '(special-mode-hook
+				  Info-mode-hook
+				  eww-mode-hook
+				  term-mode-hook
+				  comint-mode-hook
+				  compilation-mode-hook
+				  twittering-mode-hook
+				  minibuffer-setup-hook
+				  calendar-mode-hook
+				  eshell-mode-hook
+				  shell-mode-hook
+				  term-mode-hook))
+	(add-hook hook #'my/toggle-show-trailing-whitespace-off))
+
   (my|add-toggle whitespace-mode
 	:mode whitespace-mode
 	:documentation "Show whitespace")
-  :config
+
   (setq whitespace-line-column fill-column)
   (setq whitespace-style
 		'(face
@@ -359,22 +353,26 @@
 		  indentation::space
 		  indentation:tab
 		  newline
-		  newline-mark)))
+		  newline-mark))
 
-(use-package whitespace-cleanup-mode
-  :ensure t
-  :diminish whitespace-cleanup-moed
-  :commands (whitespace-cleanup)
-  :init
-  (add-hook 'before-save-hook 'whitespace-cleanup )
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (require 'my-whitespace-cleanup-mode)
   (global-whitespace-cleanup-mode +1)
-  (my|add-toggle whitespace-cleanup
-	:mode whitespace-cleanup-mode
-	:documentation "White space cleanup")
-  (my|add-toggle global-whitespace-cleanup-mode
-	:mode global-whitespace-cleanup-mode
-	:documentation "Global white space cleanup")
+
+  (my|add-toggle whitespace-cleanup-mode
+	:status whitespace-cleanup-mode
+	:on (whitespace-cleanup-mode +1)
+	:off (whitespace-cleanup-mode -1)
+	:documentation "cleanup whitesapce")
+
+  :config
+  ;; (set-face-attribute 'whitespace-space nil
+  ;; 					  :background nil
+  ;; 					  :foreground (face-attribute 'font-lock-warning-face
+  ;; 												  :foreground))
+  ;; (set-face-attribute 'whitespace-tab nil
+  ;; 					  :background nil)
+  ;; (set-face-attribute 'whitespace-indentation nil
+  ;; 					  :background nil)
   )
 
 ;;拷贝来的代码自动格式化
@@ -761,7 +759,6 @@ at the end of the line."
   (diminish 'beacon-mode)
   (diminish 'editorconfig-mode)
   (diminish 'which-key-mode)
-  (diminish 'rainbow-mode)
   (diminish 'page-break-lines-mode)
   (diminish 'eldoc-mode)
   (diminish 'abbrev-mode)
@@ -795,10 +792,8 @@ at the end of the line."
   (my|add-toggle aggressive-indent-mode
 	:mode aggressive-indent-mode
 	:documentation "Always keep code indent.")
-  (aggressive-indent-mode +1)
-  :config
+  (aggressive-indent-mode +1))
 
-  )
 ;; expand-region
 (use-package expand-region
   :ensure t
@@ -886,6 +881,7 @@ at the end of the line."
 (use-package indent-guide
   :ensure t
   :diminish indent-guide-mode
+  :commands (indent-guid-mode)
   :init
   (my|add-toggle indent-guide-mode
 	:mode indent-guide-mode
@@ -1015,8 +1011,8 @@ This functions should be added to the hooks of major modes for programming."
 			1 font-lock-warning-face t))))
   (defun my-prog-mode-defaults ()
 	"Default coding hook, useful with any programming language."
-	(goto-address-prog-mode)
-	(bug-reference-prog-mode)
+	(goto-address-prog-mode +1)
+	(bug-reference-prog-mode +1)
 	(smartparens-mode +1)
 	(my-local-comment-auto-fill)
 	(my-font-lock-comment-annotations))

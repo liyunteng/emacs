@@ -31,15 +31,19 @@
 			  ([(control shift down)] . move-text-down)
 			  ([(meta shift up)]  . move-text-up)
 			  ([(meta shift down)]  . move-text-down)
-			  )
-  )
+			  ))
+
 (use-package imenu-anywhere
   :ensure t
-  :config
-  (use-package easymenu)
-  )
+  :init
+  (use-package easymenu))
+
 (use-package crux
   :ensure t)
+
+(defgroup my-mode nil
+  "My group."
+  :group 'my)
 
 (defvar my-mode-map
   (let ((map (make-sparse-keymap)))
@@ -139,6 +143,7 @@
 
 \\{my-mode-map}"
   :lighter " M"
+  :group 'my-mode
   :keymap my-mode-map
   (if my-mode
       ;; on start

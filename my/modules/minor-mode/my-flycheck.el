@@ -65,6 +65,12 @@
 	  :overlay-category 'flycheck-info-overlay
 	  :fringe-bitmap bitmap
 	  :fringe-face 'flycheck-fringe-info))
+
+
+  (use-package flycheck-package
+	:ensure t
+	:init
+	(flycheck-package-setup))
   (add-hook 'prog-mode-hook 'flycheck-mode)
 
   :config

@@ -28,6 +28,10 @@
   :commands (yas-global-mode yas-minor-mode yas-minor-mode-on)
   :ensure t
   :init
+  ;; (setq yas-triggers-in-field t
+  ;; 		yas-wrap-around-region t)
+  ;; (setq yas-prompt-functions '(yas-completing-prompt))
+
   (dolist (hook '(prog-mode-hook
 				  latex-mode-hook
 				  plain-text-mode
@@ -51,20 +55,20 @@
 	:mode yas-minor-mode
 	:documentation "yas minor mode")
 
+
+  (yas-global-mode -1)
+
   :config
   ;; (use-package dropdown-list
   ;; 	:ensure t)
-  ;; (setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))
-  (setq yas-triggers-in-field t
-		yas-wrap-around-region t)
-  (setq yas-prompt-functions '(yas-completing-prompt))
-  ;; (yas-reload-all)
-  (yas-global-mode -1)
-  (add-hook 'yas-minor-mode-hook 'yas-reload-all)
 
-  (defun my-disable-yas ()
-	(yas-minor-mode -1)
-	(setq yas-dont-activate t))
+  ;; (setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))
+  ;; (yas-reload-all)
+  (add-hook 'after-init-hook 'yas-reload-all)
+
+  ;; (defun my-disable-yas ()
+  ;; 	(yas-minor-mode -1)
+  ;; 	(setq yas-dont-activate t))
 
   ;; (defun my-yas-field-to-statement(str sep)
   ;;   "If STR=='a.b.c' and SEP=' && ',

@@ -25,79 +25,120 @@
 ;;; Code:
 
 ;; (use-package hl-sexp)
-(use-package immortal-scratch
-  :ensure t)
 (use-package cl-lib-highlight
-  :ensure t)
+  :ensure t
+  :commands (cl-lib-highlight-initialize)
+  :init
+  (cl-lib-highlight-initialize))
 
-(use-package rainbow-mode
-  :diminish rainbow-mode
-  :ensure t)
-(use-package rainbow-delimiters
-  :ensure t)
+(use-package immortal-scratch
+  :ensure t
+  :diminish immortal-scratch-mode
+  :init
+  (add-hook 'after-init-hook 'immortal-scratch-mode))
+
+(use-package macrostep
+  :ensure t
+  :bind (:map emacs-lisp-mode-map
+			  ("C-x e" . macrostep-expand)
+			  :map lisp-interaction-mode-map
+			  ("C-x e" . macrostep-expand)))
 
 (use-package eldoc-eval
-  :ensure t)
-(use-package macrostep
-  :ensure t)
-(use-package highlight-quoted
-  :ensure t)
-(use-package flycheck-package
-  :ensure t)
-(use-package auto-compile
-  :ensure t)
+  :ensure t
+  :commands (eldoc-in-minibuffer-mode)
+  :init
+  (eldoc-in-minibuffer-mode +1))
 
 (use-package eldoc
   :defer t
+  :commands (eldoc-mode)
   :diminish eldoc-mode
-  :config
+  :init
   (add-hook 'eval-expression-minibuffer-setup-hook #'eldoc-mode)
-  (add-hook 'ielm-mode-hook #'eldoc-mode)
+  (add-hook 'ielm-mode-hook #'eldoc-mode))
+
+(use-package auto-compile
+  :ensure t
+  :commands (auto-compile-on-save-mode
+			 auto-compile-on-load-mode)
+  :init
+  (auto-compile-on-save-mode +1)
+  (auto-compile-on-load-mode +1))
+
+(defvar my-common-mode-hooks  '(emacs-lisp-mode-hook
+								ielm-mode-hook
+								help-mode-hook
+								messages-buffer-mode-hook
+								completion-list-mode-hook
+								debugger-mode-hook
+								))
+(use-package rainbow-mode
+  :diminish rainbow-mode
+  :ensure t
+  :commands (rainbow-mode
+			 rainbow-turn-on)
+  :init
+  (dolist (hook my-common-mode-hooks)
+  	(add-hook hook 'rainbow-turn-on))
   )
+
+(use-package rainbow-delimiters
+  :ensure t
+  :diminish rainbow-delimiters-mode
+  :commands (rainbow-delimiters-mode)
+  :init
+  (dolist (hook my-common-mode-hooks)
+  	(add-hook hook 'rainbow-delimiters-mode-enable))
+  )
+
+(use-package highlight-quoted
+  :ensure t
+  :commands (highlight-quoted-mode
+			 highlight-quoted--turn-on)
+  :init
+  (dolist (hook my-common-mode-hooks)
+  	(add-hook hook 'highlight-quoted--turn-on))
+  (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode))
 
 (use-package elisp-slime-nav
   :ensure t
   :diminish elisp-slime-nav-mode
   :init
-  (dolist (hook '(emacs-lisp-mode-hook
-				  ielm-mode-hook
-				  help-mode-hook
-				  messages-buffer-mode-hook
-				  completion-list-mode-hook
-				  debugger-mode-hook
-				  special-
-				  ))
+  (dolist (hook my-common-mode-hooks)
 	(add-hook hook 'turn-on-elisp-slime-nav-mode)))
 
-(use-package ipretty
-  :ensure t
-  :config
-  (ipretty-mode +1)
-  )
+;; (use-package ipretty
+;;   :ensure t
+;;   :commands (ipretty-mode)
+;;   :init
+;;   (ipretty-mode +1))
 
 ;; Make C-x C-e run 'eval-region if the region is active
-(defun my/eval-last-sexp-or-region (prefix)
-  "Eval PREFIX if active, otherwise the last sexp."
-  (interactive "P")
-  (if (and (mark) (use-region-p))
-      (eval-region (min (point) (mark)) (max (point) (mark)))
-    (pp-eval-last-sexp prefix)))
-(global-set-key [remap eval-expression] 'pp-eval-expression)
+(use-package pp
+  :bind
+  (([remap eval-expression] . pp-eval-expression))
+  :init
+  (defun my/eval-last-sexp-or-region (prefix)
+	"Eval PREFIX if active, otherwise the last sexp."
+	(interactive "P")
+	(if (and (mark) (use-region-p))
+		(eval-region (min (point) (mark)) (max (point) (mark)))
+	  (pp-eval-last-sexp prefix)))
 
-(defadvice pp-display-expression (after my-make-read-only (expression out-buffer-name) activate)
-  "Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
-  (when (get-buffer out-buffer-name)
-    (with-current-buffer out-buffer-name
-      (view-mode 1))))
+  (defadvice pp-display-expression (after my-make-read-only (expression out-buffer-name) activate)
+	"Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
+	(when (get-buffer out-buffer-name)
+	  (with-current-buffer out-buffer-name
+		(view-mode 1))))
 
-(defun my-maybe-set-bundled-elisp-readonly ()
-  "If this elisp appears to be part of Emacs, then disallow editing."
-  (when (and (buffer-file-name)
-             (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
-    (setq buffer-read-only t)
-    (view-mode 1)))
-(add-hook 'emacs-lisp-mode-hook 'my-maybe-set-bundled-elisp-readonly)
-
+  (defun my-maybe-set-bundled-elisp-readonly ()
+	"If this elisp appears to be part of Emacs, then disallow editing."
+	(when (and (buffer-file-name)
+			   (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
+	  (setq buffer-read-only t)
+	  (view-mode 1)))
+  (add-hook 'emacs-lisp-mode-hook 'my-maybe-set-bundled-elisp-readonly))
 
 ;; Use C-c C-z to toggle between elisp files and an ielm session
 ;; I might generalise this to ruby etc., or even just adopt the repl-toggle package.
@@ -142,30 +183,12 @@
   (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol t)
   (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol-partially t))
 
-;; ----------------------------------------------------------------------------
-;; Automatic byte compilation
-;; ----------------------------------------------------------------------------
-(when (require 'auto-compile)
-  (auto-compile-on-save-mode 1)
-  (auto-compile-on-load-mode 1))
-
-;; ----------------------------------------------------------------------------
-;; Load .el if newer than corresponding .elc
-;; ----------------------------------------------------------------------------
-(setq load-prefer-newer t)
-
-;; ----------------------------------------------------------------------------
-;; Highlight current sexp
-;; ----------------------------------------------------------------------------
 
 ;; Prevent flickery behaviour due to hl-sexp-mode unhighlighting before each command
 ;; (after-load 'hl-sexp
 ;;   (defadvice hl-sexp-mode (after unflicker (&optional turn-on) activate)
 ;;     (when turn-on
 ;;       (remove-hook 'pre-command-hook #'hl-sexp-unhighlight))))
-
-(add-hook 'after-init-hook 'immortal-scratch-mode)
-
 
 ;;; Support byte-compilation in a sub-process, as
 ;;; required by highlight-cl
@@ -236,17 +259,8 @@
 (dolist (hook (mapcar #'derived-mode-hook-name my-elispy-modes))
   (add-hook hook 'my-emacs-lisp-setup))
 
-(if (boundp 'eval-expression-minibuffer-setup-hook)
-    (add-hook 'eval-expression-minibuffer-setup-hook #'eldoc-mode)
-  (require 'eldoc-eval)
-  (eldoc-in-minibuffer-mode 1))
-
 (add-to-list 'auto-mode-alist '("\\.emacs-project\\'" . emacs-lisp-mode))
 (add-to-list 'auto-mode-alist '("archive-contents\\'" . emacs-lisp-mode))
-
-
-(after-load 'lisp-mode
-  (cl-lib-highlight-initialize))
 
 ;; ----------------------------------------------------------------------------
 ;; Delete .elc files when reverting the .el from VC or magit
@@ -282,37 +296,6 @@
   (let ((my-vc-reverting t))
     ad-do-it))
 
-(after-load 'lisp-mode
-  (define-key emacs-lisp-mode-map (kbd "C-c e") 'macrostep-expand))
-
-;; Extras for theme editing
-
-(defvar my-theme-mode-hook nil
-  "Hook triggered when editing a theme file.")
-
-(defun my-run-theme-mode-hooks-if-theme ()
-  "Run `my-theme-mode-hook' if this appears to a theme."
-  (when (string-match "\\(color-theme-\\|-theme\\.el\\)" (buffer-name))
-    (run-hooks 'my-theme-mode-hook)))
-
-(add-hook 'emacs-lisp-mode-hook 'my-run-theme-mode-hooks-if-theme t)
-
-(when (require 'rainbow-mode nil t)
-  (add-hook 'my-theme-mode-hook 'rainbow-mode))
-
-;; Can be prohibitively slow with very long forms
-(when (require 'aggressive-indent)
-  (add-to-list 'my-theme-mode-hook (lambda () (aggressive-indent-mode -1)) t))
-
-(when (require 'highlight-quoted)
-  (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode))
-
-(when (require 'flycheck)
-  (use-package flycheck-package
-	:ensure t)
-  (after-load 'flycheck
-    (flycheck-package-setup)))
-
 ;; ERT
 (after-load 'ert
   (define-key ert-results-mode-map (kbd "g") 'ert-results-rerun-all-tests))
@@ -341,24 +324,6 @@
       (insert "cl-")))
     (when (fboundp 'aggressive-indent-indent-defun)
       (aggressive-indent-indent-defun))))
-
-(defconst my-lisp-scratch-buffer-name "*scratch*")
-(defun my/lisp-scratch ()
-  "Create a 'lisp-interaction-mode' scratch buffer."
-  (interactive)
-  (pop-to-buffer (my--lisp-find-or-create-scratch-buffer)))
-
-(defun my--lisp-find-or-create-scratch-buffer ()
-  "Find or create the 'lisp-interaction-mode' scratch buffer."
-  (or (get-buffer my-lisp-scratch-buffer-name)
-      (my--lisp-create-scratch-buffer)))
-
-(defun my--lisp-create-scratch-buffer ()
-  "Create a new 'lisp-interaction-mode' scratch buffer."
-  (with-current-buffer (get-buffer-create my-lisp-scratch-buffer-name)
-    (lisp-interaction-mode)
-    (insert ";; Happy hacking " (or user-login-name "") " - Emacs ♥ you!\n\n")
-    (current-buffer)))
 
 (provide 'my-lisp)
 ;;; my-lisp.el ends here
