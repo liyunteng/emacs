@@ -35,7 +35,12 @@
   :ensure t
   :diminish immortal-scratch-mode
   :init
-  (add-hook 'after-init-hook 'immortal-scratch-mode))
+  (add-hook 'after-init-hook 'immortal-scratch-mode)
+  (defun my/switch-to-scratch ()
+	(interactive)
+	(switch-to-buffer "*scratch*"))
+  (global-set-key (kbd "C-x S") 'my/switch-to-scratch)
+  )
 
 (use-package macrostep
   :ensure t

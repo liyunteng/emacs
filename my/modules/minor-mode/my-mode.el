@@ -33,11 +33,6 @@
 			  ([(meta shift down)]  . move-text-down)
 			  ))
 
-(use-package imenu-anywhere
-  :ensure t
-  :init
-  (use-package easymenu))
-
 (use-package crux
   :ensure t)
 
@@ -72,7 +67,7 @@
     (define-key map (kbd "C-c TAB") 'crux-indent-rigidly-and-copy-to-clipboard)
     (define-key map (kbd "C-c I") 'crux-find-user-init-file)
     (define-key map (kbd "C-c S") 'crux-find-shell-init-file)
-    (define-key map (kbd "C-c i") 'imenu-anywhere)
+    ;; (define-key map (kbd "C-c i") 'imenu-anywhere)
 	(define-key map (kbd "C-c C-s") 'crux-swap-windows)
     ;; extra prefix for projectile
     (define-key map (kbd "s-p") 'projectile-command-map)

@@ -26,6 +26,7 @@
 
 (use-package xcscope
   :ensure t
+  :commands (cscope-minor-mode)
   :config
   (defvar my-cscope-origin-buffer nil)
   (defadvice cscope-call (before my-save-cscope-origin-buffer activate)
@@ -37,15 +38,13 @@
 	(switch-to-buffer my-cscope-origin-buffer)
 	(delete-other-windows))
 
-  (cscope-setup)
-  (cscope-minor-mode t)
   (setq cscope-truncate-lines nil)
   (setq cscope-use-relative-paths nil)
   (setq cscope-index-recursively t)
   (setq cscope-name-line-width -45)
   (setq cscope-display-cscope-buffer t)
   (setq cscope-close-window-after-select nil)
-
+  (cscope-setup)
   :bind
   (:map cscope-minor-mode-keymap
 		("C-c s G" . cscope-find-global-definition)
@@ -229,6 +228,8 @@
 
   (hide-ifdefs)
 
+  (cscope-minor-mode t)
+
   ;; (setq hide-ifdef-hiding t)
   ;; (setq hide-ifdef-shadow t)
   ;; (helm-cscope-mode t)
@@ -259,6 +260,7 @@
   ;; 快速跳转
   (local-set-key (kbd "C-c j") 'my/jump-to-definition)
   (local-set-key (kbd "C-c C-j") 'my/jump-to-definition-other-window)
+
   ;; 快速跳转定义与实现
   (local-set-key (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
   (local-set-key (kbd "C-c C-g") 'semantic-analyze-proto-impl-toggle)
@@ -342,7 +344,10 @@
 
 
   (local-set-key [(f9)] 'my/smart-compile)
-  (local-set-key (kbd "C-c C-m") 'my/smart-compile))
+  (local-set-key (kbd "C-c C-m") 'my/smart-compile)
+
+  )
+
 
 ;; 添加Kernel的Include
 ;; (let ((include-dirs my-kernel-include-path))
