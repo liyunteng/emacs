@@ -25,6 +25,11 @@
 ;;; Code:
 
 (use-package server
+  :commands (server-running-p
+			 server-mode)
+  :init
+  (unless (server-running-p)
+	(server-mode t))
   :config
   ;; (setq-default noninteractive t)
 
@@ -62,8 +67,6 @@ and file 'filename' will be opened and cursor set on line 'linenumber'"
 									   (string-to-number (or (match-string 3 name) ""))))
 							  fn))) files)))
 
-  (unless (server-running-p)
-	(server-mode t))
   )
 
 (provide 'my-server)

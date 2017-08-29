@@ -35,6 +35,7 @@
 	"Enable `smartparens-mode' in the minibuffer, during `eval-expression'."
 	(if (or (eq this-command 'eval-expression)
 			(eq this-command 'pp-eval-expression)
+			(eq this-command 'eldoc-eval-expression)
 			)
 		(smartparens-mode)))
   (add-hook 'minibuffer-setup-hook 'my--conditionally-enable-smartparens-mode)
