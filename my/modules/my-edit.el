@@ -639,7 +639,8 @@ clang++ -Wall编译"
 	  (let ((new-command (compilation-read-command command)))
 		(if (equal command new-command)
 			(setq-local compile-command command)
-		  (progn
+		  (unless (or (equal new-command "make -k clean")
+					  (equal new-command "make clean"))
 			(setq-local compile-command new-command)
 			(my/insert-compile-command)
 			(setq command new-command)
