@@ -27,7 +27,7 @@
 
 (use-package go-mode
   :ensure t
-  :defer t
+  :commands (go-mode)
   :bind (:map go-mode-map
 			  ("C-c C-a" . go-test-current-project)
 			  ("C-c C-t" . go-test-current-file)
@@ -49,19 +49,15 @@
 			  ("C-c C-p" . godef-describe)
 			  ("C-c C-l" . godef-describe)
 			  )
-
-  :config
+  :init
   (use-package go-eldoc
-	:ensure t)
+	:ensure t
+	:init
+	(add-hook 'go-mode-hook 'go-eldoc-setup))
+
   (use-package gotest
 	:ensure t)
-  (defun my-go-mode-hook ()
-	"My go mode hook."
-	(progn
-	  (go-eldoc-setup)
-	  ))
-
-  (add-hook 'go-mode-hook 'my-go-mode-hook))
+  )
 
 (provide 'my-go)
 ;;; my-go.el ends here

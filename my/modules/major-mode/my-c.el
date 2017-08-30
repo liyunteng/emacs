@@ -255,6 +255,7 @@
 
   ;; (setq-default company-clang-arguments '("-std=c++11"))
   )
+
 (defun my-c-mode-keys ()
   "My c mode local key."
   ;; 快速跳转

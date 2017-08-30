@@ -100,16 +100,6 @@
 		(xref-push-marker-stack (push-mark (point))))
 	  ad-do-it
 	  )
-	;; (defadvice push-mark (around semantic-mru-bookmark activate)
-	;;     "Push a mark at LOCATION with NOMSG and ACTIVATE passed to `push-mark'.
-	;; If `semantic-mru-bookmark-mode' is active, also push a tag onto
-	;; the mru bookmark stack."
-	;;     (semantic-mrub-push semantic-mru-bookmark-ring
-	;;                         (point)
-	;;                         'mark)
-	;;     (xref-push-marker-stack)
-	;;     ad-do-it)
-
 	(setq global-semantic-mru-bookmark-mode t)
 	)
 

@@ -930,6 +930,7 @@ at the end of the line."
 
 (use-package google-translate
   :ensure t
+  :defer t
   :config
   (defun my/set-google-translate-languages (source target)
 	"Set source language for google translate.
