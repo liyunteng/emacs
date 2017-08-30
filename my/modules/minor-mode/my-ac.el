@@ -248,9 +248,10 @@ MODE parameter must match the parameter used in the call to
 (my|disable-company org-agenda-mode)
 (my|disable-company calendar-mode)
 
-;; (my|defvar-company-backends python-mode)
-;; (my|defvar-company-backends inferior-python-mode)
-
+(my|defvar-company-backends python-mode)
+(my|enable-company python-mode '(elpy-company-backend))
+(my|defvar-company-backends inferior-python-mode)
+(my|enable-company inferior-python-mode '(elpy-company-backend))
 
 (provide 'my-ac)
 ;;; my-ac.el ends here

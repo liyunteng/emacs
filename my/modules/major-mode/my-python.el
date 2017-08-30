@@ -26,29 +26,82 @@
 
 (use-package python
   :commands (python-mode run-python)
+  :init
+  (setq python-indent-guess-indent-offset nil)
+  (defun my-python-mode-hook ()
+	"My python mode hook."
+	(when semantic-mode
+	  (semantic-mode -1))
+	(subword-mode +1)
+	(set (make-local-variable 'tab-width) 4)
+	(setq-local electric-layout-rules
+				'((?: . (lambda ()
+						  (and (zerop (first (syntax-ppss)))
+							   (python-info-statement-starts-block-p)
+							   'after)))))
+	(when (fboundp #'python-imenu-create-flat-index)
+	  (setq-local imenu-create-index-function
+				  #'python-imenu-create-flat-index))
+	(add-hook 'post-self-insert-hook
+			  #'electric-layout-post-self-insert-function nil 'local)
+	(local-set-key (kbd "C-c C-f") 'python-shell-send-file)
+	(local-set-key (kbd "C-c C-e") 'python-shell-send-defun)
+	)
+
+  (add-hook 'python-mode-hook 'my-python-mode-hook)
+
+  (defun my-python-shell-mode-hook ()
+	"My python shell mode hook."
+	(when semantic-mode
+	  (semantic-mode -1))
+	(set (make-local-variable 'tab-width) 4)
+	(if (boundp 'python-shell-completion-native-enable)
+		(setq python-shell-completion-native-enable t)))
+
+  (add-hook 'inferior-python-mode-hook 'my-python-shell-mode-hook)
+
   :config
   (use-package elpy
 	:ensure t
 	:commands (elpy-mode elpy-enable)
+	:bind
+	(:map elpy-mode-map
+		  ("C-c C-d" . elpy-doc)
+		  ("C-c C-j" . elpy-goto-definition)
+		  ("C-c C-J" . elpy-goto-definition-other-window)
+
+		  ("C-c C-q" . my/elpy-shell-kill)
+		  ("C-c C-Q" . my/elpy-shell-kill-all)
+		  ("C-c C-k" . kill-region))
 	:init
 	(defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
 	(defvar my-python-virtualenv-workon-name "default")
 	(defvar my-python-virtualenv-workon-dir
 	  (expand-file-name my-python-virtualenv-workon-name my-python-virtualenv-dir))
 
-	(defvar my-python-elpy-dependency '("jedi" "importmagic" "autopep8" "yapf"))
+	(defvar my-python-elpy-dependency '("jedi" "importmagic" "yapf")) ;autopep8
 
 	(setenv "WORKON_HOME" my-python-virtualenv-dir)
-	(elpy-enable)
-	:config
+
 	(setq elpy-modules '(elpy-module-sane-defaults
-						 elpy-module-company
 						 elpy-module-eldoc
 						 elpy-module-flymake
 						 elpy-module-pyvenv
 						 elpy-module-yasnippet
 						 elpy-module-django))
+	(elpy-enable)
 
+	(defun my/elpy-shell-kill ()
+	  "My elpy shell kill."
+	  (interactive)
+	  (elpy-shell-kill t))
+
+	(defun my/elpy-shell-kill-all ()
+	  "My elpa shell kill all."
+	  (interactive)
+	  (elpy-shell-kill-all t nil))
+
+	:config
 	(setq elpy-rpc-backend "jedi"
 		  elpy-dedicated-shells nil
 		  )
@@ -56,46 +109,6 @@
 	(if (not (executable-find "ipython"))
 		(elpy-use-cpython)
 	  (elpy-use-ipython))
-
-	;; fix company-idel-delay from 0.01 to 1
-	;; (defun elpy-module-company (command &rest args)
-	;;   "Module to support company-mode completions ARGS."
-	;;   (null args)
-	;;   (pcase command
-	;; 	(`global-init
-	;; 	 (elpy-modules-remove-modeline-lighter 'company-mode)
-	;; 	 )
-	;; 	(`buffer-init
-	;; 	 ;; We want immediate completions from company.
-	;; 	 (set (make-local-variable 'company-idle-delay)
-	;; 		  1)
-	;; 	 ;; And annotations should be right-aligned.
-	;; 	 (set (make-local-variable 'company-tooltip-align-annotations)
-	;; 		  t)
-	;; 	 ;; Also, dabbrev in comments and strings is nice.
-	;; 	 (set (make-local-variable 'company-dabbrev-code-everywhere)
-	;; 		  t)
-	;; 	 ;; Add our own backend and remove a bunch of backends that
-	;; 	 ;; interfere in Python mode.
-	;; 	 (set (make-local-variable 'company-backends)
-	;; 		  (cons 'elpy-company-backend
-	;; 				(delq 'company-semantic
-	;; 					  (delq 'company-ropemacs
-	;; 							(delq 'company-capf
-	;; 								  (mapcar #'identity company-backends))))))
-	;; 	 (company-mode 1)
-	;; 	 (when (> (buffer-size) elpy-rpc-ignored-buffer-size)
-	;; 	   (message
-	;; 		(format
-	;; 		 (concat "Buffer larger than elpy-rpc-ignored-buffer-size (%d)."
-	;; 				 " Elpy will turn off completion.")
-	;; 		 elpy-rpc-ignored-buffer-size))))
-	;; 	(`buffer-stop
-	;; 	 (company-mode -1)
-	;; 	 (kill-local-variable 'company-idle-delay)
-	;; 	 (kill-local-variable 'company-tooltip-align-annotations)
-	;; 	 (kill-local-variable 'company-backends))
-	;; 	))
 
 	(defun my-install-python-virtualenv ()
 	  "My install python virtualenv."
@@ -121,72 +134,11 @@
 				(elpy-rpc-restart)
 				(message "Done"))))))
 
-	(defun my/elpy-shell-kill ()
-	  "My elpy shell kill."
-	  (interactive)
-	  (elpy-shell-kill t))
-
-	(defun my/elpy-shell-kill-all ()
-	  "My elpa shell kill all."
-	  (interactive)
-	  (elpy-shell-kill-all t nil))
-
 	(my-install-python-virtualenv)
 	(pyvenv-workon my-python-virtualenv-workon-name)
 	)
 
-  (setq python-indent-guess-indent-offset nil)
-
-  (defun my-python-mode-keys ()
-	"My python key."
-	;; (define-key jedi-mode-map (kbd "TAB") 'jedi:complete)
-	(local-set-key (kbd "C-c C-f") 'python-shell-send-file)
-	(local-set-key (kbd "C-c C-e") 'python-shell-send-defun)
-
-	(define-key elpy-mode-map (kbd "C-c C-d") 'elpy-doc)
-	(define-key elpy-mode-map (kbd "C-c C-j") 'elpy-goto-definition)
-	(define-key elpy-mode-map (kbd "C-c C-J") 'elpy-goto-definition-other-window)
-	(define-key elpy-mode-map (kbd "C-c C-b") 'pop-tag-mark)
-
-	(define-key elpy-mode-map (kbd "C-c C-q") 'my/elpy-shell-kill)
-	(define-key elpy-mode-map (kbd "C-c C-Q") 'my/elpy-shell-kill-all)
-	(define-key elpy-mode-map (kbd "C-c C-k") 'kill-region)
-	)
-
-  (defun my-python-mode-hook ()
-	"My python mode hook."
-	(when semantic-mode
-	  (semantic-mode -1))
-
-	(set (make-local-variable 'highlight-indentation-mode) nil)
-
-	(elpy-enable)
-	(subword-mode +1)
-	(set (make-local-variable 'tab-width) 4)
-	(setq-local electric-layout-rules
-				'((?: . (lambda ()
-						  (and (zerop (first (syntax-ppss)))
-							   (python-info-statement-starts-block-p)
-							   'after)))))
-	(when (fboundp #'python-imenu-create-flat-index)
-	  (setq-local imenu-create-index-function
-				  #'python-imenu-create-flat-index))
-	(add-hook 'post-self-insert-hook
-			  #'electric-layout-post-self-insert-function nil 'local)
-	)
-
-  (add-hook 'python-mode-hook 'my-python-mode-keys)
-  (add-hook 'python-mode-hook 'my-python-mode-hook)
-
-  (defun my-python-shell-mode-hook ()
-	"My python shell mode hook."
-	(when semantic-mode
-	  (semantic-mode -1))
-	(set (make-local-variable 'tab-width) 4)
-	(if (boundp 'python-shell-completion-native-enable)
-		(setq python-shell-completion-native-enable t)))
-
-  (add-hook 'inferior-python-mode-hook 'my-python-shell-mode-hook))
+  )
 
 (provide 'my-python)
 
