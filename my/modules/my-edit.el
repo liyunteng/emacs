@@ -586,15 +586,17 @@ FILE-LIST-FORM used by\"tags-loop-continue\"."
    (list (not (region-active-p)))))
 
 (use-package compile
-  :commands (compile)
-  :config
-  (use-package ansi-color)
-  (setq compilation-ask-about-save nil  ; Just save before compiling
-		compilation-always-kill t       ; Just kill old compile processes before
-                                        ; starting the new one
-		compilation-scroll-output 'first-error ; Automatically scroll to first
-                                        ; error
-		)
+  :commands (compile my/smart-compile
+					 my/insert-compile-command)
+  :init
+  (require 'files-x)
+  (defun my/insert-compile-command ()
+	"Insert compile command to file."
+	(interactive)
+    (save-excursion
+	  (modify-file-local-variable-prop-line 'compile-command (eval compile-command)
+											`add-or-replace)
+	  ))
 
   (defun my/smart-compile()
 	"比较智能的C/C++编译命令
@@ -632,11 +634,29 @@ clang++ -Wall编译"
 								" -g "
 								))
 				(message "Unknow mode")))))
-	  (unless (equal command (eval compile-command))
-		(setq-local compile-command command))
 	  (setq-local compilation-directory default-directory)
-	  (compilation-start (compilation-read-command command))
+
+	  (let ((new-command (compilation-read-command command)))
+		(if (equal command new-command)
+			(setq-local compile-command command)
+		  (progn
+			(setq-local compile-command new-command)
+			(my/insert-compile-command)
+			(setq command new-command)
+			)))
+	  (compilation-start command)
 	  ))
+
+  :config
+  (use-package ansi-color)
+  (setq compilation-ask-about-save nil  ; Just save before compiling
+		compilation-always-kill t       ; Just kill old compile processes before
+                                        ; starting the new one
+		compilation-scroll-output 'first-error ; Automatically scroll to first
+                                        ; error
+		)
+
+
 
   ;; Compilation from Emacs
   (defun my-colorize-compilation-buffer ()
