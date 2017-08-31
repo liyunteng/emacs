@@ -103,122 +103,123 @@
 	)
 
   (setq helm-split-window-in-side-p t
-		helm-buffers-fuzzy-matching t
-		helm-move-to-line-cycle-in-source t
-		helm-ff-search-library-in-sexp t
-		helm-ff-file-compressed-list t
-		helm-ff-file-name-history-use-recentf t
-		helm-scroll-amount 8
-		helm-echo-input-in-header-line nil)
+  		helm-buffers-fuzzy-matching t
+  		helm-move-to-line-cycle-in-source t
+  		helm-ff-search-library-in-sexp t
+  		helm-ff-file-compressed-list t
+  		helm-ff-file-name-history-use-recentf t
+  		helm-scroll-amount 8
+  		helm-echo-input-in-header-line nil
+		)
 
   (setq helm-bookmark-show-location t
-		helm-display-header-line nil
-		helm-always-two-windows t
-		)
+  		helm-display-header-line t
+  		helm-always-two-windows t
+  		)
 
   (when (executable-find "curl")
 	(setq helm-net-prefer-curl t))
 
   (defun my--helm-cleanup ()
-	"Cleanup some helm related states when quitting."
-	;; deactivate any running transient map (transient-state)
-	(setq overriding-terminal-local-map nil))
+  	"Cleanup some helm related states when quitting."
+  	;; deactivate any running transient map (transient-state)
+  	(setq overriding-terminal-local-map nil))
   (add-hook 'helm-cleanup-hook 'my--helm-cleanup)
 
   (defun my--helm-do-grep-region-or-symbol
-	  (&optional targs use-region-or-symbol-p)
-	"Version of `helm-do-grep' with a default input."
-	(interactive)
-	(cl-letf*
-		(((symbol-function 'this-fn) (symbol-function 'helm-do-grep-1))
-		 ((symbol-function 'helm-do-grep-1)
-		  (lambda (targets &optional recurse zgrep exts
-						   default-input region-or-symbol-p)
-			(let* ((new-input (when region-or-symbol-p
-								(if (region-active-p)
-									(buffer-substring-no-properties
-									 (region-beginning) (region-end))
-								  (thing-at-point 'symbol t))))
-				   (quoted-input (when new-input
-								   (rxt-quote-pcre new-input))))
-			  (this-fn targets recurse zgrep exts
-					   default-input quoted-input))))
-		 (preselection (or (dired-get-filename nil t)
-						   (buffer-file-name (current-buffer))))
-		 (targets   (if targs
-						targs
-					  (helm-read-file-name
-					   "Search in file(s): "
-					   :marked-candidates t
-					   :preselect (if helm-ff-transformer-show-only-basename
-									  (helm-basename preselection)
-									preselection)))))
-	  (helm-do-grep-1 targets nil nil nil nil use-region-or-symbol-p)))
+  	  (&optional targs use-region-or-symbol-p)
+  	"Version of `helm-do-grep' with a default input."
+  	(interactive)
+  	(cl-letf*
+  		(((symbol-function 'this-fn) (symbol-function 'helm-do-grep-1))
+  		 ((symbol-function 'helm-do-grep-1)
+  		  (lambda (targets &optional recurse zgrep exts
+  						   default-input region-or-symbol-p)
+  			(let* ((new-input (when region-or-symbol-p
+  								(if (region-active-p)
+  									(buffer-substring-no-properties
+  									 (region-beginning) (region-end))
+  								  (thing-at-point 'symbol t))))
+  				   (quoted-input (when new-input
+  								   (rxt-quote-pcre new-input))))
+  			  (this-fn targets recurse zgrep exts
+  					   default-input quoted-input))))
+  		 (preselection (or (dired-get-filename nil t)
+  						   (buffer-file-name (current-buffer))))
+  		 (targets   (if targs
+  						targs
+  					  (helm-read-file-name
+  					   "Search in file(s): "
+  					   :marked-candidates t
+  					   :preselect (if helm-ff-transformer-show-only-basename
+  									  (helm-basename preselection)
+  									preselection)))))
+  	  (helm-do-grep-1 targets nil nil nil nil use-region-or-symbol-p)))
 
   (defun my/helm-file-do-grep ()
-	"Search in current file with `grep' using a default input."
-	(interactive)
-	(my--helm-do-grep-region-or-symbol
-	 (list (buffer-file-name (current-buffer))) nil))
+  	"Search in current file with `grep' using a default input."
+  	(interactive)
+  	(my--helm-do-grep-region-or-symbol
+  	 (list (buffer-file-name (current-buffer))) nil))
   (global-set-key [remap helm-do-grep] 'my/helm-file-do-grep)
 
   (defun my/helm-find-files (arg)
-	"Custom spacemacs implementation for calling helm-find-files-1.
-Removes the automatic guessing of the initial value based on thing at point."
-	(interactive "P")
-	(let* ((hist (and arg helm-ff-history (helm-find-files-history)))
-		   (default-input hist)
-		   (input (cond ((and (eq major-mode 'dired-mode) default-input)
-						 (file-name-directory default-input))
-						((and (not (string= default-input ""))
-							  default-input))
-						(t (expand-file-name (helm-current-directory))))))
-	  (set-text-properties 0 (length input) nil input)
-	  (helm-find-files-1 input)))
+  	"Custom spacemacs implementation for calling helm-find-files-1.
+  Removes the automatic guessing of the initial value based on thing at point."
+  	(interactive "P")
+  	(let* ((hist (and arg helm-ff-history (helm-find-files-history)))
+  		   (default-input hist)
+  		   (input (cond ((and (eq major-mode 'dired-mode) default-input)
+  						 (file-name-directory default-input))
+  						((and (not (string= default-input ""))
+  							  default-input))
+  						(t (expand-file-name (helm-current-directory))))))
+  	  (set-text-properties 0 (length input) nil input)
+  	  (helm-find-files-1 input)))
 
   (defun my--helm-find-files-edit (candidate)
-	"Opens a dired buffer and immediately switches to editable mode."
-	(dired (file-name-directory candidate))
-	(dired-goto-file candidate)
-	(dired-toggle-read-only))
+  	"Opens a dired buffer and immediately switches to editable mode."
+  	(dired (file-name-directory candidate))
+  	(dired-goto-file candidate)
+  	(dired-toggle-read-only))
 
   (defun my/helm-find-files-edit ()
-	"Exits helm, opens a dired buffer and immediately switches to editable mode."
-	(interactive)
-	(helm-exit-and-execute-action 'my--helm-find-files-edit))
+  	"Exits helm, opens a dired buffer and immediately switches to editable mode."
+  	(interactive)
+  	(helm-exit-and-execute-action 'my--helm-find-files-edit))
 
   (defun my--helm-hide-minibuffer-maybe ()
-	(when (with-helm-buffer helm-echo-input-in-header-line)
-	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-		(overlay-put ov 'window (selected-window))
-		(overlay-put ov 'face
-					 (let ((bg-color (face-background 'default nil)))
-					   `(:background ,bg-color :foreground ,bg-color)))
-		(setq-local cursor-type nil))))
+  	(when (with-helm-buffer helm-echo-input-in-header-line)
+  	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+  		(overlay-put ov 'window (selected-window))
+  		(overlay-put ov 'face
+  					 (let ((bg-color (face-background 'default nil)))
+  					   `(:background ,bg-color :foreground ,bg-color)))
+  		(setq-local cursor-type nil))))
   (add-hook 'helm-minibuffer-set-up-hook 'my--helm-hide-minibuffer-maybe)
 
   (helm-locate-set-command)
   (setq helm-locate-fuzzy-match (string-match "locate" helm-locate-command))
 
   (defun my-helm-bookmark-keybindings ()
-	(define-key helm-bookmark-map (kbd "C-d") 'helm-bookmark-run-delete)
-	(define-key helm-bookmark-map (kbd "C-e") 'helm-bookmark-run-edit)
-	(define-key helm-bookmark-map (kbd "C-f") 'helm-bookmark-toggle-filename)
-	(define-key helm-bookmark-map (kbd "C-o") 'helm-bookmark-run-jump-other-window)
-	)
+  	(define-key helm-bookmark-map (kbd "C-d") 'helm-bookmark-run-delete)
+  	(define-key helm-bookmark-map (kbd "C-e") 'helm-bookmark-run-edit)
+  	(define-key helm-bookmark-map (kbd "C-f") 'helm-bookmark-toggle-filename)
+  	(define-key helm-bookmark-map (kbd "C-o") 'helm-bookmark-run-jump-other-window)
+  	)
   (add-hook 'helm-mode-hook 'my-helm-bookmark-keybindings)
 
   (defun my/resume-last-search-buffer ()
-	"open last helm-ag or hgrep buffer."
-	(interactive)
-	(cond ((get-buffer "*helm ag results*")
-		   (switch-to-buffer-other-window "*helm ag results*"))
-		  ((get-buffer "*helm-ag*")
-		   (helm-resume "*helm-ag*"))
-		  ((get-buffer "*hgrep*")
-		   (switch-to-buffer-other-window "*hgrep*"))
-		  (t
-		   (message "No previous search buffer found"))))
+  	"open last helm-ag or hgrep buffer."
+  	(interactive)
+  	(cond ((get-buffer "*helm ag results*")
+  		   (switch-to-buffer-other-window "*helm ag results*"))
+  		  ((get-buffer "*helm-ag*")
+  		   (helm-resume "*helm-ag*"))
+  		  ((get-buffer "*hgrep*")
+  		   (switch-to-buffer-other-window "*hgrep*"))
+  		  (t
+  		   (message "No previous search buffer found"))))
 
   ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
   ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
@@ -239,7 +240,7 @@ Removes the automatic guessing of the initial value based on thing at point."
   (global-set-key (kbd "M-U") 'helm-resume)
   (global-set-key (kbd "C-c f") 'helm-recentf)
   (global-set-key (kbd "C-h o") 'helm-occur)
-  (global-set-key (kbd "C-h i") 'helm-info)
+  (global-set-key (kbd "C-h i") 'helm-info-at-point)
   (global-set-key (kbd "C-h I") 'info)
 
   (global-set-key (kbd "C-c h") 'helm-command-prefix)
@@ -268,20 +269,20 @@ Removes the automatic guessing of the initial value based on thing at point."
   (define-key helm-map (kbd "C-M-y") 'yank)
 
   (defun my/helm-faces ()
-	"Describe face."
-	(interactive)
-	(let ((default (or (face-at-point) (thing-at-point 'symbol))))
-	  (helm :sources (helm-def-source--emacs-faces
-					  (format "%s" (or default "default")))
-			:buffer "*helm faces*")))
+  	"Describe face."
+  	(interactive)
+  	(let ((default (or (face-at-point) (thing-at-point 'symbol))))
+  	  (helm :sources (helm-def-source--emacs-faces
+  					  (format "%s" (or default "default")))
+  			:buffer "*helm faces*")))
 
   ;; shell history.
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
 
   ;; use helm to list eshell history
   (add-hook 'eshell-mode-hook
-			#'(lambda ()
-				(substitute-key-definition 'eshell-list-history 'helm-eshell-history eshell-mode-map)))
+  			#'(lambda ()
+  				(substitute-key-definition 'eshell-list-history 'helm-eshell-history eshell-mode-map)))
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map)
   )
