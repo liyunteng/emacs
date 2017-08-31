@@ -209,8 +209,10 @@
 		  ((null val) 0)
 		  (t val)))
 
-  (setq hide-ifdef-hiding t)
-  (setq hide-ifdef-shadow t))
+  (setq hide-ifdef-shadow t
+		hide-ifdef-initially t
+		)
+  )
 
 ;; (c-add-style "ffmpeg"
 ;; 			   '("k&r"
@@ -225,9 +227,7 @@
 	(semantic-mode +1))
 
   (auto-fill-mode -1)
-
-  (hide-ifdefs)
-
+  (hide-ifdef-mode +1)
   (cscope-minor-mode t)
 
   ;; (setq hide-ifdef-hiding t)
