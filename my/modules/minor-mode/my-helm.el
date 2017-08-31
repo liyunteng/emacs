@@ -175,7 +175,6 @@ Removes the automatic guessing of the initial value based on thing at point."
 						(t (expand-file-name (helm-current-directory))))))
 	  (set-text-properties 0 (length input) nil input)
 	  (helm-find-files-1 input)))
-  ;; (global-set-key [remap helm-find-files] 'my/helm-find-files)
 
   (defun my--helm-find-files-edit (candidate)
 	"Opens a dired buffer and immediately switches to editable mode."
@@ -232,6 +231,7 @@ Removes the automatic guessing of the initial value based on thing at point."
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x r v") 'helm-register)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key [remap find-file] 'helm-find-files)
   (global-set-key (kbd "C-x r b") 'helm-bookmarks)
   ;; (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 

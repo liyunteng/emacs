@@ -27,7 +27,7 @@
 ;;打开图片显示功能
 (auto-image-file-mode t)
 
-;;不要在鼠标光标处插入
+;;在鼠标光标处插入
 (setq mouse-yank-at-point t)
 
 ;; 支持emacs和外部程序的拷贝粘贴
@@ -80,9 +80,6 @@
 ;; Show column number in mode line
 (column-number-mode t)
 (line-number-mode t)
-
-;; highlight current line
-(global-hl-line-mode +1)
 
 ;; no blink
 (blink-cursor-mode -1)
@@ -224,6 +221,20 @@
 	"Updated line number every second."
 	(run-with-idle-timer 1 nil #'linum-update-current))
   )
+
+;; highlight current line
+(use-package hl-line
+  :commands (global-hl-line-mode
+			 hl-line-mode)
+  :init
+  (my|add-toggle hl-line-mode
+	:status hl-line-mode
+	:on (hl-line-mode +1)
+	:off (progn
+		   (hl-line-mode nil)
+		   (setq-local global-hl-line-mode nil))
+	:documentation "Show trailing-whitespace")
+  (global-hl-line-mode +1))
 
 ;; 启用cua
 (use-package cua-base

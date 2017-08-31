@@ -41,8 +41,12 @@
 (global-set-key (kbd "C-x f a") 'append-to-file)
 (global-set-key (kbd "C-x f i") 'insert-file)
 (global-set-key (kbd "C-x f f") 'find-file)
+(global-set-key (kbd "C-x f C-f") 'find-file-other-window)
 (global-set-key (kbd "C-x f d") 'delete-file)
-(global-set-key (kbd "C-x f v") 'find-alternate-file)
+(global-set-key (kbd "C-x f n") 'find-alternate-file)
+(global-set-key (kbd "C-x f C-n") 'find-alternate-file-other-window)
+(global-set-key (kbd "C-x f v") 'view-file)
+(global-set-key (kbd "C-x f C-v") 'view-file-other-window)
 
 ;; ==================== EDIT ====================
 ;; 标记段落
@@ -158,13 +162,6 @@
 (global-set-key (kbd "C-x r a") 'append-to-register)
 (global-set-key (kbd "C-x r p") 'prepend-to-register)
 ;; bookmark
-
-;;multi-term
-(global-set-key (kbd "C-x x") 'my/multi-term-dedicated-toggle-and-select)
-(global-set-key (kbd "C-x t m") 'my/multi-term-dedicated-toggle-and-select)
-(global-set-key (kbd "C-x t t") 'multi-term)
-(global-set-key (kbd "C-x t n") 'multi-term-next)
-(global-set-key (kbd "C-x t p") 'multi-term-prev)
 
 ;; ==================== MISC ====================
 
