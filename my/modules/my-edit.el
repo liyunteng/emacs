@@ -168,7 +168,7 @@
   :init
   (global-linum-mode 'linum-mode)
   :config
-  (setq linum-delay t)
+  (setq linum-delay nil)
   (setq linum-format 'dynamic)
 
   (defvar my-linum-mode-inhibit-modes-list

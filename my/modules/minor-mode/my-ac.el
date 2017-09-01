@@ -199,17 +199,24 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company cmake-mode '(company-cmake))
 
 (use-package company-go
-  :ensure t)
+  :ensure t
+  :defer t
+  :commands (company-go))
 (my|defvar-company-backends go-mode)
 (my|enable-company go-mode '(company-go))
 
 (use-package company-shell
-  :ensure t)
+  :ensure t
+  :defer t
+  :commands (company-shell
+			 company-shell-env))
 (my|defvar-company-backends sh-mode)
 (my|enable-company sh-mode '(company-shell company-shell-env))
 
 (use-package company-php
-  :ensure t)
+  :ensure t
+  :defer t
+  :commands (company-php))
 (my|defvar-company-backends php-mode)
 (my|enable-company php-mode '(company-php))
 
@@ -220,7 +227,9 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company nxml-mode '(company-nxml))
 
 (use-package company-web
-  :ensure t)
+  :ensure t
+  :defer t
+  :commands (company-web))
 (my|defvar-company-backends web-mode)
 (my|enable-company web-mode '(company-web))
 
