@@ -48,17 +48,22 @@
 
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
 (use-package desktop
-  :commands (desktop-full-file-name)
+  :commands (desktop-full-file-name
+			 desktop-save)
+  :defines (desktop-save)
   :init
   ;; fix if no deskop-file desktop-read will close all window
   (unless (or (not (desktop-full-file-name)) my-debug)
 	(desktop-save-mode +1))
   :config
-  (setq desktop-path (list my-cache-dir))
-  (setq desktop-auto-save-timeout 600)
-  (setq desktop-missing-file-warning t)
-  (setq desktop-restore-in-current-display t)
-  (setq desktop-save 'ask-if-new)
+  (setq desktop-path (list my-cache-dir)
+		desktop-dirname my-cache-dir
+		desktop-auto-save-timeout 600
+		desktop-missing-file-warning t
+		desktop-restore-in-current-display t
+		desktop-save t
+		;; desktop-save 'ask-if-new
+		)
 
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
