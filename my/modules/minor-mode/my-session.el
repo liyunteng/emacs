@@ -52,18 +52,18 @@
 			 desktop-save)
   :defines (desktop-save)
   :init
-  ;; fix if no deskop-file desktop-read will close all window
-  (unless (or (not (desktop-full-file-name)) my-debug)
-	(desktop-save-mode +1))
-  :config
   (setq desktop-path (list my-cache-dir)
-		desktop-dirname my-cache-dir
+		;; desktop-dirname my-cache-dir
 		desktop-auto-save-timeout 600
 		desktop-missing-file-warning t
 		desktop-restore-in-current-display t
 		desktop-save t
 		;; desktop-save 'ask-if-new
 		)
+  ;; fix if no deskop-file desktop-read will close all window
+  (unless (or (not (desktop-full-file-name)) my-debug)
+	(desktop-save-mode +1))
+  :config
 
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also

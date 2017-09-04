@@ -841,7 +841,8 @@ at the end of the line."
   :ensure t
   :diminish page-break-lines-mode
   :init
-  (global-page-break-lines-mode +1))
+  (global-page-break-lines-mode +1)
+  (add-hook 'prog-mode-hook 'page-break-lines-mode))
 
 ;; smarter kill-ring navigation
 (use-package browse-kill-ring
