@@ -57,7 +57,7 @@
 		desktop-auto-save-timeout 600
 		desktop-missing-file-warning t
 		desktop-restore-in-current-display t
-		desktop-save nil
+		desktop-save t
 		;; desktop-save 'ask-if-new
 		)
   ;; fix if no deskop-file desktop-read will close all window
@@ -114,6 +114,10 @@
 										  start-time)
 				 (when filename
 				   (abbreviate-file-name filename))))))
+
+  (defadvice desktop-remove (around set-desktop-dirname activate)
+	ad-do-it
+	(setq desktop-dirname my-cache-dir))
   )
 
 ;; savehist keeps track of some history
