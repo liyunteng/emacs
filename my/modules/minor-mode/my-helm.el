@@ -71,9 +71,6 @@
 	:init
 	(setq projectile-switch-project-action 'helm-projectile
 		  projectile-completion-system 'helm)
-
-	;; enable Helm version of Projectile with replacment commands
-	(add-hook 'helm-mode-hook 'helm-projectile-on)
 	)
 
   (use-package helm-swoop

@@ -199,7 +199,10 @@
     (add-to-list 'cc-other-file-alist var)))
 
 (use-package hideif
-  :commands (hide-ifdef-mode)
+  :commands (hide-ifdef-mode
+			 hide-ifdefs)
+  :init
+  (hide-ifdef-mode +1)
   :config
   ;; fix can't use = with string
   (defun hif-mathify (val)
@@ -210,8 +213,8 @@
 		  (t val)))
 
   (setq hide-ifdef-shadow t
-		hide-ifdef-initially t
-		)
+		hide-ifdef-initially t)
+
   )
 
 ;; (c-add-style "ffmpeg"
@@ -227,7 +230,7 @@
 	(semantic-mode +1))
 
   (auto-fill-mode -1)
-  (hide-ifdef-mode +1)
+  ;; (hide-ifdef-mode +1)
   (cscope-minor-mode t)
 
   ;; (setq hide-ifdef-hiding t)
