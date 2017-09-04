@@ -57,7 +57,7 @@
 		desktop-auto-save-timeout 600
 		desktop-missing-file-warning t
 		desktop-restore-in-current-display t
-		desktop-save t
+		desktop-save nil
 		;; desktop-save 'ask-if-new
 		)
   ;; fix if no deskop-file desktop-read will close all window
