@@ -35,10 +35,8 @@
 (setq package-user-dir my-packages-save-dir)
 (setq package-enable-at-startup t)
 (package-initialize)
-(unless package-archive-contents
- (package-refresh-contents))
 
-(defvar my-packages '())
+(defvar my-packages '(bind-key use-package))
 
 (defun my-packages-installed-p ()
   "Check if all packages in `my-packages' are installed."
@@ -67,7 +65,7 @@ Missing packages are installed automatically."
     (my-require-packages my-packages)))
 
 ;; ;; run package installation
-;; (my-install-packages)
+(my-install-packages)
 
 (defun my/list-foreign-packages ()
   "Browse third-party packages not bundled with My.
@@ -82,8 +80,6 @@ removing unwanted packages."
 
 ;; use package
 ;;(my-require-package 'diminish)
-(my-require-package 'bind-key)
-(my-require-package 'use-package)
 ;;(require 'diminish)
 (require 'bind-key)
 (require 'use-package)
