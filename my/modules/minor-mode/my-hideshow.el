@@ -27,15 +27,15 @@
 (use-package hideshow
   :ensure t
   :commands (hs-minor-mode)
-  :bind-keymap ("C-c m" . hs-command-prefix)
-  :bind (:map hs-command-prefix
-			  ("h" . hs-hide-block)
-			  ("s" . hs-show-block)
-			  ("H" . hs-hide-all)
-			  ("S" . hs-show-all)
-			  ("l" . hs-hide-level)
-			  ("m" . hs-toggle-hiding)
-			  ("i" . hs-hide-initial-comment-block)
+  ;; :bind-keymap ("C-c m" . hs-command-prefix)
+  :bind (:map hs-minor-mode-map
+			  ("C-c m h" . hs-hide-block)
+			  ("C-c m s" . hs-show-block)
+			  ("C-c m H" . hs-hide-all)
+			  ("C-c m S" . hs-show-all)
+			  ("C-c m l" . hs-hide-level)
+			  ("C-c m m" . hs-toggle-hiding)
+			  ("C-c m i" . hs-hide-initial-comment-block)
 			  ([shfit mouse-1] . hs-mouse-toggle-hiding)
 			  )
   :init
