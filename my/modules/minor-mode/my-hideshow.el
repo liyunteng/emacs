@@ -26,7 +26,8 @@
 
 (use-package hideshow
   :ensure t
-  :bind-keymap ("C-c M-h" . hs-command-prefix)
+  :commands (hs-minor-mode)
+  :bind-keymap ("C-c m" . hs-command-prefix)
   :bind (:map hs-command-prefix
 			  ("h" . hs-hide-block)
 			  ("s" . hs-show-block)
@@ -34,11 +35,13 @@
 			  ("S" . hs-show-all)
 			  ("l" . hs-hide-level)
 			  ("m" . hs-toggle-hiding)
+			  ("i" . hs-hide-initial-comment-block)
+			  ([shfit mouse-1] . hs-mouse-toggle-hiding)
 			  )
   :init
   (defvar hs-command-prefix)
   (define-prefix-command 'hs-command-prefix)
-  :config
+
   (dolist (hook '(prog-mode-hook
 				  nxml-mode
 				  html-mode
@@ -51,16 +54,7 @@
 ;;代码折叠
 
 
-;; (defvar hs-command-prefix)
-;; (define-prefix-command 'hs-command-prefix)
-;; (define-key hs-minor-mode-map (kbd "C-c M-h") 'hs-command-prefix)
 
-;; (define-key hs-command-prefix (kbd "h") 'hs-hide-block)
-;; (define-key hs-command-prefix (kbd "s") 'hs-show-block)
-;; (define-key hs-command-prefix (kbd "H") 'hs-hide-all)
-;; (define-key hs-command-prefix (kbd "S") 'hs-show-all)
-;; (define-key hs-command-prefix (kbd "l") 'hs-hide-level)
-;; (define-key hs-command-prefix (kbd "m") 'hs-toggle-hiding)
 ;; (define-key hs-minor-mode-map [(shift mouse-2)] 'hs-mouse-toggle-hiding)
 
 (provide 'my-hideshow)
