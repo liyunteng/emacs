@@ -32,7 +32,7 @@
    recentf-max-saved-items 1000
    recentf-max-menu-items 15
    recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
-					 "/TAGS$" "/GTAGS$" "/GRAGS" "/GPATH$"))
+					 "TAGS" "GTAGS" "GRAGS" "GPATH"))
 
   (add-to-list 'recentf-exclude
 			   (expand-file-name my-cache-dir))

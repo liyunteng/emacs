@@ -90,18 +90,18 @@
   ;; (setq semantic-update-mode-line t)
 
   (use-package semantic/mru-bookmark
-	:init
-	;;修复向回跳转的问题
-	(defadvice semantic-ia-fast-jump (around my-semantic-ia-fast-jump-push-mark activate)
-	  (semantic-mrub-push semantic-mru-bookmark-ring
-						  (point)
-						  'mark)
-	  (when (fboundp 'xref-push-marker-stack)
-		(xref-push-marker-stack (push-mark (point))))
-	  ad-do-it
-	  )
-	(setq global-semantic-mru-bookmark-mode t)
-	)
+  	:init
+  	;;修复向回跳转的问题
+  	(defadvice semantic-ia-fast-jump (around my-semantic-ia-fast-jump-push-mark activate)
+  	  (semantic-mrub-push semantic-mru-bookmark-ring
+  						  (point)
+  						  'mark)
+  	  (when (fboundp 'xref-push-marker-stack)
+  		(xref-push-marker-stack (push-mark (point))))
+  	  ad-do-it
+  	  )
+  	;; (setq global-semantic-mru-bookmark-mode t)
+  	)
 
   (use-package semantic/idle
 	:defines (semantic-idle-scheduler-idle-time
@@ -122,31 +122,27 @@
 
 
   ;;smart complitions
-  (use-package semantic/ia)
+  (require 'semantic/ia)
 
-  ;;Include settings
-  (use-package semantic/analyze)
+  (require 'semantic/dep)
 
   ;; (require 'semantic/decorate/include)
-  (use-package semantic/bovine)
-  (use-package semantic/bovine/c)
-  (use-package semantic/bovine/gcc)
+  (require 'semantic/bovine/c)
   ;;   ;; (require 'semantic/bovine/make)
   ;;   ;; (require 'semantic/bovine/c-by)
-  (use-package semantic/wisent)
+  (require 'semantic/wisent)
 
+  (after-load 'cc-mode
+	(defcustom-mode-local-semantic-dependency-system-include-path
+	  c-mode my-c-system-include (semantic-gcc-get-include-paths "c"))
+	(defcustom-mode-local-semantic-dependency-system-include-path
+	  c++-mode my-c++-system-include (semantic-gcc-get-include-paths "c++"))
 
-  (use-package semantic/dep
-	:init
-	(setq-mode-local c-mode semantic-dependency-include-path
-					 my-include-path)
-	(setq-mode-local c++-mode semantic-dependency-include-path
-					 my-include-path)
-	(setq-mode-local c-mode semantic-dependency-system-include-path
-					 (semantic-gcc-get-include-paths "c"))
-	(setq-mode-local c++-mode semantic-dependency-system-include-path
-					 (semantic-gcc-get-include-paths "c++"))
+	(setq-mode-local c-mode semantic-dependency-include-path my-include-path)
+	(setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
 	)
+
+
   ;; (require 'semantic/lex-spp)
   ;; (setq semantic-lex-maximum-depth 200)
   ;; 设置头文件路径

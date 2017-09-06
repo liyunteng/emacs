@@ -206,11 +206,11 @@
   :config
   ;; fix can't use = with string
   (defun hif-mathify (val)
-	"Treat VAL as a number: if it's t or nil, use 1 or 0."
-	(cond ((stringp val) (string-to-number val))
-		  ((eq val t) 1)
-		  ((null val) 0)
-		  (t val)))
+  	"Treat VAL as a number: if it's t or nil, use 1 or 0."
+  	(cond ((stringp val) (string-to-number val))
+  		  ((eq val t) 1)
+  		  ((null val) 0)
+  		  (t val)))
 
   (setq hide-ifdef-shadow t
 		hide-ifdef-initially t)
