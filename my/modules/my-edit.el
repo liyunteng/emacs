@@ -778,7 +778,7 @@ at the end of the line."
 	  (comment-dwim arg))
 	(indent-according-to-mode))
   :config
-  (setq comment-style (quote extra-line))
+  (setq comment-style (quote multi-line))
   (setq comment-fill-column 80)
   )
 
