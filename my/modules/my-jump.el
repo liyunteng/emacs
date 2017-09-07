@@ -62,7 +62,7 @@ Example:
 	   ;;                                             "gG" 'spacemacs/jump-to-definition-other-window))
 	   )))
 
-(defvar my-jump-original-buffer nil
+(defvar my-jump-original-buffer-alist '()
   "Buffer from which we jump to this symbol.")
 (defun my/jump-to-definition ()
   "Jump to definition around point using the best tool for this action."
@@ -77,26 +77,25 @@ Example:
 		  (when (or
 				 (not (eq old-point (point)))
 				 (not (equal old-buffer (current-buffer))))
-			(setq-local my-jump-original-buffer old-buffer)
+			(add-to-list 'my-jump-original-buffer-alist old-buffer)
 			(throw 'done t)))))
 	(message "No jump handler was able to find this symbol.")))
 
 (defun my/jump-to-definition-other-window ()
   "Jump to definition around point in other window."
   (interactive)
-  (save-excursion
-	(switch-to-buffer-other-window (current-buffer))
-    (my/jump-to-definition)))
+  (switch-to-buffer-other-window (current-buffer))
+  (my/jump-to-definition))
 
 (defun my/jump-back-to-origin ()
   "Jump back to origin buffer."
   (interactive)
-  (if my-jump-original-buffer
+  (if (length my-jump-original-buffer-alist)
 	  (progn
-		(funcall 'switch-to-buffer my-jump-original-buffer)
+		(funcall 'switch-to-buffer (car my-jump-original-buffer-alist))
+		(setq-local my-jump-original-buffer-alist (cdr my-jump-original-buffer-alist))
 		(delete-window))
-	(error "No origial buffer")
-	))
+	(error "No origial buffer")))
 
 ;; (my|define-jump-handlers lisp-interaction-mode elisp-slime-nav-find-elisp-thing-at-point)
 ;; (my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
