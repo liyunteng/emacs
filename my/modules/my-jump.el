@@ -92,7 +92,9 @@ Example:
   "Jump back to origin buffer."
   (interactive)
   (if my-jump-original-buffer
-	  (funcall 'switch-to-buffer-other-window my-jump-original-buffer)
+	  (progn
+		(funcall 'switch-to-buffer my-jump-original-buffer)
+		(delete-window))
 	(error "No origial buffer")
 	))
 
