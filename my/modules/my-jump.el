@@ -62,14 +62,17 @@ Example:
 	   ;;                                             "gG" 'spacemacs/jump-to-definition-other-window))
 	   )))
 
-(defvar my-jump-original-buffer-alist '()
-  "Buffer from which we jump to this symbol.")
+(defvar my-jump-ring-length 128)
+(defvar my-jump-mark-ring (make-ring my-jump-ring-length)
+  "My jump buffer history alist.")
 (defun my/jump-to-definition ()
   "Jump to definition around point using the best tool for this action."
   (interactive)
   (catch 'done
 	(let ((old-buffer (current-buffer))
-		  (old-point (point)))
+		  (old-point (point))
+		  (marker (point-marker))
+		  )
 	  (dolist (-handler my-jump-handlers)
 		(let ((handler (if (listp -handler) (car -handler) -handler)))
 		  (ignore-errors
@@ -77,7 +80,7 @@ Example:
 		  (when (or
 				 (not (eq old-point (point)))
 				 (not (equal old-buffer (current-buffer))))
-			(add-to-list 'my-jump-original-buffer-alist old-buffer)
+			(ring-insert my-jump-mark-ring marker)
 			(throw 'done t)))))
 	(message "No jump handler was able to find this symbol.")))
 
@@ -90,12 +93,16 @@ Example:
 (defun my/jump-back-to-origin ()
   "Jump back to origin buffer."
   (interactive)
-  (if (length my-jump-original-buffer-alist)
-	  (progn
-		(funcall 'switch-to-buffer (car my-jump-original-buffer-alist))
-		(setq-local my-jump-original-buffer-alist (cdr my-jump-original-buffer-alist))
-		(delete-window))
-	(error "No origial buffer")))
+  (when (ring-empty-p my-jump-mark-ring)
+	(user-error "Jump mark ring is empty"))
+  (let ((marker (ring-remove my-jump-mark-ring 0)))
+	(switch-to-buffer (or (marker-buffer marker)
+						  (user-error "The marked buffer has been deleted")))
+	(goto-char (marker-position marker))
+	(set-marker marker nil nil)
+	(if (> (length (window-list)) 1)
+		(delete-window))))
+
 
 ;; (my|define-jump-handlers lisp-interaction-mode elisp-slime-nav-find-elisp-thing-at-point)
 ;; (my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)

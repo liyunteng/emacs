@@ -67,6 +67,29 @@
   :defer t
   :commands (semantic-mode)
   :init
+  (defun my/semantic-find-definition (arg)
+	"Jump to the definition of the symbol, type or function at point.
+  With prefix arg, find in other window."
+	(interactive "P")
+	(let* ((tag (or (semantic-idle-summary-current-symbol-info-context)
+					(semantic-idle-summary-current-symbol-info-brutish)
+					(error "No known tag at point")))
+		   (pos (or (semantic-tag-start tag)
+					(error "Tag definition not found")))
+		   (file (semantic-tag-file-name tag)))
+
+	  (when (fboundp 'xref-push-marker-stack)
+		(xref-push-marker-stack (push-mark (point))))
+	  (if file
+		  (if arg (find-file-other-window file) (find-file file))
+		(if arg (switch-to-buffer-other-window (current-buffer))))
+
+
+	  ;; (push-mark)
+	  (goto-char pos)
+	  ;; (end-of-line)
+	  ))
+
   ;;global-semantic-decoration-mode
   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
@@ -121,30 +144,6 @@
 	(setq-mode-local c-mode semantic-dependency-include-path my-include-path)
 	(setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
 	)
-
-
-  (defun my/semantic-find-definition (arg)
-	"Jump to the definition of the symbol, type or function at point.
-  With prefix arg, find in other window."
-	(interactive "P")
-	(let* ((tag (or (semantic-idle-summary-current-symbol-info-context)
-					(semantic-idle-summary-current-symbol-info-brutish)
-					(error "No known tag at point")))
-		   (pos (or (semantic-tag-start tag)
-					(error "Tag definition not found")))
-		   (file (semantic-tag-file-name tag)))
-
-	  (when (fboundp 'xref-push-marker-stack)
-		(xref-push-marker-stack (push-mark (point))))
-	  (if file
-		  (if arg (find-file-other-window file) (find-file file))
-		(if arg (switch-to-buffer-other-window (current-buffer))))
-
-
-	  ;; (push-mark)
-	  (goto-char pos)
-	  ;; (end-of-line)
-	  ))
 
   ;; (use-package semantic/ia
   ;; 	:init
