@@ -87,6 +87,7 @@
 
 	  ;; (push-mark)
 	  (goto-char pos)
+	  (recenter-top-bottom)
 	  ;; (end-of-line)
 	  ))
 
