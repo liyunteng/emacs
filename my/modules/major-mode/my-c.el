@@ -268,8 +268,8 @@
   ;; 快速跳转定义与实现
   (local-set-key (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
   (local-set-key (kbd "C-c C-g") 'semantic-analyze-proto-impl-toggle)
-  (local-set-key (kbd "C-c b") 'semantic-mrub-switch-tags)
-  (local-set-key (kbd "C-c C-b") 'semantic-mrub-switch-tags)
+  (local-set-key (kbd "C-c b") 'pop-tag-mark)
+  (local-set-key (kbd "C-c C-b") 'pop-tag-mark)
 
   ;; hide-ifdef
   (local-set-key (kbd "C-c C-c p") 'previous-ifdef)

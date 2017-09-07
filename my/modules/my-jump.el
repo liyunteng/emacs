@@ -61,6 +61,9 @@ Example:
 	   ;;                                             "gg" 'spacemacs/jump-to-definition
 	   ;;                                             "gG" 'spacemacs/jump-to-definition-other-window))
 	   )))
+
+(defvar my-jump-original-buffer nil
+  "Buffer from which we jump to this symbol.")
 (defun my/jump-to-definition ()
   "Jump to definition around point using the best tool for this action."
   (interactive)
@@ -68,38 +71,42 @@ Example:
 	(let ((old-buffer (current-buffer))
 		  (old-point (point)))
 	  (dolist (-handler my-jump-handlers)
-		(let ((handler (if (listp -handler) (car -handler) -handler))
-			  (async (when (listp -handler)
-					   (plist-get (cdr -handler) :async))))
+		(let ((handler (if (listp -handler) (car -handler) -handler)))
 		  (ignore-errors
 			(call-interactively handler))
-		  (when (or (eq async t)
-					(and (fboundp async) (funcall async))
-					(not (eq old-point (point)))
-					(not (equal old-buffer (current-buffer))))
+		  (when (or
+				 (not (eq old-point (point)))
+				 (not (equal old-buffer (current-buffer))))
+			(setq-local my-jump-original-buffer old-buffer)
 			(throw 'done t)))))
 	(message "No jump handler was able to find this symbol.")))
 
 (defun my/jump-to-definition-other-window ()
   "Jump to definition around point in other window."
   (interactive)
-  (let ((pos (point)))
-	;; since `my/jump-to-definition' can be asynchronous we cannot use
-	;; `save-excursion' here, so we have to bear with the jumpy behavior.
+  (save-excursion
 	(switch-to-buffer-other-window (current-buffer))
-	(goto-char pos)
-	(my/jump-to-definition)))
+    (my/jump-to-definition)))
+
+(defun my/jump-back-to-origin ()
+  "Jump back to origin buffer."
+  (interactive)
+  (if my-jump-original-buffer
+	  (funcall 'switch-to-buffer-other-window my-jump-original-buffer)
+	(error "No origial buffer")
+	))
 
 ;; (my|define-jump-handlers lisp-interaction-mode elisp-slime-nav-find-elisp-thing-at-point)
 ;; (my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
 (my|define-jump-handlers elisp-slime-nav-mode elisp-slime-nav-find-elisp-thing-at-point)
-(my|define-jump-handlers c-mode semantic-ia-fast-jump find-tag)
-(my|define-jump-handlers c++-mode semantic-ia-fast-jump find-tag)
+(my|define-jump-handlers c-mode my/semantic-find-definition find-tag)
+(my|define-jump-handlers c++-mode my/semantic-find-definition find-tag)
 (my|define-jump-handlers go-mode godef-jump find-tag)
 (my|define-jump-handlers python-mode elpy-goto-definition find-tag)
 
 (global-set-key (kbd "M-.") 'my/jump-to-definition)
 (global-set-key (kbd "C-M-.") 'my/jump-to-definition-other-window)
+(global-set-key (kbd "C-M-,") 'my/jump-back-to-origin)
 
 (provide 'my-jump)
 ;;; my-jump.el ends here

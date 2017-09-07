@@ -1310,9 +1310,6 @@ It runs `tabulated-list-revert-hook', then calls `tabulated-list-print'."
   ;; (tabulated-list-print t)
   (tabulated-list-print))
 
-
-
-
 (use-package find-file
   :defer t
   :config
@@ -1336,23 +1333,17 @@ If optional IN-OTHER-WINDOW is non-nil, find the file in another window."
 		  found           ;; name of the file or buffer found - nil if none
 		  dirs            ;; local value of ff-search-directories
 		  no-match)       ;; whether we know about this kind of file
-
 	  (run-hooks 'ff-pre-find-hook 'ff-pre-find-hooks)
-
 	  (message "Working...")
-
 	  (setq dirs
 			(if (symbolp ff-search-directories)
 				(ff-list-replace-env-vars (symbol-value ff-search-directories))
 			  (ff-list-replace-env-vars ff-search-directories)))
-
 	  (setq fname (ff-treat-as-special))
-
 	  (cond
 	   ((and (not ff-ignore-include) fname)
 		(setq default-name fname)
 		(setq found (ff-get-file dirs fname nil in-other-window)))
-
 	   ;; let's just get the corresponding file
 	   (t
 		(setq alist (if (symbolp ff-other-file-alist)
@@ -1361,7 +1352,6 @@ If optional IN-OTHER-WINDOW is non-nil, find the file in another window."
 			  pathname (if (buffer-file-name)
 						   (buffer-file-name)
 						 "/none.none"))
-
 		(setq fname (file-name-nondirectory pathname)
 			  no-match nil
 			  match (car alist))
@@ -1393,45 +1383,35 @@ If optional IN-OTHER-WINDOW is non-nil, find the file in another window."
 
 			;; otherwise build our filename stub
 			(cond
-
 			 ;; get around the problem that 0 and nil both mean false!
 			 ((= pos 0)
 			  (setq format "")
 			  (setq stub "")
 			  )
-
 			 (t
 			  (setq format (concat "\\(.+\\)" (car match)))
 			  (string-match format fname)
 			  (setq stub (substring fname (match-beginning 1) (match-end 1)))
 			  ))
-
 			;; if we find nothing, we should try to get a file like this one
 			(setq default-name
 				  (concat stub (car (car (cdr match))))))
-
 		  ;; do the real work - find the file
 		  (setq found
 				(ff-get-file dirs
 							 stub
 							 suffixes
 							 in-other-window)))))
-
 	  (cond
 	   (no-match                     ;; could not even determine the other file
 		(message ""))
-
 	   (t
 		(cond
-
 		 ((not found)                ;; could not find the other file
-
 		  (run-hooks 'ff-not-found-hook 'ff-not-found-hooks)
-
 		  (cond
 		   (ff-always-try-to-create  ;; try to create the file
 			(let (name pathname)
-
 			  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 			  ;; fix with helm will create file in directory ;;
 			  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1440,7 +1420,6 @@ If optional IN-OTHER-WINDOW is non-nil, find the file in another window."
 									  (read-directory-name
 									   (format "Find or create %s in: " default-name)
 									   default-directory)))
-
 			  (setq pathname
 					(if (file-directory-p name)
 						(concat (file-name-as-directory name) default-name)
@@ -1453,7 +1432,6 @@ If optional IN-OTHER-WINDOW is non-nil, find the file in another window."
 
 		 (t                          ;; matching file found
 		  nil))))
-
 	  found)))
 
 

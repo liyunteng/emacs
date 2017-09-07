@@ -72,10 +72,10 @@
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
+  ;; (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
+  ;; (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
 
   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-edits-mode)
@@ -89,20 +89,6 @@
   ;; (setq semantic-lex-debug-analyzers t)
   ;; (setq semantic-update-mode-line t)
 
-  (use-package semantic/mru-bookmark
-  	:init
-  	;;修复向回跳转的问题
-  	(defadvice semantic-ia-fast-jump (around my-semantic-ia-fast-jump-push-mark activate)
-  	  (semantic-mrub-push semantic-mru-bookmark-ring
-  						  (point)
-  						  'mark)
-  	  (when (fboundp 'xref-push-marker-stack)
-  		(xref-push-marker-stack (push-mark (point))))
-  	  ad-do-it
-  	  )
-  	;; (setq global-semantic-mru-bookmark-mode t)
-  	)
-
   (use-package semantic/idle
 	:defines (semantic-idle-scheduler-idle-time
 			  semantic-idle-scheduler-max-buffer-size
@@ -114,18 +100,12 @@
 	(setq semantic-idle-scheduler-max-buffer-size 10240000)
 	(setq semantic-idle-scheduler-work-idle-time 60)
 	(setq semantic-idle-work-update-headers-flag t)
-	;; (setq semantic-idle-work-parse-neighboring-files-flag t)
+	(setq semantic-idle-work-parse-neighboring-files-flag t)
 
 	;; (add-hook 'semantic-init-hooks 'semantic-idle-completions-mode)
 	)
 
-
-
-  ;;smart complitions
-  (require 'semantic/ia)
-
   (require 'semantic/dep)
-
   ;; (require 'semantic/decorate/include)
   (require 'semantic/bovine/c)
   ;;   ;; (require 'semantic/bovine/make)
@@ -143,28 +123,62 @@
 	)
 
 
+  (defun my/semantic-find-definition (arg)
+	"Jump to the definition of the symbol, type or function at point.
+  With prefix arg, find in other window."
+	(interactive "P")
+	(let* ((tag (or (semantic-idle-summary-current-symbol-info-context)
+					(semantic-idle-summary-current-symbol-info-brutish)
+					(error "No known tag at point")))
+		   (pos (or (semantic-tag-start tag)
+					(error "Tag definition not found")))
+		   (file (semantic-tag-file-name tag)))
+
+	  (when (fboundp 'xref-push-marker-stack)
+		(xref-push-marker-stack (push-mark (point))))
+	  (if file
+		  (if arg (find-file-other-window file) (find-file file))
+		(if arg (switch-to-buffer-other-window (current-buffer))))
+
+
+	  ;; (push-mark)
+	  (goto-char pos)
+	  ;; (end-of-line)
+	  ))
+
+  ;; (use-package semantic/ia
+  ;; 	:init
+  ;; 	;;修复向回跳转的问题
+  ;; 	(defadvice semantic-ia-fast-jump (around my-semantic-ia-fast-jump-push-mark activate)
+  ;; 	  ;; (semantic-mrub-push semantic-mru-bookmark-ring
+  ;; 	  ;; 					  (point)
+  ;; 	  ;; 					  'mark)
+  ;; 	  (when (fboundp 'xref-push-marker-stack)
+  ;; 		(xref-push-marker-stack (push-mark (point))))
+  ;; 	  ad-do-it
+  ;; 	  )
+  ;; 	)
+
   ;; (require 'semantic/lex-spp)
   ;; (setq semantic-lex-maximum-depth 200)
   ;; 设置头文件路径
 
-  (use-package semantic/senator
-	:init
-	(setq senator-highlight-found t))
+  ;; (use-package semantic/senator
+  ;; 	:init
+  ;; 	(setq senator-highlight-found t))
 
   ;; ;;;semantic Database
   (use-package semantic/db
 	:init
 	(setq semanticdb-search-system-databases t)
-
 	(setq semanticdb-project-roots my-project-roots)
 	)
 
   (use-package semantic/db-find
 	:init
-	(setq-mode-local c-mode semanticdb-find-default-throttle
-					 '(project local unloaded system recursive))
-	(setq-mode-local c++-mode semanticdb-find-default-throttle
-					 '(project local unloaded system recursive))
+	(setq semanticdb-find-default-throttle
+		  '(local project unloaded system recursive)
+		  )
 	)
 
   (use-package semantic/db-global
@@ -212,10 +226,6 @@
 
   ;; (add-to-list 'semantic-lex-c-preprocessor-symbol-map '("__cplusplus" . "201103L"))
   ;; (add-to-list 'semantic-lex-c-preprocessor-symbol-file ')
-
-
-  ;; (require 'semantic/mru-bookmark)
-  ;; (require 'semantic/sb)
 
   ;;  优先调用senator的分析结果
   ;; (autoload 'senator-try-expand-semantic "senator")
