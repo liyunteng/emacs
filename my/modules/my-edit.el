@@ -787,8 +787,6 @@ at the end of the line."
 (use-package diminish
   :ensure t
   :init
-  (diminish 'hide-ifdef-mode)
-  (diminish 'hide-ifdef-hiding)
   (diminish 'beacon-mode)
   (diminish 'editorconfig-mode)
   (diminish 'which-key-mode)

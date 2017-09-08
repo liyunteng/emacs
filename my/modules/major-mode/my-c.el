@@ -199,10 +199,19 @@
     (add-to-list 'cc-other-file-alist var)))
 
 (use-package hideif
+  :diminish hide-ifdef-mode ;;hide-ifdef-hiding
   :commands (hide-ifdef-mode
 			 hide-ifdefs)
+  :defines (hide-ifdef-mode)
   :init
-  (hide-ifdef-mode +1)
+  (my|add-toggle hide-ifdef-mode
+	:status hide-ifdef-mode
+	:on (progn (hide-ifdef-mode +1)
+			   (hide-ifdefs t))
+	:off (hide-ifdef-mode -1)
+	:documentation "Hide/Show ifdef"
+	)
+  (add-hook 'c-mode-common-hook 'my/toggle-hide-ifdef-mode-on)
   :config
   ;; fix can't use = with string
   (defun hif-mathify (val)
@@ -211,10 +220,8 @@
   		  ((eq val t) 1)
   		  ((null val) 0)
   		  (t val)))
-
   (setq hide-ifdef-shadow t
-		hide-ifdef-initially t)
-
+		hide-ifdef-initially nil)
   )
 
 ;; (c-add-style "ffmpeg"
