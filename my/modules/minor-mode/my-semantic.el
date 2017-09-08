@@ -67,36 +67,36 @@
   :defer t
   :commands (semantic-mode)
   :init
-  (defun my/semantic-find-definition (arg)
-	"Jump to the definition of the symbol, type or function at point.
-  With prefix arg, find in other window."
-	(interactive "P")
-	(let* ((tag (or (semantic-idle-summary-current-symbol-info-context)
-					(semantic-idle-summary-current-symbol-info-brutish)
-					(error "No known tag at point")))
-		   (pos (or (semantic-tag-start tag)
-					(error "Tag definition not found")))
-		   (file (semantic-tag-file-name tag)))
+  ;; (defun my/semantic-find-definition (arg)
+  ;; 	"Jump to the definition of the symbol, type or function at point.
+  ;; With prefix arg, find in other window."
+  ;; 	(interactive "P")
 
-	  (when (fboundp 'xref-push-marker-stack)
-		(xref-push-marker-stack (push-mark (point))))
-	  (if file
-		  (if arg (find-file-other-window file) (find-file file))
-		(if arg (switch-to-buffer-other-window (current-buffer))))
+  ;; 	(let* ((tag (or (semantic-idle-summary-current-symbol-info-context)
+  ;; 					(semantic-idle-summary-current-symbol-info-brutish)
+  ;; 					(error "No known tag at point")))
+  ;; 		   (pos (or (semantic-tag-start tag)
+  ;; 					(error "Tag definition not found")))
+  ;; 		   (file (semantic-tag-file-name tag)))
 
+  ;; 	  (when (fboundp 'xref-push-marker-stack)
+  ;; 		(xref-push-marker-stack (push-mark (point))))
+  ;; 	  (if file
+  ;; 		  (if arg (find-file-other-window file) (find-file file))
+  ;; 		(if arg (switch-to-buffer-other-window (current-buffer))))
 
-	  ;; (push-mark)
-	  (goto-char pos)
-	  (recenter-top-bottom)
-	  ;; (end-of-line)
-	  ))
+  ;; 	  ;; (push-mark)
+  ;; 	  (goto-char pos)
+  ;; 	  (recenter-top-bottom)
+  ;; 	  ;; (end-of-line)
+  ;; 	  ))
 
   ;;global-semantic-decoration-mode
   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
-  ;; (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
@@ -122,7 +122,7 @@
 	:init
 	(setq semantic-idle-scheduler-idle-time 1)
 	(setq semantic-idle-scheduler-max-buffer-size 10240000)
-	(setq semantic-idle-scheduler-work-idle-time 60)
+	(setq semantic-idle-scheduler-work-idle-time 30)
 	(setq semantic-idle-work-update-headers-flag t)
 	(setq semantic-idle-work-parse-neighboring-files-flag t)
 
@@ -146,6 +146,16 @@
 	(setq-mode-local c-mode semantic-dependency-include-path my-include-path)
 	(setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
 	)
+
+  (use-package semantic/ia
+  	:init
+  	(defun my/semantic-find-definition (arg)
+  	  (interactive "P")
+  	  (when (fboundp 'xref-push-marker-stack)
+  		(xref-push-marker-stack (push-mark (point))))
+  	  (semantic-ia-fast-jump (point))
+  	  (recenter-top-bottom)
+  	  ))
 
   ;; (use-package semantic/ia
   ;; 	:init

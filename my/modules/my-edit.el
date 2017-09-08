@@ -459,7 +459,7 @@ indent yanked text (with prefix arg don't indent)."
   :config
   (setq proced-auto-update-flag t)
   (setq proced-auto-update-interval 3)
-  (setq proced-post-display-hook (quote (fit-window-to-buffer)))
+  ;; (setq proced-post-display-hook '(fit-window-to-buffer))
   )
 
 ;;; grep 默认递归查找

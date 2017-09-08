@@ -269,7 +269,7 @@
   (local-set-key (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
   (local-set-key (kbd "C-c C-g") 'semantic-analyze-proto-impl-toggle)
   (local-set-key (kbd "C-c b") 'pop-tag-mark)
-  (local-set-key (kbd "C-c C-b") 'pop-tag-mark)
+  (local-set-key (kbd "C-c C-b") 'my/jump-back-to-origin)
 
   ;; hide-ifdef
   (local-set-key (kbd "C-c C-c p") 'previous-ifdef)
@@ -316,7 +316,8 @@
 
   ;;头文件切换
   ;; (local-set-key (kbd "C-c C-c a") 'ff-get-other-file)
-  (local-set-key (kbd "C-c C-a") 'ff-get-other-file)
+  (local-set-key (kbd "C-c C-a") 'ff-find-related-file)
+  ;; (local-set-key (kbd "C-c C-h") 'ff-find-related-file)
   ;; (local-set-key (kbd "C-c C-a") 'auto-fill-mode)
 
   (local-set-key "\C-c?" 'semantic-ia-complete-symbol)
