@@ -126,8 +126,9 @@
 
   (when (file-exists-p custom-file)
 	(load custom-file))
-  (add-hook 'after-init-hook
-			(lambda () (run-at-time 0 nil 'my-show-init-time)))
+  (when my-debug
+	(add-hook 'after-init-hook
+			  (lambda () (run-at-time 0 nil 'my-show-init-time))))
   )
 
 (provide 'my-init)

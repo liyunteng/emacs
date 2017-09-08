@@ -984,31 +984,31 @@ For instance pass En as source for English."
   (setq google-translate-default-target-language "zh-CN"))
 
 ;; GTAGS
-(use-package ggtags
-  :ensure t
-  :commands (ggtags-mode ggtags-find-project ggtags-find-tag-dwim)
-  :bind
-  (:map ggtags-mode-map
-		("C-c g s" . ggtags-find-other-symbol)
-		("C-c g h" . ggtags-view-tag-history)
-		("C-c g r" . ggtags-find-reference)
-		("C-c g f" . ggtags-find-file)
-		("C-c g c" . ggtags-create-tags)
-		("C-c g u" . ggtags-update-tags)
-		("C-c g a" . helm-gtags-tags-in-this-function)
-		("C-c g ." . ggtags-find-tag-dwim)
-		("C-c g g" . ggtags-find-definition)
-		;; ("M-." . ggtags-find-tag-dwim)
-		;; ("M-," . pop-tag-mark)
-		("C-c <" . ggtags-prev-mark)
-		("C-c >" . ggtags-next-mark)
-		)
-  :init
-  (add-hook 'c-mode-common-hook
-			(lambda ()
-			  (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
-				(ggtags-mode +1))))
-  )
+;; (use-package ggtags
+;;   :ensure t
+;;   :commands (ggtags-mode ggtags-find-project ggtags-find-tag-dwim)
+;;   :bind
+;;   (:map ggtags-mode-map
+;; 		("C-c g s" . ggtags-find-other-symbol)
+;; 		("C-c g h" . ggtags-view-tag-history)
+;; 		("C-c g r" . ggtags-find-reference)
+;; 		("C-c g f" . ggtags-find-file)
+;; 		("C-c g c" . ggtags-create-tags)
+;; 		("C-c g u" . ggtags-update-tags)
+;; 		("C-c g a" . helm-gtags-tags-in-this-function)
+;; 		("C-c g ." . ggtags-find-tag-dwim)
+;; 		("C-c g g" . ggtags-find-definition)
+;; 		;; ("M-." . ggtags-find-tag-dwim)
+;; 		;; ("M-," . pop-tag-mark)
+;; 		("C-c <" . ggtags-prev-mark)
+;; 		("C-c >" . ggtags-next-mark)
+;; 		)
+;;   :init
+;;   (add-hook 'c-mode-common-hook
+;; 			(lambda ()
+;; 			  (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+;; 				(ggtags-mode +1))))
+;;   )
 
 (use-package goto-addr
   :commands (goto-address-prog-mode goto-address-mode)
