@@ -53,9 +53,10 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
   (use-package time-stamp
 	:config
 	(setq time-stamp-line-limit 15)
-	(setq time-stamp-start "Last-Updated:")
-	(setq time-stamp-end "\n")
-	(setq time-stamp-format " %04Y/%02m/%02d %02H:%02M:%02S")
+	(setq time-stamp-start "Last-Updated:[ \t]+\\\\?[\"<]+")
+	;; (setq time-stamp-start "Last-Updated:")
+	;; (setq time-stamp-end "\n")
+	(setq time-stamp-format "%04Y/%02m/%02d %02H:%02M:%02S")
 	(add-hook 'write-file-functions 'time-stamp)
 	)
 
@@ -75,9 +76,9 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
 	   "Filename: " (file-name-nondirectory (buffer-file-name)) "\n"
 	   "Description: " (read-string "Description: ") "\n\n"
 	   "Copyright (C) " (format-time-string "%Y") " " (getenv "ORGANIZATION") | (concat user-full-name) "\n\n"
-	   "Author: " user-full-name (if (search-backward "&" (line-beginning-position) t) (replace-match (capitalize (user-login-name)) t t)) " <" (car auto-insert-license) ">\n"
+	   ;; "Author: " user-full-name (if (search-backward "&" (line-beginning-position) t) (replace-match (capitalize (user-login-name)) t t)) " <" (car auto-insert-license) ">\n"
 	   "License: " (car (cdr auto-insert-license)) "\n"
-	   "Last-Updated: \n\n"
+	   "Last-Updated: <>\n"
 	   (car (cdr (cdr auto-insert-license)))
 	   (comment-region begin (point)))
 	 (if postfix postfix)))
