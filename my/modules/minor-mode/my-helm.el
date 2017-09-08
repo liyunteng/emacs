@@ -99,6 +99,10 @@
 		  helm-swoop-pre-input-function (lambda () ""))
 	)
 
+  (use-package helm-bookmark
+	:init
+	(setq helm-bookmark-show-location t))
+
   (setq helm-split-window-in-side-p t
   		helm-buffers-fuzzy-matching t
   		helm-move-to-line-cycle-in-source t
@@ -107,12 +111,9 @@
   		helm-ff-file-name-history-use-recentf t
   		helm-scroll-amount 8
   		helm-echo-input-in-header-line nil
+		helm-display-header-line t
+		helm-always-two-windows t
 		)
-
-  (setq helm-bookmark-show-location t
-  		helm-display-header-line t
-  		helm-always-two-windows t
-  		)
 
   (when (executable-find "curl")
 	(setq helm-net-prefer-curl t))
