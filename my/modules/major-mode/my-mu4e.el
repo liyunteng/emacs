@@ -72,7 +72,8 @@
   (setq message-signature
 		(concat
 		 "李云腾 (Li Yunteng)\n"
-		 "Email: liyunteng@streamocean.com\n"))
+		 "Email: liyunteng@streamocean.com")
+		message-signature-insert-empty-line t)
 
   (add-hook 'mail-citation-hook 'sc-cite-original)
   ;;写消息时如何打开自动折行 (word-wrap) ？
@@ -111,7 +112,8 @@
 	 mu4e-drafts-folder "/[Drafts]"
 	 mu4e-get-mail-command "offlineimap"
 	 mu4e-update-interval nil
-	 mu4e-view-show-images t)
+	 mu4e-view-show-images t
+	 )
 
 	(setq mu4e-maildir-shortcuts
 		  '(("/streamocean/INBOX" . ?t)
@@ -152,8 +154,7 @@
 			  mu4e-compose-signature-auto-include)
 	:init
 	(setq
-	 mu4e-compose-signature message-signature
-	 mu4e-compose-signature-auto-include t))
+	 mu4e-compose-signature-auto-include nil))
 
   (use-package org-mu4e
 	:defines (org-mu4e-convert-to-html)
