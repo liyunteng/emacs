@@ -96,24 +96,25 @@
 				  tags-file-name
 				  tags-table-list)))
 
-  (defadvice desktop-read (around time-restore activate)
-	(let ((start-time (current-time)))
-	  (prog1
-		  ad-do-it
-		(message "Desktop restored in %.2fms"
-				 (my-time-subtract-millis (current-time)
-										  start-time)))))
+  (when my-debug
+	(defadvice desktop-read (around time-restore activate)
+	  (let ((start-time (current-time)))
+		(prog1
+			ad-do-it
+		  (message "Desktop restored in %.2fms"
+				   (my-time-subtract-millis (current-time)
+											start-time)))))
 
-  (defadvice desktop-create-buffer (around time-create activate)
-	(let ((start-time (current-time))
-		  (filename (ad-get-arg 1)))
-	  (prog1
-		  ad-do-it
-		(message "Desktop: %.2fms to restore %s"
-				 (my-time-subtract-millis (current-time)
-										  start-time)
-				 (when filename
-				   (abbreviate-file-name filename))))))
+	(defadvice desktop-create-buffer (around time-create activate)
+	  (let ((start-time (current-time))
+			(filename (ad-get-arg 1)))
+		(prog1
+			ad-do-it
+		  (message "Desktop: %.2fms to restore %s"
+				   (my-time-subtract-millis (current-time)
+											start-time)
+				   (when filename
+					 (abbreviate-file-name filename)))))))
 
   (defadvice desktop-remove (around set-desktop-dirname activate)
 	ad-do-it

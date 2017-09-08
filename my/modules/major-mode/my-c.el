@@ -266,7 +266,7 @@
   (local-set-key (kbd "C-c C-j") 'my/jump-to-definition-other-window)
 
   ;; 快速跳转定义与实现
-  (local-set-key (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
+  ;; (local-set-key (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
   (local-set-key (kbd "C-c C-g") 'semantic-analyze-proto-impl-toggle)
   (local-set-key (kbd "C-c b") 'pop-tag-mark)
   (local-set-key (kbd "C-c C-b") 'my/jump-back-to-origin)

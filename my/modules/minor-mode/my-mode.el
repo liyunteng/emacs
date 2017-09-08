@@ -43,7 +43,7 @@
 (defvar my-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c o") 'crux-open-with)
-    (define-key map (kbd "C-c g") 'my/baidu)
+    (define-key map (kbd "C-c M-b") 'my/baidu)
     ;; (define-key map (kbd "C-c G") 'my/github)
     ;; (define-key map (kbd "C-c y") 'my/youtube)
     ;; (define-key map (kbd "C-c U") 'my/duckduckgo)
