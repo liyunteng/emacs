@@ -82,13 +82,15 @@ Example:
 				 (not (equal old-buffer (current-buffer))))
 			(ring-insert my-jump-mark-ring marker)
 			(throw 'done t)))))
-	(message "No jump handler was able to find this symbol.")))
+	(message "No jump handler was able to find this symbol.")
+	))
 
 (defun my/jump-to-definition-other-window ()
   "Jump to definition around point in other window."
   (interactive)
   (switch-to-buffer-other-window (current-buffer))
-  (my/jump-to-definition))
+  (my/jump-to-definition)
+  )
 
 (defun my/jump-back-to-origin ()
   "Jump back to origin buffer."

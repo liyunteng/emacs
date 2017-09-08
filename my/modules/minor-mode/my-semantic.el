@@ -130,6 +130,7 @@
 	)
 
   (require 'semantic/dep)
+  (semantic-add-system-include "/usr/local/include")
   ;; (require 'semantic/decorate/include)
   (require 'semantic/bovine/c)
   ;;   ;; (require 'semantic/bovine/make)

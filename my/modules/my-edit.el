@@ -531,9 +531,10 @@ indent yanked text (with prefix arg don't indent)."
 			 )
   :init
   ;;设置TAGS文件
-  (if (file-exists-p "/usr/include/TAGS")
-      (add-to-list 'tags-table-list
-                   "/usr/include/TAGS"))
+  (when (file-exists-p "/usr/include/TAGS")
+	(add-to-list 'tags-table-list "/usr/include/TAGS"))
+  (when (file-exists-p "/usr/local/include/TAGS")
+	(add-to-list 'tags-table-list "/usr/local/include/TAGS"))
 
   :config
   (setq tags-revert-without-query t
@@ -1000,12 +1001,12 @@ For instance pass En as source for English."
 	"create or update the gnu global tag file"
 	(interactive)
 	(my-gtags-ext-produce-tags-if-needed (read-directory-name
-										  "gtags: top of source tree:" default-directory)))
+										  "gtags: top of source tree: " default-directory)))
 
   (defun my/gtags-ext-add-gtagslibpath (libdir &optional del)
 	"add external library directory to environment variable GTAGSLIBPATH.\ngtags will can that directory if needed.\nC-u M-x add-gtagslibpath will remove the directory from GTAGSLIBPATH."
-	(interactive "DDirectory containing GTAGS:\nP")
-	(let (sl)
+	(interactive "DDirectory containing GTAGS: \nP")
+	(let (sl '())
 	  (if (not (file-exists-p (concat (file-name-as-directory libdir) "GTAGS")))
 		  ;; create tags
 		  (let ((default-directory libdir))
