@@ -111,7 +111,8 @@
 (defun my-show-init-time ()
   "Show init time."
   (message "Emacs startup time: %.2fms"
-           (my-time-subtract-millis after-init-time before-init-time)))
+		   (my-time-subtract-millis after-init-time before-init-time)))
+
 
 (defun my-init ()
   "Load my modules."
@@ -126,9 +127,9 @@
 
   (when (file-exists-p custom-file)
 	(load custom-file))
-  (when my-debug
-	(add-hook 'after-init-hook
-			  (lambda () (run-at-time 0 nil 'my-show-init-time))))
+
+  (add-hook 'after-init-hook
+  			(lambda () (run-at-time 0 nil 'my-show-init-time)) t)
   )
 
 (provide 'my-init)
