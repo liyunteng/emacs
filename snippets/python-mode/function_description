@@ -4,13 +4,12 @@
 #key: doch
 #group: doxygen
 # --
-#!/usr/bin/env python2.6
+#!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 #
-#  @file ${1:`(file-name-nondirectory(buffer-file-name))`}
-#  @brief ${2:A Documented file.}
-#${3:
-#  @author `(user-full-name)` <liyunteng@streamocean.com>
-#  @copyright CopyRight (C) 2017 StreamOcean
-#  @date Last-Updated:
-}
+#  @file `(file-name-nondirectory(buffer-file-name))`
+#  @brief ${1:A Documented file}
+#
+#  @CopyRight (C) `(concat (format-time-string "%Y") " " (getenv "ORGANIZATION"))`
+#  @date Last-Updated: <>
+$0

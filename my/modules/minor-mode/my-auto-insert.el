@@ -42,8 +42,10 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
 (defconst streamocean-license-content "")
 
 (defconst gpl-license (list "li_yunteng@163.com" "GPL" gpl-license-content))
-(defconst streamocean-license (list "liyunteng@streamocean.com" "StreamOcean" streamocean-license-content))
+(defconst streamocean-license (list "liyunteng@streamocean.com" nil streamocean-license-content))
 (defvar auto-insert-license gpl-license)
+(when (equal (getenv "ORGANIZATION") "StreamOcean")
+  (setq auto-insert-license streamocean-license))
 
 (use-package autoinsert
   :commands (auto-insert auto-insert-mode)
@@ -52,17 +54,17 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
   :config
   (use-package time-stamp
 	:config
+	(defun my/update-time-stamp ()
+	  (when time-stamp-active
+		(time-stamp)))
 	(setq time-stamp-line-limit 15)
 	(setq time-stamp-start "Last-Updated:[ \t]+\\\\?[\"<]+")
-	;; (setq time-stamp-start "Last-Updated:")
-	;; (setq time-stamp-end "\n")
-	(setq time-stamp-format "%04Y/%02m/%02d %02H:%02M:%02S")
-	(add-hook 'write-file-functions 'time-stamp)
+	(setq time-stamp-format "%04Y/%02m/%02d %02H:%02M:%02S %U")
+	(add-hook 'write-file-functions #'my/update-time-stamp)
 	)
 
   ;; (setq auto-insert t)
   (setq auto-insert-query nil)
-  (setq auto-insert-license streamocean-license)
   ;; (setq auto-insert-directory "~/.emacs.d/autoinsert/")
   ;; (define-auto-insert "\.c" "c-temp.c")
 
@@ -75,11 +77,16 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
 	   (null (setq-local begin (point)))
 	   "Filename: " (file-name-nondirectory (buffer-file-name)) "\n"
 	   "Description: " (read-string "Description: ") "\n\n"
-	   "Copyright (C) " (format-time-string "%Y") " " (getenv "ORGANIZATION") | (concat user-full-name) "\n\n"
 	   ;; "Author: " user-full-name (if (search-backward "&" (line-beginning-position) t) (replace-match (capitalize (user-login-name)) t t)) " <" (car auto-insert-license) ">\n"
-	   "License: " (car (cdr auto-insert-license)) "\n"
+	   (when (car (cdr auto-insert-license))
+		 (concat "License: "
+				 (car (cdr auto-insert-license))
+				 "\n"))
+	   "Copyright (C) " (format-time-string "%Y") " " (getenv "ORGANIZATION") | (concat user-full-name) "\n"
 	   "Last-Updated: <>\n"
-	   (car (cdr (cdr auto-insert-license)))
+	   (when (car (cdr auto-insert-license))
+		 (concat "\n"
+				 (car (cdr (cdr auto-insert-license)))))
 	   (comment-region begin (point)))
 	 (if postfix postfix)))
 

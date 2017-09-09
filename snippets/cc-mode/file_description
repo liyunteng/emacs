@@ -5,10 +5,10 @@
 #group: doxygen
 # --
 /**
- *   @file ${1:`(file-name-nondirectory(buffer-file-name))`}
- *   @brief ${2:A Documented file.}
- ${3:*
- *   @author `(user-full-name)` <liyunteng@streamocean.com>
- *   @copyright CopyRight (C) 2015 StreamOcean
- *   @date Last-Updated:
-}*/
+ *   @file `(file-name-nondirectory(buffer-file-name))`
+ *   @brief ${1:A Documented file}
+ *
+ *   @CopyRight (C) `(concat (format-time-string "%Y") " " (getenv "ORGANIZATION"))`
+ *   @date Last-Updated: <>
+ */
+ $0

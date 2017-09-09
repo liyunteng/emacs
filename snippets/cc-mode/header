@@ -12,7 +12,7 @@
 *        Verison:  ${2:1.0}
 *       Revision:  ${3:none}
 *       Compiler:  ${4:gcc}
-*   Last-Updated: 
+*   Last-Updated: <>
 *
 *         Author:  `user-full-name` (`user-full-name`) `user-mail-address`
 *        Company:  `(getenv "ORGANIZATION")`
