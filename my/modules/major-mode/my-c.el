@@ -237,6 +237,7 @@
 	(semantic-mode +1))
 
   ;; (hide-ifdef-mode +1)
+  (auto-fill-mode +1)
   (cscope-minor-mode t)
 
   ;; (setq hide-ifdef-hiding t)

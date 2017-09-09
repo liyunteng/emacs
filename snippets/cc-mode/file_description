@@ -5,7 +5,6 @@
 #group: doxygen
 # --
 /**
- *   @file `(file-name-nondirectory(buffer-file-name))`
  *   @brief ${1:A Documented file}
  *
  *   @CopyRight (C) `(concat (format-time-string "%Y") " " (getenv "ORGANIZATION"))`

@@ -75,7 +75,7 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
 	 (if prefix prefix)
 	 '(
 	   (null (setq-local begin (point)))
-	   "Filename: " (file-name-nondirectory (buffer-file-name)) "\n"
+	   ;; "Filename: " (file-name-nondirectory (buffer-file-name)) "\n"
 	   "Description: " (read-string "Description: ") "\n\n"
 	   ;; "Author: " user-full-name (if (search-backward "&" (line-beginning-position) t) (replace-match (capitalize (user-login-name)) t t)) " <" (car auto-insert-license) ">\n"
 	   (when (car (cdr auto-insert-license))
