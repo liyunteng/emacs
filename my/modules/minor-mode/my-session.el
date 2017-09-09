@@ -53,7 +53,7 @@
   :defines (desktop-save)
   :init
   (setq desktop-path (list my-cache-dir)
-		;; desktop-dirname my-cache-dir
+		desktop-dirname my-cache-dir
 		desktop-auto-save-timeout 600
 		desktop-missing-file-warning t
 		desktop-restore-in-current-display t

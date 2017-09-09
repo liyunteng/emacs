@@ -125,7 +125,8 @@
 	(mapc 'my-load my-modules)
 	)
 
-  (when (file-exists-p custom-file)
+  (when (and custom-file
+			 (file-exists-p custom-file))
 	(load custom-file))
 
   (add-hook 'after-init-hook

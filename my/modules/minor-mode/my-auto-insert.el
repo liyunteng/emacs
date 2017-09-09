@@ -51,6 +51,11 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
   :commands (auto-insert auto-insert-mode)
   :init
   (auto-insert-mode t)
+  (defadvice auto-insert (around check-custom-file-auto-insert activate)
+	(when custom-file
+	  (if (not (equal (buffer-file-name)
+					  custom-file))
+		  ad-do-it)))
   :config
   (use-package time-stamp
 	:config

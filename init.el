@@ -1,4 +1,4 @@
-;;; my-modules.el --- my modules                     -*- lexical-binding: t; -*-
+;;; init.el --- init                                 -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  liyunteng
 
