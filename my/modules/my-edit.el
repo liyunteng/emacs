@@ -1273,19 +1273,6 @@ Compare them on count first,and in case of tie sort them alphabetically."
         (message "No words.")))
     words))
 
-(defun my/toggle-current-window-dedication ()
-  "Toggle whether the current window is dedicated to its current buffer."
-  (interactive)
-  (let* ((window (selected-window))
-         (was-dedicated (window-dedicated-p window)))
-    (set-window-dedicated-p window (not was-dedicated))
-	(if was-dedicated
-		(setq-local mode-line-process nil)
-	  (setq-local mode-line-process " [D]"))
-	(message "Window %sdedicated to %s"
-             (if was-dedicated "no longer " "")
-             (buffer-name))))
-
 ;; Hack to fix a bug with tabulated-list.el
 ;; see: http://redd.it/2dgy52
 (defun tabulated-list-revert (&rest ignored)

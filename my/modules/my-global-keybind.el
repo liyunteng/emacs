@@ -109,34 +109,6 @@
 ;; 删除注释
 (global-set-key (kbd "C-M-;") 'comment-kill)
 
-;; ==================== WINDOW ====================
-(global-set-key (kbd "C-x 0") 'delete-window)
-(global-set-key (kbd "C-x 1") 'my/toggle-delete-other-windows)
-(global-set-key (kbd "C-x 2") 'my/split-window-vertically-then-switch)
-(global-set-key (kbd "C-x 3") 'my/split-window-horizontally-then-switch)
-(global-set-key (kbd "C-x |") 'my/split-window-horizontally-instead)
-(global-set-key (kbd "C-x _") 'my/split-window-vertically-instead)
-(global-set-key (kbd "C-x C-n") 'my/toggle-current-window-dedication)
-(global-set-key [mouse-4] (lambda () (interactive) (scroll-down 1)))
-(global-set-key [mouse-5] (lambda () (interactive) (scroll-up 1)))
-
-;; 调整window大小
-(global-set-key (kbd "C-M-)") 'balance-windows)
-(global-set-key (kbd "C-M-+") 'enlarge-window)
-(global-set-key (kbd "C-M-_") 'shrink-window)
-(global-set-key (kbd "C-M-<") 'enlarge-window-horizontally)
-(global-set-key (kbd "C-M->") 'shrink-window-horizontally)
-;; 调整window透明度
-(global-set-key (kbd "M-C-8") (lambda () (interactive) (my/adjust-opacity nil -2)))
-(global-set-key (kbd "M-C-9") (lambda () (interactive) (my/adjust-opacity nil 2)))
-(global-set-key (kbd "M-C-0") (lambda () (interactive) (modify-frame-parameters nil `((alpha . 100)))))
-;; 调整window文字大小
-(global-set-key (kbd "C-x C-=") 'text-scale-adjust)
-(global-set-key (kbd "C-x C--") 'text-scale-adjust)
-(global-set-key (kbd "C-x C-0") 'text-scale-adjust)
-
-
-(global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
 ;; ==================== MACRO ====================
 ;; 宏 C-x C-k
 ;;调用宏 C-x ( 开始录制 ctrl-x ) 结束录制

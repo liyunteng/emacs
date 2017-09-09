@@ -50,8 +50,8 @@
 (use-package window-numbering
   :ensure t
   :defer t
-  :config
-  (window-numbering-mode t))
+  :init
+  (window-numbering-mode +1))
 
 ;; use shift + arrow keys to switch between visible buffers
 (use-package windmove
@@ -62,28 +62,28 @@
 ;; enable winner-mode to manage window configurations
 (use-package winner
   :bind (("C-c <left>" . winner-undo)
-		 ("C-c <right>" . winner-redo))
+         ("C-c <right>" . winner-redo))
   :init
   (winner-mode +1)
   :config
   (setq winner-boring-buffers
-		(append winner-boring-buffers
-				'("*Completions*"
-				  "*Compile-Log*"
-				  "*inferior-lisp*"
-				  "*Fuzzy Completions*"
-				  "*Apropos*"
-				  "*Help*"
-				  "*cvs*"
-				  "*Buffer List*"
-				  "*Ibuffer*"
-				  "*esh command on file*"
-				  ))))
+        (append winner-boring-buffers
+                '("*Completions*"
+                  "*Compile-Log*"
+                  "*inferior-lisp*"
+                  "*Fuzzy Completions*"
+                  "*Apropos*"
+                  "*Help*"
+                  "*cvs*"
+                  "*Buffer List*"
+                  "*Ibuffer*"
+                  "*esh command on file*"
+                  ))))
 
 (use-package default-text-scale
   :ensure t
   :bind (("C-M-=" . default-text-scale-increase)
-		 ("C-M--" . default-text-scale-decrease)))
+         ("C-M--" . default-text-scale-decrease)))
 
 (defun my/adjust-opacity (frame incr)
   "Adjust the background opacity of FRAME by increment INCR."
@@ -156,8 +156,6 @@ Call a second time to restore the original window configuration."
         (setq this-command 'my/unsplit-window))
     (window-configuration-to-register :my/split-window)
     (switch-to-buffer-other-window nil)))
-(global-set-key (kbd "<f7>") 'my/split-window)
-
 
 (defun my/toggle-current-window-dedication ()
   "Toggle whether the current window is dedicated to its current buffer."
@@ -165,11 +163,12 @@ Call a second time to restore the original window configuration."
   (let* ((window (selected-window))
          (was-dedicated (window-dedicated-p window)))
     (set-window-dedicated-p window (not was-dedicated))
-    (message "Window %sdedicated to %s"
+	(if was-dedicated
+		(setq-local mode-line-process nil)
+	  (setq-local mode-line-process " [D]"))
+	(message "Window %sdedicated to %s"
              (if was-dedicated "no longer " "")
              (buffer-name))))
-(global-set-key (kbd "C-c <down>") 'my/toggle-current-window-dedication)
-
 
 (defun my/layout-triple-columns ()
   " Set the layout to triple columns. "
@@ -278,6 +277,34 @@ This is helpful for writeroom-mode, in particular."
 
 (add-hook 'visual-fill-column-mode-hook
           'my/maybe-adjust-visual-fill-column)
+
+
+(global-set-key (kbd "C-x 0") 'delete-window)
+(global-set-key (kbd "C-x 1") 'my/toggle-delete-other-windows)
+(global-set-key (kbd "C-x 2") 'my/split-window-vertically-then-switch)
+(global-set-key (kbd "C-x 3") 'my/split-window-horizontally-then-switch)
+(global-set-key (kbd "C-x |") 'my/split-window-horizontally-instead)
+(global-set-key (kbd "C-x _") 'my/split-window-vertically-instead)
+(global-set-key [mouse-4] (lambda () (interactive) (scroll-down 1)))
+(global-set-key [mouse-5] (lambda () (interactive) (scroll-up 1)))
+(global-set-key (kbd "C-x C-n") 'my/toggle-current-window-dedication)
+(global-set-key (kbd "<f1>") 'my/split-window)
+;; 调整window大小
+(global-set-key (kbd "C-M-)") 'balance-windows)
+(global-set-key (kbd "C-M-+") 'enlarge-window)
+(global-set-key (kbd "C-M-_") 'shrink-window)
+(global-set-key (kbd "C-M-<") 'enlarge-window-horizontally)
+(global-set-key (kbd "C-M->") 'shrink-window-horizontally)
+;; 调整window透明度
+(global-set-key (kbd "M-C-8") (lambda () (interactive) (my/adjust-opacity nil -2)))
+(global-set-key (kbd "M-C-9") (lambda () (interactive) (my/adjust-opacity nil 2)))
+(global-set-key (kbd "M-C-0") (lambda () (interactive) (modify-frame-parameters nil `((alpha . 100)))))
+;; 调整window文字大小
+(global-set-key (kbd "C-x C-=") 'text-scale-adjust)
+(global-set-key (kbd "C-x C--") 'text-scale-adjust)
+(global-set-key (kbd "C-x C-0") 'text-scale-adjust)
+
+(global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
 
 
 (provide 'my-window)
