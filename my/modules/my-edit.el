@@ -26,6 +26,8 @@
 
 ;;打开图片显示功能
 (auto-image-file-mode t)
+;; (when (executable-find "convert")
+;;   (setq imagemagick-render-type 1))
 
 ;;在鼠标光标处插入
 (setq mouse-yank-at-point t)
@@ -174,6 +176,7 @@
   (defvar my-linum-mode-inhibit-modes-list
 	'(eshell-mode
 	  shell-mode
+	  term-mode
 	  profiler-report-mode
 	  ffip-diff-mode
 	  dictionary-mode
@@ -182,7 +185,7 @@
 	  etags-select-mode
 	  dired-mode
 	  help-mode
-	  text-mode
+	  ;; text-mode
 	  fundamental-mode
 	  jabber-roster-mode
 	  jabber-chat-mode
@@ -204,12 +207,14 @@
 	  org-mode
 	  vc-git-log-edit-mode
 	  log-edit-mode
-	  term-mode
 	  w3m-mode
 	  speedbar-mode
 	  gnus-summary-mode
 	  gnus-article-mode
-	  calendar-mode))
+	  calendar-mode
+	  doc-view-mode
+	  image-mode
+	  ))
 
   (defadvice linum-on (around my-linum-on-inhibit-for-modes)
 	"Stop the load of `linum-mode' for some major modes."
@@ -217,9 +222,9 @@
 	  ad-do-it))
   (ad-activate 'linum-on)
 
-  (defadvice linum-schedule (around my-linum-schedule () activate)
-	"Updated line number every second."
-	(run-with-idle-timer 1 nil #'linum-update-current))
+  ;; (defadvice linum-schedule (around my-linum-schedule () activate)
+  ;; 	"Updated line number every second."
+  ;; 	(run-with-idle-timer 1 nil #'linum-update-current))
   )
 
 ;; highlight current line
