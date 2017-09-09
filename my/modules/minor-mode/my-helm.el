@@ -103,10 +103,11 @@
 			   helm-projectile
 			   helm-projectile-switch-project)
 	:init
-	(helm-projectile-on)
+	;; (helm-projectile-on)
 	(setq projectile-switch-project-action 'helm-projectile
 		  projectile-completion-system 'helm
 		  projectile-indexing-method 'alien)
+	(add-hook 'after-init-hook 'helm-projectile-on)
 	)
 
   (use-package helm-swoop
