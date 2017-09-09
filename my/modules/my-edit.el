@@ -628,40 +628,35 @@ clang++ -Wall编译"
 	;; find compile-command
 	(let ((command (eval compile-command))
 		  (candidate-make-file-name '("makefile" "Makefile" "GNUmakefile" "GNUMakefile")))
-	  (if (string= command "make -k ")
-		  (if (find t candidate-make-file-name :key
-					'(lambda (f) (file-readable-p f)))
-			  (setq command "make -k ")
-			(if (eq major-mode 'c-mode)
-				(setq command
-					  (concat "clang -Wall -o "
-							  (file-name-sans-extension
-							   (file-name-nondirectory buffer-file-name))
-							  " "
-							  (file-name-nondirectory buffer-file-name)
-							  " -g "))
-			  ;; c++-mode
-			  (if (eq major-mode 'c++-mode)
-				  (setq command
-						(concat "clang++ -Wall -o "
-								(file-name-sans-extension
-								 (file-name-nondirectory buffer-file-name))
-								" "
-								(file-name-nondirectory buffer-file-name)
-								" -g "
-								))
-				(message "Unknow mode")))))
-	  (setq-local compilation-directory default-directory)
+	  (if (string-prefix-p "make" command)
+		  (unless (find t candidate-make-file-name :key
+						'(lambda (f) (file-readable-p f)))
+			(cond ((eq major-mode 'c-mode)
+				   (setq command
+						 (concat "clang -Wall -o "
+								 (file-name-sans-extension
+								  (file-name-nondirectory buffer-file-name))
+								 " "
+								 (file-name-nondirectory buffer-file-name)
+								 " -g ")))
+				  ;; c++-mode
+				  ((eq major-mode 'c++-mode)
+				   (setq command
+						 (concat "clang++ -Wall -o "
+								 (file-name-sans-extension
+								  (file-name-nondirectory buffer-file-name))
+								 " "
+								 (file-name-nondirectory buffer-file-name)
+								 " -g "))))))
+	  ;; (setq-local compilation-directory default-directory)
 
 	  (let ((new-command (compilation-read-command command)))
-		(if (equal command new-command)
-			(setq-local compile-command command)
+		(unless (equal command new-command)
 		  (unless (or (equal new-command "make -k clean")
 					  (equal new-command "make clean"))
 			(setq-local compile-command new-command)
-			(my/insert-compile-command)
-			(setq command new-command)
-			)))
+			(my/insert-compile-command)))
+		(setq command new-command))
 	  (compilation-start command)
 	  ))
 
