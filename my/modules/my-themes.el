@@ -79,19 +79,6 @@
   	  ("zenburn-blue-5"   . "#0000FF")
   	  ("zenburn-magenta"  . "#FF00FF")))
   (setq zenburn-override-colors-alist my-zenburn-override-colors-alist)
-  :config
-  (after-load 'company
-  	(custom-theme-set-faces
-  	 'zenburn
-  	 `(company-tooltip ((t (:background "#000000"))))
-  	 `(company-tooltip-selection ((t (:background "#00FFFF" :weight bold))))
-  	 `(company-tooltip-search ((t (:background "#000000" :foreground "red"))))
-  	 `(company-tooltip-search-selection ((t (:background "#0000FF" :foreground "red" :weight bold))))
-  	 ))
-  (after-load 'helm
-  	(custom-theme-set-faces
-  	 'zenburn
-  	 `(helm-selection ((t (:background "#00FFFF" :weight bold :foreground "#FFFF00"))))))
   )
 
 (defcustom my-theme 'zenburn
