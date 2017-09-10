@@ -914,13 +914,13 @@ at the end of the line."
 (use-package indent-guide
   :ensure t
   :diminish indent-guide-mode
-  :commands (indent-guid-mode)
+  :commands (indent-guide-mode)
   :init
   (my|add-toggle indent-guide-mode
 	:mode indent-guide-mode
 	:documentation "Show indent"
 	)
-  (add-hook 'prog-mode-hook 'indent-guide-mode)
+  (add-hook 'python-mode-hook 'indent-guide-mode)
   :config
   (setq indent-guide-delay 0.3)
   )
