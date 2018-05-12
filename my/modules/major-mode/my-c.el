@@ -31,7 +31,7 @@
   (defvar my-cscope-origin-buffer nil)
   (defadvice cscope-call (before my-save-cscope-origin-buffer activate)
 	(setq my-cscope-origin-buffer (current-buffer)))
-  (defun my-cscope-quit ()
+  (defun my/cscope-quit ()
 	"My cscope quit."
 	(interactive)
 	(cscope-quit)
@@ -57,7 +57,7 @@
 		("C-M-k" . cscope-history-kill-result)
 		("d" . cscope-find-global-definition-no-prompting)
 		("G" . cscope-find-global-definition)
-		("q" . my-cscope-quit)
+		("q" . my/cscope-quit)
 		)
   )
 ;; (use-package helm-cscope

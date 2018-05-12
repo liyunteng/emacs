@@ -1,5 +1,9 @@
 2018-05-12  liyunteng  <liyunteng@streamocean.com>
 
+	* my/modules/my-edit.el (compile): change my-colorize-compilation-buffer to my/colorize-compilation-buffer
+
+	* my/modules/major-mode/my-c.el (xcscope): change my-cscope-quit to my/cscope-quit
+
 	* my/modules/major-mode/my-org.el (org): disable org-fstree
 
 	* init.el (version<): update emacs version

@@ -672,7 +672,7 @@ clang++ -Wall编译"
 
 
   ;; Compilation from Emacs
-  (defun my-colorize-compilation-buffer ()
+  (defun my/colorize-compilation-buffer ()
 	"Colorize a compilation mode buffer."
 	(interactive)
 	;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
@@ -680,7 +680,7 @@ clang++ -Wall编译"
 	  (let ((inhibit-read-only t))
 		(ansi-color-apply-on-region (point-min) (point-max)))))
 
-  (add-hook 'compilation-filter-hook #'my-colorize-compilation-buffer)
+  (add-hook 'compilation-filter-hook #'my/colorize-compilation-buffer)
   )
 
 ;; highlight
