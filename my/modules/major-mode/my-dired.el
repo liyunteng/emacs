@@ -50,6 +50,20 @@
     (add-hook 'dired-mode-hook 'dired-omit-mode)
 	)
 
+
+  (use-package dired+
+	:config
+	(setq diredp-hide-details-initially-flag nil
+		  diredp-hide-details-propagate-flag nil
+		  dired-hide-details-mode nil
+		  global-dired-hide-details-mode nil
+		  )
+	;; 重用buffer，避免产生过多的dired buffer
+	(defun my--turn-on-diredp-find-reuse-dir ()
+	  (toggle-diredp-find-file-reuse-dir t))
+	(add-hook 'dired-mode-hook 'my--turn-on-diredp-find-reuse-dir)
+	)
+
   (use-package diff-hl
 	:ensure t
 	:commands (diff-hl-dired-mode)
