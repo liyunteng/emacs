@@ -39,7 +39,7 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>."
   )
-(defconst header-copyright-notice "Copyright: (C) 2017 StreamOcean\n")
+(defconst header-copyright-notice "Copyright: (C) 2018 StreamOcean\n")
 (defconst header-date-format "%Y/%m/%d %H:%M:%S")
 (defconst make-box-comment-region-replace-prefix-flag nil)
 

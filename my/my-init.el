@@ -77,7 +77,6 @@
     my-hideshow
     my-yas
     my-ac
-    ;; my-company
     ;; my-auto-complete
 
     ;; major

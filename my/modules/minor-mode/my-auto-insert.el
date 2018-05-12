@@ -38,14 +38,8 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
   )
-
-(defconst streamocean-license-content "")
-
-(defconst gpl-license (list "li_yunteng@163.com" "GPL" gpl-license-content))
-(defconst streamocean-license (list "liyunteng@streamocean.com" nil streamocean-license-content))
+(defconst gpl-license (list "GPL" gpl-license-content))
 (defvar auto-insert-license gpl-license)
-(when (equal (getenv "ORGANIZATION") "StreamOcean")
-  (setq auto-insert-license streamocean-license))
 
 (use-package autoinsert
   :commands (auto-insert auto-insert-mode)
@@ -82,16 +76,16 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
 	   (null (setq-local begin (point)))
 	   ;; "Filename: " (file-name-nondirectory (buffer-file-name)) "\n"
 	   "Description: " (read-string "Description: ") "\n\n"
-	   ;; "Author: " user-full-name (if (search-backward "&" (line-beginning-position) t) (replace-match (capitalize (user-login-name)) t t)) " <" (car auto-insert-license) ">\n"
-	   (when (car (cdr auto-insert-license))
+	   ;; "Author: " user-full-name (if (search-backward "&" (line-beginning-position) t) (replace-match (capitalize (user-login-name)) t t)) " <" user-mail-address ">\n"
+	   (when (car auto-insert-license)
 		 (concat "License: "
-				 (car (cdr auto-insert-license))
+				 (car auto-insert-license)
 				 "\n"))
 	   "Copyright (C) " (format-time-string "%Y") " " (getenv "ORGANIZATION") | (concat user-full-name) "\n"
 	   "Last-Updated: <>\n"
 	   (when (car (cdr auto-insert-license))
 		 (concat "\n"
-				 (car (cdr (cdr auto-insert-license)))))
+				 (car (cdr auto-insert-license))))
 	   (comment-region begin (point)))
 	 (if postfix postfix)))
 

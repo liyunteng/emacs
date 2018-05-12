@@ -40,23 +40,7 @@
 	)
 
   (use-package smtpmail
-	:defer t
-	:config
-	(setq
-	 ;; smtpmail-smtp-server "smtp.163.com"
-	 ;; smtpmail-stream-type 'ssl
-	 ;; smtpmail-smtp-service 25		;ssl 994/465
-	 ;; smtpmail-smtp-user "li_yunteng"
-
-	 smtpmail-smtp-server "smtp.qiye.163.com"
-	 smtpmail-stream-type 'starttls
-	 smtpmail-smtp-service 25		;ssl 994/465
-	 smtpmail-smtp-user "liyunteng@streamocean.com"
-
-	 ;; smtpmail-local-domain "localhost"
-	 ;; smtpmail-sendto-domain "smtp.qiye.163.com"
-	 ;; smtpmail-debug-info t
-	 ))
+	:defer t)
 
   (setq message-confirm-send t						;防止误发邮件, 发邮件前需要确认
 		message-kill-buffer-on-exit t				;设置发送邮件后删除buffer
@@ -69,11 +53,6 @@
 		message-kill-buffer-on-exit t
 		message-elide-ellipsis "[...]\n"
 		)
-  (setq message-signature
-		(concat
-		 "李云腾 (Li Yunteng)\n"
-		 "Email: liyunteng@streamocean.com")
-		message-signature-insert-empty-line t)
 
   (add-hook 'mail-citation-hook 'sc-cite-original)
   ;;写消息时如何打开自动折行 (word-wrap) ？
@@ -114,10 +93,6 @@
 	 mu4e-update-interval nil
 	 mu4e-view-show-images t
 	 )
-
-	(setq mu4e-maildir-shortcuts
-		  '(("/streamocean/INBOX" . ?t)
-			("/163/INBOX" . ?c)))
 
 	(setq mu4e-bookmarks
 		  `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
@@ -226,22 +201,6 @@
   ;; (add-hook 'mu4e-compose-pre-hook 'mu4e/set-account)
   ;; (add-hook 'message-sent-hook 'mu4e/mail-account-reset)
 
-  ;; (setq mu4e-account-alist
-  ;;       '(("streamocean"
-  ;;          ;; Under each account, set the account-specific variables you want.
-  ;;          (mu4e-sent-messages-behavior delete)
-  ;; 		   (mu4e-maildir "/streamocean")
-  ;;          (mu4e-sent-folder "/streamocean/已发送")
-  ;;          (mu4e-drafts-folder "/streamocean/草稿箱")
-  ;;          (user-mail-address "liyunteng@streamocean.com")
-  ;;          (user-full-name "liyunteng"))
-  ;;         ("163"
-  ;;          (mu4e-sent-messages-behavior delete)
-  ;;          (mu4e-sent-folder "/163/已发送")
-  ;;          (mu4e-drafts-folder "/163/草稿箱")
-  ;;          (user-mail-address "li_yunteng@163.com")
-  ;;          (user-full-name "liyunteng"))))
-  ;; (mu4e/mail-account-reset)
   )
 
 (provide 'my-mu4e)

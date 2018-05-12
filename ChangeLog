@@ -1,3 +1,15 @@
+2018-05-13  liyunteng  <li_yunteng@163.com>
+
+	* personal/person-info.el: move persion info to person-info.el
+
+	* my/my-init.el (my-modules):
+
+	* my/modules/my-header.el (header-copyright-notice):
+
+	* my/modules/minor-mode/my-auto-insert.el (gpl-license):
+
+	* my/modules/major-mode/my-mu4e.el (message):
+
 2018-05-12  liyunteng  <liyunteng@streamocean.com>
 
 	* my/modules/my-edit.el (compile): change my-colorize-compilation-buffer to my/colorize-compilation-buffer
