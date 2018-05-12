@@ -31,12 +31,16 @@
 (defconst streamocean-license-content "")
 (defconst streamocean-license (list "StreamOcean" streamocean-license-content))
 
+(defconst null-license-content "")
+(defconst null-license (list nil nil))
+
+(setq user-full-name "liyunteng"
+	  user-mail-address "li_yunteng@163.com")
+
 (if (equal (getenv "ORGANIZATION") "StreamOcean")
-	(setq user-full-name "liyunteng"
-		  user-mail-address "liyunteng@streamocean.com"
-		  auto-insert-license streamocean-license)
-  (setq user-full-name "liyunteng"
-		user-mail-address "li_yunteng@163.com"))
+	(setq user-mail-address "liyunteng@streamocean.com"
+		  auto-insert-license streamocean-license))
+(setq auto-insert-license null-license)
 
 
 (after-load 'smtpmail

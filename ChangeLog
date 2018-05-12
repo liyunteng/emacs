@@ -1,5 +1,11 @@
 2018-05-13  liyunteng  <li_yunteng@163.com>
 
+	* personal/person-info.el (null-license-content): add null-license
+
+	* my/modules/minor-mode/my-ac.el (company):
+
+	* my/modules/major-mode/my-python.el (python): update my-python.el
+
 	* personal/person-info.el: move persion info to person-info.el
 
 	* my/my-init.el (my-modules):

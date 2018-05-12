@@ -61,82 +61,82 @@
   (add-hook 'inferior-python-mode-hook 'my-python-shell-mode-hook)
 
   :config
+  (if (not (executable-find "ipython"))
+	  (setq python-shell-interpreter "python"
+			python-shell-interpreter-args "-i")
+	(setq python-shell-interpreter "ipython"
+		  python-shell-interpreter-args "-i"))
+
   (use-package elpy
-	:ensure t
-	:commands (elpy-mode elpy-enable)
-	:bind
-	(:map elpy-mode-map
-		  ("C-c C-d" . elpy-doc)
-		  ("C-c C-j" . elpy-goto-definition)
-		  ("C-c C-J" . elpy-goto-definition-other-window)
+  	:ensure t
+  	:commands (elpy-mode)
+  	:bind
+  	(:map elpy-mode-map
+  		  ("C-c C-d" . elpy-doc)
+  		  ("C-c C-j" . elpy-goto-definition)
+  		  ("C-c C-J" . elpy-goto-definition-other-window)
 
-		  ("C-c C-q" . my/elpy-shell-kill)
-		  ("C-c C-Q" . my/elpy-shell-kill-all)
-		  ("C-c C-k" . kill-region))
-	:init
-	(defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
-	(defvar my-python-virtualenv-workon-name "default")
-	(defvar my-python-virtualenv-workon-dir
-	  (expand-file-name my-python-virtualenv-workon-name my-python-virtualenv-dir))
+  		  ("C-c C-q" . my/elpy-shell-kill)
+  		  ("C-c C-Q" . my/elpy-shell-kill-all)
+  		  ("C-c C-k" . kill-region))
+  	:init
+  	;; (defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
+  	;; (defvar my-python-virtualenv-workon-name "default")
+  	;; (defvar my-python-virtualenv-workon-dir
+  	;;   (expand-file-name my-python-virtualenv-workon-name my-python-virtualenv-dir))
 
-	(defvar my-python-elpy-dependency '("jedi" "importmagic" "yapf")) ;autopep8
+  	;; (defvar my-python-elpy-dependency '("jedi" "importmagic" "yapf")) ;autopep8
 
-	(setenv "WORKON_HOME" my-python-virtualenv-dir)
+  	;; (setenv "WORKON_HOME" my-python-virtualenv-dir)
 
-	(setq elpy-modules '(elpy-module-sane-defaults
-						 elpy-module-eldoc
-						 elpy-module-flymake
-						 elpy-module-pyvenv
-						 elpy-module-yasnippet
-						 elpy-module-django))
-	(elpy-enable)
+  	(setq elpy-modules '(elpy-module-sane-defaults
+  						 elpy-module-eldoc
+  						 elpy-module-flymake
+  						 elpy-module-pyvenv
+  						 elpy-module-yasnippet
+  						 elpy-module-django))
+  	(elpy-enable)
 
-	(defun my/elpy-shell-kill ()
-	  "My elpy shell kill."
-	  (interactive)
-	  (elpy-shell-kill t))
+  	(defun my/elpy-shell-kill ()
+  	  "My elpy shell kill."
+  	  (interactive)
+  	  (elpy-shell-kill t))
 
-	(defun my/elpy-shell-kill-all ()
-	  "My elpa shell kill all."
-	  (interactive)
-	  (elpy-shell-kill-all t nil))
+  	(defun my/elpy-shell-kill-all ()
+  	  "My elpa shell kill all."
+  	  (interactive)
+  	  (elpy-shell-kill-all t nil))
 
-	:config
-	(setq elpy-rpc-backend "jedi"
-		  elpy-dedicated-shells nil
-		  )
+  	:config
+	(setq elpy-shell-echo-input nil)
 
-	(if (not (executable-find "ipython"))
-		(elpy-use-cpython)
-	  (elpy-use-ipython))
+  	(defun my-install-python-virtualenv ()
+  	  "My install python virtualenv."
+  	  (if (or (not (file-exists-p my-python-virtualenv-dir))
+  			  (not (file-exists-p my-python-virtualenv-workon-dir)))
+  		  (progn
+  			(let ((virtualenvbin (executable-find "virtualenv")))
+  			  (if (null virtualenvbin)
+  				  (message "virtualenv not found, please install virtualenv")
+  				(message "%s %s ..." virtualenvbin my-python-virtualenv-workon-dir)
+  				(shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir) nil)
 
-	(defun my-install-python-virtualenv ()
-	  "My install python virtualenv."
-	  (if (or (not (file-exists-p my-python-virtualenv-dir))
-			  (not (file-exists-p my-python-virtualenv-workon-dir)))
-		  (progn
-			(let ((virtualenvbin (executable-find "virtualenv")))
-			  (if (null virtualenvbin)
-				  (message "virtualenv not found, please install virtualenv")
-				(message "%s %s ..." virtualenvbin my-python-virtualenv-workon-dir)
-				(shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir) nil)
+  				(setenv "WORKON_HOME" my-python-virtualenv-dir)
+  				(pyvenv-workon my-python-virtualenv-workon-name)
+  				(let ((install-cmd (or (executable-find "pip")
+  									   (executable-find "easy_install"))))
+  				  (if install-cmd
+  					  (mapc (lambda (n)
+  							  (message "%s installing %s ..." install-cmd n)
+  							  (shell-command (format "%s install %s" install-cmd n) nil))
+  							my-python-elpy-dependency)
+  					(message "pip/easy_install not found, please install pip/easy_install")))
+  				(elpy-rpc-restart)
+  				(message "Done"))))))
 
-				(setenv "WORKON_HOME" my-python-virtualenv-dir)
-				(pyvenv-workon my-python-virtualenv-workon-name)
-				(let ((install-cmd (or (executable-find "pip")
-									   (executable-find "easy_install"))))
-				  (if install-cmd
-					  (mapc (lambda (n)
-							  (message "%s installing %s ..." install-cmd n)
-							  (shell-command (format "%s install %s" install-cmd n) nil))
-							my-python-elpy-dependency)
-					(message "pip/easy_install not found, please install pip/easy_install")))
-				(elpy-rpc-restart)
-				(message "Done"))))))
-
-	(my-install-python-virtualenv)
-	(pyvenv-workon my-python-virtualenv-workon-name)
-	)
+  	;; (my-install-python-virtualenv)
+  	;; (pyvenv-workon my-python-virtualenv-workon-name)
+  	)
 
   )
 

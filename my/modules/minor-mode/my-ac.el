@@ -36,7 +36,7 @@
 		("C-M-?" . company-begin-backend)
 		("M-SPC" . company-other-backend)
 		("M-/" . hippie-expand)
-		;; ("TAB" . company-indent-or-complete-common)
+		("TAB" . company-indent-or-complete-common)
 		:map company-active-map
 		("TAB" . company-complete-common)
 		("C-w" . nil)
