@@ -58,10 +58,10 @@
 	:ensure t
 	:config
 	(setq org-pomodoro-keep-killed-pomodoro-time t))
-  (use-package org-fstree
-	:ensure t
-	:defer t
-	)
+  ;; (use-package org-fstree
+  ;; 	:ensure t
+  ;; 	:defer t
+  ;; 	)
   (use-package org-cliplink
 	:defer t
 	:ensure t)

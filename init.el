@@ -30,8 +30,8 @@
 ;; You may delete these explanatory comments.
 ;; (package-initialize)
 (message "Emacs is Loading ...")
-(when (version< emacs-version "24.4")
-  (error "Requires at least GNU Emacs 24.4, but you're running %s"
+(when (version< emacs-version "25.3")
+  (error "Requires at least GNU Emacs 25.3, but you're running %s"
 		 emacs-version))
 
 (load-file (concat user-emacs-directory "my/my-load-path.el"))
