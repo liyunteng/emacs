@@ -32,19 +32,6 @@
   :commands (dired dired-jump)
   :bind ("C-x d" . dired)
   :config
-  (use-package dired+
-	:ensure t
-	:config
-	(setq diredp-hide-details-initially-flag nil
-		  diredp-hide-details-propagate-flag nil
-		  dired-hide-details-mode nil
-		  global-dired-hide-details-mode nil
-		  )
-	;; 重用buffer，避免产生过多的dired buffer
-	(defun my--turn-on-diredp-find-reuse-dir ()
-	  (toggle-diredp-find-file-reuse-dir t))
-	(add-hook 'dired-mode-hook 'my--turn-on-diredp-find-reuse-dir)
-	)
 
   (use-package dired-aux
 	:config
@@ -62,9 +49,6 @@
 	  (add-to-list 'dired-omit-extensions ex))
     (add-hook 'dired-mode-hook 'dired-omit-mode)
 	)
-
-  (use-package dired-sort
-	:ensure t)
 
   (use-package diff-hl
 	:ensure t
@@ -84,11 +68,19 @@
 	(setq dired-listing-switches "-alh"))
 
   ;; goto parent dir
+  (defvar my/subdir-parent nil)
+  (defadvice dired-maybe-insert-subdir (around dirname (&optional switches no-error-if-not-dir-p) activate)
+	(progn (if (ad-get-arg 0)
+			   (setq my/subdir-parent (ad-get-arg 0)))
+		   ad-do-it))
+
   (defadvice dired-kill-subdir (around back-to-parent-dir activate)
-	(let ((dirname (car (diredp-this-subdir))))
+  	(progn
 	  ad-do-it
-	  (if dirname
-		  (dired-goto-file  dirname))))
+	  (if my/subdir-parent
+		  (progn
+			(dired-goto-file my/subdir-parent)
+			(setq my/subdir-parent nil)))))
 
   (defun my/dired-view-file-other-window ()
     "In Dired, view this file or directory in another window."

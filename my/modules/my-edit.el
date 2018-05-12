@@ -953,13 +953,14 @@ at the end of the line."
   (dolist (hook '(prog-mode-hook html-mode-hook css-mode-hook))
 	(add-hook hook 'symbol-overlay-mode))
   :config
-  (set-face-attribute 'symbol-overlay-temp-face nil
-					  :background
-					  (face-attribute 'isearch
-									  :background)
-					  :foreground
-					  (face-attribute 'isearch
-									  :foreground)))
+  (set-face-attribute 'symbol-overlay-default-face nil
+  					  :background
+  					  (face-attribute 'isearch
+  									  :background)
+  					  :foreground
+  					  (face-attribute 'isearch
+  									  :foreground))
+  )
 
 (use-package google-translate
   :ensure t

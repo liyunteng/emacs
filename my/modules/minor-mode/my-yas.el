@@ -58,7 +58,11 @@
 
   (yas-global-mode -1)
 
+  ;; :bind
+  ;; (:map yas-minor-mode-map ("TAB" . yas-expand))
   :config
+  (use-package yasnippet-snippets
+	:ensure t)
   ;; (use-package dropdown-list
   ;; 	:ensure t)
 
