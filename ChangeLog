@@ -1,5 +1,9 @@
 2018-05-21  liyunteng  <li_yunteng@163.com>
 
+	* my/modules/minor-mode/my-ac.el (python-mode): delete company-jedi
+
+	* my/modules/major-mode/my-python.el (python): auto install ipython to virtualenv
+
 	* my/modules/my-global-keybind.el: add "C-c C-j" for imenu
 
 	* my/modules/minor-mode/my-ac.el (company): change "TAB" for indent-for-tab-command, change lighter to "ac", delete add yasnippet for every backend, add company-jedi

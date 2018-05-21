@@ -65,9 +65,11 @@
   (add-hook 'inferior-python-mode-hook 'my-python-shell-mode-hook)
 
   :config
+  (defvar my-use-ipython nil)
   (when (executable-find "ipython")
   	(setq python-shell-interpreter "ipython"
-  		  python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i"))
+  		  python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i"
+		  my-use-ipython t))
 
 
   (use-package elpy
@@ -84,14 +86,17 @@
   		  ("C-c C-k" . kill-region))
   	:init
   	(setq elpy-shell-echo-input nil)
-  	;; (defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
-  	;; (defvar my-python-virtualenv-workon-name "default")
-  	;; (defvar my-python-virtualenv-workon-dir
-  	;;   (expand-file-name my-python-virtualenv-workon-name my-python-virtualenv-dir))
+  	(defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
+  	(defvar my-python-virtualenv-workon-name "default")
+  	(defvar my-python-virtualenv-workon-dir
+  	  (expand-file-name my-python-virtualenv-workon-name my-python-virtualenv-dir))
 
-  	;; (defvar my-python-elpy-dependency '("jedi" "importmagic" "yapf")) ;autopep8
+  	(defvar my-python-elpy-dependency '("jedi" "importmagic" "yapf")) ;autopep8
 
-  	;; (setenv "WORKON_HOME" my-python-virtualenv-dir)
+	(if my-use-ipython
+		(add-to-list 'my-python-elpy-dependency "ipython"))
+
+  	(setenv "WORKON_HOME" my-python-virtualenv-dir)
 
   	(setq elpy-modules '(elpy-module-sane-defaults
   						 elpy-module-eldoc
@@ -112,32 +117,32 @@
   	  (elpy-shell-kill-all t nil))
 
   	:config
-  	;; (defun my-install-python-virtualenv ()
-  	;;   "My install python virtualenv."
-  	;;   (if (or (not (file-exists-p my-python-virtualenv-dir))
-  	;; 		  (not (file-exists-p my-python-virtualenv-workon-dir)))
-  	;; 	  (progn
-  	;; 		(let ((virtualenvbin (executable-find "virtualenv")))
-  	;; 		  (if (null virtualenvbin)
-  	;; 			  (message "virtualenv not found, please install virtualenv")
-  	;; 			(message "%s %s ..." virtualenvbin my-python-virtualenv-workon-dir)
-  	;; 			(shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir) nil)
+  	(defun my-install-python-virtualenv ()
+  	  "My install python virtualenv."
+  	  (if (or (not (file-exists-p my-python-virtualenv-dir))
+  			  (not (file-exists-p my-python-virtualenv-workon-dir)))
+  		  (progn
+  			(let ((virtualenvbin (executable-find "virtualenv")))
+  			  (if (null virtualenvbin)
+  				  (message "virtualenv not found, please install virtualenv")
+  				(message "%s %s ..." virtualenvbin my-python-virtualenv-workon-dir)
+  				(shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir) nil)
 
-  	;; 			(setenv "WORKON_HOME" my-python-virtualenv-dir)
-  	;; 			(pyvenv-workon my-python-virtualenv-workon-name)
-  	;; 			(let ((install-cmd (or (executable-find "pip")
-  	;; 								   (executable-find "easy_install"))))
-  	;; 			  (if install-cmd
-  	;; 				  (mapc (lambda (n)
-  	;; 						  (message "%s installing %s ..." install-cmd n)
-  	;; 						  (shell-command (format "%s install %s" install-cmd n) nil))
-  	;; 						my-python-elpy-dependency)
-  	;; 				(message "pip/easy_install not found, please install pip/easy_install")))
-  	;; 			(elpy-rpc-restart)
-  	;; 			(message "Done"))))))
+  				(setenv "WORKON_HOME" my-python-virtualenv-dir)
+  				(pyvenv-workon my-python-virtualenv-workon-name)
+  				(let ((install-cmd (or (executable-find "pip")
+  									   (executable-find "easy_install"))))
+  				  (if install-cmd
+  					  (mapc (lambda (n)
+  							  (message "%s installing %s ..." install-cmd n)
+  							  (shell-command (format "%s install %s" install-cmd n) nil))
+  							my-python-elpy-dependency)
+  					(message "pip/easy_install not found, please install pip/easy_install")))
+  				(elpy-rpc-restart)
+  				(message "Done"))))))
 
-  	;; (my-install-python-virtualenv)
-  	;; (pyvenv-workon my-python-virtualenv-workon-name)
+  	(my-install-python-virtualenv)
+  	(pyvenv-workon my-python-virtualenv-workon-name)
   	)
 
   )

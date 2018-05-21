@@ -264,13 +264,9 @@ MODE parameter must match the parameter used in the call to
 (my|disable-company org-agenda-mode)
 (my|disable-company calendar-mode)
 
-(use-package company-jedi
-  :ensure t
-  :defer t
-  :commands (company-jedi))
 (my|defvar-company-backends python-mode)
 ;; (my|enable-company python-mode '(company-capf elpy-company-backend))
-(my|enable-company python-mode '(company-jedi company-capf))
+(my|enable-company python-mode '(elpy-company-backend company-capf))
 
 (my|defvar-company-backends inferior-python-mode)
 ;; (my|enable-company inferior-python-mode '(company-capf elpy-company-backend))
