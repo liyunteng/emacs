@@ -269,8 +269,8 @@
 (defun my-c-mode-keys ()
   "My c mode local key."
   ;; 快速跳转
-  (local-set-key (kbd "C-c j") 'my/jump-to-definition)
-  (local-set-key (kbd "C-c C-j") 'my/jump-to-definition-other-window)
+  ;; (local-set-key (kbd "C-c j") 'my/jump-to-definition)
+  ;; (local-set-key (kbd "C-c C-j") 'my/jump-to-definition-other-window)
 
   ;; 快速跳转定义与实现
   ;; (local-set-key (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)

@@ -1,3 +1,15 @@
+2018-05-21  liyunteng  <li_yunteng@163.com>
+
+	* my/modules/my-global-keybind.el: add "C-c C-j" for imenu
+
+	* my/modules/minor-mode/my-ac.el (company): change "TAB" for indent-for-tab-command, change lighter to "ac", delete add yasnippet for every backend, add company-jedi
+
+	* my/modules/major-mode/my-python.el (python): use python.el, update python-shell config, fix ipython can't work
+
+	* my/modules/major-mode/my-c.el (my-c-mode-keys): remove keybind "C-c j" "C-c C-j"
+
+	* my/modules/major-mode/my-go.el (go-mode): remove keybind "C-c j" "C-c C-j"
+
 2018-05-13  liyunteng  <li_yunteng@163.com>
 
 	* personal/person-info.el (null-license-content): add null-license

@@ -42,8 +42,8 @@
 			  ("C-c RET" . go-import-add)
 			  ("C-c SPC" . go-remove-unused-imports)
 
-			  ("C-c j" . godef-jump)
-			  ("C-c C-j" . godef-jump-other-window)
+			  ;; ("C-c j" . godef-jump)
+			  ;; ("C-c C-j" . godef-jump-other-window)
 			  ("M-." . godef-jump)
 			  ("C-c C-b" . xref-pop-marker-stack)
 			  ("C-c C-p" . godef-describe)

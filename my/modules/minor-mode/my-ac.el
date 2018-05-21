@@ -28,7 +28,7 @@
 (setq completion-cycle-threshold nil)
 
 (use-package company
-  :diminish company-mode
+  ;; :diminish company-mode		;; for see current backend
   :ensure t
   :bind
   (:map company-mode-map
@@ -36,7 +36,8 @@
 		("C-M-?" . company-begin-backend)
 		("M-SPC" . company-other-backend)
 		("M-/" . hippie-expand)
-		("TAB" . company-indent-or-complete-common)
+		;; ("TAB" . company-indent-or-complete-common)
+		("TAB" . 'indent-for-tab-command)
 		:map company-active-map
 		("TAB" . company-complete-common)
 		("C-w" . nil)
@@ -52,6 +53,9 @@
 		)
   :commands (global-company-mode company-mode)
   :init
+  (setq company-lighter-base "ac")
+  (defalias 'completion-at-point 'company-complete-common)
+
   (global-company-mode -1)
   (my|add-toggle company-mode
 	:mode company-mode
@@ -73,15 +77,15 @@
 
   ;; fix company-candidates-length is 0 will start company
   (defun company-manual-begin ()
-	(interactive)
-	(company-assert-enabled)
-	(setq company--manual-action t)
-	(unwind-protect
-		(let ((company-minimum-prefix-length 1))
-		  (or company-candidates
-			  (company-auto-begin)))
-	  (unless company-candidates
-		(setq company--manual-action nil))))
+  	(interactive)
+  	(company-assert-enabled)
+  	(setq company--manual-action t)
+  	(unwind-protect
+  		(let ((company-minimum-prefix-length 1))
+  		  (or company-candidates
+  			  (company-auto-begin)))
+  	  (unless company-candidates
+  		(setq company--manual-action nil))))
 
   (setq company-show-numbers t
 		company-minimum-prefix-length 2
@@ -160,7 +164,8 @@ The variable name format is company-backends-MODE."
 	(append
 	 (if (consp backend) backend (list backend))
 	 '(:with company-yasnippet)
-	 )))
+	 )
+	))
 
 (defmacro my|enable-company (mode backends)
   "Enable company for the given MODE.
@@ -172,9 +177,11 @@ The initialization function is hooked to `MODE-hook'."
 	`(progn
 	   (defun ,func ()
 		 ,(format "Initialize company for %S" mode)
-		 (when company-enable-snippets-in-popup
-		   (setq ,backend-list (mapcar 'my--show-snippets-in-company
-									   ,backend-list)))
+		 ;; add yasnippet to every backend
+		 ;; (when company-enable-snippets-in-popup
+		 ;;   (setq ,backend-list (mapcar 'my--show-snippets-in-company
+		 ;;   							   ,backend-list))
+		 ;;   )
 		 (set (make-variable-buffer-local 'company-backends)
 			  ,backend-list))
        (setq ,backend-list (append ,backends ,backend-list))
@@ -257,10 +264,17 @@ MODE parameter must match the parameter used in the call to
 (my|disable-company org-agenda-mode)
 (my|disable-company calendar-mode)
 
+(use-package company-jedi
+  :ensure t
+  :defer t
+  :commands (company-jedi))
 (my|defvar-company-backends python-mode)
-(my|enable-company python-mode '(elpy-company-backend))
+;; (my|enable-company python-mode '(company-capf elpy-company-backend))
+(my|enable-company python-mode '(company-jedi company-capf))
+
 (my|defvar-company-backends inferior-python-mode)
-(my|enable-company inferior-python-mode '(elpy-company-backend))
+;; (my|enable-company inferior-python-mode '(company-capf elpy-company-backend))
+(my|enable-company inferior-python-mode '(company-capf))
 
 (provide 'my-ac)
 ;;; my-ac.el ends here

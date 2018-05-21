@@ -30,6 +30,9 @@
 ;;使用sudo 编辑文件
 (global-set-key (kbd "C-x M-f") 'find-file-root)
 
+;; imenu
+(global-set-key (kbd "C-c C-j") 'imenu)
+
 ;; append to file
 (defvar my-file-prefix-map
   (let ((map (make-sparse-keymap)))
