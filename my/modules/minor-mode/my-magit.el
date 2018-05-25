@@ -38,6 +38,8 @@
 	:ensure t)
   (use-package git-timemachine
 	:ensure t)
+  (use-package smeargle
+	:ensure t)
   (setq magit-branch-read-upstream-first 'fallback)
   (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
   )

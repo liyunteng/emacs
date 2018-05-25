@@ -29,8 +29,10 @@
   (when gls (setq insert-directory-program gls)))
 
 (use-package dired
-  :commands (dired dired-jump)
-  :bind ("C-x d" . dired)
+  :commands (dired dired-jump dired-jump-other-window)
+  :bind (("C-x d" . dired)
+		 ("C-x M-j" . dired-jump-other-window))
+
   :config
 
   (use-package dired-aux

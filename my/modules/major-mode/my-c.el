@@ -224,6 +224,9 @@
 		hide-ifdef-initially nil)
   )
 
+(use-package disaster
+  :ensure t)
+
 ;; (c-add-style "ffmpeg"
 ;; 			   '("k&r"
 ;; 				 (c-basic-offset . 4)

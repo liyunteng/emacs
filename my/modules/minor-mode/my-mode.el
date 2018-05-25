@@ -54,7 +54,7 @@
     (define-key map [(control shift return)] 'crux-smart-open-line-above)
 
     (define-key map (kbd "C-c n") 'crux-cleanup-buffer-or-region)
-    (define-key map (kbd "C-c f")  'crux-recentf-ido-find-file)
+	;; (define-key map (kbd "C-c f")  'crux-recentf-ido-find-file)
     (define-key map (kbd "C-M-z") 'crux-indent-defun)
     (define-key map (kbd "C-c u") 'crux-view-url)
     (define-key map (kbd "C-c e") 'crux-eval-and-replace)

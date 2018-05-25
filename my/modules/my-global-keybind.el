@@ -50,6 +50,8 @@
 (global-set-key (kbd "C-x f C-n") 'find-alternate-file-other-window)
 (global-set-key (kbd "C-x f v") 'view-file)
 (global-set-key (kbd "C-x f C-v") 'view-file-other-window)
+(global-set-key (kbd "C-x f c d") 'my/dos2unix)
+(global-set-key (kbd "C-x f c u") 'my/unix2dos)
 
 ;; ==================== EDIT ====================
 ;; 标记段落
@@ -108,9 +110,14 @@
 (global-set-key (kbd "M-J") 'crux-top-join-line)
 
 ;; 使用自己的注释方法
-(global-set-key (kbd "M-;") 'my/comment-dwim-line)
+;; (global-set-key (kbd "M-;") 'my/comment-dwim-line)
 ;; 删除注释
 (global-set-key (kbd "C-M-;") 'comment-kill)
+;; comment-box
+(global-set-key (kbd "C-c M-;") 'comment-box)
+;; hide-comnt
+(global-set-key (kbd "C-x M-;") 'hide/show-comments-toggle)
+
 
 ;; ==================== MACRO ====================
 ;; 宏 C-x C-k

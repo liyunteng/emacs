@@ -25,6 +25,9 @@
 (use-package flycheck
   :ensure t
   :if (fboundp 'global-flycheck-mode)
+  :bind
+  (:map flycheck-mode-map
+		("C-c ! L" . my/flycheck-error-list-and-switch))
   :init
   (defvar syntax-checking-use-original-bitmaps t)
   (when (and (fboundp 'define-fringe-bitmap)
@@ -89,6 +92,13 @@
 			:stick t
 			:noselect t)
 		  popwin:special-display-config))
+
+  (defun my/flycheck-error-list-and-switch ()
+	"Open and goto the error list buffer."
+	(interactive)
+	(unless (get-buffer-window (get-buffer flycheck-error-list-buffer))
+	  (flycheck-list-errors)
+	  (switch-to-buffer-other-window flycheck-error-list-buffer)))
 
   (global-flycheck-mode +1)
   )

@@ -153,58 +153,32 @@ Please note RUN-TOGETHER will make aspell less capable. So it should only be use
 		))
 	)
 
-  (use-package flyspell-lazy
-	:ensure t
-	:config
-	(flyspell-lazy-mode 1)
-	)
+  (use-package flyspell-correct
+	;; :bind
+	;; (:map flyspell-mode-map
+	;; 	  ("C-M-i" . flyspell-correct-at-point)
+	;; 	  ("C-;" . flyspell-correct-previous-word-generic))
+  	:ensure t
+	:init
+	(flyspell-correct-auto-mode t))
+  (use-package flyspell-correct-helm
+  	:ensure t)
 
-  (defadvice flyspell-auto-correct-word (around my-flyspell-auto-correct-word activate)
-	(let* ((old-ispell-extra-args ispell-extra-args))
-	  (ispell-kill-ispell t)
-	  ;; use emacs original arguments
-	  (setq ispell-extra-args (flyspell-detect-ispell-args))
-	  ad-do-it
-	  ;; restore our own ispell arguments
-	  (setq ispell-extra-args old-ispell-extra-args)
-	  (ispell-kill-ispell t)))
-
-  (defun text-mode-hook-setup ()
-	;; Turn off RUN-TOGETHER option when spell check text-mode
-	(setq-local ispell-extra-args (flyspell-detect-ispell-args)))
-  (add-hook 'text-mode-hook 'text-mode-hook-setup)
-
-  ;; I don't use flyspell in text-mode because I often write Chinese.
-  ;; I'd rather manually spell check the English text
-
-  ;; you can also use "M-x ispell-word" or hotkey "M-$". It pop up a multiple choice
-  ;; @see http://frequal.com/Perspectives/EmacsTip03-FlyspellAutoCorrectWord.html
-  ;; (global-set-key (kbd "C-c s") 'flyspell-auto-correct-word)
-
-  ;; {{ avoid spell-checking doublon (double word) in certain major modes
-  (defvar flyspell-check-doublon t
-	"Check doublon (double word) when calling `flyspell-highlight-incorrect-region'.")
-  (make-variable-buffer-local 'flyspell-check-doublon)
-
-  (defadvice flyspell-highlight-incorrect-region (around flyspell-highlight-incorrect-region-hack activate)
-	(if (or flyspell-check-doublon (not (eq 'doublon (ad-get-arg 2))))
-		ad-do-it))
-
-  (defun my/clean-aspell-dict ()
-	"Clean ~/.aspell.pws (dictionary used by aspell)."
-	(interactive)
-	(let* ((dict (file-truename "~/.aspell.en.pws"))
-		   (lines (read-lines dict))
-		   ;; sort words
-		   (aspell-words (sort (cdr lines) 'string<)))
-	  (with-temp-file dict
-		(insert (format "%s %d\n%s"
-						"personal_ws-1.1 en"
-						(length aspell-words)
-						(mapconcat 'identity aspell-words "\n"))))))
+  ;; (defun my/clean-aspell-dict ()
+  ;; 	"Clean ~/.aspell.pws (dictionary used by aspell)."
+  ;; 	(interactive)
+  ;; 	(let* ((dict (file-truename "~/.aspell.en.pws"))
+  ;; 		   (lines (read-lines dict))
+  ;; 		   ;; sort words
+  ;; 		   (aspell-words (sort (cdr lines) 'string<)))
+  ;; 	  (with-temp-file dict
+  ;; 		(insert (format "%s %d\n%s"
+  ;; 						"personal_ws-1.1 en"
+  ;; 						(length aspell-words)
+  ;; 						(mapconcat 'identity aspell-words "\n"))))))
 
 
-  ;; better performance
+  ;; ;; better performance
   (setq flyspell-issue-message-flag nil)
   )
 

@@ -1,3 +1,21 @@
+2018-05-25  liyunteng  <li_yunteng@163.com>
+
+	* my/modules/my-global-keybind.el (kbd): change comment keybinds, add my/dos2unix my/unix2dos keybinds
+
+	* my/modules/my-edit.el: add package hide-comnt
+
+	* my/modules/minor-mode/my-mode.el (my-mode-map): replace crux-recentf-ido-find-file by helm-recentf keybinds
+
+	* my/modules/minor-mode/my-magit.el (magit): add package smeargle to my-magit
+
+	* my/modules/minor-mode/my-flyspell.el (flyspell): remove flyspell-laze, add flyspell-correct flyspell-correct-helm
+
+	* my/modules/minor-mode/my-flycheck.el (flycheck): add "C-c ! L" my/flycheck-error-list-and-switch
+
+	* my/modules/major-mode/my-dired.el (dired): add "C-x M-j" dired-jump-other-window
+
+	* my/modules/major-mode/my-c.el (disaster): add package disaster to my-c
+
 2018-05-21  liyunteng  <li_yunteng@163.com>
 
 	* my/modules/minor-mode/my-ac.el (python-mode): delete company-jedi

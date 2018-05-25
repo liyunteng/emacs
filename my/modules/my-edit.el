@@ -1015,6 +1015,9 @@ For instance pass En as source for English."
   (setq goto-address-url-face 'underline)
   )
 
+;; hide-comnt
+(use-package hide-comnt)
+
 ;; prog-mode-hook
 (use-package prog-mode
   :config
