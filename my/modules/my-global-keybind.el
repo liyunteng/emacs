@@ -110,7 +110,7 @@
 (global-set-key (kbd "M-J") 'crux-top-join-line)
 
 ;; 使用自己的注释方法
-;; (global-set-key (kbd "M-;") 'my/comment-dwim-line)
+(global-set-key (kbd "M-;") 'my/comment-dwim-line)
 ;; 删除注释
 (global-set-key (kbd "C-M-;") 'comment-kill)
 ;; comment-box
