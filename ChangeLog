@@ -1,3 +1,7 @@
+2018-05-27  liyunteng  <li_yunteng@163.com>
+
+	* my/modules/my-gui.el: add font config
+
 2018-05-26  liyunteng  <li_yunteng@163.com>
 
 	* my/modules/my-global-keybind.el (kbd): fix my/comment-dwim-line keybind
