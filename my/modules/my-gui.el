@@ -42,8 +42,7 @@ chinese-big5: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646
   (add-hook 'after-init-hook #'sml/setup)
   :config
   (setq sml/no-confirm-load-theme t)
-  (setq sml/theme nil)
-  )
+  (setq sml/theme nil))
 
 (use-package beacon
   :ensure t

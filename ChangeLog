@@ -1,3 +1,11 @@
+2018-05-30  liyunteng  <li_yunteng@163.com>
+
+	* my/my-init.el (my-modules):
+
+	* my/modules/my-gui.el (smart-mode-line):
+
+	* my/modules/major-mode/my-term.el (comint): deactive smart-mode-line advice for emacs-26, change my-eshell/clear
+
 2018-05-27  liyunteng  <li_yunteng@163.com>
 
 	* my/modules/my-gui.el: add font config

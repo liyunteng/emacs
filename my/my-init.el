@@ -61,7 +61,7 @@
     my-register
     ;; my-ido
     ;; my-ivy
-	my-auto
+    my-auto
 
     ;; minor
     my-mode
@@ -71,7 +71,7 @@
     my-magit
     my-gud
     my-flyspell
-	my-flycheck
+    my-flycheck
     my-auto-insert
     my-smartparens
     my-hideshow
@@ -92,11 +92,11 @@
     my-syslog
     my-javascript
     my-term
-	my-mu4e
+    my-mu4e
     ;; my-qt
     ;; my-header
 
-	my-jump
+    my-jump
     my-global-keybind
     my-session
     my-locales
@@ -110,26 +110,26 @@
 (defun my-show-init-time ()
   "Show init time."
   (message "Emacs startup time: %.2fms"
-		   (my-time-subtract-millis after-init-time before-init-time)))
+	   (my-time-subtract-millis after-init-time before-init-time)))
 
 
 (defun my-init ()
   "Load my modules."
   (when (file-exists-p my-modules-dir)
-	(add-to-list 'load-path my-modules-dir)
-	;; (dolist (module my-modules)
-	;;   (message "Loading %s" module)
-	;;   (require module)
-	;;   )
-	(mapc 'my-load my-modules)
-	)
+    (add-to-list 'load-path my-modules-dir)
+    ;; (dolist (module my-modules)
+    ;;   (message "Loading %s" module)
+    ;;   (require module)
+    ;;   )
+    (mapc 'my-load my-modules)
+    )
 
   (when (and custom-file
-			 (file-exists-p custom-file))
-	(load custom-file))
+	     (file-exists-p custom-file))
+    (load custom-file))
 
   (add-hook 'after-init-hook
-  			(lambda () (run-at-time 0 nil 'my-show-init-time)) t)
+  	    (lambda () (run-at-time 0 nil 'my-show-init-time)) t)
   )
 
 (provide 'my-init)
