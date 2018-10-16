@@ -27,11 +27,14 @@
 ;; 使用系统字体
 (setq-default font-use-system-font t)
 ;; 中文使用wqy-microhei,其他使用DejaVu Sans Mono
-(create-fontset-from-fontset-spec
- "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my,
-chinese-gbk: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1,
-chinese-iso-8bit: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1,
-chinese-big5: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1")
+
+(when (display-graphic-p)
+  (create-fontset-from-fontset-spec
+   "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my,
+ chinese-gbk: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1,
+ chinese-iso-8bit: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1,
+ chinese-big5: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1"))
+
 (setq default-frame-alist (append '((font . "fontset-my")) default-frame-alist))
 (set-frame-font "fontset-my")
 
@@ -127,7 +130,7 @@ Otherwise,add it to a queue of actions to perform after the first graphical fram
 (defun my-console-frame-setup ()
   (when (< emacs-major-version 23)
     (my-fix-up-xterm-control-arrows))
-  (xterm-mouse-mode 1) ; Mouse in a terminal (Use shift to paste with middle button)
+  (xterm-mouse-mode 1); Mouse in a terminal (Use shift to paste with middle button)
   (when (fboundp 'mwheel-install)
     (mwheel-install)))
 

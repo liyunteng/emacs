@@ -34,7 +34,7 @@
 
 (setq package-user-dir my-packages-save-dir)
 (setq package-enable-at-startup t)
-(package-initialize)
+;; (package-initialize)
 
 (defvar my-packages '(bind-key use-package))
 
