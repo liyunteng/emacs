@@ -35,11 +35,11 @@
 (defconst null-license (list nil nil))
 
 (setq user-full-name "liyunteng"
-	  user-mail-address "li_yunteng@163.com")
+      user-mail-address "li_yunteng@163.com")
 
 (if (equal (getenv "ORGANIZATION") "StreamOcean")
-	(setq user-mail-address "liyunteng@streamocean.com"
-		  auto-insert-license streamocean-license))
+    (setq user-mail-address "liyunteng@streamocean.com"
+	  auto-insert-license streamocean-license))
 (setq auto-insert-license null-license)
 
 
@@ -60,9 +60,9 @@
    ;; smtpmail-debug-info t
    )
   (after-load 'mu4e
-	(setq mu4e-maildir-shortcuts
-		  '(("/streamocean/INBOX" . ?t)
-			("/163/INBOX" . ?c))))
+    (setq mu4e-maildir-shortcuts
+	  '(("/streamocean/INBOX" . ?t)
+	    ("/163/INBOX" . ?c))))
   )
 
 

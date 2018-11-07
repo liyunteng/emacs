@@ -29,34 +29,45 @@
   :ensure t
   :commands (go-mode)
   :bind (:map go-mode-map
-			  ("C-c C-a" . go-test-current-project)
-			  ("C-c C-t" . go-test-current-file)
-			  ("C-c C-." . go-test-current-test)
+	      ("C-h f" . helm-apropos)
+	      ;; ("C-c C-d" . godoc-at-point)  ; can't work correctly
+	      ("C-c C-d" . godoc)
+	      ("C-M-\\" . gofmt)
 
-			  ("C-h f" . helm-apropos)
-			  ("C-c C-d" . godoc-at-point)
-			  ("C-c d" . godoc)
-			  ("C-M-\\" . gofmt)
-			  ("C-c C-c" . go-run)
+	      ("C-c RET" . go-import-add)
+	      ("C-c SPC" . go-remove-unused-imports)
 
-			  ("C-c RET" . go-import-add)
-			  ("C-c SPC" . go-remove-unused-imports)
+	      ("C-c C-c" . my/smart-compile)
 
-			  ;; ("C-c j" . godef-jump)
-			  ;; ("C-c C-j" . godef-jump-other-window)
-			  ("M-." . godef-jump)
-			  ("C-c C-b" . xref-pop-marker-stack)
-			  ("C-c C-p" . godef-describe)
-			  ("C-c C-l" . godef-describe)
-			  )
+
+	      ("M-." . godef-jump)
+	      ("C-c C-p" . godef-describe)
+	      ("C-c C-l" . godef-describe)
+	      ;; ("C-c C-b" . xref-pop-marker-stack)
+	      )
   :init
   (use-package go-eldoc
-	:ensure t
-	:init
-	(add-hook 'go-mode-hook 'go-eldoc-setup))
+    :ensure t
+    :init
+    (add-hook 'go-mode-hook 'go-eldoc-setup))
 
-  (use-package gotest
-	:ensure t)
+  ;; (use-package gotest
+  ;;   :ensure t
+  ;;   :bind (:map go-mode-map
+  ;; 		("C-c C-a" . go-test-current-project)
+  ;; 		("C-c C-t" . go-test-current-file)
+  ;; 		("C-c C-." . go-test-current-test)
+  ;; 		("C-c C-c" . go-run)
+  ;; 		)
+  ;;   )
+
+  (defun my-go-mode-hook ()
+    (set (make-local-variable 'tab-width) 4)
+    )
+  (add-hook 'go-mode-hook 'my-go-mode-hook)
+
+  :config
+  (add-hook 'before-save-hook 'gofmt-before-save)
   )
 
 (provide 'my-go)

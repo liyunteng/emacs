@@ -71,7 +71,7 @@
     (setq-local global-hl-line-mode nil)
     (setq-local beacon-mode nil)
     (setq-local scroll-margin 0)
-    (auto-fill-mode nil)
+    (auto-fill-mode -1)
     )
   (add-hook 'comint-mode-hook 'my-comint-mode-hook)
   :config
@@ -151,25 +151,25 @@
   (defun my/term-mode-toggle-line-mode ()
     (interactive)
     (if (eq major-mode 'term-mode)
-	(if (term-in-char-mode)
-	    (term-line-mode)
-	  (term-char-mode))
+  	(if (term-in-char-mode)
+  	    (term-line-mode)
+  	  (term-char-mode))
       (message "not term-mode")))
 
   (defun my-term-mode-hook ()
     (my-mode -1)
     (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
-    ;; (setq-local mouse-yank-at-point t)
+    (setq-local mouse-yank-at-point t)
     (setq-local transient-mark-mode nil)
     (setq-local global-hl-line-mode nil)
     (setq-local beacon-mode nil)
     (setq-local scroll-margin 0)
-    (auto-fill-mode nil)
-
+    (setq-default system-uses-terminfo t)
+    (auto-fill-mode -1)
 
     ;; deactive smart-mode-line advice
-    (if (ad-get-advice-info 'term-command-hook)
-	(ad-deactivate'term-command-hook))
+    ;; (if (ad-get-advice-info 'term-command-hook)
+    ;; 	(ad-deactivate'term-command-hook))
     )
   (add-hook 'term-mode-hook 'my-term-mode-hook)
 
