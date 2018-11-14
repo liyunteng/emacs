@@ -30,7 +30,7 @@
 (setq ad-redefinition-action 'accept)
 
 ;; toggle off debug-on-error
-(setq debug-on-error nil)
+(setq debug-on-error t)
 
 ;; Always load newest byte code
 (setq load-prefer-newer t)

@@ -31,47 +31,46 @@
 (use-package dired
   :commands (dired dired-jump dired-jump-other-window)
   :bind (("C-x d" . dired)
-		 ("C-x M-j" . dired-jump-other-window))
+	 ("C-x M-j" . dired-jump-other-window))
 
   :config
 
   (use-package dired-aux
-	:config
-	(setq dired-isearch-filenames 'dwim)
-	)
+    :config
+    (setq dired-isearch-filenames 'dwim)
+    )
 
   (use-package dired-x
-	:config
-	(setq dired-omit-verbose nil
-		  ;; dired忽略的上限
-		  dired-omit-mode t
-		  dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
-		  )
-	(dolist (ex '(".cache" ".o" ".ui"))
-	  (add-to-list 'dired-omit-extensions ex))
+    :config
+    (setq dired-omit-verbose nil
+	  ;; dired忽略的上限
+	  dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
+	  )
+    (dolist (ex '(".cache" ".o" ".ui"))
+      (add-to-list 'dired-omit-extensions ex))
     (add-hook 'dired-mode-hook 'dired-omit-mode)
-	)
+    )
 
 
   (use-package dired+
-	:config
-	(setq diredp-hide-details-initially-flag nil
-		  diredp-hide-details-propagate-flag nil
-		  dired-hide-details-mode nil
-		  global-dired-hide-details-mode nil
-		  )
-	;; 重用buffer，避免产生过多的dired buffer
-	(defun my--turn-on-diredp-find-reuse-dir ()
-	  (toggle-diredp-find-file-reuse-dir t))
-	(add-hook 'dired-mode-hook 'my--turn-on-diredp-find-reuse-dir)
-	)
+    :config
+    (setq diredp-hide-details-initially-flag nil
+	  diredp-hide-details-propagate-flag nil
+	  dired-hide-details-mode nil
+	  global-dired-hide-details-mode nil
+	  )
+    ;; 重用buffer，避免产生过多的dired buffer
+    (defun my--turn-on-diredp-find-reuse-dir ()
+      (toggle-diredp-find-file-reuse-dir t))
+    (add-hook 'dired-mode-hook 'my--turn-on-diredp-find-reuse-dir)
+    )
 
   (use-package diff-hl
-	:ensure t
-	:commands (diff-hl-dired-mode)
-	:config
-	(add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-	)
+    :ensure t
+    :commands (diff-hl-dired-mode)
+    :config
+    (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+    )
 
   (setq
    dired-dwim-target t
@@ -79,24 +78,24 @@
    dired-recursive-copies 'top)
   ;;传给ls的参数
   (if (or (eq system-type 'linux)
-		  (eq system-type 'gnu/linux))
-	  (setq dired-listing-switches "-alhcDF")
-	(setq dired-listing-switches "-alh"))
+	  (eq system-type 'gnu/linux))
+      (setq dired-listing-switches "-alhcDF")
+    (setq dired-listing-switches "-alh"))
 
   ;; goto parent dir
   (defvar my/subdir-parent nil)
   (defadvice dired-maybe-insert-subdir (around dirname (&optional switches no-error-if-not-dir-p) activate)
-	(progn (if (ad-get-arg 0)
-			   (setq my/subdir-parent (ad-get-arg 0)))
-		   ad-do-it))
+    (progn (if (ad-get-arg 0)
+	       (setq my/subdir-parent (ad-get-arg 0)))
+	   ad-do-it))
 
   (defadvice dired-kill-subdir (around back-to-parent-dir activate)
-  	(progn
-	  ad-do-it
-	  (if my/subdir-parent
-		  (progn
-			(dired-goto-file my/subdir-parent)
-			(setq my/subdir-parent nil)))))
+    (progn
+      ad-do-it
+      (if my/subdir-parent
+	  (progn
+	    (dired-goto-file my/subdir-parent)
+	    (setq my/subdir-parent nil)))))
 
   (defun my/dired-view-file-other-window ()
     "In Dired, view this file or directory in another window."
