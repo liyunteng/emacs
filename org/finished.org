@@ -4,18 +4,6 @@
    :LOGBOOK:
    - State "DONE"       from "TODO"       [2016-11-29 Tue 00:18]
    :END:
-** DONE <2016-11-29 Tue 00:15>
-   CLOSED: [2016-11-29 Tue 18:22]
-   :LOGBOOK:
-   - State "DONE"       from "TODO"       [2016-11-29 Tue 18:22]
-   :END:
-** CANCELLED [2016-11-29 Tue 00:11]
-   CLOSED: [2016-11-29 Tue 00:21]
-   :LOGBOOK:
-   - State "CANCELLED"  from "DELEGATED"  [2016-11-29 Tue 00:21] \\
-     don't want go on.
-   - State "DELEGATED"  from ""           [2016-11-29 Tue 00:19]
-   :END:
 ** DONE fix can't setMonitorLayout not in meeting <2016-11-29 Tue 15:09>
    CLOSED: [2016-11-29 Tue 18:23] DEADLINE: <2016-11-29 Tue> SCHEDULED: <2016-11-29 Tue>
    :LOGBOOK:
@@ -56,8 +44,7 @@
    - State "DONE"       from "TODO"       [2017-06-30 Fri 12:21]
    :END:
 
-
-** DONE [#C] Update Emacs <2017-08-20 Sun 02:50> [4/4]					 :@home:
+** DONE [#C] Update Emacs <2017-08-20 Sun 02:50> [4/4]                   :@home:
    CLOSED: [2017-08-24 Thu 00:21]
    :LOGBOOK:
    - State "DONE"       from "TODO"       [2017-08-24 Thu 00:21]
@@ -117,3 +104,40 @@
    :LOGBOOK:
    - State "CANCELLED"  from "TODO"       [2017-07-13 Thu 14:00]
    :END:
+** CANCELLED [#A] va add monitor interface                               :@work:
+   CLOSED: [2018-11-15 Thu 00:27] SCHEDULED: <2017-07-13 Thu> DEADLINE: <2017-07-15 Sat>
+   :LOGBOOK:
+   - State "CANCELLED"  from "NEXT"       [2018-11-15 Thu 00:27]
+   - State "TODO"       from "DONE"       [2017-08-20 Sun 03:28]
+   - State "DONE"       from "TODO"       [2017-08-20 Sun 03:28]
+   - State "TODO"       from "DONE"       [2017-08-20 Sun 02:48]
+   - State "DONE"       from "TODO"       [2017-08-20 Sun 02:48]
+   - State "TODO"       from "DONE"       [2017-08-20 Sun 02:39]
+   - State "DONE"       from "TODO"       [2017-08-20 Sun 02:39]
+   :END:
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2017-08-20 Sun 03:30
+   :ARCHIVE_FILE: ~/.emacs.d/org/task.org
+   :ARCHIVE_OLPATH: TASKS
+   :ARCHIVE_CATEGORY: task
+   :ARCHIVE_TODO: TODO
+   :END:
+
+   add monitor interface for va to sosp/joyplus
+#+BEGIN_SRC json
+{
+    "rp": 1,
+    "ad": "adHash",
+    "zone": "",
+    "dm": "iPhone6",
+    "i": devid,
+    "ip": "127.0.0.1",
+    "chnl": os-guid,
+    "cp": "cp",
+    "sp": "sp",
+}
+#+END_SRC
+
+#+BEGIN_SRC
+http://106.75.55.63/advapi/v1/monitor?rq=1&ad=f3fb000b05f11d4162044815db68a0cc&zone=fa9edb6280%207a5548e4e4e6c7bae7faed&dm=a&i=123d225fa4bc2d46c3&ip=10.23.24.12&CP=cntv&SP=njt&ex=%ex%
+#+END_SRC

@@ -34,9 +34,11 @@
 	      ("C-c C-d" . godoc)
 	      ("C-M-\\" . gofmt)
 
-	      ("C-c RET" . go-import-add)
-	      ("C-c SPC" . go-remove-unused-imports)
 
+	      ("C-c C-a" . go-import-add)
+	      ("C-c C-q" . go-remove-unused-imports)
+
+	      ("C-c RET" . my/smart-compile)
 	      ("C-c C-c" . my/smart-compile)
 
 
@@ -61,12 +63,15 @@
   ;; 		)
   ;;   )
 
+  :config
+  ;; need go get golang.org/tools/cmd/goimports
+  (if (executable-find "goimports")
+      (setq gofmt-command "goimports"))
+
   (defun my-go-mode-hook ()
     (set (make-local-variable 'tab-width) 4)
     )
   (add-hook 'go-mode-hook 'my-go-mode-hook)
-
-  :config
   (add-hook 'before-save-hook 'gofmt-before-save)
   )
 
