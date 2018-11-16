@@ -55,34 +55,34 @@
     my-themes
     my-window
 
+    my-smartparens
     my-edit
     my-isearch
     my-avy
     my-register
+    my-auto
     ;; my-ido
     ;; my-ivy
-    my-auto
 
-    ;; minor
+
+
     my-mode
     my-helm
-    my-semantic
     my-tramp
     my-magit
     my-gud
     my-flyspell
     my-flycheck
     my-auto-insert
-    my-smartparens
     my-hideshow
     my-yas
     my-ac
     ;; my-auto-complete
 
-    ;; major
     my-ibuffer
     my-dired
     my-c
+    my-semantic
     my-go
     my-python
     my-lisp
