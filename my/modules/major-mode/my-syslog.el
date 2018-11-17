@@ -36,8 +36,8 @@
   :mode ("\\(messages\\(\\.[0-9]\\)?\\|SYSLOG\\|dmesg\\|\\.log.*\\)\\'" . syslog-mode)
   :config
   (defun my-enable-goto-address-mode ()
-	"Enable goto address mode."
-	(goto-address-mode t))
+    "Enable goto address mode."
+    (goto-address-mode t))
 
   (add-hook 'syslog-mode-hook 'my-enable-goto-address-mode)
   )

@@ -29,121 +29,121 @@
   :init
   ;; (setq python-indent-guess-indent-offset nil)
   (defun my-python-mode-hook ()
-	"My python mode hook."
-	(when semantic-mode
-	  (semantic-mode -1))
-	;; (subword-mode +1)
-	;; (set (make-local-variable 'tab-width) 4)
+    "My python mode hook."
+    (when semantic-mode
+      (semantic-mode -1))
+    ;; (subword-mode +1)
+    ;; (set (make-local-variable 'tab-width) 4)
 
-	;; (setq-local electric-layout-rules
-	;; 			'((?: . (lambda ()
-	;; 					  (and (zerop (first (syntax-ppss)))
-	;; 						   (python-info-statement-starts-block-p)
-	;; 						   'after)))))
-	(when (fboundp #'python-imenu-create-index)
-	  (setq-local imenu-create-index-function
-				  #'python-imenu-create-index))
-	;; (add-hook 'post-self-insert-hook
-	;; 		  #'electric-layout-post-self-insert-function nil 'local)
-	;; (add-hook 'completion-at-point-functions
-	;; 		  #'company-complete-common nil 'local)
+    ;; (setq-local electric-layout-rules
+    ;; 			'((?: . (lambda ()
+    ;; 					  (and (zerop (first (syntax-ppss)))
+    ;; 						   (python-info-statement-starts-block-p)
+    ;; 						   'after)))))
+    (when (fboundp #'python-imenu-create-index)
+      (setq-local imenu-create-index-function
+		  #'python-imenu-create-index))
+    ;; (add-hook 'post-self-insert-hook
+    ;; 		  #'electric-layout-post-self-insert-function nil 'local)
+    ;; (add-hook 'completion-at-point-functions
+    ;; 		  #'company-complete-common nil 'local)
 
-	;; (local-set-key (kbd "C-c C-f") 'python-shell-send-file)
-	;; (local-set-key (kbd "C-c C-e") 'python-shell-send-defun)
-	)
+    ;; (local-set-key (kbd "C-c C-f") 'python-shell-send-file)
+    ;; (local-set-key (kbd "C-c C-e") 'python-shell-send-defun)
+    )
   (add-hook 'python-mode-hook 'my-python-mode-hook)
 
   (defun my-python-shell-mode-hook ()
-  	"My python shell mode hook."
-  	(when semantic-mode
-  	  (semantic-mode -1))
-	(turn-on-smartparens-mode)
-  	;; (set (make-local-variable 'tab-width) 4)
-  	;; (if (boundp 'python-shell-completion-native-enable)
-  	;; 	(setq python-shell-completion-native-enable t))
-	(define-key inferior-python-mode-map [remap indent-for-tab-command] 'complete-symbol)) ;replace indent-for-tab-command
+    "My python shell mode hook."
+    (when semantic-mode
+      (semantic-mode -1))
+    (turn-on-smartparens-mode)
+    ;; (set (make-local-variable 'tab-width) 4)
+    ;; (if (boundp 'python-shell-completion-native-enable)
+    ;; 	(setq python-shell-completion-native-enable t))
+    (define-key inferior-python-mode-map [remap indent-for-tab-command] 'complete-symbol)) ;replace indent-for-tab-command
   (add-hook 'inferior-python-mode-hook 'my-python-shell-mode-hook)
 
   :config
   (defvar my-use-ipython nil)
   (when (executable-find "ipython")
-  	(setq python-shell-interpreter "ipython"
-  		  python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i"
-		  my-use-ipython t))
+    (setq python-shell-interpreter "ipython"
+  	  python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i"
+	  my-use-ipython t))
 
 
   (use-package elpy
-  	:ensure t
-  	:commands (elpy-mode)
-  	:bind
-  	(:map elpy-mode-map
-  		  ("C-c C-d" . elpy-doc)
-  		  ;; ("C-c C-j" . elpy-goto-definition)
-  		  ;; ("C-c C-J" . elpy-goto-definition-other-window)
+    :ensure t
+    :commands (elpy-mode)
+    :bind
+    (:map elpy-mode-map
+  	  ("C-c C-d" . elpy-doc)
+  	  ;; ("C-c C-j" . elpy-goto-definition)
+  	  ;; ("C-c C-J" . elpy-goto-definition-other-window)
 
-  		  ("C-c C-q" . my/elpy-shell-kill)
-  		  ("C-c C-Q" . my/elpy-shell-kill-all)
-  		  ("C-c C-k" . kill-region))
-  	:init
-  	(setq elpy-shell-echo-input nil)
-  	(defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
-  	(defvar my-python-virtualenv-workon-name "default")
-  	(defvar my-python-virtualenv-workon-dir
-  	  (expand-file-name my-python-virtualenv-workon-name my-python-virtualenv-dir))
+  	  ("C-c C-q" . my/elpy-shell-kill)
+  	  ("C-c C-Q" . my/elpy-shell-kill-all)
+  	  ("C-c C-k" . kill-region))
+    :init
+    (setq elpy-shell-echo-input nil)
+    (defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
+    (defvar my-python-virtualenv-workon-name "default")
+    (defvar my-python-virtualenv-workon-dir
+      (expand-file-name my-python-virtualenv-workon-name my-python-virtualenv-dir))
 
-  	(defvar my-python-elpy-dependency '("jedi" "importmagic" "yapf")) ;autopep8
+    (defvar my-python-elpy-dependency '("jedi" "importmagic" "yapf")) ;autopep8
 
-	(if my-use-ipython
-		(add-to-list 'my-python-elpy-dependency "ipython"))
+    (if my-use-ipython
+	(add-to-list 'my-python-elpy-dependency "ipython"))
 
-  	(setenv "WORKON_HOME" my-python-virtualenv-dir)
+    (setenv "WORKON_HOME" my-python-virtualenv-dir)
 
-  	(setq elpy-modules '(elpy-module-sane-defaults
-  						 elpy-module-eldoc
-  						 elpy-module-flymake
-  						 elpy-module-pyvenv
-  						 elpy-module-yasnippet
-  						 elpy-module-django))
-  	(elpy-enable)
+    (setq elpy-modules '(elpy-module-sane-defaults
+  			 elpy-module-eldoc
+  			 elpy-module-flymake
+  			 elpy-module-pyvenv
+  			 elpy-module-yasnippet
+  			 elpy-module-django))
+    (elpy-enable)
 
-  	(defun my/elpy-shell-kill ()
-  	  "My elpy shell kill."
-  	  (interactive)
-  	  (elpy-shell-kill t))
+    (defun my/elpy-shell-kill ()
+      "My elpy shell kill."
+      (interactive)
+      (elpy-shell-kill t))
 
-  	(defun my/elpy-shell-kill-all ()
-  	  "My elpa shell kill all."
-  	  (interactive)
-  	  (elpy-shell-kill-all t nil))
+    (defun my/elpy-shell-kill-all ()
+      "My elpa shell kill all."
+      (interactive)
+      (elpy-shell-kill-all t nil))
 
-  	:config
-  	(defun my-install-python-virtualenv ()
-  	  "My install python virtualenv."
-  	  (if (or (not (file-exists-p my-python-virtualenv-dir))
-  			  (not (file-exists-p my-python-virtualenv-workon-dir)))
-  		  (progn
-  			(let ((virtualenvbin (executable-find "virtualenv")))
-  			  (if (null virtualenvbin)
-  				  (message "virtualenv not found, please install virtualenv")
-  				(message "%s %s ..." virtualenvbin my-python-virtualenv-workon-dir)
-  				(shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir) nil)
+    :config
+    (defun my-install-python-virtualenv ()
+      "My install python virtualenv."
+      (if (or (not (file-exists-p my-python-virtualenv-dir))
+  	      (not (file-exists-p my-python-virtualenv-workon-dir)))
+  	  (progn
+  	    (let ((virtualenvbin (executable-find "virtualenv")))
+  	      (if (null virtualenvbin)
+  		  (message "virtualenv not found, please install virtualenv")
+  		(message "%s %s ..." virtualenvbin my-python-virtualenv-workon-dir)
+  		(shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir) nil)
 
-  				(setenv "WORKON_HOME" my-python-virtualenv-dir)
-  				(pyvenv-workon my-python-virtualenv-workon-name)
-  				(let ((install-cmd (or (executable-find "pip")
-  									   (executable-find "easy_install"))))
-  				  (if install-cmd
-  					  (mapc (lambda (n)
-  							  (message "%s installing %s ..." install-cmd n)
-  							  (shell-command (format "%s install %s" install-cmd n) nil))
-  							my-python-elpy-dependency)
-  					(message "pip/easy_install not found, please install pip/easy_install")))
-  				(elpy-rpc-restart)
-  				(message "Done"))))))
+  		(setenv "WORKON_HOME" my-python-virtualenv-dir)
+  		(pyvenv-workon my-python-virtualenv-workon-name)
+  		(let ((install-cmd (or (executable-find "pip")
+  				       (executable-find "easy_install"))))
+  		  (if install-cmd
+  		      (mapc (lambda (n)
+  			      (message "%s installing %s ..." install-cmd n)
+  			      (shell-command (format "%s install %s" install-cmd n) nil))
+  			    my-python-elpy-dependency)
+  		    (message "pip/easy_install not found, please install pip/easy_install")))
+  		(elpy-rpc-restart)
+  		(message "Done"))))))
 
-  	(my-install-python-virtualenv)
-  	(pyvenv-workon my-python-virtualenv-workon-name)
-  	)
+    (my-install-python-virtualenv)
+    (pyvenv-workon my-python-virtualenv-workon-name)
+    )
 
   )
 

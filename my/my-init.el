@@ -61,11 +61,9 @@
     my-avy
     my-register
     my-auto
+
     ;; my-ido
     ;; my-ivy
-
-
-
     my-mode
     my-helm
     my-tramp

@@ -163,10 +163,10 @@ Call a second time to restore the original window configuration."
   (let* ((window (selected-window))
          (was-dedicated (window-dedicated-p window)))
     (set-window-dedicated-p window (not was-dedicated))
-	(if was-dedicated
-		(setq-local mode-line-process nil)
-	  (setq-local mode-line-process " [D]"))
-	(message "Window %sdedicated to %s"
+    (if was-dedicated
+	(setq-local mode-line-process nil)
+      (setq-local mode-line-process " [D]"))
+    (message "Window %sdedicated to %s"
              (if was-dedicated "no longer " "")
              (buffer-name))))
 

@@ -192,10 +192,10 @@ arguments is that we want to process these arguments as soon as possible."
         (when (or (null next-arg-digit) (= 0 next-arg-digit))
           (setq next-arg-digit nil))
         (pcase arg
-		  ("--my-debug"
-		   (setq my-debug t))
+	  ("--my-debug"
+	   (setq my-debug t))
           ("--profile"
-		   (setq my-debug t)
+	   (setq my-debug t)
            (setq my-debug-with-profile t))
           ("--time"
            (setq my-debug-with-timed-requires t)
@@ -216,4 +216,4 @@ arguments is that we want to process these arguments as soon as possible."
 (when my-debug (my-debug-init))
 
 (provide 'my-debug)
-;;; my-benchmarking.el ends here
+;;; my-debug.el ends here

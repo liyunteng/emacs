@@ -33,26 +33,26 @@
   :defer t
   :config
   (use-package sendmail
-	:defer t
-	:config
-	(setq send-mail-function 'smtpmail-send-it)
-	;; (setq send-mail-function 'mailclient-send-it)
-	)
+    :defer t
+    :config
+    (setq send-mail-function 'smtpmail-send-it)
+    ;; (setq send-mail-function 'mailclient-send-it)
+    )
 
   (use-package smtpmail
-	:defer t)
+    :defer t)
 
   (setq message-confirm-send t						;防止误发邮件, 发邮件前需要确认
-		message-kill-buffer-on-exit t				;设置发送邮件后删除buffer
-		message-from-style 'angles					;`From' 头的显示风格
-		message-syntax-checks '((sender . disabled));语法检查
-		message-send-mail-function 'smtpmail-send-it
+	message-kill-buffer-on-exit t				;设置发送邮件后删除buffer
+	message-from-style 'angles					;`From' 头的显示风格
+	message-syntax-checks '((sender . disabled));语法检查
+	message-send-mail-function 'smtpmail-send-it
 
-		message-cite-function 'message-cite-original-without-signature ;;引用设置：不要原来的签名，引用全文
+	message-cite-function 'message-cite-original-without-signature ;;引用设置：不要原来的签名，引用全文
 
-		message-kill-buffer-on-exit t
-		message-elide-ellipsis "[...]\n"
-		)
+	message-kill-buffer-on-exit t
+	message-elide-ellipsis "[...]\n"
+	)
 
   (add-hook 'mail-citation-hook 'sc-cite-original)
   ;;写消息时如何打开自动折行 (word-wrap) ？
@@ -67,94 +67,94 @@
   :init
   (global-set-key (kbd "C-x M-m") 'mu4e-compose-new)
   (defvar mu4e-account-alist nil
-	"Account alist for custom multi-account compose.")
+    "Account alist for custom multi-account compose.")
   :config
   (use-package mu4e-vars
-	:defines (mu4e-maildir
-			  mu4e-trash-folder
-			  mu4e-refile-folder
-			  mu4e-sent-folder
-			  mu4e-drafts-folder
-			  mu4e-get-mail-command
-			  mu4e-update-interval
-			  mu4e-view-show-images
-			  mu4e-maildir-shortcuts
-			  mu4e-bookmarks
-			  mu4e-compose-parent-message
-			  mu4e-completing-read-function)
-	:init
-	(setq
-	 mu4e-maildir "~/Maildir"
-	 mu4e-trash-folder "/[Trash]"
-	 mu4e-refile-folder "/[Archive]"
-	 mu4e-sent-folder "/[Sent]"
-	 mu4e-drafts-folder "/[Drafts]"
-	 mu4e-get-mail-command "offlineimap"
-	 mu4e-update-interval nil
-	 mu4e-view-show-images t
-	 )
+    :defines (mu4e-maildir
+	      mu4e-trash-folder
+	      mu4e-refile-folder
+	      mu4e-sent-folder
+	      mu4e-drafts-folder
+	      mu4e-get-mail-command
+	      mu4e-update-interval
+	      mu4e-view-show-images
+	      mu4e-maildir-shortcuts
+	      mu4e-bookmarks
+	      mu4e-compose-parent-message
+	      mu4e-completing-read-function)
+    :init
+    (setq
+     mu4e-maildir "~/Maildir"
+     mu4e-trash-folder "/[Trash]"
+     mu4e-refile-folder "/[Archive]"
+     mu4e-sent-folder "/[Sent]"
+     mu4e-drafts-folder "/[Drafts]"
+     mu4e-get-mail-command "offlineimap"
+     mu4e-update-interval nil
+     mu4e-view-show-images t
+     )
 
-	(setq mu4e-bookmarks
-		  `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
-			("date:today..now" "Today's messages" ?t)
-			("date:7d..now" "Last 7 days" ?w)
-			("mime:image/*" "Messages with images" ?p)
-			(,(mapconcat 'identity
-						 (mapcar
-						  (lambda (maildir)
-							(concat "maildir:" (car maildir)))
-						  mu4e-maildir-shortcuts) " OR ")
-			 "All inboxes" ?i)))
+    (setq mu4e-bookmarks
+	  `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
+	    ("date:today..now" "Today's messages" ?t)
+	    ("date:7d..now" "Last 7 days" ?w)
+	    ("mime:image/*" "Messages with images" ?p)
+	    (,(mapconcat 'identity
+			 (mapcar
+			  (lambda (maildir)
+			    (concat "maildir:" (car maildir)))
+			  mu4e-maildir-shortcuts) " OR ")
+	     "All inboxes" ?i)))
 
-	(setq mu4e-completing-read-function 'completing-read)
-	)
+    (setq mu4e-completing-read-function 'completing-read)
+    )
 
   (use-package mu4e-message
-	:defines (mu4e-view-show-addresses
-			  mu4e-view-prefer-html
-			  mu4e-html2text-command)
-	:init
-	(setq mu4e-view-show-addresses t
-		  mu4e-view-prefer-html t)
+    :defines (mu4e-view-show-addresses
+	      mu4e-view-prefer-html
+	      mu4e-html2text-command)
+    :init
+    (setq mu4e-view-show-addresses t
+	  mu4e-view-prefer-html t)
 
-	(defun my-render-html-message ()
-	  (let ((dom (libxml-parse-html-region (point-min) (point-max))))
-		(erase-buffer)
-		(shr-insert-document dom)
-		(goto-char (point-min))))
-	(setq mu4e-html2text-command 'my-render-html-message))
+    (defun my-render-html-message ()
+      (let ((dom (libxml-parse-html-region (point-min) (point-max))))
+	(erase-buffer)
+	(shr-insert-document dom)
+	(goto-char (point-min))))
+    (setq mu4e-html2text-command 'my-render-html-message))
 
   (use-package mu4e-draft
-	:defines (mu4e-compose-signature
-			  mu4e-compose-signature-auto-include)
-	:init
-	(setq
-	 mu4e-compose-signature-auto-include nil))
+    :defines (mu4e-compose-signature
+	      mu4e-compose-signature-auto-include)
+    :init
+    (setq
+     mu4e-compose-signature-auto-include nil))
 
   (use-package org-mu4e
-	:defines (org-mu4e-convert-to-html)
-	:commands (org-mu4e-compose-org-mode)
-	:init
-	(setq org-mu4e-convert-to-html nil)
-	(add-hook 'mu4e-compose-mode-hook
-			  'org-mu4e-compose-org-mode))
+    :defines (org-mu4e-convert-to-html)
+    :commands (org-mu4e-compose-org-mode)
+    :init
+    (setq org-mu4e-convert-to-html nil)
+    (add-hook 'mu4e-compose-mode-hook
+	      'org-mu4e-compose-org-mode))
 
   (use-package mu4e-view
-	:defines (mu4e-view-actions)
-	:init
-	(add-to-list 'mu4e-view-actions
-				 '("View in browser" . mu4e-action-view-in-browser) t))
+    :defines (mu4e-view-actions)
+    :init
+    (add-to-list 'mu4e-view-actions
+		 '("View in browser" . mu4e-action-view-in-browser) t))
 
   (use-package mu4e-alert
-	:ensure t
+    :ensure t
     :init
-	(mu4e-alert-enable-notifications)
-	(mu4e-alert-enable-mode-line-display))
+    (mu4e-alert-enable-notifications)
+    (mu4e-alert-enable-mode-line-display))
 
   (use-package mu4e-maildirs-extension
-	:ensure t
+    :ensure t
     :init
-  	(mu4e-maildirs-extension-load))
+    (mu4e-maildirs-extension-load))
 
   ;; (defun mu4e//search-account-by-mail-address (mailto)
   ;; 	"Return the account given an email address in MAILTO."

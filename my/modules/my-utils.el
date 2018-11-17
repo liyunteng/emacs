@@ -350,5 +350,6 @@ The body of the advice is in BODY."
                  `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
                     ,@body))
                commands)))
+
 (provide 'my-utils)
 ;;; my-utils.el ends here

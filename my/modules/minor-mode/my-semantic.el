@@ -52,16 +52,16 @@
   :config
   (setq speedbar-show-unknown-files t)
   (setq speedbar-tag-hierarchy-method
-		'(speedbar-prefix-group-tag-hierarchy))
+	'(speedbar-prefix-group-tag-hierarchy))
 
   (speedbar-add-supported-extension ".go")
   (add-hook 'speedbar-mode-hook
-			(lambda ()
-			  (auto-raise-mode t)
-			  (setq dframe-update-speed 1)
-			  ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
-			  ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
-			  )))
+	    (lambda ()
+	      (auto-raise-mode t)
+	      (setq dframe-update-speed 1)
+	      ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
+	      ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
+	      )))
 
 (use-package semantic
   :defer t
@@ -114,20 +114,20 @@
   ;; (setq semantic-update-mode-line t)
 
   (use-package semantic/idle
-	:defines (semantic-idle-scheduler-idle-time
-			  semantic-idle-scheduler-max-buffer-size
-			  semantic-idle-scheduler-work-idle-time
-			  semantic-idle-work-update-headers-flag
-			  )
-	:init
-	(setq semantic-idle-scheduler-idle-time 1)
-	(setq semantic-idle-scheduler-max-buffer-size 10240000)
-	(setq semantic-idle-scheduler-work-idle-time 30)
-	(setq semantic-idle-work-update-headers-flag t)
-	(setq semantic-idle-work-parse-neighboring-files-flag t)
+    :defines (semantic-idle-scheduler-idle-time
+	      semantic-idle-scheduler-max-buffer-size
+	      semantic-idle-scheduler-work-idle-time
+	      semantic-idle-work-update-headers-flag
+	      )
+    :init
+    (setq semantic-idle-scheduler-idle-time 1)
+    (setq semantic-idle-scheduler-max-buffer-size 10240000)
+    (setq semantic-idle-scheduler-work-idle-time 30)
+    (setq semantic-idle-work-update-headers-flag t)
+    (setq semantic-idle-work-parse-neighboring-files-flag t)
 
-	;; (add-hook 'semantic-init-hooks 'semantic-idle-completions-mode)
-	)
+    ;; (add-hook 'semantic-init-hooks 'semantic-idle-completions-mode)
+    )
 
   (require 'semantic/dep)
   (semantic-add-system-include "/usr/local/include")
@@ -138,24 +138,24 @@
   (require 'semantic/wisent)
 
   (after-load 'cc-mode
-	(defcustom-mode-local-semantic-dependency-system-include-path
-	  c-mode my-c-system-include (semantic-gcc-get-include-paths "c"))
-	(defcustom-mode-local-semantic-dependency-system-include-path
-	  c++-mode my-c++-system-include (semantic-gcc-get-include-paths "c++"))
+    (defcustom-mode-local-semantic-dependency-system-include-path
+      c-mode my-c-system-include (semantic-gcc-get-include-paths "c"))
+    (defcustom-mode-local-semantic-dependency-system-include-path
+      c++-mode my-c++-system-include (semantic-gcc-get-include-paths "c++"))
 
-	(setq-mode-local c-mode semantic-dependency-include-path my-include-path)
-	(setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
-	)
+    (setq-mode-local c-mode semantic-dependency-include-path my-include-path)
+    (setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
+    )
 
   (use-package semantic/ia
-  	:init
-  	(defun my/semantic-find-definition (arg)
-  	  (interactive "P")
-  	  (when (fboundp 'xref-push-marker-stack)
-  		(xref-push-marker-stack (push-mark (point))))
-  	  (semantic-ia-fast-jump (point))
-  	  (recenter-top-bottom)
-  	  ))
+    :init
+    (defun my/semantic-find-definition (arg)
+      (interactive "P")
+      (when (fboundp 'xref-push-marker-stack)
+  	(xref-push-marker-stack (push-mark (point))))
+      (semantic-ia-fast-jump (point))
+      (recenter-top-bottom)
+      ))
 
   ;; (use-package semantic/ia
   ;; 	:init
@@ -180,23 +180,23 @@
 
   ;; ;;;semantic Database
   (use-package semantic/db
-	:init
-	(setq semanticdb-search-system-databases t)
-	(setq semanticdb-project-roots my-project-roots)
-	)
+    :init
+    (setq semanticdb-search-system-databases t)
+    (setq semanticdb-project-roots my-project-roots)
+    )
 
   (use-package semantic/db-find
-	:init
-	(setq semanticdb-find-default-throttle
-		  '(local project unloaded system recursive)
-		  )
-	)
+    :init
+    (setq semanticdb-find-default-throttle
+	  '(local project unloaded system recursive)
+	  )
+    )
 
   (use-package semantic/db-global
-	:init
-	(semanticdb-enable-gnu-global-databases 'c-mode)
-	(semanticdb-enable-gnu-global-databases 'c++-mode)
-	)
+    :init
+    (semanticdb-enable-gnu-global-databases 'c-mode)
+    (semanticdb-enable-gnu-global-databases 'c++-mode)
+    )
 
 
 

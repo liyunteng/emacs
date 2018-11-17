@@ -36,17 +36,17 @@
   :diminish immortal-scratch-mode
   :init
   (defun my/switch-to-scratch ()
-	(interactive)
-	(switch-to-buffer "*scratch*"))
+    (interactive)
+    (switch-to-buffer "*scratch*"))
   (global-set-key (kbd "C-x S") 'my/switch-to-scratch)
   (immortal-scratch-mode +1))
 
 (use-package macrostep
   :ensure t
   :bind (:map emacs-lisp-mode-map
-			  ("C-x e" . macrostep-expand)
-			  :map lisp-interaction-mode-map
-			  ("C-x e" . macrostep-expand)))
+	      ("C-x e" . macrostep-expand)
+	      :map lisp-interaction-mode-map
+	      ("C-x e" . macrostep-expand)))
 
 (use-package eldoc-eval
   :ensure t
@@ -65,26 +65,26 @@
 (use-package auto-compile
   :ensure t
   :commands (auto-compile-on-save-mode
-			 auto-compile-on-load-mode)
+	     auto-compile-on-load-mode)
   :init
   (auto-compile-on-save-mode +1)
   (auto-compile-on-load-mode +1))
 
 (defvar my-common-mode-hooks  '(emacs-lisp-mode-hook
-								ielm-mode-hook
-								help-mode-hook
-								messages-buffer-mode-hook
-								completion-list-mode-hook
-								debugger-mode-hook
-								))
+				ielm-mode-hook
+				help-mode-hook
+				messages-buffer-mode-hook
+				completion-list-mode-hook
+				debugger-mode-hook
+				))
 (use-package rainbow-mode
   :diminish rainbow-mode
   :ensure t
   :commands (rainbow-mode
-			 rainbow-turn-on)
+	     rainbow-turn-on)
   :init
   (dolist (hook my-common-mode-hooks)
-  	(add-hook hook 'rainbow-turn-on))
+    (add-hook hook 'rainbow-turn-on))
   )
 
 (use-package rainbow-delimiters
@@ -93,16 +93,16 @@
   :commands (rainbow-delimiters-mode)
   :init
   (dolist (hook my-common-mode-hooks)
-  	(add-hook hook 'rainbow-delimiters-mode-enable))
+    (add-hook hook 'rainbow-delimiters-mode-enable))
   )
 
 (use-package highlight-quoted
   :ensure t
   :commands (highlight-quoted-mode
-			 highlight-quoted--turn-on)
+	     highlight-quoted--turn-on)
   :init
   (dolist (hook my-common-mode-hooks)
-  	(add-hook hook 'highlight-quoted--turn-on))
+    (add-hook hook 'highlight-quoted--turn-on))
   (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode))
 
 (use-package elisp-slime-nav
@@ -110,7 +110,7 @@
   :diminish elisp-slime-nav-mode
   :init
   (dolist (hook my-common-mode-hooks)
-	(add-hook hook 'turn-on-elisp-slime-nav-mode)))
+    (add-hook hook 'turn-on-elisp-slime-nav-mode)))
 
 ;; (use-package ipretty
 ;;   :ensure t
@@ -124,24 +124,24 @@
   (([remap eval-expression] . pp-eval-expression))
   :init
   (defun my/eval-last-sexp-or-region (prefix)
-	"Eval PREFIX if active, otherwise the last sexp."
-	(interactive "P")
-	(if (and (mark) (use-region-p))
-		(eval-region (min (point) (mark)) (max (point) (mark)))
-	  (pp-eval-last-sexp prefix)))
+    "Eval PREFIX if active, otherwise the last sexp."
+    (interactive "P")
+    (if (and (mark) (use-region-p))
+	(eval-region (min (point) (mark)) (max (point) (mark)))
+      (pp-eval-last-sexp prefix)))
 
   (defadvice pp-display-expression (after my-make-read-only (expression out-buffer-name) activate)
-	"Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
-	(when (get-buffer out-buffer-name)
-	  (with-current-buffer out-buffer-name
-		(view-mode 1))))
+    "Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
+    (when (get-buffer out-buffer-name)
+      (with-current-buffer out-buffer-name
+	(view-mode 1))))
 
   (defun my-maybe-set-bundled-elisp-readonly ()
-	"If this elisp appears to be part of Emacs, then disallow editing."
-	(when (and (buffer-file-name)
-			   (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
-	  (setq buffer-read-only t)
-	  (view-mode 1)))
+    "If this elisp appears to be part of Emacs, then disallow editing."
+    (when (and (buffer-file-name)
+	       (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
+      (setq buffer-read-only t)
+      (view-mode 1)))
   (add-hook 'emacs-lisp-mode-hook 'my-maybe-set-bundled-elisp-readonly))
 
 ;; Use C-c C-z to toggle between elisp files and an ielm session
@@ -149,33 +149,33 @@
 (use-package ielm
   :init
   (defvar my-repl-original-buffer nil
-	"Buffer from which we jumped to this REPL.")
+    "Buffer from which we jumped to this REPL.")
   ;; (make-variable-buffer-local 'my-repl-original-buffer)
   (defvar my-repl-switch-function 'switch-to-buffer-other-window)
   (defun my/repl-switch-back ()
-	"Switch back to the buffer from which we reached this REPL."
-	(interactive)
-	(if my-repl-original-buffer
-		(funcall my-repl-switch-function my-repl-original-buffer)
-	  (error "No original buffer")))
+    "Switch back to the buffer from which we reached this REPL."
+    (interactive)
+    (if my-repl-original-buffer
+	(funcall my-repl-switch-function my-repl-original-buffer)
+      (error "No original buffer")))
 
   (defun my/switch-to-ielm ()
-	"Switch to ielm."
-	(interactive)
+    "Switch to ielm."
+    (interactive)
 
-	(let ((orig-buffer (current-buffer)))
-	  (if (get-buffer "*ielm*")
-		  (funcall my-repl-switch-function "*ielm*")
-		(ielm))
-	  (setq-local my-repl-original-buffer orig-buffer)))
+    (let ((orig-buffer (current-buffer)))
+      (if (get-buffer "*ielm*")
+	  (funcall my-repl-switch-function "*ielm*")
+	(ielm))
+      (setq-local my-repl-original-buffer orig-buffer)))
 
   :bind (:map ielm-map
-			  ("C-c C-z" . my/repl-switch-back)
-			  :map emacs-lisp-mode-map
-			  ("C-c C-z" . my/switch-to-ielm)
-			  :map lisp-interaction-mode-map
-			  ("C-c C-z" . my/switch-to-ielm)
-			  ))
+	      ("C-c C-z" . my/repl-switch-back)
+	      :map emacs-lisp-mode-map
+	      ("C-c C-z" . my/switch-to-ielm)
+	      :map lisp-interaction-mode-map
+	      ("C-c C-z" . my/switch-to-ielm)
+	      ))
 
 ;; ----------------------------------------------------------------------------
 ;; Hippie-expand
@@ -286,7 +286,7 @@
   "If reverting from VC, delete any .elc file that will now be out of sync."
   (when my-vc-reverting
     (when (and (eq 'emacs-lisp-mode major-mode)
-			   buffer-file-name
+	       buffer-file-name
                (string= "el" (file-name-extension buffer-file-name)))
       (let ((elc (concat buffer-file-name "c")))
         (when (file-exists-p elc)

@@ -30,13 +30,13 @@
   :config
   (defvar my-cscope-origin-buffer nil)
   (defadvice cscope-call (before my-save-cscope-origin-buffer activate)
-	(setq my-cscope-origin-buffer (current-buffer)))
+    (setq my-cscope-origin-buffer (current-buffer)))
   (defun my/cscope-quit ()
-	"My cscope quit."
-	(interactive)
-	(cscope-quit)
-	(switch-to-buffer my-cscope-origin-buffer)
-	(delete-other-windows))
+    "My cscope quit."
+    (interactive)
+    (cscope-quit)
+    (switch-to-buffer my-cscope-origin-buffer)
+    (delete-other-windows))
 
   (setq cscope-truncate-lines nil)
   (setq cscope-use-relative-paths nil)
@@ -47,18 +47,18 @@
   (cscope-setup)
   :bind
   (:map cscope-minor-mode-keymap
-		("C-c s G" . cscope-find-global-definition)
-		:map cscope-list-entry-keymap
-		("C-p" . cscope-history-backward-file)
-		("C-n" . cscope-history-forward-file)
-		("C-M-p" . cscope-history-backward-result)
-		("C-M-n" . cscope-history-forward-result)
-		("C-k" . cscope-history-kill-file)
-		("C-M-k" . cscope-history-kill-result)
-		("d" . cscope-find-global-definition-no-prompting)
-		("G" . cscope-find-global-definition)
-		("q" . my/cscope-quit)
-		)
+	("C-c s G" . cscope-find-global-definition)
+	:map cscope-list-entry-keymap
+	("C-p" . cscope-history-backward-file)
+	("C-n" . cscope-history-forward-file)
+	("C-M-p" . cscope-history-backward-result)
+	("C-M-n" . cscope-history-forward-result)
+	("C-k" . cscope-history-kill-file)
+	("C-M-k" . cscope-history-kill-result)
+	("d" . cscope-find-global-definition-no-prompting)
+	("G" . cscope-find-global-definition)
+	("q" . my/cscope-quit)
+	)
   )
 ;; (use-package helm-cscope
 ;; :config
@@ -178,7 +178,7 @@
 
 (use-package cmacexp
   :defines (c-macro-shrink-window-flag
-			c-macro-promp-flag)
+	    c-macro-promp-flag)
   :config
   (setq c-macro-shrink-window-flag t)
   (setq c-macro-prompt-flag t)
@@ -186,10 +186,10 @@
 
 (use-package find-file
   :defines (cc-search-directories
-			cc-other-file-alist)
+	    cc-other-file-alist)
   :config
   (dolist (var my-include-path)
-	(add-to-list 'cc-search-directories var))
+    (add-to-list 'cc-search-directories var))
   (dolist (var my-src-path)
     (add-to-list 'cc-search-directories var))
   (dolist (var '(("\\c\\'" (".h" ".hpp" ".hxx"))
@@ -201,27 +201,27 @@
 (use-package hideif
   :diminish hide-ifdef-mode ;;hide-ifdef-hiding
   :commands (hide-ifdef-mode
-			 hide-ifdefs)
+	     hide-ifdefs)
   :defines (hide-ifdef-mode)
   :init
   (my|add-toggle hide-ifdef-mode
-	:status hide-ifdef-mode
-	:on (progn (hide-ifdef-mode +1)
-			   (hide-ifdefs t))
-	:off (hide-ifdef-mode -1)
-	:documentation "Hide/Show ifdef"
-	)
+    :status hide-ifdef-mode
+    :on (progn (hide-ifdef-mode +1)
+	       (hide-ifdefs t))
+    :off (hide-ifdef-mode -1)
+    :documentation "Hide/Show ifdef"
+    )
   (add-hook 'c-mode-common-hook 'my/toggle-hide-ifdef-mode-on)
   :config
   ;; fix can't use = with string
   (defun hif-mathify (val)
-  	"Treat VAL as a number: if it's t or nil, use 1 or 0."
-  	(cond ((stringp val) (string-to-number val))
-  		  ((eq val t) 1)
-  		  ((null val) 0)
-  		  (t val)))
+    "Treat VAL as a number: if it's t or nil, use 1 or 0."
+    (cond ((stringp val) (string-to-number val))
+  	  ((eq val t) 1)
+  	  ((null val) 0)
+  	  (t val)))
   (setq hide-ifdef-shadow t
-		hide-ifdef-initially nil)
+	hide-ifdef-initially nil)
   )
 
 (use-package disaster
@@ -237,7 +237,7 @@
 (defun my-c-mode-hooks ()
   "My c common mode hooks."
   (unless semantic-mode
-	(semantic-mode +1))
+    (semantic-mode +1))
 
   ;; (hide-ifdef-mode +1)
   (auto-fill-mode +1)
@@ -258,13 +258,13 @@
 
   ;; 设置头文件路径
   (use-package flycheck
-	:config
-	(use-package semantic/dep)
-	(setq-local flycheck-checker 'c/c++-clang)
-	;; (setq-default flycheck-clang-args '("-std=c++11"))
-	(dolist (item (append semantic-dependency-system-include-path my-include-path))
-	  (add-to-list 'flycheck-clang-include-path item))
-	)
+    :config
+    (use-package semantic/dep)
+    (setq-local flycheck-checker 'c/c++-clang)
+    ;; (setq-default flycheck-clang-args '("-std=c++11"))
+    (dolist (item (append semantic-dependency-system-include-path my-include-path))
+      (add-to-list 'flycheck-clang-include-path item))
+    )
 
   ;; (setq-default company-clang-arguments '("-std=c++11"))
   )

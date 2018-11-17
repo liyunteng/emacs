@@ -46,14 +46,13 @@
     (setq auto-save-file-name-transforms
           `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'"
              ,autosave-dir t)))
-	))
+    ))
 
 ;; 将保存的文件移动到.emacs.d/目录中
 (setq-default recentf-save-file  (expand-file-name "recentf" user-emacs-directory))
 (setq-default diary-file (expand-file-name "diary" my-cache-dir))
 
 (setq-default ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir))
-(setq-default ido-save-directory-list-file (expand-file-name "ido.last" my-cache-dir))
 (setq-default smex-save-file (expand-file-name "smex-items" my-cache-dir))
 
 ;; abbrev
@@ -81,11 +80,11 @@
 
 ;; eshell
 (setq-default eshell-directory-name
-			  (expand-file-name "eshell" my-cache-dir))
+	      (expand-file-name "eshell" my-cache-dir))
 
 ;; semantic
 (setq-default semanticdb-default-save-directory
-			  (expand-file-name "semanticdb" my-cache-dir))
+	      (expand-file-name "semanticdb" my-cache-dir))
 ;; tramp cache files
 (setq-default tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
 (setq-default tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))

@@ -30,11 +30,11 @@
   :commands (js2-mode js2-minor-mode js2-jsx-mode2)
   :init
   (defcustom preferred-javascript-mode
-	(first (remove-if-not #'fboundp '(js2-mode js-mode)))
-	"Javascript mode to use for .js files."
-	:type 'symbol
-	:group 'programming
-	:options '(js2-mode js-mode))
+    (first (remove-if-not #'fboundp '(js2-mode js-mode)))
+    "Javascript mode to use for .js files."
+    :type 'symbol
+    :group 'programming
+    :options '(js2-mode js-mode))
 
   (defconst preferred-javascript-indent-level 2)
 
@@ -42,38 +42,38 @@
   ;; may be in an arbitrary order
   (eval-when-compile (require 'cl))
   (setq auto-mode-alist (cons `("\\.\\(js\\|es6\\)\\(\\.erb\\)?\\'" . ,preferred-javascript-mode)
-							  (loop for entry in auto-mode-alist
-									unless (eq preferred-javascript-mode (cdr entry))
-									collect entry)))
+			      (loop for entry in auto-mode-alist
+				    unless (eq preferred-javascript-mode (cdr entry))
+				    collect entry)))
   :config
   (if (not (version< emacs-version "25"))
-	  (use-package xref-js2
-		:ensure t))
+      (use-package xref-js2
+	:ensure t))
 
   (use-package js-comint
-	:ensure t)
+    :ensure t)
 
   (use-package skewer-mode
-	:ensure t
-	:config
-	(add-hook 'skewer-mode-hook
-			  (lambda () (inferior-js-keys-mode -1))))
+    :ensure t
+    :config
+    (add-hook 'skewer-mode-hook
+	      (lambda () (inferior-js-keys-mode -1))))
 
   (setq js-indent-level preferred-javascript-indent-level)
 
   ;; Change some defaults: customize them to override
   (setq js2-basic-offset 2
-		js2-bounce-indent-p nil
-		js2-mode-show-parse-errors nil
-		js2-mode-show-strict-warnings nil
-		)
+	js2-bounce-indent-p nil
+	js2-mode-show-parse-errors nil
+	js2-mode-show-strict-warnings nil
+	)
 
   (js2-imenu-extras-setup)
 
   (defun my-disable-js2-checks-if-flycheck-active ()
-	(unless (flycheck-get-checker-for-buffer)
-	  (setq (make-local-variable 'js2-mode-show-parse-errors) t)
-	  (setq (make-local-variable 'js2-mode-show-strict-warnings) t)))
+    (unless (flycheck-get-checker-for-buffer)
+      (setq (make-local-variable 'js2-mode-show-parse-errors) t)
+      (setq (make-local-variable 'js2-mode-show-strict-warnings) t)))
 
   (add-hook 'js2-mode-hook 'my-disable-js2-checks-if-flycheck-active)
   (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2")))
@@ -83,22 +83,22 @@
   ;; Javascript nests {} and () a lot, so I find this helpful
 
   (when (and (executable-find "ag"))
-	(after-load 'js2-mode
-	  (define-key js2-mode-map (kbd "M-.") nil)
-	  (if (not (version< emacs-version "25"))
-		  (add-hook 'js2-mode-hook
-					(lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))))
+    (after-load 'js2-mode
+      (define-key js2-mode-map (kbd "M-.") nil)
+      (if (not (version< emacs-version "25"))
+	  (add-hook 'js2-mode-hook
+		    (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))))
 
 
 
 ;;; Coffeescript
 
   (after-load 'coffee-mode
-	(setq-default coffee-js-mode preferred-javascript-mode
-				  coffee-tab-width preferred-javascript-indent-level))
+    (setq-default coffee-js-mode preferred-javascript-mode
+		  coffee-tab-width preferred-javascript-indent-level))
 
   (when (fboundp 'coffee-mode)
-	(add-to-list 'auto-mode-alist '("\\.coffee\\.erb\\'" . coffee-mode)))
+    (add-to-list 'auto-mode-alist '("\\.coffee\\.erb\\'" . coffee-mode)))
 
   ;; ---------------------------------------------------------------------------
   ;; Run and interact with an inferior JS via js-comint.el
@@ -113,11 +113,11 @@
   (define-key inferior-js-minor-mode-map "\C-cl" 'js-load-file-and-go)
 
   (define-minor-mode inferior-js-keys-mode
-	"Bindings for communicating with an inferior js interpreter."
-	nil " InfJS" inferior-js-minor-mode-map)
+    "Bindings for communicating with an inferior js interpreter."
+    nil " InfJS" inferior-js-minor-mode-map)
 
   (dolist (hook '(js2-mode-hook js-mode-hook))
-	(add-hook hook 'inferior-js-keys-mode))
+    (add-hook hook 'inferior-js-keys-mode))
   )
 
 (provide 'my-javascript)

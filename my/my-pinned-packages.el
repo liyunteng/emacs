@@ -30,12 +30,12 @@
                          ("melpa-stable" . "http://mirrors.163.com/elpa/melpa-stable/")
                          ("gnu" . "http://mirrors.163.com/elpa/gnu/")
                          ("org" . "http://mirrors.163.com/elpa/org/")
-						 ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")
-						 ))
+			 ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")
+			 ))
 (setq package-pinned-packages
-	  '(
-		(switch-window . "melpa-stable")
-		))
+      '(
+	(switch-window . "melpa-stable")
+	))
 
 (provide 'my-pinned-packages)
 ;;; my-pinned-packages.el ends here

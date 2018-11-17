@@ -26,10 +26,10 @@
 
 (use-package server
   :commands (server-running-p
-			 server-mode)
+	     server-mode)
   :init
   (unless (server-running-p)
-	(server-mode t))
+    (server-mode t))
   :config
   ;; (setq-default noninteractive t)
 
@@ -38,18 +38,18 @@
   ;; 		server-use-tcp t
   ;; 		)
   (setq server-buffer "*server*"
-		server-log t
-		server-name "server"
-		server-msg-size 4096
-		server-buffer-clients nil
-		)
+	server-log t
+	server-name "server"
+	server-msg-size 4096
+	server-buffer-clients nil
+	)
 
   (defun server-remove-kill-buffer-hook ()
-	(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
+    (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
   (add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
 
   (defadvice server-visit-files (before parse-numbers-in-lines (files proc &optional nowait) activate)
-	"Open file with emacsclient with cursors positioned on requested line.
+    "Open file with emacsclient with cursors positioned on requested line.
 Most of console-based utilities prints filename in format
 'filename:linenumber'.  So you may wish to open filename in that format.
 Just call:
@@ -57,15 +57,15 @@ Just call:
   emacsclient filename:linenumber
 
 and file 'filename' will be opened and cursor set on line 'linenumber'"
-	(ad-set-arg 0
-				(mapcar (lambda (fn)
-						  (let ((name (car fn)))
-							(if (string-match "^\\(.*?\\):\\([0-9]+\\)\\(?::\\([0-9]+\\)\\)?$" name)
-								(cons
-								 (match-string 1 name)
-								 (cons (string-to-number (match-string 2 name))
-									   (string-to-number (or (match-string 3 name) ""))))
-							  fn))) files)))
+    (ad-set-arg 0
+		(mapcar (lambda (fn)
+			  (let ((name (car fn)))
+			    (if (string-match "^\\(.*?\\):\\([0-9]+\\)\\(?::\\([0-9]+\\)\\)?$" name)
+				(cons
+				 (match-string 1 name)
+				 (cons (string-to-number (match-string 2 name))
+				       (string-to-number (or (match-string 3 name) ""))))
+			      fn))) files)))
 
   )
 

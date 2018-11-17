@@ -29,17 +29,17 @@
 
 (use-package magit
   :bind (("C-x g" . magit-status)
-		 ("C-x M-g" . magit-dispatch-popup))
+	 ("C-x M-g" . magit-dispatch-popup))
   :ensure t
   :config
   (use-package gitconfig-mode
-	:ensure t)
+    :ensure t)
   (use-package gitignore-mode
-	:ensure t)
+    :ensure t)
   (use-package git-timemachine
-	:ensure t)
+    :ensure t)
   (use-package smeargle
-	:ensure t)
+    :ensure t)
   (setq magit-branch-read-upstream-first 'fallback)
   (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
   )

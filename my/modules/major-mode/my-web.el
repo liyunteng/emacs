@@ -27,32 +27,32 @@
 (use-package web-mode
   :ensure t
   :mode (("\\.xml\\'" . web-mode)
-		 ("\\.phtml\\'" . web-mode)
-		 ("\\.tpl\\.php\\'" . web-mode)
-		 ("\\.tpl\\'" . web-mode)
-		 ("\\.blade\\.php\\'" . web-mode)
-		 ("\\.jsp\\'" . web-mode)
-		 ("\\.as[cp]x\\'" . web-mode)
-		 ("\\.erb\\'" . web-mode)
-		 ("\\.html?\\'" . web-mode)
-		 ("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode)
-		 )
+	 ("\\.phtml\\'" . web-mode)
+	 ("\\.tpl\\.php\\'" . web-mode)
+	 ("\\.tpl\\'" . web-mode)
+	 ("\\.blade\\.php\\'" . web-mode)
+	 ("\\.jsp\\'" . web-mode)
+	 ("\\.as[cp]x\\'" . web-mode)
+	 ("\\.erb\\'" . web-mode)
+	 ("\\.html?\\'" . web-mode)
+	 ("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode)
+	 )
 
   :config
   ;; make web-mode play nice with smartparens
   (setq web-mode-enable-auto-pairing nil
-		web-mode-indent-style 4)
+	web-mode-indent-style 4)
 
   (sp-with-modes '(web-mode)
-	(sp-local-pair "%" "%"
-				   :unless '(sp-in-string-p)
-				   :post-handlers '(((lambda (&rest _ignored)
-									   (just-one-space)
-									   (save-excursion (insert " ")))
-									 "SPC" "=" "#")))
-	(sp-local-tag "%" "<% "  " %>")
-	(sp-local-tag "=" "<%= " " %>")
-	(sp-local-tag "#" "<%# " " %>"))
+    (sp-local-pair "%" "%"
+		   :unless '(sp-in-string-p)
+		   :post-handlers '(((lambda (&rest _ignored)
+				       (just-one-space)
+				       (save-excursion (insert " ")))
+				     "SPC" "=" "#")))
+    (sp-local-tag "%" "<% "  " %>")
+    (sp-local-tag "=" "<%= " " %>")
+    (sp-local-tag "#" "<%# " " %>"))
   )
 
 (provide 'my-web)

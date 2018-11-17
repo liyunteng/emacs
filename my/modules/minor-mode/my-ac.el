@@ -32,25 +32,25 @@
   :ensure t
   :bind
   (:map company-mode-map
-		("C-M-/" . company-other-backend)
-		("C-M-?" . company-begin-backend)
-		("M-SPC" . company-other-backend)
-		("M-/" . hippie-expand)
-		;; ("TAB" . company-indent-or-complete-common)
-		("TAB" . 'indent-for-tab-command)
-		:map company-active-map
-		("TAB" . company-complete-common)
-		("C-w" . nil)
-		("C-l" . company-show-location)
-		("C-n" . company-select-next)
-		("C-p" . company-select-previous)
-		("C-v" . company-next-page)
-		("C-d" . company-show-doc-buffer)
-		("M-v" . company-previous-page)
-		:map company-search-map
-		("C-n" . company-select-next)
-		("C-p" . company-select-previous)
-		)
+	("C-M-/" . company-other-backend)
+	("C-M-?" . company-begin-backend)
+	("M-SPC" . company-other-backend)
+	("M-/" . hippie-expand)
+	;; ("TAB" . company-indent-or-complete-common)
+	("TAB" . 'indent-for-tab-command)
+	:map company-active-map
+	("TAB" . company-complete-common)
+	("C-w" . nil)
+	("C-l" . company-show-location)
+	("C-n" . company-select-next)
+	("C-p" . company-select-previous)
+	("C-v" . company-next-page)
+	("C-d" . company-show-doc-buffer)
+	("M-v" . company-previous-page)
+	:map company-search-map
+	("C-n" . company-select-next)
+	("C-p" . company-select-previous)
+	)
   :commands (global-company-mode company-mode)
   :init
   (setq company-lighter-base "ac")
@@ -58,91 +58,91 @@
 
   (global-company-mode -1)
   (my|add-toggle company-mode
-	:mode company-mode
-	:documentation "Company mode")
+    :mode company-mode
+    :documentation "Company mode")
 
   :config
   (when (display-graphic-p)
-	(use-package company-quickhelp
-	  :ensure t
-	  :bind
-	  (:map company-active-map
-			("C-h"  . company-quickhelp-manual-begin))
-	  :config
-	  ;; maybe crash
-	  ;; (setq company-quickhelp-delay 1)
-	  ;; (setq company-quickhelp-max-lines 30)
-	  (company-quickhelp-mode 1)
-	  ))
+    (use-package company-quickhelp
+      :ensure t
+      :bind
+      (:map company-active-map
+	    ("C-h"  . company-quickhelp-manual-begin))
+      :config
+      ;; maybe crash
+      ;; (setq company-quickhelp-delay 1)
+      ;; (setq company-quickhelp-max-lines 30)
+      (company-quickhelp-mode 1)
+      ))
 
   ;; fix company-candidates-length is 0 will start company
   (defun company-manual-begin ()
-  	(interactive)
-  	(company-assert-enabled)
-  	(setq company--manual-action t)
-  	(unwind-protect
-  		(let ((company-minimum-prefix-length 1))
-  		  (or company-candidates
-  			  (company-auto-begin)))
-  	  (unless company-candidates
-  		(setq company--manual-action nil))))
+    (interactive)
+    (company-assert-enabled)
+    (setq company--manual-action t)
+    (unwind-protect
+  	(let ((company-minimum-prefix-length 1))
+  	  (or company-candidates
+  	      (company-auto-begin)))
+      (unless company-candidates
+  	(setq company--manual-action nil))))
 
   (setq company-show-numbers t
-		company-minimum-prefix-length 2
-		company-search-filtering t
-		company-auto-complete t
-		company-idle-delay 1
-		company-tooltip-idle-delay 0.5
-		company-transformers '(company-sort-by-backend-importance company-sort-by-occurrence)
-		company-tooltip-limit 10
-		company-tooltip-align-annotations t
-		company-tooltip-flip-when-above t
-		company-abort-manual-when-too-short t
-		company-selection-wrap-around nil
-		)
+	company-minimum-prefix-length 2
+	company-search-filtering t
+	company-auto-complete t
+	company-idle-delay 1
+	company-tooltip-idle-delay 0.5
+	company-transformers '(company-sort-by-backend-importance company-sort-by-occurrence)
+	company-tooltip-limit 10
+	company-tooltip-align-annotations t
+	company-tooltip-flip-when-above t
+	company-abort-manual-when-too-short t
+	company-selection-wrap-around nil
+	)
 
   (when (eq my-theme 'zenburn)
-	(custom-theme-set-faces
+    (custom-theme-set-faces
      'zenburn
-	 `(company-tooltip-search
-	   ((t (:background
-			,(color-darken-name (face-attribute 'default :background) 40)
-			:foreground "red"))))
-	 `(company-tooltip-search-selection
-	   ((t (:background
-			,(color-darken-name (face-attribute 'default :background) 20)
-			:foreground "red" :weight bold))))
-	 `(company-template-field
-	   ((t (:background
-			,(color-darken-name (face-attribute 'default :background) 10)))))
-	 ))
+     `(company-tooltip-search
+       ((t (:background
+	    ,(color-darken-name (face-attribute 'default :background) 40)
+	    :foreground "red"))))
+     `(company-tooltip-search-selection
+       ((t (:background
+	    ,(color-darken-name (face-attribute 'default :background) 20)
+	    :foreground "red" :weight bold))))
+     `(company-template-field
+       ((t (:background
+	    ,(color-darken-name (face-attribute 'default :background) 10)))))
+     ))
 
   ;; Suspend page-break-lines-mode while company menu is active
   ;; (see https://github.com/company-mode/company-mode/issues/416)
   (after-load 'page-break-lines-mode
-	(defvar my/page-break-lines-on-p nil)
-	(make-variable-buffer-local 'my/page-break-lines-on-p)
+    (defvar my/page-break-lines-on-p nil)
+    (make-variable-buffer-local 'my/page-break-lines-on-p)
 
-	(defun my/page-break-lines-disable (&rest ignore)
-	  (when (setq my/page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
-		(page-break-lines-mode -1)))
+    (defun my/page-break-lines-disable (&rest ignore)
+      (when (setq my/page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
+	(page-break-lines-mode -1)))
 
-	(defun my/page-break-lines-maybe-reenable (&rest ignore)
-	  (when my/page-break-lines-on-p
-		(page-break-lines-mode 1)))
+    (defun my/page-break-lines-maybe-reenable (&rest ignore)
+      (when my/page-break-lines-on-p
+	(page-break-lines-mode 1)))
 
-	(add-hook 'company-completion-started-hook 'sanityinc/page-break-lines-disable)
-	(add-hook 'company-completion-finished-hook 'sanityinc/page-break-lines-maybe-reenable)
-	(add-hook 'company-completion-cancelled-hook 'sanityinc/page-break-lines-maybe-reenable))
+    (add-hook 'company-completion-started-hook 'sanityinc/page-break-lines-disable)
+    (add-hook 'company-completion-finished-hook 'sanityinc/page-break-lines-maybe-reenable)
+    (add-hook 'company-completion-cancelled-hook 'sanityinc/page-break-lines-maybe-reenable))
   )
 
 ;; copy from spacemacs
 (defvar my-default-company-backends
   '(
-	company-yasnippet
-	;; (company-yasnippet)
-	(company-dabbrev-code company-gtags company-etags company-keywords)
-	company-files company-dabbrev)
+    company-yasnippet
+    ;; (company-yasnippet)
+    (company-dabbrev-code company-gtags company-etags company-keywords)
+    company-files company-dabbrev)
   "The list of default company backends used by spacemacs.
 This variable is used to configure mode-specific company backends in spacemacs.
 Backends in this list will always be active in these modes, as well as any
@@ -153,50 +153,50 @@ backends added by individual spacemacs layers.")
   "Define a MODE specific company backend variable with default backends.
 The variable name format is company-backends-MODE."
   `(defvar ,(intern (format "company-backends-%S" mode))
-	 ',my-default-company-backends
-	 ,(format "Company backend list for %S" mode)))
+     ',my-default-company-backends
+     ,(format "Company backend list for %S" mode)))
 
 
 (defun my--show-snippets-in-company (backend)
   (if (or (not company-enable-snippets-in-popup)
-		  (and (listp backend) (member 'company-yasnippet backend)))
-	  backend
-	(append
-	 (if (consp backend) backend (list backend))
-	 '(:with company-yasnippet)
-	 )
-	))
+	  (and (listp backend) (member 'company-yasnippet backend)))
+      backend
+    (append
+     (if (consp backend) backend (list backend))
+     '(:with company-yasnippet)
+     )
+    ))
 
 (defmacro my|enable-company (mode backends)
   "Enable company for the given MODE.
 MODE must match the symbol passed in `my|defvar-company-backends'.
 The initialization function is hooked to `MODE-hook'."
   (let ((mode-hook (intern (format "%S-hook" mode)))
-		(func (intern (format "my--init-company-%S" mode)))
-		(backend-list (intern (format "company-backends-%S" mode))))
-	`(progn
-	   (defun ,func ()
-		 ,(format "Initialize company for %S" mode)
-		 ;; add yasnippet to every backend
-		 ;; (when company-enable-snippets-in-popup
-		 ;;   (setq ,backend-list (mapcar 'my--show-snippets-in-company
-		 ;;   							   ,backend-list))
-		 ;;   )
-		 (set (make-variable-buffer-local 'company-backends)
-			  ,backend-list))
+	(func (intern (format "my--init-company-%S" mode)))
+	(backend-list (intern (format "company-backends-%S" mode))))
+    `(progn
+       (defun ,func ()
+	 ,(format "Initialize company for %S" mode)
+	 ;; add yasnippet to every backend
+	 ;; (when company-enable-snippets-in-popup
+	 ;;   (setq ,backend-list (mapcar 'my--show-snippets-in-company
+	 ;;   							   ,backend-list))
+	 ;;   )
+	 (set (make-variable-buffer-local 'company-backends)
+	      ,backend-list))
        (setq ,backend-list (append ,backends ,backend-list))
-	   (add-hook ',mode-hook ',func t)
-	   (add-hook ',mode-hook 'company-mode t))))
+       (add-hook ',mode-hook ',func t)
+       (add-hook ',mode-hook 'company-mode t))))
 
 (defmacro my|disable-company (mode)
   "Disable company for the given MODE.
 MODE parameter must match the parameter used in the call to
 `my|enable-company'."
   (let ((mode-hook (intern (format "%S-hook" mode)))
-		(func (intern (format "my--init-company-%S" mode))))
-	`(progn
-	   (remove-hook ',mode-hook ',func)
-	   (remove-hook ',mode-hook 'company-mode))))
+	(func (intern (format "my--init-company-%S" mode))))
+    `(progn
+       (remove-hook ',mode-hook ',func)
+       (remove-hook ',mode-hook 'company-mode))))
 
 (my|defvar-company-backends c-mode-common)
 (my|enable-company c-mode-common '(company-semantic company-clang))
@@ -216,7 +216,7 @@ MODE parameter must match the parameter used in the call to
   :ensure t
   :defer t
   :commands (company-shell
-			 company-shell-env))
+	     company-shell-env))
 (my|defvar-company-backends sh-mode)
 (my|enable-company sh-mode '(company-shell company-shell-env))
 

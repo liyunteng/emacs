@@ -24,54 +24,52 @@
 
 ;;; Code:
 
-(require 'ido)
-(ido-mode t)
-(ido-everywhere t)
-(setq-default ido-enable-flex-matching t)
-(setq-default ido-use-filename-at-point nil)
-(setq-default ido-auto-merge-work-directories-length -1)
-(setq-default ido-use-virtual-buffers t)
-(setq-default org-completion-use-ido t)
-(setq-default magit-completing-read-function 'magit-ido-completing-read)
+(use-package ido
+  :bind
+  (:map ido-completion-map
+	("C-k" . ido-delete-file-at-head)
+	("C-w" . ido-delete-backward-word-updir)
+	("C-o" . ido-copy-current-file-name)
+	("C-f" . ido-magic-forward-char)
+	("C-l" . ido-toggle-case)
+	;; ("C-p" . previous-history-element)
+	;; ("C-n" . next-history-element)
+	("C-y" . ido-copy-current-word)
+	("C-t" . ido-toogle-regexp))
 
-(setq-default ido-context-switch-command nil)
-(setq-default ido-cur-item nil)
-(setq-default ido-default-item nil)
-(setq-default ido-cur-list nil)
-(use-package ido-ubiquitous
-  :ensure t)
-(setq-default ido-ubiquitous-mode t)
-(use-package idomenu
-  :ensure t)
+  :init
+  (ido-mode t)
+  (ido-everywhere t)
 
-;; Allow the same buffer to be open in different frames
-(setq-default ido-default-buffer-method 'selected-window)
+  :config
+  (setq-default ido-save-directory-list-file (expand-file-name "ido.last" my-cache-dir))
+  (setq-default ido-enable-flex-matching t)
+  (setq-default ido-use-filename-at-point nil)
+  (setq-default ido-auto-merge-work-directories-length -1)
+  (setq-default ido-use-virtual-buffers t)
+  (setq-default org-completion-use-ido t)
+  (setq-default magit-completing-read-function 'magit-ido-completing-read)
 
-;; http://www.reddit.com/r/emacs/comments/21a4p9/use_recentf_and_ido_together/cgbprem
-(add-hook 'ido-setup-hook (lambda () (define-key ido-completion-map [up] 'previous-history-element)))
+  (setq-default ido-context-switch-command nil)
+  (setq-default ido-cur-item nil)
+  (setq-default ido-default-item nil)
+  (setq-default ido-cur-list nil)
 
-;;;ido中的按键
-(add-hook 'ido-setup-hook
-          (lambda ()
-            (define-key ido-completion-map (kbd "C-k")
-              'ido-delete-file-at-head)
-            (define-key ido-completion-map (kbd "C-w")
-              'ido-delete-backward-word-updir)
-            (define-key ido-completion-map (kbd "C-o")
-              'ido-copy-current-file-name)
-            (define-key ido-completion-map (kbd "C-f")
-              'ido-magic-forward-char)
-            (define-key ido-completion-map (kbd "C-l")
-              'ido-toggle-case)
-            (define-key ido-completion-map (kbd "C-p")
-              'previous-history-element)
-            (define-key ido-completion-map (kbd "C-n")
-              'next-history-element)
-            (define-key ido-completion-map (kbd "C-y")
-              'ido-copy-current-word)
-            (define-key ido-completion-map (kbd "C-t")
-              'ido-toggle-regexp)
-            ))
+  ;; Allow the same buffer to be open in different frames
+  (setq-default ido-default-buffer-method 'selected-window)
+
+  ;; http://www.reddit.com/r/emacs/comments/21a4p9/use_recentf_and_ido_together/cgbprem
+  (add-hook 'ido-setup-hook (lambda () (define-key ido-completion-map [up] 'previous-history-element)))
+
+  (use-package ido-ubiquitous
+    :ensure t
+    :config
+    (setq-default ido-ubiquitous-mode t))
+
+  (use-package idomenu
+    :ensure t)
+  )
+
 
 (provide 'my-ido)
 ;;; my-ido.el ends here

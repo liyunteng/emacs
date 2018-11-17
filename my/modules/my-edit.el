@@ -1393,9 +1393,9 @@ If optional IN-OTHER-WINDOW is non-nil, find the file in another window."
 	  (cond
 	   (ff-always-try-to-create  ;; try to create the file
 	    (let (name pathname)
-			  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	      ;; fix with helm will create file in directory ;;
-			  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	      (setq name
 		    (expand-file-name default-name
 				      (read-directory-name

@@ -27,21 +27,21 @@
   :ensure t
   :bind-keymap ("C-x j" . avy-command-prefix)
   :bind (:map avy-command-prefix
-			  ("j" . avy-goto-char)
-			  ("c" . avy-goto-char)
-			  ("w" . avy-goto-word-1)
-			  ("s" . avy-goto-symbol-1)
-			  ("." . avy-goto-word-or-subword-1)
-			  ("l" . avy-goto-line)
-			  ("m" . avy-move-line)
-			  ("p" . avy-copy-line)
-			  ("b" . avy-pop-mark)
-			  ("r" . avy-resume)
-			  ("u" . my/avy-goto-url)
-			  ("o" . my/avy-open-url)
-			  :map isearch-mode-map
-			  ("C-j" . avy-isearch)
-			  )
+	      ("j" . avy-goto-char)
+	      ("c" . avy-goto-char)
+	      ("w" . avy-goto-word-1)
+	      ("s" . avy-goto-symbol-1)
+	      ("." . avy-goto-word-or-subword-1)
+	      ("l" . avy-goto-line)
+	      ("m" . avy-move-line)
+	      ("p" . avy-copy-line)
+	      ("b" . avy-pop-mark)
+	      ("r" . avy-resume)
+	      ("u" . my/avy-goto-url)
+	      ("o" . my/avy-open-url)
+	      :map isearch-mode-map
+	      ("C-j" . avy-isearch)
+	      )
   :init
   (defvar avy-command-prefix)
   (define-prefix-command 'avy-command-prefix)
@@ -49,15 +49,15 @@
   (setq avy-background t)
   (setq avy-style 'at-full)
   (defun my/avy-goto-url()
-	"Use avy to go to an URL in the buffer."
-	(interactive)
-	(avy--generic-jump "https?://" nil 'pre))
+    "Use avy to go to an URL in the buffer."
+    (interactive)
+    (avy--generic-jump "https?://" nil 'pre))
   (defun my/avy-open-url ()
-	"Use avy to select an URL in the buffer and open it."
-	(interactive)
-	(save-excursion
-	  (my/avy-goto-url)
-	  (browse-url-at-point)))
+    "Use avy to select an URL in the buffer and open it."
+    (interactive)
+    (save-excursion
+      (my/avy-goto-url)
+      (browse-url-at-point)))
   )
 
 (provide 'my-avy)

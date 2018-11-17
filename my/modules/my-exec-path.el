@@ -27,7 +27,7 @@
   :ensure t
   :config
   (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE"))
-	(add-to-list 'exec-path-from-shell-variables var))
+    (add-to-list 'exec-path-from-shell-variables var))
 
   :if (memq window-system '(mac ns x))
   :config

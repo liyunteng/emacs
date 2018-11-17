@@ -33,27 +33,27 @@
   ;; (setq yas-prompt-functions '(yas-completing-prompt))
 
   (dolist (hook '(prog-mode-hook
-				  latex-mode-hook
-				  plain-text-mode
-				  nxml-mode-hook
-				  html-mode-hook
-				  web-mode
+		  latex-mode-hook
+		  plain-text-mode
+		  nxml-mode-hook
+		  html-mode-hook
+		  web-mode
 
-				  autoconf-mode-hook
-				  conf-unix-mode-hook
-				  cmake-mode-hook
-				  css-mode-hook
-				  m4-mode-hook
-				  ;; org-mode-hook
-				  makefile-gmake-mode-hook
-				  sql-mode-hook
-				  snippet-mode-hook
-				  udev-mode-hook
-				  ))
-	(add-hook hook 'yas-minor-mode-on))
+		  autoconf-mode-hook
+		  conf-unix-mode-hook
+		  cmake-mode-hook
+		  css-mode-hook
+		  m4-mode-hook
+		  ;; org-mode-hook
+		  makefile-gmake-mode-hook
+		  sql-mode-hook
+		  snippet-mode-hook
+		  udev-mode-hook
+		  ))
+    (add-hook hook 'yas-minor-mode-on))
   (my|add-toggle yas-minor-mode
-	:mode yas-minor-mode
-	:documentation "yas minor mode")
+    :mode yas-minor-mode
+    :documentation "yas minor mode")
 
 
   (yas-global-mode -1)
@@ -62,7 +62,7 @@
   ;; (:map yas-minor-mode-map ("TAB" . yas-expand))
   :config
   (use-package yasnippet-snippets
-	:ensure t)
+    :ensure t)
   ;; (use-package dropdown-list
   ;; 	:ensure t)
 

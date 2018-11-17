@@ -57,33 +57,33 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>."
 (defvar header-prefix-string "")
 
 (defvar make-header-hook '(
-                           ;; header-mode-line
-                           ;; header-blank
-                           header-file-name
-                           header-description
-                           header-author
-                           ;; header-maintainer
-                           header-copyright
-                           header-creation-date
-                           ;; header-version
-                           header-modification-date
-                           header-modification-author
-                           header-update-count
-                           header-blank
-                           header-end-line
-                           header-commentary
-                           header-blank
-                           header-blank
-                           header-blank
-                           header-end-line
-                           header-history
-                           header-blank
-                           header-blank
-                           header-end-line
-                           ;; header-free-software
-                           header-code
-                           ;; header-eof
-                           )
+			   ;; header-mode-line
+			   ;; header-blank
+			   header-file-name
+			   header-description
+			   header-author
+			   ;; header-maintainer
+			   header-copyright
+			   header-creation-date
+			   ;; header-version
+			   header-modification-date
+			   header-modification-author
+			   header-update-count
+			   header-blank
+			   header-end-line
+			   header-commentary
+			   header-blank
+			   header-blank
+			   header-blank
+			   header-end-line
+			   header-history
+			   header-blank
+			   header-blank
+			   header-end-line
+			   ;; header-free-software
+			   header-code
+			   ;; header-eof
+			   )
   "*Functions that insert header elements.
 Each function is started on a new line and is expected to end in a new line.
 Each function may insert any number of lines, but each line, including the
@@ -576,4 +576,4 @@ Return nil, for use on a hook."
 
 
 (provide 'my-header)
-;;; header.el ends here
+;;; my-header.el ends here
