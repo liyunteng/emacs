@@ -29,7 +29,7 @@
   (add-hook 'after-init-hook 'recentf-mode)
   :config
   (setq
-   recentf-max-saved-items 1000
+   recentf-max-saved-items 100
    recentf-max-menu-items 15
    recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
 		     "TAGS" "GTAGS" "GRAGS" "GPATH"))
@@ -64,61 +64,60 @@
   (unless (or (not (desktop-full-file-name)) my-debug)
     (desktop-save-mode +1))
   :config
-
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
-  (setq desktop-globals-to-save
-	(append '((comint-input-ring        . 50)
-		  (compile-history          . 30)
-		  desktop-missing-file-warning
-		  (dired-regexp-history     . 20)
-		  (extended-command-history . 30)
-		  (face-name-history        . 20)
-		  (file-name-history        . 100)
-		  (grep-find-history        . 30)
-		  (grep-history             . 30)
-		  (helm-ff-history          . 100)
-		  (helm-file-name-history   . 100)
-		  (helm-grep-history        . 300)
-		  (helm-occur-history       . 300)
-		  (ido-buffer-history       . 100)
-		  (ido-last-directory-list  . 100)
-		  (ido-work-directory-list  . 100)
-		  (ido-work-file-list       . 100)
-		  (ivy-history              . 100)
-		  (magit-read-rev-history   . 50)
-		  (minibuffer-history       . 50)
-		  (org-clock-history        . 50)
-		  (org-refile-history       . 50)
-		  (org-tags-history         . 50)
-		  (query-replace-history    . 60)
-		  (read-expression-history  . 60)
-		  (regexp-history           . 60)
-		  (regexp-search-ring       . 20)
-		  (search-ring              . 20)
-		  (shell-command-history    . 50)
-		  tags-file-name
-		  tags-table-list)))
+  ;; (setq desktop-globals-to-save
+  ;; 	(append '((comint-input-ring        . 50)
+  ;; 		  (compile-history          . 30)
+  ;; 		  desktop-missing-file-warning
+  ;; 		  (dired-regexp-history     . 20)
+  ;; 		  (extended-command-history . 30)
+  ;; 		  (face-name-history        . 20)
+  ;; 		  (file-name-history        . 100)
+  ;; 		  (grep-find-history        . 30)
+  ;; 		  (grep-history             . 30)
+  ;; 		  (helm-ff-history          . 100)
+  ;; 		  (helm-file-name-history   . 100)
+  ;; 		  (helm-grep-history        . 300)
+  ;; 		  (helm-occur-history       . 300)
+  ;; 		  (ido-buffer-history       . 100)
+  ;; 		  (ido-last-directory-list  . 100)
+  ;; 		  (ido-work-directory-list  . 100)
+  ;; 		  (ido-work-file-list       . 100)
+  ;; 		  (ivy-history              . 100)
+  ;; 		  (magit-read-rev-history   . 50)
+  ;; 		  (minibuffer-history       . 50)
+  ;; 		  (org-clock-history        . 50)
+  ;; 		  (org-refile-history       . 50)
+  ;; 		  (org-tags-history         . 50)
+  ;; 		  (query-replace-history    . 60)
+  ;; 		  (read-expression-history  . 60)
+  ;; 		  (regexp-history           . 60)
+  ;; 		  (regexp-search-ring       . 20)
+  ;; 		  (search-ring              . 20)
+  ;; 		  (shell-command-history    . 50)
+  ;; 		  tags-file-name
+  ;; 		  tags-table-list)))
 
-  (when my-debug
-    (defadvice desktop-read (around time-restore activate)
-      (let ((start-time (current-time)))
-	(prog1
-	    ad-do-it
-	  (message "Desktop restored in %.2fms"
-		   (my-time-subtract-millis (current-time)
-					    start-time)))))
 
-    (defadvice desktop-create-buffer (around time-create activate)
-      (let ((start-time (current-time))
-	    (filename (ad-get-arg 1)))
-	(prog1
-	    ad-do-it
-	  (message "Desktop: %.2fms to restore %s"
-		   (my-time-subtract-millis (current-time)
-					    start-time)
-		   (when filename
-		     (abbreviate-file-name filename)))))))
+  (defadvice desktop-read (around time-restore activate)
+    (let ((start-time (current-time)))
+      (prog1
+	  ad-do-it
+	(message "Desktop restored in %.2fms"
+		 (my-time-subtract-millis (current-time)
+					  start-time)))))
+
+  (defadvice desktop-create-buffer (around time-create activate)
+    (let ((start-time (current-time))
+	  (filename (ad-get-arg 1)))
+      (prog1
+	  ad-do-it
+	(message "Desktop: %.2fms to restore %s"
+		 (my-time-subtract-millis (current-time)
+					  start-time)
+		 (when filename
+		   (abbreviate-file-name filename))))))
 
   (defadvice desktop-remove (around set-desktop-dirname activate)
     ad-do-it
@@ -144,28 +143,13 @@
 (use-package saveplace
   :init
   (if (fboundp 'save-place-mode)
-      (save-place-mode)))
+      (save-place-mode +1)))
 
-;; automatically save buffers associated with files on buffer switch
-;; and on windows switch
-(defun my-auto-save-command ()
-  "Save the current buffer if `prelude-auto-save' is not nil."
-  (when (and auto-save-default
-             buffer-file-name
-             (buffer-modified-p (current-buffer))
-             (file-writable-p buffer-file-name))
-    (save-buffer)))
-
-;; advise all window switching functions
-(my|advise-commands "auto-save"
-		    (switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
-		    before
-		    (my-auto-save-command))
-
-(add-hook 'mouse-leave-buffer-hook 'my-auto-save-command)
-
-(when (version<= "24.4" emacs-version)
-  (add-hook 'focus-out-hook 'my-auto-save-command))
+(use-package super-save
+  :ensure t
+  :init
+  (super-save-mode +1)
+  )
 
 (provide 'my-session)
 ;;; my-session.el ends here

@@ -1041,7 +1041,8 @@ This functions should be added to the hooks of major modes for programming."
     "Default coding hook, useful with any programming language."
     (goto-address-prog-mode +1)
     (bug-reference-prog-mode +1)
-    (smartparens-mode +1)
+    (after-load 'smartparens
+      (smartparens-mode +1))
     (my-local-comment-auto-fill)
     (my-font-lock-comment-annotations))
   (add-hook 'prog-mode-hook 'my-prog-mode-defaults))

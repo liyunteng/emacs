@@ -27,29 +27,27 @@
 ;;========== backup =========
 ;; 不产生备份文件
 (setq-default make-backup-files nil)
+(setq-default backup-directory-alist `((".*" . ,(expand-file-name "Backup/" my-cache-dir))))
 ;;所有的备份文件转移到Backup目录下
 (when make-backup-files
-  (setq backup-directory-alist
-        `((".*" . ,(expand-file-name "Backup/" my-cache-dir)))
-        version-control t
-        kept-old-versions 2
-        kept-new-versions 2
-        delete-old-versions t
-        backup-by-copying t))
+  (setq save-silently t
+	version-control t
+	kept-old-versions 2
+	kept-new-versions 2
+	delete-old-versions t
+	backup-by-copying t))
 
-;; 自动保存模式
+;; replace by super-save
 (setq-default auto-save-default t)
-(when auto-save-default
-  (let ((autosave-dir (expand-file-name "auto-save/" my-cache-dir)))
-    (setq auto-save-list-file-prefix
-          (concat autosave-dir "saves-"))
-    (setq auto-save-file-name-transforms
-          `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'"
-             ,autosave-dir t)))
-    ))
+(setq-default auto-save-list-file-prefix
+	      (cond ((eq system-type 'ms-dos)
+		     ;; MS-DOS cannot have initial dot, and allows only 8.3 names
+		     (concat (expand-file-name "auto-save/" my-cache-dir) "_saves-") )
+		    (t
+		     (concat (expand-file-name "auto-save/" my-cache-dir) ".saves-"))))
+
 
 ;; 将保存的文件移动到.emacs.d/目录中
-(setq-default recentf-save-file  (expand-file-name "recentf" user-emacs-directory))
 (setq-default diary-file (expand-file-name "diary" my-cache-dir))
 
 (setq-default ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir))
@@ -59,8 +57,7 @@
 (setq-default abbrev-file-name (expand-file-name "abbrev_defs" my-cache-dir))
 
 ;; undo-tree
-(setq-default undo-tree-history-directory-alist
-              `((".*" . ,(expand-file-name "undo-tree/" my-cache-dir))))
+(setq-default undo-tree-history-directory-alist `((".*" . ,(expand-file-name "undo-tree/" my-cache-dir))))
 
 ;; saveplace remembers your location in a file when saving files
 (setq-default save-place-file (expand-file-name "saveplace" my-cache-dir))
@@ -79,15 +76,16 @@
 (setq-default projectile-known-projects-file (expand-file-name "projectile-bookmarks" my-cache-dir))
 
 ;; eshell
-(setq-default eshell-directory-name
-	      (expand-file-name "eshell" my-cache-dir))
+(setq-default eshell-directory-name (expand-file-name "eshell" my-cache-dir))
 
 ;; semantic
-(setq-default semanticdb-default-save-directory
-	      (expand-file-name "semanticdb" my-cache-dir))
+(setq-default semanticdb-default-save-directory (expand-file-name "semanticdb" my-cache-dir))
 ;; tramp cache files
 (setq-default tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
 (setq-default tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))
+
+;; flycheck
+(setq-default flycheck-temp-prefix  (expand-file-name "flycheck/flycheck" my-cache-dir))
 
 (provide 'my-base)
 ;;; my-base.el ends here

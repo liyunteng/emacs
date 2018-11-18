@@ -30,6 +30,11 @@
 	     smartparens-strict-mode
 	     smartparens-global-mode
 	     smartparens-global-strict-mode)
+  :bind
+  (:map smartparens-mode-map
+	("M-S" . sp-splice-sexp)
+	)
+
   :init
   (defun my--conditionally-enable-smartparens-mode ()
     "Enable `smartparens-mode' in the minibuffer, during `eval-expression'."
@@ -48,8 +53,9 @@
     :documentation "Enable smartparens strict.")
 
   :config
-  (require'smartparens-config)
+  (require 'smartparens-config)
   ;; (sp-use-paredit-bindings)
+  (sp-use-smartparens-bindings)
   (setq sp-base-key-bindings 'smartparens
 	sp-autoskip-closing-pair 'always
 	sp-hybrid-kill-entire-symbol nil
@@ -63,15 +69,13 @@
 	sp-highlight-wrap-overlay t
 	sp-highlight-wrap-tag-overlay t)
 
-  (sp-use-smartparens-bindings)
   (show-smartparens-global-mode +1)
   (defun my--smartparens-pair-newline-and-indent (id action context)
     (save-excursion
       (newline)
       (indent-according-to-mode)
       )
-    (indent-according-to-mode)
-    )
+    (indent-according-to-mode))
   (defun my/smart-closing-parenthesis ()
     (interactive)
     (let* ((sp-navigate-close-if-unbalanced t)
@@ -103,12 +107,12 @@
 
   (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
   ;; (define-key smartparens-mode-map (kbd ")") 'my/smart-closing-parenthesis)
-  (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)
+  ;; (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)
   (define-key smartparens-mode-map (kbd "C-M-a") nil)
   (define-key smartparens-mode-map (kbd "C-M-e") nil)
-  (define-key smartparens-mode-map [remap backward-delete-char] 'sp-backward-delete-char)
-  (define-key smartparens-mode-map [remap backward-kill-word] 'sp-backward-kill-word)
-  (define-key smartparens-mode-map [remap backward-kill-sexp] 'sp-backward-kill-sexp)
+  ;; (define-key smartparens-mode-map [remap backward-delete-char] 'sp-backward-delete-char)
+  ;; (define-key smartparens-mode-map [remap backward-kill-word] 'sp-backward-kill-word)
+  ;; (define-key smartparens-mode-map [remap backward-kill-sexp] 'sp-backward-kill-sexp)
   )
 
 
