@@ -280,6 +280,7 @@
   ;; (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "M-Y") 'helm-all-mark-rings)
   (global-set-key (kbd "M-U") 'helm-resume)
   (global-set-key (kbd "C-c f") 'helm-recentf)
   (global-set-key (kbd "C-h o") 'helm-occur)

@@ -1150,6 +1150,7 @@ Compare them on count first,and in case of tie sort them alphabetically."
         (message "No words.")))
     words))
 
+
 ;; Hack to fix a bug with tabulated-list.el
 ;; see: http://redd.it/2dgy52
 (defun tabulated-list-revert (&rest ignored)

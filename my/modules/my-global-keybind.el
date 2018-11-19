@@ -65,11 +65,13 @@
 ;; 打开标记
 ;; (global-set-key (kbd "C-SPC") 'cua-set-mark)
 ;; (global-set-key (kbd "C-.") 'set-mark-command)
-(global-set-key (kbd "C-SPC") 'set-mark-command)
+(global-set-key (kbd "C-SPC") 'set-mark-command) ; C-u C-SPC to pop
+;;
 ;;跳到全局上次标记的地方(C-x C-.)
 (global-set-key (kbd "C-x C-.") 'pop-global-mark)
-;; (global-set-key (kbd "C-x C-x") 'cua-exchange-point-and-mark)
-;; (global-set-key (kbd "C-x C-x") 'pop-to-mark-command)
+;;跳到矩形另一端
+(global-set-key (kbd "C-x C-x") 'cua-exchange-point-and-mark)
+(global-set-key (kbd "C-x C-,") 'pop-to-mark-command) ;equal C-u C-SPC
 
 ;;移动到第0列
 (global-set-key (kbd "M-m") 'move-beginning-of-line)
@@ -117,7 +119,6 @@
 (global-set-key (kbd "C-c M-;") 'comment-box)
 ;; hide-comnt
 (global-set-key (kbd "C-x M-;") 'hide/show-comments-toggle)
-
 
 ;; ==================== MACRO ====================
 ;; 宏 C-x C-k
