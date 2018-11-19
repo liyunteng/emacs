@@ -1,3 +1,7 @@
+2018-11-20  liyunteng  <li_yunteng@163.com>
+
+	* my/modules/minor-mode/my-magit.el (magit): bind "C-x v =" to magit-diff-buffer-file
+
 2018-05-30  liyunteng  <li_yunteng@163.com>
 
 	* my/my-init.el (my-modules):

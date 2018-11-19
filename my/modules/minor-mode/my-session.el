@@ -128,12 +128,13 @@
   :init
   (savehist-mode +1)
   :config
-  (setq savehist-additional-variables '(mark-ring
-					global-mark-ring
-					search-ring
-					regexp-search-ring
-					extended-command-history
-					)
+  (setq savehist-additional-variables
+	'(mark-ring
+	  global-mark-ring
+	  search-ring
+	  regexp-search-ring
+	  extended-command-history
+	  )
 	;; save every minute
 	savehist-autosave-interval 60
 	history-length 1000

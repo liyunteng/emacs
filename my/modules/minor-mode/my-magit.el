@@ -29,7 +29,11 @@
 
 (use-package magit
   :bind (("C-x g" . magit-status)
-	 ("C-x M-g" . magit-dispatch-popup))
+	 ("C-x M-g" . magit-dispatch-popup)
+	 ("C-x v =" . magit-diff-buffer-file)
+	 :map magit-status-mode-map
+	 ("M-RET" . magit-diff-visit-file-other-window)
+	 )
   :ensure t
   :config
   (use-package gitconfig-mode
