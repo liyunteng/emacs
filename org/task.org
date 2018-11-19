@@ -1,6 +1,9 @@
 * TASKS
-* TODO Check Weekly <2018-11-15 Thu>
-    SCHEDULED: <2018-11-22 Thu +1w>
-    :PROPERTIES:
-    :LAST_REPEAT: [2018-11-15 Thu 01:32]
-    :END:
+* TODO Check Weekly [0/3]
+  SCHEDULED: <2018-11-22 Thu +1w>
+  :PROPERTIES:
+  :LAST_REPEAT: [2018-11-15 Thu 01:32]
+  :END:
+  - [ ] aaaa
+  - [ ] dddd
+  - [ ] abdd
