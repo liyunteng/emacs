@@ -26,11 +26,11 @@
 
 (use-package recentf
   :init
-  (add-hook 'after-init-hook 'recentf-mode)
+  (recentf-mode +1)
   :config
   (setq
-   recentf-max-saved-items 100
-   recentf-max-menu-items 15
+   recentf-max-saved-items 300
+   recentf-max-menu-items 30
    recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
 		     "TAGS" "GTAGS" "GRAGS" "GPATH"))
 
@@ -41,9 +41,8 @@
   (add-to-list 'recentf-exclude
 	       "COMMIT_EDITMSG\\'")
 
+  ;; (add-hook 'after-init-hook 'recentf-mode)
   ;; (add-hook 'after-init-hook 'recentf-load-list)
-  ;; (add-hook 'after-init-hook 'recentf-cleanup)
-  ;; (recentf-mode +1)
   )
 
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
@@ -147,9 +146,12 @@
 
 (use-package super-save
   :ensure t
+  :diminish super-save-mode
   :init
   (super-save-mode +1)
-  )
+  :config
+  (add-to-list 'super-save-triggers 'dired-jump)
+  (add-to-list 'super-save-triggers 'dired-jump-other-window))
 
 (provide 'my-session)
 ;;; my-session.el ends here

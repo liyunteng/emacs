@@ -34,12 +34,6 @@
 	 ("C-x M-j" . dired-jump-other-window))
 
   :config
-
-  (use-package dired-aux
-    :config
-    (setq dired-isearch-filenames 'dwim)
-    )
-
   (use-package dired-x
     :config
     (setq dired-omit-verbose nil
@@ -48,29 +42,68 @@
 	  )
     (dolist (ex '(".cache" ".o" ".ui"))
       (add-to-list 'dired-omit-extensions ex))
-    (add-hook 'dired-mode-hook 'dired-omit-mode)
-    )
+    (add-hook 'dired-mode-hook 'dired-omit-mode))
 
+  (use-package dired-quick-sort
+    :ensure t)
 
-  (use-package dired+
+  ;; (use-package dired+
+  ;;   :init
+  ;;   (setq diredp-hide-details-initially-flag nil
+  ;; 	  diredp-hide-details-propagate-flag nil
+  ;; 	  dired-hide-details-mode nil
+  ;; 	  global-dired-hide-details-mode nil)
+  ;;   :config
+  ;;   (diredp-toggle-find-file-reuse-dir +1))
+
+  (use-package dired-filetype-face
+    :ensure t
     :config
-    (setq diredp-hide-details-initially-flag nil
-	  diredp-hide-details-propagate-flag nil
-	  dired-hide-details-mode nil
-	  global-dired-hide-details-mode nil
-	  )
-    ;; 重用buffer，避免产生过多的dired buffer
-    (defun my--turn-on-diredp-find-reuse-dir ()
-      (toggle-diredp-find-file-reuse-dir t))
-    (add-hook 'dired-mode-hook 'my--turn-on-diredp-find-reuse-dir)
-    )
+    (deffiletype-face "code" "light green" "code")
+    (deffiletype-face-regexp code
+      :type-for-docstring "code"
+      :extensions
+      '(
+	"a"
+	"ahk"
+	"asm"
+	"C"
+	"c"
+	"cc"
+	"cpp"
+	"cs"
+	"css"
+	"ddl"
+	"el"
+	"erl"
+	"go"
+	"h"
+	"hrl"
+	"JAVA"
+	"java"
+	"m"
+	"mm"
+	"lisp"
+	"livecode"
+	"lua"
+	"p"
+	"pas"
+	"php"
+	"pl"
+	"py"
+	"rb"
+	"rev"
+	"sch"
+	"scheme"
+	"scm"
+	"sql"
+	"st"))
+    (deffiletype-setup "code" "code"))
 
   (use-package diff-hl
     :ensure t
-    :commands (diff-hl-dired-mode)
     :config
-    (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-    )
+    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
   (setq
    dired-dwim-target t
@@ -125,19 +158,11 @@ if no files marked, always operate on current line in dired-mode."
   (define-key dired-mode-map (kbd "e") 'my/dired-view-file-other-window)
   (define-key dired-mode-map (kbd "c") 'dired-kill-subdir)
   (define-key dired-mode-map (kbd "TAB") 'dired-hide-all)
-  (define-key dired-mode-map (kbd "s") nil)
-  (define-key dired-mode-map (kbd "s r") 'dired-sort-toggle-or-edit)
-  (define-key dired-mode-map (kbd "s s") 'dired-sort-size)
-  (define-key dired-mode-map (kbd "s n") 'dired-sort-name)
-  (define-key dired-mode-map (kbd "s e") 'dired-sort-extension)
-  (define-key dired-mode-map (kbd "s u") 'dired-sort-utime)
-  (define-key dired-mode-map (kbd "s c") 'dired-sort-ctime)
-  (define-key dired-mode-map (kbd "s t") 'dired-sort-time)
+  (define-key dired-mode-map (kbd "s") 'hydra-dired-quick-sort/body)
   (define-key dired-mode-map (kbd "C-M-f") 'find-grep)
   (define-key dired-mode-map (kbd "C-M-S-f") 'find-grep-dired)
   (define-key dired-mode-map (kbd "\\") 'my/dired-run-git-command)
   ;; (define-key dired-mode-map (kbd "=") 'dired-compare-directories)
-
   )
 
 

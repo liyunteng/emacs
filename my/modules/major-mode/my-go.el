@@ -30,8 +30,8 @@
   :commands (go-mode)
   :bind (:map go-mode-map
 	      ("C-h f" . helm-apropos)
-	      ;; ("C-c C-d" . godoc-at-point)  ; can't work correctly
-	      ("C-c C-d" . godoc)
+	      ("C-c C-d" . godoc-at-point)  ; need go-tools's go doc
+	      ("C-c C-p" . godoc)	    ; need godoc
 	      ("C-M-\\" . gofmt)
 
 
@@ -43,7 +43,6 @@
 
 
 	      ("M-." . godef-jump)
-	      ("C-c C-p" . godef-describe)
 	      ("C-c C-l" . godef-describe)
 	      ;; ("C-c C-b" . xref-pop-marker-stack)
 	      )
@@ -52,6 +51,12 @@
     :ensure t
     :init
     (add-hook 'go-mode-hook 'go-eldoc-setup))
+
+  (use-package go-guru
+    :ensure t
+    :init
+    (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+    )
 
   ;; (use-package gotest
   ;;   :ensure t
@@ -62,6 +67,7 @@
   ;; 		("C-c C-c" . go-run)
   ;; 		)
   ;;   )
+
 
   :config
   ;; need go get golang.org/tools/cmd/goimports

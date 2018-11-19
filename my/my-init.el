@@ -48,12 +48,14 @@
   (load my-personal-info-file))
 
 (defvar my-modules
-  '(my-base
+  '(
+    my-base
+    my-locales
     my-utils
     my-exec-path
     my-gui
-    my-themes
     my-window
+    my-themes
 
     my-smartparens
     my-edit
@@ -62,6 +64,7 @@
     my-register
     my-auto
 
+    my-global-keybind
     ;; my-ido
     ;; my-ivy
     my-mode
@@ -73,7 +76,6 @@
     my-flycheck
     my-auto-insert
     my-hideshow
-    my-yas
     my-ac
     ;; my-auto-complete
 
@@ -95,10 +97,9 @@
     ;; my-header
 
     my-jump
-    my-global-keybind
     my-session
-    my-locales
-    my-server))
+    my-server
+    my-yas))
 
 (defun my-load (m)
   "Load feature M."

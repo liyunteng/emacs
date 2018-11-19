@@ -361,6 +361,7 @@
   (local-set-key [(f9)] 'my/smart-compile)
   (local-set-key (kbd "C-c C-m") 'my/smart-compile)
 
+  (local-set-key (kbd "C-c C-k") 'kill-region) ;replace c-toggle-comment-style
   )
 
 

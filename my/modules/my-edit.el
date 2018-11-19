@@ -80,8 +80,8 @@
 	      "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
 
 ;; Show column number in mode line
-(column-number-mode t)
-(line-number-mode t)
+(column-number-mode +1)
+(line-number-mode +1)
 
 ;; no blink
 (blink-cursor-mode -1)
@@ -168,11 +168,10 @@
 ;;显示行列号
 (use-package linum
   :init
-  (global-linum-mode 'linum-mode)
+  (global-linum-mode +1)
   :config
   (setq linum-delay nil)
   (setq linum-format 'dynamic)
-
   (defvar my-linum-mode-inhibit-modes-list
     '(eshell-mode
       shell-mode
@@ -215,16 +214,15 @@
       doc-view-mode
       image-mode
       ))
-
   (defadvice linum-on (around my-linum-on-inhibit-for-modes)
     "Stop the load of `linum-mode' for some major modes."
     (unless (member major-mode my-linum-mode-inhibit-modes-list)
       ad-do-it))
   (ad-activate 'linum-on)
 
-  ;; (defadvice linum-schedule (around my-linum-schedule () activate)
-  ;; 	"Updated line number every second."
-  ;; 	(run-with-idle-timer 1 nil #'linum-update-current))
+  (defadvice linum-schedule (around my-linum-schedule () activate)
+    "Updated line number every second."
+    (run-with-idle-timer 1 nil #'linum-update-current))
   )
 
 ;; highlight current line
@@ -244,19 +242,19 @@
 ;; 启用cua
 (use-package cua-base
   :init
-  (cua-selection-mode t)
-  :config
-  (setq cua-auto-mark-last-change t)
   ;; When called with no active region, do not activate mark.
   (defadvice cua-exchange-point-and-mark (before deactivate-mark activate compile)
     "When called with no active region, do not activate mark."
     (interactive
-     (list (not (region-active-p))))))
+     (list (not (region-active-p)))))
+  :config
+  (setq cua-auto-mark-last-change t)
+  (cua-selection-mode +1))
 
 ;;
 (use-package uniquify
   :defer t
-  :init
+  :config
   (setq uniquify-buffer-name-style 'forward)
   (setq uniquify-separator "/")
   (setq uniquify-after-kill-buffer-p t)
@@ -266,7 +264,7 @@
 ;; ediff
 (use-package ediff
   :commands (ediff)
-  :init
+  :config
   (setq
    ediff-window-setup-function 'ediff-setup-windows-plain
    ediff-split-window-function 'split-window-horizontally
@@ -279,7 +277,7 @@
 ;; clean up obsolete buffers automatically
 (use-package midnight
   :init
-  (setq midnight-mode t))
+  (midnight-mode +1))
 
 ;; bookmark
 (use-package bookmark
@@ -287,12 +285,12 @@
 	 ("C-x r m" . bookmark-set)
 	 ("C-x r l" . list-bookmarks))
   :config
-  (setq bookmark-save-flag 1))
+  (setq bookmark-save-flag t))
 
 ;; abbrev config
 (use-package abbrev
   :if (file-exists-p abbrev-file-name)
-  :config
+  :init
   (abbrev-mode +1)
   (add-hook 'text-mode-hook 'abbrev-mode))
 
@@ -311,17 +309,15 @@
 
 ;; Auto revert
 (use-package autorevert
-  :init
-  (global-auto-revert-mode +1)
   :config
   (setq global-auto-revert-non-file-buffers t
 	auto-revert-verbose nil)
   (add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode)
-  )
+  (global-auto-revert-mode +1))
 
 ;; which func
 (use-package which-func
-  :init
+  :config
   (which-function-mode +1))
 
 ;; whitespace 设置
@@ -357,6 +353,12 @@
     :mode whitespace-mode
     :documentation "Show whitespace")
 
+  (my|add-toggle whitespace-cleanup-mode
+    :status whitespace-cleanup-mode
+    :on (whitespace-cleanup-mode +1)
+    :off (whitespace-cleanup-mode -1)
+    :documentation "cleanup whitesapce")
+
   (setq whitespace-line-column fill-column)
   (setq whitespace-style
 	'(face
@@ -374,13 +376,6 @@
   (require 'my-whitespace-cleanup-mode)
   (global-whitespace-cleanup-mode +1)
 
-  (my|add-toggle whitespace-cleanup-mode
-    :status whitespace-cleanup-mode
-    :on (whitespace-cleanup-mode +1)
-    :off (whitespace-cleanup-mode -1)
-    :documentation "cleanup whitesapce")
-
-  :config
   ;; (set-face-attribute 'whitespace-space nil
   ;; 					  :background nil
   ;; 					  :foreground (face-attribute 'font-lock-warning-face
@@ -433,7 +428,7 @@ indent yanked text (with prefix arg don't indent)."
 ;; hippie
 (use-package hippie-exp
   :commands (hippie-expand)
-  :config
+  :init
   (setq hippie-expand-try-functions-list
 	'(
 	  ;; Try to expand word "dynamically", searching the current buffer.
@@ -519,10 +514,8 @@ indent yanked text (with prefix arg don't indent)."
 		      finger  whois  network-connection-to-service
 		      network-connection)
   :config
-  (setq netstat-program-options '("-nap")
-	ping-program-options '()
-	)
-  )
+  (setq netstat-program-options '("-natup")
+	ping-program-options '()))
 
 
 (use-package etags
@@ -534,31 +527,17 @@ indent yanked text (with prefix arg don't indent)."
 	     tags-search
 	     pop-tag-mark
 	     )
-  :init
+  :config
   ;;设置TAGS文件
   (when (file-exists-p "/usr/include/TAGS")
     (add-to-list 'tags-table-list "/usr/include/TAGS"))
   (when (file-exists-p "/usr/local/include/TAGS")
     (add-to-list 'tags-table-list "/usr/local/include/TAGS"))
 
-  :config
   (setq tags-revert-without-query t
 	tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
 	tags-add-tables nil		  ;don't ask user
-	)
-
-  (defun my/tags-search (&optional regexp  file-list-form)
-    "My tags search, if REGEXP is nil, use selected word.
-FILE-LIST-FORM used by\"tags-loop-continue\"."
-    (interactive (find-tag-interactive "Search tags(regexp): "))
-    (if (and (equal regexp "")
-             (eq (car tags-loop-scan) 're-search-forward)
-             (null tags-loop-operate))
-        ;; Continue last tags-search as if by M-,.
-        (tags-loop-continue nil)
-      (setq tags-loop-scan `(re-search-forward ',regexp nil t)
-            tags-loop-operate nil)
-      (tags-loop-continue (or file-list-form t)))))
+	))
 
 ;; disable feature
 ;; (put 'set-goal-column 'disabled nil)
@@ -571,8 +550,7 @@ FILE-LIST-FORM used by\"tags-loop-continue\"."
   (setq
    calendar-date-style (quote iso)
    calendar-mark-holidays-flag t
-   calendar-chinese-all-holidays-flag t)
-  )
+   calendar-chinese-all-holidays-flag t))
 
 ;; set buffer major mode accroding to auto-mode-alist
 (defadvice set-buffer-major-mode (after set-major-mode activate compile)
@@ -612,8 +590,7 @@ FILE-LIST-FORM used by\"tags-loop-continue\"."
     (interactive)
     (save-excursion
       (modify-file-local-variable-prop-line 'compile-command (eval compile-command)
-					    `add-or-replace)
-      ))
+					    `add-or-replace)))
 
   (defun my/smart-compile()
     "比较智能的C/C++编译命令
@@ -686,8 +663,7 @@ clang++ -Wall编译"
       (let ((inhibit-read-only t))
 	(ansi-color-apply-on-region (point-min) (point-max)))))
 
-  (add-hook 'compilation-filter-hook #'my/colorize-compilation-buffer)
-  )
+  (add-hook 'compilation-filter-hook #'my/colorize-compilation-buffer))
 
 ;; highlight
 (use-package hi-lock
@@ -841,7 +817,7 @@ at the end of the line."
   (setq expand-region-smart-cursor nil)
   )
 
-;; page-break-lines
+;; page-break-lines "s-q C-l"
 (use-package page-break-lines
   :ensure t
   :diminish page-break-lines-mode
@@ -853,20 +829,23 @@ at the end of the line."
 (use-package browse-kill-ring
   :ensure t
   :bind (("M-y" . browse-kill-ring))
-  :init
+  :config
   (browse-kill-ring-default-keybindings)
   )
 
 ;; projectile
 (use-package projectile
   :bind-keymap ("C-c p" . projectile-command-map)
+  :bind (:map projectile-command-map
+	      ("A a" . projectile-add-known-project)
+	      ("A d" . projectile-remove-known-project))
   :ensure t
-  :init
-  (projectile-mode +1)
-  (setq projectile-enable-caching t)
   :config
-  (setq projectile-mode-line '(:eval  (format " PJ[%s]" (projectile-project-name))))
-  (setq projectile-sort-order 'recentf)
+  (setq projectile-sort-order 'recentf
+        projectile-indexing-method 'alien)
+  (setq projectile-enable-caching t)
+  (setq projectile-mode-line-prefix " Project")
+  (projectile-mode +1)
   )
 
 ;; diff-hl
@@ -880,23 +859,19 @@ at the end of the line."
   (my|add-toggle global-diff-hl-mode
     :mode global-diff-hl-mode
     :documentation "Global highlight diff")
-
+  :config
   (global-diff-hl-mode +1)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-  )
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 
 ;; undo-tree
 (use-package undo-tree
-  :commands (undo-tree-undo undo-tree-redo undo-tree-visualizer)
   :ensure t
   :diminish undo-tree-mode
-  :init
-  (global-undo-tree-mode +1)
   :config
-  (setq undo-tree-visualizer-timestamps t
-	undo-tree-visualizer-diff t
-	undo-tree-auto-save-history t)
-  )
+  ;; fix undo-tree maybe cause menu-bar can't work in scrach buffer
+  (add-to-list 'undo-tree-incompatible-major-modes 'lisp-interaction-mode)
+  (setq undo-tree-auto-save-history t)
+  (global-undo-tree-mode +1))
 
 ;; easy-kill
 (use-package easy-kill
@@ -912,7 +887,7 @@ at the end of the line."
 (use-package editorconfig
   :ensure t
   :diminish editorconfig-mode
-  :init
+  :config
   (editorconfig-mode +1)
   )
 
@@ -951,7 +926,7 @@ at the end of the line."
 ;; symbol-overlay
 (use-package symbol-overlay
   :ensure t
-  :diminish "so"
+  :diminish symbol-overlay-mode
   :bind (:map symbol-overlay-mode-map
 	      ("M-n" . symbol-overlay-jump-next)
 	      ("M-p" . symbol-overlay-jump-prev))
@@ -965,8 +940,7 @@ at the end of the line."
   				      :background)
   		      :foreground
   		      (face-attribute 'isearch
-  				      :foreground))
-  )
+  				      :foreground)))
 
 (use-package google-translate
   :ensure t
@@ -1021,7 +995,7 @@ For instance pass En as source for English."
   (setq goto-address-url-face 'underline)
   )
 
-;; hide-comnt
+;; hide-comnt "C-x M-;"
 (use-package hide-comnt)
 
 ;; prog-mode-hook
@@ -1101,109 +1075,6 @@ When nil, never request confirmation.")
       (fundamental-mode))))
 ;; Prompt to open file literally if large file.
 (add-hook 'find-file-hook 'my-check-large-file)
-
-(defun my/rename-file (filename &optional new-filename)
-  "Rename FILENAME to NEW-FILENAME.
-
-When NEW-FILENAME is not specified, asks user for a new name.
-
-Also renames associated buffer (if any exists), invalidates
-projectile cache when it's possible and update recentf list."
-  (interactive "f")
-  (when (and filename (file-exists-p filename))
-    (let* ((buffer (find-buffer-visiting filename))
-	   (short-name (file-name-nondirectory filename))
-	   (new-name (if new-filename new-filename
-		       (read-file-name
-			(format "Rename %s to: " short-name)))))
-      (cond ((get-buffer new-name)
-	     (error "A buffer named '%s' already exists!" new-name))
-	    (t
-	     (let ((dir (file-name-directory new-name)))
-	       (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
-		 (make-directory dir t)))
-	     (rename-file filename new-name 1)
-	     (when buffer
-	       (kill-buffer buffer)
-	       (find-file new-name))
-	     (when (fboundp 'recentf-add-file)
-	       (recentf-add-file new-name)
-	       (recentf-remove-if-non-kept filename))
-	     (when (projectile-project-p)
-	       (call-interactively #'projectile-invalidate-cache))
-	     (message "File '%s' successfully renamed to '%s'" short-name (file-name-nondirectory new-name)))))))
-
-;; from magnars
-(defun my/rename-current-buffer-file ()
-  "Renames current buffer and file it is visiting."
-  (interactive)
-  (let* ((name (buffer-name))
-         (filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        ;; (error "Buffer '%s' is not visiting a file!" name)
-        (rename-buffer (read-from-minibuffer "New name: " (buffer-name)))
-      (let* ((dir (file-name-directory filename))
-             (new-name (read-file-name "New name: " dir)))
-        (cond ((get-buffer new-name)
-               (error "A buffer named '%s' already exists!" new-name))
-              (t
-               (let ((dir (file-name-directory new-name)))
-                 (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
-                   (make-directory dir t)))
-               (rename-file filename new-name 1)
-               (rename-buffer new-name)
-               (set-visited-file-name new-name)
-               (set-buffer-modified-p nil)
-               (when (fboundp 'recentf-add-file)
-                 (recentf-add-file new-name)
-                 (recentf-remove-if-non-kept filename))
-               (when (projectile-project-p)
-                 (call-interactively #'projectile-invalidate-cache))
-               (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
-;;(define-key my-mode-map (kbd "C-c r") 'my/rename-current-buffer-file)
-
-(defun my/delete-file (filename &optional ask-user)
-  "Remove specified file or directory.
-
-Also kills associated buffer (if any exists) and invalidates
-projectile cache when it's possible.
-
-When ASK-USER is non-nil, user will be asked to confirm file
-removal."
-  (interactive "f")
-  (when (and filename (file-exists-p filename))
-    (let ((buffer (find-buffer-visiting filename)))
-      (when buffer
-        (kill-buffer buffer)))
-    (when (or (not ask-user)
-              (yes-or-no-p "Are you sure you want to delete this file? "))
-      (delete-file filename)
-      (when (projectile-project-p)
-        (call-interactively #'projectile-invalidate-cache)))))
-
-(defun my/delete-file-confirm (filename)
-  "Remove specified file or directory after users approval.
-
-FILENAME is deleted using `my/delete-file' function.."
-  (interactive "f")
-  (funcall-interactively #'my/delete-file filename t))
-
-;; from magnars
-(defun my/delete-current-buffer-file ()
-  "Removes file connected to current buffer and kills buffer."
-  (interactive)
-  (let ((filename (buffer-file-name))
-        (buffer (current-buffer))
-        (name (buffer-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (ido-kill-buffer)
-      (when (yes-or-no-p "Are you sure you want to delete this file? ")
-        (delete-file filename t)
-        (kill-buffer buffer)
-        (when (projectile-project-p)
-          (call-interactively #'projectile-invalidate-cache))
-        (message "File '%s' successfully removed" filename)))))
-;;(define-key my-mode-map (kbd "C-c D") 'my/delete-current-buffer-file)
 
 (defun my/select-current-block ()
   "Select the current block of text between blank lines."
