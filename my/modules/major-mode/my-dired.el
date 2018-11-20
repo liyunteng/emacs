@@ -37,9 +37,9 @@
   (use-package dired-x
     :config
     (setq dired-omit-verbose nil
-	  ;; dired忽略的上限
-	  dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
-	  )
+  	  ;; dired忽略的上限
+  	  dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
+  	  )
     (dolist (ex '(".cache" ".o" ".ui"))
       (add-to-list 'dired-omit-extensions ex))
     (add-hook 'dired-mode-hook 'dired-omit-mode))
@@ -64,40 +64,40 @@
       :type-for-docstring "code"
       :extensions
       '(
-	"a"
-	"ahk"
-	"asm"
-	"C"
-	"c"
-	"cc"
-	"cpp"
-	"cs"
-	"css"
-	"ddl"
-	"el"
-	"erl"
-	"go"
-	"h"
-	"hrl"
-	"JAVA"
-	"java"
-	"m"
-	"mm"
-	"lisp"
-	"livecode"
-	"lua"
-	"p"
-	"pas"
-	"php"
-	"pl"
-	"py"
-	"rb"
-	"rev"
-	"sch"
-	"scheme"
-	"scm"
-	"sql"
-	"st"))
+  	"a"
+  	"ahk"
+  	"asm"
+  	"C"
+  	"c"
+  	"cc"
+  	"cpp"
+  	"cs"
+  	"css"
+  	"ddl"
+  	"el"
+  	"erl"
+  	"go"
+  	"h"
+  	"hrl"
+  	"JAVA"
+  	"java"
+  	"m"
+  	"mm"
+  	"lisp"
+  	"livecode"
+  	"lua"
+  	"p"
+  	"pas"
+  	"php"
+  	"pl"
+  	"py"
+  	"rb"
+  	"rev"
+  	"sch"
+  	"scheme"
+  	"scm"
+  	"sql"
+  	"st"))
     (deffiletype-setup "code" "code"))
 
   (use-package diff-hl
@@ -111,8 +111,8 @@
    dired-recursive-copies 'top)
   ;;传给ls的参数
   (if (or (eq system-type 'linux)
-	  (eq system-type 'gnu/linux))
-      (setq dired-listing-switches "-alhcDF")
+  	  (eq system-type 'gnu/linux))
+      (setq dired-listing-switches "-alhcD")
     (setq dired-listing-switches "-alh"))
 
   ;; goto parent dir
