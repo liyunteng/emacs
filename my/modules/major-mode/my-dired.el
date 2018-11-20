@@ -112,7 +112,7 @@
   ;;传给ls的参数
   (if (or (eq system-type 'linux)
   	  (eq system-type 'gnu/linux))
-      (setq dired-listing-switches "-alhcD")
+      (setq dired-listing-switches "-alhqD")
     (setq dired-listing-switches "-alh"))
 
   ;; goto parent dir
