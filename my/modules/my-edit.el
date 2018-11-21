@@ -32,6 +32,22 @@
 ;;在鼠标光标处插入
 (setq mouse-yank-at-point t)
 
+;; no blink
+(blink-cursor-mode -1)
+
+;; 光标靠近鼠标指针时，鼠标指针自动让开
+(mouse-avoidance-mode 'animate)
+
+;; (setq ring-bell-function 'ignore
+;;       visible-bell nil)
+;; 响铃
+(defun my--flash-mode-line ()
+  "My visible bell."
+  (invert-face 'mode-line)
+  (run-with-timer 0.05 nil 'invert-face 'mode-line))
+(setq ring-bell-function 'my--flash-mode-line)
+
+
 ;; 支持emacs和外部程序的拷贝粘贴
 (setq-default x-select-enable-clipboard t)
 
@@ -40,38 +56,28 @@
       scroll-conservatively 100000
       scroll-preserve-screen-position t)
 
+;; 递归minibuffer
+(setq enable-recursive-minibuffers t)
+
+;; suggest key bindings
+(setq suggest-key-bindings t)
+
+;; resize mini-window to fit the text displayed in them
+(setq resize-mini-windows t)
+
 ;; default major mode
 (setq-default default-major-mode 'text-mode)
 
-;; 光标靠近鼠标指针时，鼠标指针自动让开
-(mouse-avoidance-mode 'animate)
-
-;; Show a marker in the left fringe for lines not in the buffuer
+;; Show a marker in the left fringe for lines not in the buffer
 (setq indicate-empty-lines t)
 
 ;; message max
 (setq message-log-max 16384)
 
-;; remove annoying ellipsis when printing sexp in message buffer
-(setq eval-expression-print-length nil
-      eval-expression-print-level nil)
-
-;; buffer menu
-(setq buffers-menu-max-size 10)
-
 ;;设置删除记录
-(setq kill-ring-max 2000)
+(setq kill-ring-max 200)
 
-;; 递归minibuffer
-(setq enable-recursive-minibuffers t)
-
-;; M-x command 显示绑定的键
-(setq suggest-key-bindings t)
-
-;; 锁定行高
-(setq resize-mini-windows t)
-
-;; 设定行距
+;; 行距
 (setq line-spacing 0.0)
 
 ;; 显示80行就换行
@@ -82,12 +88,6 @@
 ;; Show column number in mode line
 (column-number-mode +1)
 (line-number-mode +1)
-
-;; no blink
-(blink-cursor-mode -1)
-
-;; When emacs asks for "yes" or "no", let "y" or "n" suffice
-(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; draw underline lower
 (setq x-underline-at-descent-line t)
@@ -100,10 +100,6 @@
 
 ;; add final newline
 (setq require-final-newline t)
-
-(delete-selection-mode +1)
-
-(setq set-mark-command-repeat-pop t)
 
 ;; Use system trash for file deletion
 ;; should work on Windows and Linux distros
@@ -124,10 +120,12 @@
 
 (setq truncate-lines nil)
 (setq truncate-partial-width-windows nil)
+(setq set-mark-command-repeat-pop t)
 (transient-mark-mode +1)
 
+(delete-selection-mode +1)
 ;; Keep focus while navigating help buffers
-(setq help-window-select 't)
+(setq help-window-select 'nil)
 
 ;; imenu
 (setq-default imenu-auto-rescan t)
@@ -155,74 +153,26 @@
   (display-battery-mode t)
   )
 
-;; (setq ring-bell-function 'ignore
-;;       visible-bell nil)
-;; 响铃
-(defun my--flash-mode-line ()
-  "My visible bell."
-  (invert-face 'mode-line)
-  (run-with-timer 0.05 nil 'invert-face 'mode-line))
-(setq ring-bell-function 'my--flash-mode-line)
-
 ;; linum
 ;;显示行列号
 (use-package linum
   :init
   (global-linum-mode +1)
-  :config
-  (setq linum-delay nil)
+  :init
+  (setq linum-delay t)
   (setq linum-format 'dynamic)
-  (defvar my-linum-mode-inhibit-modes-list
-    '(eshell-mode
-      shell-mode
-      term-mode
-      profiler-report-mode
-      ffip-diff-mode
-      dictionary-mode
-      erc-mode
-      browse-kill-ring-mode
-      etags-select-mode
-      dired-mode
-      help-mode
-      ;; text-mode
-      fundamental-mode
-      jabber-roster-mode
-      jabber-chat-mode
-      inferior-js-mode
-      inferior-python-mode
-      inferior-scheme-mode
-      ivy-occur-grep-mode ; for better performance
-      twittering-mode
-      compilation-mode
-      weibo-timeline-mode
-      woman-mode
-      Info-mode
-      calc-mode
-      calc-trail-mode
-      comint-mode
-      gnus-group-mode
-      inf-ruby-mode
-      gud-mode
-      org-mode
-      vc-git-log-edit-mode
-      log-edit-mode
-      w3m-mode
-      speedbar-mode
-      gnus-summary-mode
-      gnus-article-mode
-      calendar-mode
-      doc-view-mode
-      image-mode
-      ))
-  (defadvice linum-on (around my-linum-on-inhibit-for-modes)
-    "Stop the load of `linum-mode' for some major modes."
-    (unless (member major-mode my-linum-mode-inhibit-modes-list)
-      ad-do-it))
-  (ad-activate 'linum-on)
 
+  (my|add-toggle linum-mode
+    :status linum-mode
+    :on (linum-mode +1)
+    :off (linum-mode -1)
+    :documentation "Show line number")
+
+  :config
   (defadvice linum-schedule (around my-linum-schedule () activate)
     "Updated line number every second."
     (run-with-idle-timer 1 nil #'linum-update-current))
+  (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
   )
 
 ;; highlight current line
@@ -237,6 +187,7 @@
 	   (hl-line-mode nil)
 	   (setq-local global-hl-line-mode nil))
     :documentation "Show trailing-whitespace")
+  ;; can't in :config
   (global-hl-line-mode +1))
 
 ;; 启用cua
@@ -285,14 +236,16 @@
 	 ("C-x r m" . bookmark-set)
 	 ("C-x r l" . list-bookmarks))
   :config
-  (setq bookmark-save-flag t))
+  (setq bookmark-save-flag t)
+  (setq bookmark-default-file (expand-file-name "bookmarks" my-cache-dir)))
 
 ;; abbrev config
 (use-package abbrev
+  :diminish abbrev-mode
   :if (file-exists-p abbrev-file-name)
-  :init
-  (abbrev-mode +1)
-  (add-hook 'text-mode-hook 'abbrev-mode))
+  :config
+  (setq abbrev-file-name (expand-file-name "abbrev_defs" my-cache-dir))
+  (abbrev-mode +1))
 
 ;; make a shell script executable automatically on save
 (use-package executable
@@ -357,7 +310,7 @@
     :status whitespace-cleanup-mode
     :on (whitespace-cleanup-mode +1)
     :off (whitespace-cleanup-mode -1)
-    :documentation "cleanup whitesapce")
+    :documentation "Cleanup whitesapce")
 
   (setq whitespace-line-column fill-column)
   (setq whitespace-style
@@ -402,13 +355,12 @@
   "Modes for which auto-indenting is suppressed.")
 
 (defvar my-yank-indent-threshold 3000)
-(defvar my-yank-indent-modes '(LaTex-mode TeX-mode))
-(dolist (mode '(latex-mode
-                plain-tex-mode
-                nxml-mode
-                html-mode
-                web-mode))
-  (add-to-list 'my-yank-indent-modes mode))
+(defvar my-yank-indent-modes '(LaTex-mode
+			       TeX-mode
+			       latex-mode
+			       nxml-mode
+			       html-mode
+			       web-mode))
 ;; automatically indenting yanked text if in programming-modes
 (defun yank-advised-indent-function (beg end)
   "Do indentation from BEG to END, as long as the region isn't too large."
@@ -421,6 +373,7 @@ indent yanked text (with prefix arg don't indent)."
                     (if (and (not (ad-get-arg 0))
                              (not (member major-mode my-indent-sensitive-modes))
                              (or (derived-mode-p 'prog-mode)
+				 (derived-mode-p 'text-mode)
                                  (member major-mode my-yank-indent-modes)))
                         (let ((transient-mark-mode nil))
                           (yank-advised-indent-function (region-beginning) (region-end)))))
@@ -492,15 +445,6 @@ indent yanked text (with prefix arg don't indent)."
 ;; 设置默认浏览器为firefox
 ;; (setq browse-url-firefox-new-window-is-tab t)
 ;; (setq browse-url-firefox-program "firefox")
-
-;;;设置git diff的样式
-;; (setq magit-diff-options
-;;       (quote
-;;        ("--minimal" "--patience" "--histogram"
-;;         "--ignore-space-change")))
-
-;;; 设置github-clone使用的默认协议
-;; (setq github-clone-url-slot :clone-url)
 
 
 ;;;启动时的默认模式
@@ -742,6 +686,9 @@ the right."
 	     comment-indent
 	     comment-indent-default
 	     )
+  :bind (("M-;" . my/comment-dwim-line)
+	 ("C-M-;" . comment-kill)
+	 ("C-c M-;" . comment-box))
   :init
   (defun my/comment-dwim-line (&optional arg)
     "Replacement for the \"comment-dwim\" command.
@@ -765,21 +712,31 @@ at the end of the line."
   (setq comment-fill-column 80)
   )
 
+(use-package register
+  :bind (("C-x r f" . frameset-to-register)
+	 ("C-x r w" . list-registers)
+
+	 ("C-x r ." . point-to-register)
+	 ("C-x r j" . jump-to-register)
+	 ("C-x r i" . insert-register)
+	 ("C-x r a" . append-to-register)
+	 ("C-x r p" . prepend-to-register))
+  :config
+  (setq register-preview-delay 0)
+  (setq register-alist nil)
+
+  (set-register ?z '(file . "~/git/"))
+  ;; (set-register ?f '(window-configuration 10))
+  ;; (add-to-list 'desktop-globals-to-save '(window-configuration))
+  )
+
 
 (use-package diminish
-  :ensure t
-  :init
-  (diminish 'beacon-mode)
-  (diminish 'editorconfig-mode)
-  (diminish 'which-key-mode)
-  (diminish 'page-break-lines-mode)
-  (diminish 'eldoc-mode)
-  (diminish 'abbrev-mode)
-  (diminish 'symbol-overlay-mode)
-  )
+  :ensure t)
 
 (use-package fill-column-indicator
   :ensure t
+  :diminish fci-mode
   :commands (turn-on-fci-mode
 	     turn-off-fci-mode
 	     fci-mode)
@@ -800,6 +757,7 @@ at the end of the line."
 
 (use-package aggressive-indent
   :ensure t
+  :diminish aggressive-indent-mode
   :commands (aggressive-indent-mode)
   :init
   (my|add-toggle aggressive-indent-mode
@@ -867,10 +825,11 @@ at the end of the line."
 (use-package undo-tree
   :ensure t
   :diminish undo-tree-mode
+  :init
+  (setq undo-tree-auto-save-history t)
   :config
   ;; fix undo-tree maybe cause menu-bar can't work in scrach buffer
-  (add-to-list 'undo-tree-incompatible-major-modes 'lisp-interaction-mode)
-  (setq undo-tree-auto-save-history t)
+  ;; (add-to-list 'undo-tree-incompatible-major-modes 'lisp-interaction-mode)
   (global-undo-tree-mode +1))
 
 ;; easy-kill
@@ -878,7 +837,7 @@ at the end of the line."
   :ensure t
   :commands (easy-kill easy-mark)
   :bind (([remap kill-ring-save] . easy-kill))
-  :config
+  ;; :config
   ;; (global-set-key [remap kill-ring-save] 'easy-kill)
   ;; (global-set-key [remap mark-sexp] 'easy-mark)
   )
@@ -911,11 +870,13 @@ at the end of the line."
   :ensure t
   :bind (("C-<" . mc/mark-previous-like-this)
 	 ("C->" . mc/mark-next-like-this)
-	 ("C-c C-<" . mc/mark-all-like-this)
-	 ("C-c m r" . set-rectangular-region-anchor)
-	 ("C-c m c" . mc/edit-lines)
-	 ("C-c m e" . mc/edit-ends-of-lines)
-	 ("C-c m a" . mc/edit-beginnings-of-lines)
+	 ("C-c M <" . mc/mark-previous-like-this)
+	 ("C-c M >" . mc/mark-next-like-this)
+	 ("C-c M C-<" . mc/mark-all-like-this)
+	 ("C-c M r" . set-rectangular-region-anchor)
+	 ("C-c M c" . mc/edit-ines)
+	 ("C-c M e" . mc/edit-ends-of-lines)
+	 ("C-c M a" . mc/edit-beginnings-of-lines)
 	 ))
 
 ;; discover-my-major
@@ -995,9 +956,6 @@ For instance pass En as source for English."
   (setq goto-address-url-face 'underline)
   )
 
-;; hide-comnt "C-x M-;"
-(use-package hide-comnt)
-
 ;; prog-mode-hook
 (use-package prog-mode
   :config
@@ -1009,8 +967,8 @@ For instance pass En as source for English."
 
 This functions should be added to the hooks of major modes for programming."
     (font-lock-add-keywords
-     nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\):\\)"
-			1 font-lock-warning-face t))))
+     nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|\\BUG\\):\\)"
+	    1 font-lock-warning-face t))))
   (defun my-prog-mode-defaults ()
     "Default coding hook, useful with any programming language."
     (goto-address-prog-mode +1)
@@ -1018,6 +976,7 @@ This functions should be added to the hooks of major modes for programming."
     (my-local-comment-auto-fill)
     (my-font-lock-comment-annotations))
   (add-hook 'prog-mode-hook 'my-prog-mode-defaults))
+
 
 
 
@@ -1149,143 +1108,270 @@ Compare them on count first,and in case of tie sort them alphabetically."
     words))
 
 
-;; Hack to fix a bug with tabulated-list.el
-;; see: http://redd.it/2dgy52
-(defun tabulated-list-revert (&rest ignored)
-  "The `revert-buffer-function' for `tabulated-list-mode'.
-It runs `tabulated-list-revert-hook', then calls `tabulated-list-print'."
-  (interactive)
-  (unless (derived-mode-p 'tabulated-list-mode)
-    (error "The current buffer is not in Tabulated List mode"))
-  (run-hooks 'tabulated-list-revert-hook)
-  ;; hack is here
-  ;; (tabulated-list-print t)
-  (tabulated-list-print))
-
 (use-package find-file
   :defer t
   :config
+  ;;  FIXME: overwirte to fix bug
   (defun ff-find-the-other-file (&optional in-other-window)
     "Find the header or source file corresponding to the current file.
-Being on a `#include' line pulls in that file, but see the help on
-the `ff-ignore-include' variable.
+  Being on a `#include' line pulls in that file, but see the help on
+  the `ff-ignore-include' variable.
 
-If optional IN-OTHER-WINDOW is non-nil, find the file in another window."
+  If optional IN-OTHER-WINDOW is non-nil, find the file in another window."
 
     (let (match           ;; matching regexp for this file
-	  suffixes        ;; set of replacing regexps for the matching regexp
-	  action          ;; function to generate the names of the other files
-	  fname           ;; basename of this file
-	  pos             ;; where we start matching filenames
-	  stub            ;; name of the file without extension
-	  alist           ;; working copy of the list of file extensions
-	  pathname        ;; the pathname of the file or the #include line
-	  default-name    ;; file we should create if none found
-	  format          ;; what we have to match
-	  found           ;; name of the file or buffer found - nil if none
-	  dirs            ;; local value of ff-search-directories
-	  no-match)       ;; whether we know about this kind of file
+  	  suffixes        ;; set of replacing regexps for the matching regexp
+  	  action          ;; function to generate the names of the other files
+  	  fname           ;; basename of this file
+  	  pos             ;; where we start matching filenames
+  	  stub            ;; name of the file without extension
+  	  alist           ;; working copy of the list of file extensions
+  	  pathname        ;; the pathname of the file or the #include line
+  	  default-name    ;; file we should create if none found
+  	  format          ;; what we have to match
+  	  found           ;; name of the file or buffer found - nil if none
+  	  dirs            ;; local value of ff-search-directories
+  	  no-match)       ;; whether we know about this kind of file
       (run-hooks 'ff-pre-find-hook 'ff-pre-find-hooks)
       (message "Working...")
       (setq dirs
-	    (if (symbolp ff-search-directories)
-		(ff-list-replace-env-vars (symbol-value ff-search-directories))
-	      (ff-list-replace-env-vars ff-search-directories)))
+  	    (if (symbolp ff-search-directories)
+  		(ff-list-replace-env-vars (symbol-value ff-search-directories))
+  	      (ff-list-replace-env-vars ff-search-directories)))
       (setq fname (ff-treat-as-special))
       (cond
        ((and (not ff-ignore-include) fname)
-	(setq default-name fname)
-	(setq found (ff-get-file dirs fname nil in-other-window)))
+  	(setq default-name fname)
+  	(setq found (ff-get-file dirs fname nil in-other-window)))
        ;; let's just get the corresponding file
        (t
-	(setq alist (if (symbolp ff-other-file-alist)
-			(symbol-value ff-other-file-alist)
-		      ff-other-file-alist)
-	      pathname (if (buffer-file-name)
-			   (buffer-file-name)
-			 "/none.none"))
-	(setq fname (file-name-nondirectory pathname)
-	      no-match nil
-	      match (car alist))
+  	(setq alist (if (symbolp ff-other-file-alist)
+  			(symbol-value ff-other-file-alist)
+  		      ff-other-file-alist)
+  	      pathname (if (buffer-file-name)
+  			   (buffer-file-name)
+  			 "/none.none"))
+  	(setq fname (file-name-nondirectory pathname)
+  	      no-match nil
+  	      match (car alist))
 
-	;; find the table entry corresponding to this file
-	(setq pos (ff-string-match (car match) fname))
-	(while (and match (if (and pos (>= pos 0)) nil (not pos)))
-	  (setq alist (cdr alist))
-	  (setq match (car alist))
-	  (setq pos (ff-string-match (car match) fname)))
+  	;; find the table entry corresponding to this file
+  	(setq pos (ff-string-match (car match) fname))
+  	(while (and match (if (and pos (>= pos 0)) nil (not pos)))
+  	  (setq alist (cdr alist))
+  	  (setq match (car alist))
+  	  (setq pos (ff-string-match (car match) fname)))
 
-	;; no point going on if we haven't found anything
-	(if (not match)
-	    (setq no-match t)
+  	;; no point going on if we haven't found anything
+  	(if (not match)
+  	    (setq no-match t)
 
-	  ;; otherwise, suffixes contains what we need
-	  (setq suffixes (car (cdr match))
-		action (car (cdr match))
-		found nil)
+  	  ;; otherwise, suffixes contains what we need
+  	  (setq suffixes (car (cdr match))
+  		action (car (cdr match))
+  		found nil)
 
-	  ;; if we have a function to generate new names,
-	  ;; invoke it with the name of the current file
-	  (if (and (atom action) (fboundp action))
-	      (progn
-		(setq suffixes (funcall action (buffer-file-name))
-		      match (cons (car match) (list suffixes))
-		      stub nil
-		      default-name (car suffixes)))
+  	  ;; if we have a function to generate new names,
+  	  ;; invoke it with the name of the current file
+  	  (if (and (atom action) (fboundp action))
+  	      (progn
+  		(setq suffixes (funcall action (buffer-file-name))
+  		      match (cons (car match) (list suffixes))
+  		      stub nil
+  		      default-name (car suffixes)))
 
-	    ;; otherwise build our filename stub
-	    (cond
-	     ;; get around the problem that 0 and nil both mean false!
-	     ((= pos 0)
-	      (setq format "")
-	      (setq stub "")
-	      )
-	     (t
-	      (setq format (concat "\\(.+\\)" (car match)))
-	      (string-match format fname)
-	      (setq stub (substring fname (match-beginning 1) (match-end 1)))
-	      ))
-	    ;; if we find nothing, we should try to get a file like this one
-	    (setq default-name
-		  (concat stub (car (car (cdr match))))))
-	  ;; do the real work - find the file
-	  (setq found
-		(ff-get-file dirs
-			     stub
-			     suffixes
-			     in-other-window)))))
+  	    ;; otherwise build our filename stub
+  	    (cond
+  	     ;; get around the problem that 0 and nil both mean false!
+  	     ((= pos 0)
+  	      (setq format "")
+  	      (setq stub "")
+  	      )
+  	     (t
+  	      (setq format (concat "\\(.+\\)" (car match)))
+  	      (string-match format fname)
+  	      (setq stub (substring fname (match-beginning 1) (match-end 1)))
+  	      ))
+  	    ;; if we find nothing, we should try to get a file like this one
+  	    (setq default-name
+  		  (concat stub (car (car (cdr match))))))
+  	  ;; do the real work - find the file
+  	  (setq found
+  		(ff-get-file dirs
+  			     stub
+  			     suffixes
+  			     in-other-window)))))
       (cond
        (no-match                     ;; could not even determine the other file
-	(message ""))
+  	(message ""))
        (t
-	(cond
-	 ((not found)                ;; could not find the other file
-	  (run-hooks 'ff-not-found-hook 'ff-not-found-hooks)
-	  (cond
-	   (ff-always-try-to-create  ;; try to create the file
-	    (let (name pathname)
-	      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	      ;; fix with helm will create file in directory ;;
-              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	      (setq name
-		    (expand-file-name default-name
-				      (read-directory-name
-				       (format "Find or create %s in: " default-name)
-				       default-directory)))
-	      (setq pathname
-		    (if (file-directory-p name)
-			(concat (file-name-as-directory name) default-name)
-		      (setq found name)))
+  	(cond
+  	 ((not found)                ;; could not find the other file
+  	  (run-hooks 'ff-not-found-hook 'ff-not-found-hooks)
+  	  (cond
+  	   (ff-always-try-to-create  ;; try to create the file
+  	    (let (name pathname)
+  	      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  	      ;; fix with helm will create file in directory ;;
+                ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  	      (setq name
+  		    (expand-file-name default-name
+  				      (read-directory-name
+  				       (format "Find or create %s in: " default-name)
+  				       default-directory)))
+  	      (setq pathname
+  		    (if (file-directory-p name)
+  			(concat (file-name-as-directory name) default-name)
+  		      (setq found name)))
 
-	      (ff-find-file pathname in-other-window t)))
+  	      (ff-find-file pathname in-other-window t)))
 
-	   (t                        ;; don't create the file, just whinge
-	    (message "No file found for %s" fname))))
+  	   (t                        ;; don't create the file, just whinge
+  	    (message "No file found for %s" fname))))
 
-	 (t                          ;; matching file found
-	  nil))))
-      found)))
+  	 (t                          ;; matching file found
+  	  nil))))
+      found))
+  )
 
+
+;; ==================== FILE ====================
+
+(defvar my-file-prefix-map (make-sparse-keymap))
+(define-key ctl-x-map "f" my-file-prefix-map)
+(global-set-key (kbd "C-x f") nil)
+(global-set-key (kbd "C-x f a") 'append-to-file)
+(global-set-key (kbd "C-x f i") 'insert-file)
+(global-set-key (kbd "C-x f f") 'find-file)
+(global-set-key (kbd "C-x f r") 'find-file-read-only)
+(global-set-key (kbd "C-x f C-f") 'find-file-other-window)
+(global-set-key (kbd "C-x f d") 'delete-file)
+(global-set-key (kbd "C-x f n") 'find-alternate-file)
+(global-set-key (kbd "C-x f C-n") 'find-alternate-file-other-window)
+(global-set-key (kbd "C-x f v") 'view-file)
+(global-set-key (kbd "C-x f C-v") 'view-file-other-window)
+(global-set-key (kbd "C-x f c d") 'my/dos2unix)
+(global-set-key (kbd "C-x f c u") 'my/unix2dos)
+
+;; ==================== HELP ====================
+;; A complementary binding to the apropos-command (C-h a)
+(define-key 'help-command "A" 'apropos)
+;; A quick major mode help with discover-my-major
+(define-key 'help-command (kbd "C-m") 'discover-my-major)
+(define-key 'help-command (kbd "C-f") 'find-function)
+(define-key 'help-command (kbd "C-k") 'find-function-on-key)
+(define-key 'help-command (kbd "C-v") 'find-variable)
+(define-key 'help-command (kbd "C-l") 'find-library)
+(define-key 'help-command (kbd "C-i") 'info-display-manual)
+
+;; ==================== EDIT ====================
+;; 标记段落
+(global-set-key (kbd "M-h") 'mark-paragraph)
+;; 标记全篇
+(global-set-key (kbd "C-x h") 'mark-whole-buffer)
+;; 标记一行
+(global-set-key (kbd "C-.") 'mark-sexp)
+;; 标记word
+(global-set-key (kbd "C-,") 'mark-word)
+;; 打开标记
+;; (global-set-key (kbd "C-SPC") 'cua-set-mark)
+;; (global-set-key (kbd "C-.") 'set-mark-command)
+(global-set-key (kbd "C-SPC") 'set-mark-command) ; C-u C-SPC to pop
+;;
+;;跳到全局上次标记的地方(C-x C-.)
+(global-set-key (kbd "C-x C-.") 'pop-global-mark)
+;;跳到矩形另一端
+(global-set-key (kbd "C-x C-x") 'cua-exchange-point-and-mark)
+(global-set-key (kbd "C-x C-,") 'pop-to-mark-command) ;equal C-u C-SPC
+
+;;移动到第0列
+(global-set-key (kbd "M-m") 'move-beginning-of-line)
+;;移动到行首第一个字符(move-beginning-of-line)
+;; (global-set-key (kbd "C-a") 'back-to-indentation)
+
+;;删除光标之前的单词(保存到kill-ring)
+(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-c C-w") 'backward-kill-sexp)
+;; (global-set-key (kbd "C-w") 'sp-backward-kill-word)
+;;删除光标之前的字符(不保存到kill-ring)
+(global-set-key (kbd "C-q") 'backward-delete-char)
+
+;;删除选中区域
+(global-set-key (kbd "C-c C-k") 'kill-region)
+;;删除到行首为C-0 C-k
+;; (global-set-key (kbd "C-c d") 'my/kill-back-to-indentation)
+
+;; 在当前行上，打开新的一行， M-o在当前行下打开新行
+;; (global-set-key (kbd "C-o") 'my/open-line-with-reindent)
+
+;; 删除并格式化
+(global-set-key (kbd "C-M-<backspace>") 'my/kill-back-to-indentation)
+
+;; count words
+(global-set-key (kbd "M-=") 'my/count-words-analysis)
+
+;; revert buffer
+(global-set-key (kbd "C-c C-r") 'revert-buffer)
+
+;; 切换auto fill
+;; (global-set-key (kbd "C-c C-a") 'auto-fill-mode)
+
+;;取消C-c C-c的注释功能
+(global-set-key (kbd "C-c C-c") nil)
+;;M-j来连接不同行
+(global-set-key (kbd "M-j") 'join-line)
+(global-set-key (kbd "M-J") 'crux-top-join-line)
+
+;; ====================MACRO====================
+;; 宏 C-x C-k
+;;调用宏 C-x ( 开始录制 ctrl-x ) 结束录制
+(global-set-key (kbd "C-x K") 'kmacro-keymap)
+(global-set-key (kbd "C-x (") 'kmacro-start-macro)
+(global-set-key (kbd "C-x )") 'kmacro-end-macro)
+;; (global-set-key (kbd "C-x K e") 'kmacro-end-and-call-macro)
+;; (global-set-key (kbd "C-x K s") 'kmacro-start-macro)
+;; (global-set-key (kbd "C-x K k") 'kmacro-end-macro)
+;; (global-set-key (kbd "C-x K c") 'kmacro-call-macro)
+(global-set-key (kbd "<f3>") 'kmacro-start-macro-or-insert-counter)
+(global-set-key (kbd "<f4>") 'kmacro-end-or-call-macro-repeat)
+
+;; ==================== MISC ====================
+;; woman
+(global-set-key (kbd "C-c h m") 'man)
+
+;; 列出正在运行的进程
+(global-set-key (kbd "C-x M-p") 'list-processes)
+
+;; 百度搜索
+;; (global-set-key (kbd "C-c C-s") 'my-baidu)
+
+;; A quick way to jump to the definition of a function given its key binding
+(global-set-key (kbd "C-h K") 'find-function-on-key)
+
+;; s-q 来插入转义字符
+(global-set-key (kbd "s-q") 'quoted-insert)
+
+(global-set-key (kbd "RET") 'newline-and-indent)
+;; (global-set-key (kbd "C-x C-m") 'execute-extended-command)
+;; (global-set-key (kbd "C-x m") 'execute-extended-command)
+;; (global-set-key (kbd "C-x f") 'ido-find-file)
+;;重新绑定发送邮件为C-x M
+;; (global-set-key (kbd "C-x M") 'compose-mail)
+
+;;插入buffer
+;; (global-set-key (kbd "C-x I") 'ido-insert-buffer)
+;; (global-set-key (kbd "C-x C-SPC") 'ido-switch-buffer-other-window)
+;; (global-set-key (kbd "C-x SPC") 'ido-switch-buffer-other-window)
+;; (global-set-key (kbd "C-x C-d") 'ido-dired)
+;; (global-set-key (kbd "C-x C-k") 'ido-kill-buffer)
+
+;;(global-set-key (kbd "M-\\") 'delete-horizontal-space)
+
+
+;; (global-set-key (kbd "C-M-/") 'completion-at-point)
+
+;; (global-set-key (kbd "C-x [") 'switch-to-prev-buffer)
+;; (global-set-key (kbd "C-x ]") 'switch-to-next-buffer)
 
 (provide 'my-edit)
 ;;; my-edit.el ends here

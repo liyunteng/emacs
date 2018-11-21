@@ -24,11 +24,7 @@
 
 ;;; Code:
 
-;;----------------------------------------------------------------------------
-;; Navigate window layouts with "C-c <left>" and "C-c <right>"
-;;----------------------------------------------------------------------------
-
-;; Make "C-x o" prompt for a target window when there are more than 2
+(setq window-combination-resize t)
 
 (setq-default display-buffer-reuse-frames t)
 (setq-default split-height-threshold 80)
@@ -36,8 +32,6 @@
 (setq-default switch-to-buffer-preserve-window-point t)
 (setq-default fit-window-to-buffer-horizontally t)
 (setq-default fit-frame-to-buffer t)
-;; important for golden-ratio to better work
-(setq window-combination-resize t)
 
 (use-package switch-window
   :ensure t
@@ -50,7 +44,9 @@
 (use-package window-numbering
   :ensure t
   :defer t
-  :init
+  :config
+  (set-face-attribute 'window-numbering-face nil
+  		      :foreground "#ABC")
   (window-numbering-mode +1))
 
 ;; use shift + arrow keys to switch between visible buffers
@@ -83,7 +79,8 @@
 (use-package default-text-scale
   :ensure t
   :bind (("C-M-=" . default-text-scale-increase)
-         ("C-M--" . default-text-scale-decrease)))
+         ("C-M--" . default-text-scale-decrease)
+	 ("C-M-0" . default-text-scale-reset)))
 
 (defun my/adjust-opacity (frame incr)
   "Adjust the background opacity of FRAME by increment INCR."
@@ -245,39 +242,6 @@ Dedicated (locked) windows are left untouched."
   (interactive "p")
   (my/rotate-windows-forward (* -1 count)))
 
-;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
-(defun my/show-and-copy-buffer-filename ()
-  "Show and copy the full path to the current file in the minibuffer."
-  (interactive)
-  ;; list-buffers-directory is the variable set in dired buffers
-  (let ((file-name (or (buffer-file-name) list-buffers-directory)))
-    (if file-name
-        (message (kill-new file-name))
-      (error "Buffer not visiting a file"))))
-;;(define-key my-mode-map (kbd "C-c C-s") 'my/rotate-windows-backward)
-
-(defun my--revert-buffer-function (ignore-auto noconfirm)
-  "Revert buffer if buffer without file, or call revert-buffer--default"
-  (if (buffer-file-name)
-      (funcall #'revert-buffer--default ignore-auto noconfirm)
-    (call-interactively major-mode)
-    ))
-(setq revert-buffer-function 'my--revert-buffer-function)
-
-(unless (memq window-system '(nt w32))
-  (windmove-default-keybindings 'control))
-
-(defun my/maybe-adjust-visual-fill-column ()
-  "Readjust visual fill column when the global font size is modified.
-This is helpful for writeroom-mode, in particular."
-  ;; TODO: submit as patch
-  (if visual-fill-column-mode
-      (add-hook 'after-setting-font-hook 'visual-fill-column--adjust-window nil t)
-    (remove-hook 'after-setting-font-hook 'visual-fill-column--adjust-window t)))
-
-(add-hook 'visual-fill-column-mode-hook
-          'my/maybe-adjust-visual-fill-column)
-
 
 (global-set-key (kbd "C-x 0") 'delete-window)
 (global-set-key (kbd "C-x 1") 'my/toggle-delete-other-windows)
@@ -299,10 +263,6 @@ This is helpful for writeroom-mode, in particular."
 (global-set-key (kbd "M-C-8") (lambda () (interactive) (my/adjust-opacity nil -2)))
 (global-set-key (kbd "M-C-9") (lambda () (interactive) (my/adjust-opacity nil 2)))
 (global-set-key (kbd "M-C-0") (lambda () (interactive) (modify-frame-parameters nil `((alpha . 100)))))
-;; 调整window文字大小
-(global-set-key (kbd "C-x C-=") 'text-scale-adjust)
-(global-set-key (kbd "C-x C--") 'text-scale-adjust)
-(global-set-key (kbd "C-x C-0") 'text-scale-adjust)
 
 (global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
 

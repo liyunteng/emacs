@@ -26,37 +26,16 @@
 
 ;; 使用系统字体
 (setq-default font-use-system-font t)
-;; 中文使用wqy-microhei,其他使用DejaVu Sans Mono
 
+;; 中文使用wqy-microhei,其他使用DejaVu Sans Mono
 (when (display-graphic-p)
   (create-fontset-from-fontset-spec
    "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my,
  chinese-gbk: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1,
  chinese-iso-8bit: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1,
  chinese-big5: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1"))
-
 (setq default-frame-alist (append '((font . "fontset-my")) default-frame-alist))
 (set-frame-font "fontset-my")
-
-(use-package smart-mode-line
-  :ensure t
-  :commands (smart-mode-line-enable sml/setup)
-  :init
-  (add-hook 'after-init-hook #'sml/setup)
-  :config
-  (setq sml/no-confirm-load-theme t)
-  (setq sml/theme nil))
-
-(use-package beacon
-  :ensure t
-  :commands (beacon-mode)
-  :init
-  (beacon-mode +1))
-
-(use-package which-key
-  :ensure t
-  :init
-  (which-key-mode +1))
 
 (defvar my--after-display-system-init-alist '())
 (defadvice server-create-window-system-frame
@@ -85,21 +64,20 @@ Otherwise,add it to a queue of actions to perform after the first graphical fram
        (push (lambda () ,@body) my--after-display-system-init-alist))))
 
 (unless (display-graphic-p)
-  (my|do-after-display-system-init))
+  (my|do-after-display-system-init
+   (my/echo "display-graphic-p is nil")))
 
 (defun my-removes-gui-elements ()
   "Remove the menu bar, tool bar and scroll bars."
   ;; removes the GUI elements
-  (when (and (fboundp 'tool-bar-mode) (not (eq tool-bar-mode -1)))
-    (tool-bar-mode -1))
-  (unless (my-window-system-is-mac)
-    (when (and (fboundp 'menu-bar-mode) (not (eq menu-bar-mode -1)))
-      (menu-bar-mode -1)))
-  (when (and (fboundp 'scroll-bar-mode) (not (eq scroll-bar-mode -1)))
-    (scroll-bar-mode -1))
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
   ;; tooltips in echo-aera
-  (when (and (fboundp 'tooltip-mode) (not (eq tooltip-mode -1)))
-    (tooltip-mode -1))
+  (tooltip-mode -1)
+  ;; buffer menu
+  (setq buffers-menu-max-size 10)
+  (menu-bar-mode -1)
+
   ;; suppress GUI features
   (setq use-dialog-box nil)
   (setq use-file-dialog nil)
@@ -118,6 +96,27 @@ Otherwise,add it to a queue of actions to perform after the first graphical fram
   (xterm-mouse-mode 1)
   (when (fboundp 'mwheel-install)
     (mwheel-install)))
+
+(use-package speedbar
+  :commands (speedbar)
+  :bind (("<f2>" . speedbar))
+  :config
+  (setq speedbar-show-unknown-files t)
+  (setq speedbar-tag-hierarchy-method
+	'(speedbar-prefix-group-tag-hierarchy))
+
+  (speedbar-add-supported-extension ".go")
+  (add-hook 'speedbar-mode-hook
+	    (lambda ()
+	      (auto-raise-mode t)
+	      (setq dframe-update-speed 1)
+	      ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
+	      ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
+	      )))
+
+(global-set-key (kbd "<f11>") 'toggle-frame-fullscreen)
+(global-set-key (kbd "M-<f11>") 'toggle-frame-maximized)
+(global-set-key (kbd "<f12>") 'menu-bar-mode)
 
 (provide 'my-gui)
 ;;; my-gui.el ends here

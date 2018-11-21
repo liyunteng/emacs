@@ -24,37 +24,7 @@
 
 ;;; Code:
 
-;; 设置register 显示默认不延迟
-(setq register-preview-delay 0)
 
-;; (add-to-list 'desktop-globals-to-save '(window-configuration))
-(setq-default register-alist nil)
-(set-register ?z '(file . "~/git/"))
-;; (set-register ?f '(window-configuration 10))
-
-(defun print-frameset (data)
-  "The DATA is useless, print \"a frameset.\"."
-  (null data)
-  (princ "a frameset"))
-
-(defun frameset-to-register (register)
-  "Store the current frameset in register REGISTER.
-Use \\[jump-to-register] to restore the frameset.
-Argument is a character, naming the register.
-
-Interactively, reads the register using `register-read-with-preview'."
-  (interactive (list (register-read-with-preview "Frameset to register: ")))
-  (set-register register
-                (registerv-make
-                 (vector (frameset-save nil
-                                        :app 'register
-                                        :filters frameset-session-filter-alist)
-                         ;; frameset-save does not include the value of point
-                         ;; in the current buffer, so record that separately.
-                         (frameset-frame-id nil)
-                         (point-marker))
-                 :print-func 'print-frameset
-                 :jump-func #'frameset--jump-to-register)))
 
 (provide 'my-register)
 ;;; my-register.el ends here

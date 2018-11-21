@@ -23,54 +23,30 @@
 ;;
 
 ;;; Code:
-(require 'my-debug)
-(require 'my-package)
 
-;; disable ad redefinition warning
-(setq ad-redefinition-action 'accept)
-
-;; toggle off debug-on-error
-(setq debug-on-error t)
-
-;; Always load newest byte code
-(setq load-prefer-newer t)
-
-;; reduce the frequency of garbage collection by making it happen on
-;; each 50MB of allocated data (the default is on every 0.76MB)
-(setq gc-cons-threshold 50000000)
-
-;; warn when opening files bigger than 100MB
-(setq large-file-warning-threshold 100000000)
-
-
-(setq-default custom-file my-custom-file)
-(when (file-exists-p my-personal-info-file)
-  (load my-personal-info-file))
+(load-file (concat user-emacs-directory "my/my-load-path.el"))
 
 (defvar my-modules
   '(
-    my-base
-    my-locales
+    my-debug
     my-utils
-    my-exec-path
+    my-package
+    my-base
     my-gui
-    my-window
     my-themes
-
-    my-smartparens
+    my-window
+    my-auto
+    my-avy
     my-edit
     my-isearch
-    my-avy
-    my-register
-    my-auto
 
-    my-global-keybind
     ;; my-ido
     ;; my-ivy
     my-mode
     my-helm
     my-tramp
     my-magit
+    my-smartparens
     my-gud
     my-flyspell
     my-flycheck
@@ -79,53 +55,63 @@
     my-ac
     ;; my-auto-complete
 
+    my-lisp
     my-ibuffer
     my-dired
     my-c
-    my-semantic
     my-go
     my-python
-    my-lisp
     my-org
     my-web
     my-sh
     my-syslog
     my-javascript
+    my-json
     my-term
     my-mu4e
+
     ;; my-qt
     ;; my-header
-
     my-jump
-    my-session
+    my-yas
     my-server
-    my-yas))
+    my-session
+    ))
 
 (defun my-load (m)
   "Load feature M."
   (unless (load (locate-library (format "%s" m)))
     (error "Loading %s failed" m)))
 
+
 (defun my-show-init-time ()
   "Show init time."
-  (message "Emacs startup time: %.2fms"
-	   (my-time-subtract-millis after-init-time before-init-time)))
+  (if desktop-save-mode
+      (message "Emacs startup time: %.2fms Desktop restore time: %.2fms"
+	       (my-time-subtract-millis after-init-time before-init-time)
+	       (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
+    (message "Emacs startup time: %.2fms"
+	     (my-time-subtract-millis after-init-time before-init-time)))
+  )
+
 
 
 (defun my-init ()
   "Load my modules."
+  (when (file-exists-p my-personal-info-file)
+    (my-load my-personal-info-file))
+
   (when (file-exists-p my-modules-dir)
     (add-to-list 'load-path my-modules-dir)
     ;; (dolist (module my-modules)
     ;;   (message "Loading %s" module)
     ;;   (require module)
     ;;   )
-    (mapc 'my-load my-modules)
-    )
+    (mapc 'my-load my-modules))
 
   (when (and custom-file
 	     (file-exists-p custom-file))
-    (load custom-file))
+    (my-load custom-file))
 
   (add-hook 'after-init-hook
   	    (lambda () (run-at-time 0 nil 'my-show-init-time)) t)

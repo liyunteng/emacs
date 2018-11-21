@@ -24,20 +24,32 @@
 
 ;;; Code:
 
+(defvar my-packages-dir (expand-file-name "elpa" user-emacs-directory))
+
 (defvar my-dir (expand-file-name "my" user-emacs-directory))
 (defvar my-modules-dir (expand-file-name  "modules" my-dir))
 (defvar my-forks-dir (expand-file-name "forks" my-dir))
 (defvar my-libs-dir (expand-file-name "libs" my-dir))
 
-(defvar my-cache-dir (expand-file-name "cache" user-emacs-directory))
-
 (defvar my-personal-dir (expand-file-name "personal" user-emacs-directory))
 (defvar my-personal-info-file (expand-file-name "person-info.el" my-personal-dir))
 
 (defvar my-custom-file (expand-file-name "custom.el" user-emacs-directory))
+(setq-default custom-file my-custom-file)
 
+(defvar my-cache-dir (expand-file-name "cache" user-emacs-directory))
 (unless (file-exists-p my-cache-dir)
   (make-directory my-cache-dir))
+
+(defun my-add-to-load-path (dir &optional append)
+  "Add DIR to load path, if APPEND add to end."
+  (add-to-list 'load-path dir append))
+
+(defun my-add-to-load-path-if-exists (dir &optional append)
+  "If DIR exists in the file system, add it to `load-path'.
+If APPEND add to end."
+  (when (file-exists-p dir)
+    (my-add-to-load-path dir append)))
 
 (defun my-add-subfolders-to-load-path (parent-dir)
   "Add all level PARENT-DIR subdirs to the `load-path'."
@@ -50,12 +62,9 @@
 
 (add-to-list 'load-path my-dir)
 (my-add-subfolders-to-load-path my-dir)
-;;(my-add-subfolders-to-load-path my-modules-dir)
-;;(my-add-subfolders-to-load-path my-libs-dir)
 (my-add-subfolders-to-load-path my-forks-dir)
 
-;; (when (file-exists-p my-personal-dir)
-;;  (my-add-subfolders-to-load-path my-personal-dir))
+
 
 (provide 'my-load-path)
 ;;; my-load-path.el ends here

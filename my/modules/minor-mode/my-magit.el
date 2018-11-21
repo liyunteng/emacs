@@ -46,6 +46,7 @@
     :ensure t)
   (setq magit-branch-read-upstream-first 'fallback)
   (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
+
   )
 
 ;; 激活magit-log，可在magit-log中操作magit
