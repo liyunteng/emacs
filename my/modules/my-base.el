@@ -85,7 +85,7 @@
 (setq-default tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))
 
 ;; flycheck
-(setq-default flycheck-temp-prefix  (expand-file-name "flycheck/flycheck" my-cache-dir))
+
 
 (provide 'my-base)
 ;;; my-base.el ends here

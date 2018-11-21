@@ -27,22 +27,22 @@
 (use-package smartparens
   :ensure t
   :commands (smartparens-mode
-	     smartparens-strict-mode
-	     smartparens-global-mode
-	     smartparens-global-strict-mode)
+			 smartparens-strict-mode
+			 smartparens-global-mode
+			 smartparens-global-strict-mode)
   :bind
   (:map smartparens-mode-map
-	("M-S" . sp-splice-sexp)
-	)
+		("M-S" . sp-splice-sexp)
+		)
 
   :init
   (defun my--conditionally-enable-smartparens-mode ()
     "Enable `smartparens-mode' in the minibuffer, during `eval-expression'."
     (if (or (eq this-command 'eval-expression)
-	    (eq this-command 'pp-eval-expression)
-	    (eq this-command 'eldoc-eval-expression)
-	    )
-	(smartparens-mode)))
+			(eq this-command 'pp-eval-expression)
+			(eq this-command 'eldoc-eval-expression)
+			)
+		(smartparens-mode)))
   (add-hook 'minibuffer-setup-hook 'my--conditionally-enable-smartparens-mode)
 
   (my|add-toggle smartparens
@@ -52,22 +52,24 @@
     :mode smartparens-strict-mode
     :documentation "Enable smartparens strict.")
 
+  (add-hook 'prog-mode-hook 'smartparens-mode)
+
   :config
   (require 'smartparens-config)
   ;; (sp-use-paredit-bindings)
   (sp-use-smartparens-bindings)
   (setq sp-base-key-bindings 'smartparens
-	sp-autoskip-closing-pair 'always
-	sp-hybrid-kill-entire-symbol nil
-	blink-matching-paren nil
-	)
+		sp-autoskip-closing-pair 'always
+		sp-hybrid-kill-entire-symbol nil
+		blink-matching-paren nil
+		)
 
   (setq sp-show-pair-delay 0.2
-	sp-show-pair-from-inside nil
-	sp-cancel-autoskip-on-backward-movement t
-	sp-highlight-pair-overlay t
-	sp-highlight-wrap-overlay t
-	sp-highlight-wrap-tag-overlay t)
+		sp-show-pair-from-inside nil
+		sp-cancel-autoskip-on-backward-movement t
+		sp-highlight-pair-overlay t
+		sp-highlight-wrap-overlay t
+		sp-highlight-wrap-tag-overlay t)
 
   (show-smartparens-global-mode +1)
   (defun my--smartparens-pair-newline-and-indent (id action context)
@@ -79,31 +81,31 @@
   (defun my/smart-closing-parenthesis ()
     (interactive)
     (let* ((sp-navigate-close-if-unbalanced t)
-	   (current-pos (point))
-	   (current-line (line-number-at-pos current-pos))
-	   (next-pos (save-excursion
-		       (sp-up-sexp)
-		       (point)))
-	   (next-line (line-number-at-pos next-pos)))
+		   (current-pos (point))
+		   (current-line (line-number-at-pos current-pos))
+		   (next-pos (save-excursion
+					   (sp-up-sexp)
+					   (point)))
+		   (next-line (line-number-at-pos next-pos)))
       (cond
        ((and (= current-line next-line)
-	     (not (= current-pos next-pos)))
-	(sp-up-sexp))
+			 (not (= current-pos next-pos)))
+		(sp-up-sexp))
        (t
-	(insert-char ?\))))))
+		(insert-char ?\))))))
 
   (sp-pair "{" "}"
-	   :unless '(sp-in-comment-p sp-in-string-p)
-	   :post-handlers
-	   '(:add (my--smartparens-pair-newline-and-indent "RET")))
+		   :unless '(sp-in-comment-p sp-in-string-p)
+		   :post-handlers
+		   '(:add (my--smartparens-pair-newline-and-indent "RET")))
   (sp-pair "(" ")"
-	   :unless '(sp-in-comment-p sp-in-string-p)
-	   :post-handlers
-	   '(:add (my--smartparens-pair-newline-and-indent "RET")))
+		   :unless '(sp-in-comment-p sp-in-string-p)
+		   :post-handlers
+		   '(:add (my--smartparens-pair-newline-and-indent "RET")))
   (sp-pair "[" "]"
-	   :unless '(sp-in-comment-p sp-in-string-p)
-	   :post-handlers
-	   '(:add (my--smartparens-pair-newline-and-indent "RET")))
+		   :unless '(sp-in-comment-p sp-in-string-p)
+		   :post-handlers
+		   '(:add (my--smartparens-pair-newline-and-indent "RET")))
 
   (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
   ;; (define-key smartparens-mode-map (kbd ")") 'my/smart-closing-parenthesis)

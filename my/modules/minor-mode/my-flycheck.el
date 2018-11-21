@@ -27,32 +27,33 @@
   :if (fboundp 'global-flycheck-mode)
   :bind
   (:map flycheck-mode-map
-	("C-c ! L" . my/flycheck-error-list-and-switch))
+		("C-c ! L" . my/flycheck-error-list-and-switch))
   :init
   (defvar syntax-checking-use-original-bitmaps t)
   (when (and (fboundp 'define-fringe-bitmap)
-	     (not syntax-checking-use-original-bitmaps))
+			 (not syntax-checking-use-original-bitmaps))
     (define-fringe-bitmap 'my-flycheck-fringe-indicator
-      (vector #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00011100
-	      #b00111110
-	      #b00111110
-	      #b00111110
-	      #b00011100
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000)))
+      (vector
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00011100
+	   #b00111110
+	   #b00111110
+	   #b00111110
+	   #b00011100
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000)))
   (let ((bitmap (if syntax-checking-use-original-bitmaps
-		    'flycheck-fringe-bitmap-double-arrow
-		  'my-flycheck-fringe-indicator)))
+					'flycheck-fringe-bitmap-double-arrow
+				  'my-flycheck-fringe-indicator)))
     (flycheck-define-error-level 'error
       :severity 2
       :overlay-category 'flycheck-error-overlay
@@ -82,16 +83,16 @@
       :ensure t
       :config
       (after-load 'flycheck
-	(flycheck-pos-tip-mode 1))))
+		(flycheck-pos-tip-mode 1))))
 
   (when (boundp 'popwin:special-display-config)
     (push '("^\\*Flycheck.+\\*$"
-	    :regexp t
-	    :dedicated t
-	    :position bottom
-	    :stick t
-	    :noselect t)
-	  popwin:special-display-config))
+			:regexp t
+			:dedicated t
+			:position bottom
+			:stick t
+			:noselect t)
+		  popwin:special-display-config))
 
   (defun my/flycheck-error-list-and-switch ()
     "Open and goto the error list buffer."
@@ -99,6 +100,11 @@
     (unless (get-buffer-window (get-buffer flycheck-error-list-buffer))
       (flycheck-list-errors)
       (switch-to-buffer-other-window flycheck-error-list-buffer)))
+
+  (defvar my-flycheck-temp-directory (expand-file-name "flycheck" my-cache-dir))
+  (when (not (file-directory-p my-flycheck-temp-directory))
+	(make-directory my-flycheck-temp-directory))
+  (setq flycheck-temp-prefix (concat my-flycheck-temp-directory "/flycheck"))
 
   (global-flycheck-mode +1)
   )

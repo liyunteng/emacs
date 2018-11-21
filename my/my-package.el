@@ -34,10 +34,6 @@
   (load my-pinned-packages-file))
 (setq package-user-dir my-packages-save-dir)
 (setq package-enable-at-startup t)
-
-(when (version< emacs-version "27")
-  (package-initialize))
-
 (defvar my-packages '(bind-key use-package))
 
 (defun my-packages-installed-p ()

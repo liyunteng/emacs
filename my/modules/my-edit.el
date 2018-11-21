@@ -1010,13 +1010,11 @@ For instance pass En as source for English."
 This functions should be added to the hooks of major modes for programming."
     (font-lock-add-keywords
      nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\):\\)"
-	    1 font-lock-warning-face t))))
+			1 font-lock-warning-face t))))
   (defun my-prog-mode-defaults ()
     "Default coding hook, useful with any programming language."
     (goto-address-prog-mode +1)
     (bug-reference-prog-mode +1)
-    (after-load 'smartparens
-      (smartparens-mode +1))
     (my-local-comment-auto-fill)
     (my-font-lock-comment-annotations))
   (add-hook 'prog-mode-hook 'my-prog-mode-defaults))
