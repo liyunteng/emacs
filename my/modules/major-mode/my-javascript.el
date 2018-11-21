@@ -46,9 +46,9 @@
 				    unless (eq preferred-javascript-mode (cdr entry))
 				    collect entry)))
   :config
-  (if (not (version< emacs-version "25"))
-      (use-package xref-js2
-	:ensure t))
+
+  (use-package xref-js2
+    :ensure t)
 
   (use-package js-comint
     :ensure t)
@@ -85,9 +85,8 @@
   (when (and (executable-find "ag"))
     (after-load 'js2-mode
       (define-key js2-mode-map (kbd "M-.") nil)
-      (if (not (version< emacs-version "25"))
-	  (add-hook 'js2-mode-hook
-		    (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))))
+      (add-hook 'js2-mode-hook
+		(lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))))
 
 
 

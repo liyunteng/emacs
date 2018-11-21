@@ -113,24 +113,9 @@ Otherwise,add it to a queue of actions to perform after the first graphical fram
   (add-to-list 'default-frame-alist no-border)
   (add-to-list 'initial-frame-alist no-border))
 
-
-(defun my-fix-up-xterm-control-arrows ()
-  (let ((map (if (boundp 'input-decode-map)
-                 input-decode-map
-               function-key-map)))
-    (define-key map "\e[1;5A" [C-up])
-    (define-key map "\e[1;5B" [C-down])
-    (define-key map "\e[1;5C" [C-right])
-    (define-key map "\e[1;5D" [C-left])
-    (define-key map "\e[5A"   [C-up])
-    (define-key map "\e[5B"   [C-down])
-    (define-key map "\e[5C"   [C-right])
-    (define-key map "\e[5D"   [C-left])))
-
 (defun my-console-frame-setup ()
-  (when (< emacs-major-version 23)
-    (my-fix-up-xterm-control-arrows))
-  (xterm-mouse-mode 1); Mouse in a terminal (Use shift to paste with middle button)
+  "Mouse in a terminal (Use shift to paste with middle button)."
+  (xterm-mouse-mode 1)
   (when (fboundp 'mwheel-install)
     (mwheel-install)))
 

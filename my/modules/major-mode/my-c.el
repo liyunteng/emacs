@@ -211,15 +211,16 @@
     :off (hide-ifdef-mode -1)
     :documentation "Hide/Show ifdef"
     )
-  (add-hook 'c-mode-common-hook 'my/toggle-hide-ifdef-mode-on)
+  ;; linux header may be cause failed
+  ;; (add-hook 'c-mode-common-hook 'my/toggle-hide-ifdef-mode-on)
   :config
   ;; fix can't use = with string
-  (defun hif-mathify (val)
-    "Treat VAL as a number: if it's t or nil, use 1 or 0."
-    (cond ((stringp val) (string-to-number val))
-  	  ((eq val t) 1)
-  	  ((null val) 0)
-  	  (t val)))
+  ;; (defun hif-mathify (val)
+  ;;   "Treat VAL as a number: if it's t or nil, use 1 or 0."
+  ;;   (cond ((stringp val) (string-to-number val))
+  ;; 	  ((eq val t) 1)
+  ;; 	  ((null val) 0)
+  ;; 	  (t val)))
   (setq hide-ifdef-shadow t
 	hide-ifdef-initially nil)
   )
@@ -228,12 +229,12 @@
   :ensure t)
 
 ;; (c-add-style "ffmpeg"
-;; 			   '("k&r"
-;; 				 (c-basic-offset . 4)
-;; 				 (indent-tabs-mode . nil)
-;; 				 (show-trailing-whitespace . t)
-;; 				 (c-offsets-alist
-;; 				  (statement-cont . (c-lineup-assignments +)))))
+;; 	     '("k&r"
+;; 	       (c-basic-offset . 4)
+;; 	       (indent-tabs-mode . nil)
+;; 	       (show-trailing-whitespace . t)
+;; 	       (c-offsets-alist
+;; 		(statement-cont . (c-lineup-assignments +)))))
 (defun my-c-mode-hooks ()
   "My c common mode hooks."
   (unless semantic-mode

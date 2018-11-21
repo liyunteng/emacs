@@ -91,40 +91,42 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
      (if postfix postfix)))
 
   (define-auto-insert 'sh-mode (my-header '("#!/usr/bin/bash\n\n")))
-  (define-auto-insert 'go-mode (my-header))
   (define-auto-insert 'python-mode
     (my-header '("#!/usr/bin/env python\n" "# -*- coding: utf-8 -*-\n\n")))
+  (define-auto-insert 'go-mode (my-header))
   (define-auto-insert '("\\.\\([Hh]\\|hh\\|hpp\\|hxx\\|h\\+\\+\\)\\'" . "C / C++ header")
-    (if (version<= emacs-version "25.1.0")
-	(my-header nil
-		   '((let ((header (upcase (concat (file-name-nondirectory
-						    (file-name-sans-extension buffer-file-name))
-						   "_"
-						   (file-name-extension buffer-file-name)
-						   "_"))))
-		       (concat "#ifndef " header "\n"
-			       "#define " header "\n\n")
-		       )
-		     _"\n\n#endif"))
-      (my-header)))
+    ;; (if (version<= emacs-version "25.1.0")
+    ;; 	(my-header nil
+    ;; 		   '((let ((header (upcase (concat (file-name-nondirectory
+    ;; 						    (file-name-sans-extension buffer-file-name))
+    ;; 						   "_"
+    ;; 						   (file-name-extension buffer-file-name)
+    ;; 						   "_"))))
+    ;; 		       (concat "#ifndef " header "\n"
+    ;; 			       "#define " header "\n\n")
+    ;; 		       )
+    ;; 		     _"\n\n#endif"))
+    ;;   (my-header))
+    (my-header))
   (define-auto-insert '("\\.\\([Cc]\\|cc\\|cpp\\|cxx\\|c\\+\\+\\)\\'" . "C / C++ program")
-    (if (version<= emacs-version "25.1.0")
-	(my-header nil
-		   '("#include \""
-		     (let ((stem (file-name-sans-extension buffer-file-name)))
-		       (cond ((file-exists-p (concat stem ".h"))
-			      (file-name-nondirectory (concat stem ".h")))
-			     ((file-exists-p (concat stem ".hh"))
-			      (file-name-nondirectory (concat stem ".hh")))
-			     ((file-exists-p (concat stem ".hpp"))
-			      (file-name-nondirectory (concat stem ".hpp")))
-			     ((file-exists-p (concat stem ".hxx"))
-			      (file-name-nondirectory (concat stem ".hxx")))
-			     ((file-exists-p (concat stem ".h++"))
-			      (file-name-nondirectory (concat stem ".h++")))
-			     ))
-		     & ?\" | -10 "\n"))
-      (my-header)))
+    ;; (if (version<= emacs-version "25.1.0")
+    ;; 	(my-header nil
+    ;; 		   '("#include \""
+    ;; 		     (let ((stem (file-name-sans-extension buffer-file-name)))
+    ;; 		       (cond ((file-exists-p (concat stem ".h"))
+    ;; 			      (file-name-nondirectory (concat stem ".h")))
+    ;; 			     ((file-exists-p (concat stem ".hh"))
+    ;; 			      (file-name-nondirectory (concat stem ".hh")))
+    ;; 			     ((file-exists-p (concat stem ".hpp"))
+    ;; 			      (file-name-nondirectory (concat stem ".hpp")))
+    ;; 			     ((file-exists-p (concat stem ".hxx"))
+    ;; 			      (file-name-nondirectory (concat stem ".hxx")))
+    ;; 			     ((file-exists-p (concat stem ".h++"))
+    ;; 			      (file-name-nondirectory (concat stem ".h++")))
+    ;; 			     ))
+    ;; 		     & ?\" | -10 "\n"))
+    ;;   (my-header))
+    (my-header))
   )
 
 

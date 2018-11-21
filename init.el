@@ -28,7 +28,6 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
-(package-initialize)
 (message "Emacs is Loading ...")
 (when (version< emacs-version "25.3")
   (error "Requires at least GNU Emacs 25.3, but you're running %s"

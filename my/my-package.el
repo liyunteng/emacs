@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+
 (defvar my-dir)
 (defvar my-pinned-packages-file (expand-file-name "my-pinned-packages.el" my-dir))
 (defvar my-packages-save-dir (expand-file-name "elpa" user-emacs-directory))
@@ -31,10 +32,11 @@
 (require 'package)
 (when (file-exists-p my-pinned-packages-file)
   (load my-pinned-packages-file))
-
 (setq package-user-dir my-packages-save-dir)
 (setq package-enable-at-startup t)
-;; (package-initialize)
+
+(when (version< emacs-version "27")
+  (package-initialize))
 
 (defvar my-packages '(bind-key use-package))
 
