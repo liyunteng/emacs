@@ -59,7 +59,7 @@
   (use-package dired-filetype-face
     :ensure t
     :config
-    (deffiletype-face "code" "light green" "code")
+    (deffiletype-face "code" "#9FC59F" "code")
     (deffiletype-face-regexp code
       :type-for-docstring "code"
       :extensions
