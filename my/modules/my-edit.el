@@ -69,7 +69,7 @@
 (setq suggest-key-bindings t)
 
 ;; 锁定行高
-(setq resize-mini-windows t)
+(setq resize-mini-windows nil)
 
 ;; 设定行距
 (setq line-spacing 0.0)
