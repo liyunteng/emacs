@@ -47,18 +47,18 @@
   (cscope-setup)
   :bind
   (:map cscope-minor-mode-keymap
-	("C-c s G" . cscope-find-global-definition)
-	:map cscope-list-entry-keymap
-	("C-p" . cscope-history-backward-file)
-	("C-n" . cscope-history-forward-file)
-	("C-M-p" . cscope-history-backward-result)
-	("C-M-n" . cscope-history-forward-result)
-	("C-k" . cscope-history-kill-file)
-	("C-M-k" . cscope-history-kill-result)
-	("d" . cscope-find-global-definition-no-prompting)
-	("G" . cscope-find-global-definition)
-	("q" . my/cscope-quit)
-	)
+		("C-c s G" . cscope-find-global-definition)
+		:map cscope-list-entry-keymap
+		("C-p" . cscope-history-backward-file)
+		("C-n" . cscope-history-forward-file)
+		("C-M-p" . cscope-history-backward-result)
+		("C-M-n" . cscope-history-forward-result)
+		("C-k" . cscope-history-kill-file)
+		("C-M-k" . cscope-history-kill-result)
+		("d" . cscope-find-global-definition-no-prompting)
+		("G" . cscope-find-global-definition)
+		("q" . my/cscope-quit)
+		)
   )
 ;; (use-package helm-cscope
 ;; :config
@@ -93,7 +93,7 @@
   "My kernel include path.")
 
 (defconst my-src-path (list
-		       "./"
+					   "./"
                        "src/"
                        "../src"
                        "../../src")
@@ -104,7 +104,7 @@
                            "include/"
                            "inc/"
                            "export/"
-			   "./"
+						   "./"
                            "../"
                            "../include"
                            "../inc"
@@ -180,7 +180,7 @@
 
 (use-package cmacexp
   :defines (c-macro-shrink-window-flag
-	    c-macro-promp-flag)
+			c-macro-promp-flag)
   :config
   (setq c-macro-shrink-window-flag t)
   (setq c-macro-prompt-flag t)
@@ -188,7 +188,7 @@
 
 (use-package find-file
   :defines (cc-search-directories
-	    cc-other-file-alist)
+			cc-other-file-alist)
   :config
   (dolist (var my-include-path)
     (add-to-list 'cc-search-directories var))
@@ -203,13 +203,13 @@
 (use-package hideif
   :diminish hide-ifdef-mode ;;hide-ifdef-hiding
   :commands (hide-ifdef-mode
-	     hide-ifdefs)
+			 hide-ifdefs)
   :defines (hide-ifdef-mode)
   :init
   (my|add-toggle hide-ifdef-mode
     :status hide-ifdef-mode
     :on (progn (hide-ifdef-mode +1)
-	       (hide-ifdefs t))
+			   (hide-ifdefs t))
     :off (hide-ifdef-mode -1)
     :documentation "Hide/Show ifdef"
     )
@@ -224,7 +224,7 @@
   ;; 	  ((null val) 0)
   ;; 	  (t val)))
   (setq hide-ifdef-shadow t
-	hide-ifdef-initially nil)
+		hide-ifdef-initially nil)
   )
 
 (use-package disaster
@@ -269,10 +269,10 @@
 
   (use-package semantic/idle
     :defines (semantic-idle-scheduler-idle-time
-	      semantic-idle-scheduler-max-buffer-size
-	      semantic-idle-scheduler-work-idle-time
-	      semantic-idle-work-update-headers-flag
-	      )
+			  semantic-idle-scheduler-max-buffer-size
+			  semantic-idle-scheduler-work-idle-time
+			  semantic-idle-work-update-headers-flag
+			  )
     :init
     (setq semantic-idle-scheduler-idle-time 1)
     (setq semantic-idle-scheduler-max-buffer-size 10240000)
@@ -306,7 +306,7 @@
     (defun my/semantic-find-definition (arg)
       (interactive "P")
       (when (fboundp 'xref-push-marker-stack)
-  	(xref-push-marker-stack (push-mark (point))))
+		(xref-push-marker-stack (push-mark (point))))
       (semantic-ia-fast-jump (point))
       (recenter-top-bottom)
       ))
@@ -329,8 +329,8 @@
   (use-package semantic/db-find
     :init
     (setq semanticdb-find-default-throttle
-	  '(local project unloaded system recursive)
-	  )
+		  '(local project unloaded system recursive)
+		  )
     )
 
   (use-package semantic/db-global
@@ -365,11 +365,19 @@
   (use-package flycheck
     :config
     (use-package semantic/dep)
-    (setq-local flycheck-checker 'c/c++-clang)
+	(mapc (lambda (arg) (dolist (incs (append semantic-dependency-system-include-path my-include-path))
+						  (add-to-list arg incs)))
+		  '(flycheck-gcc-include-path flycheck-clang-include-path
+									  flycheck-cppcheck-include-path))
+    ;; (if  (executable-find "clang")
+	;; 	(progn (setq-local flycheck-checker 'c/c++-clang)
+	;; 		   (dolist (item (append semantic-dependency-system-include-path my-include-path))
+	;; 			 (add-to-list 'flycheck-clang-include-path item)))
+	;;   (progn (setq-local flycheck-checker 'c/c++-gcc)
+	;; 		 (dolist (item (append semantic-dependency-system-include-path my-include-path))
+	;; 		   (add-to-list 'flycheck-gcc-include-path item))))
     ;; (setq-default flycheck-clang-args '("-std=c++11"))
-    (dolist (item (append semantic-dependency-system-include-path my-include-path))
-      (add-to-list 'flycheck-clang-include-path item))
-    )
+	)
 
   ;; (setq-default company-clang-arguments '("-std=c++11"))
   )

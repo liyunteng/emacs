@@ -26,57 +26,57 @@
 
 (load-file (concat user-emacs-directory "my/my-load-path.el"))
 
-(defvar my-modules
+(defvar  my-modules
   '(
-    my-debug
-    my-utils
-    my-package
-    my-base
-    my-gui
-    my-themes
-    my-window
-    my-auto
-    my-avy
-    my-edit
-    my-isearch
+	my-debug
+	my-utils
+	my-package
+	my-base
+	my-gui
+	my-themes
+	my-window
+	my-auto
+	my-avy
+	my-edit
+	my-isearch
 
-    ;; my-ido
-    ;; my-ivy
-    my-mode
-    my-helm
-    my-tramp
-    my-magit
-    my-smartparens
-    my-gud
-    my-flyspell
-    my-flycheck
-    my-auto-insert
-    my-hideshow
-    my-ac
-    ;; my-auto-complete
+	;; my-ido
+	;; my-ivy
+	my-mode
+	my-helm
+	my-tramp
+	my-magit
+	my-smartparens
+	my-gud
+	my-flyspell
+	my-flycheck
+	my-auto-insert
+	my-hideshow
+	my-ac
+	;; my-auto-complete
 
-    my-lisp
-    my-ibuffer
-    my-dired
-    my-c
-    my-go
-    my-python
-    my-org
-    my-web
-    my-sh
-    my-syslog
-    my-javascript
-    my-json
-    my-term
-    my-mu4e
+	my-lisp
+	my-ibuffer
+	my-dired
+	my-c
+	my-go
+	my-python
+	my-org
+	my-web
+	my-sh
+	my-syslog
+	my-javascript
+	my-json
+	my-term
+	my-mu4e
 
-    ;; my-qt
-    ;; my-header
-    my-jump
-    my-yas
-    my-server
-    my-session
-    ))
+	;; my-qt
+	;; my-header
+	my-jump
+	my-yas
+	my-server
+	my-session
+	))
 
 (defun my-load (m)
   "Load feature M."
@@ -88,10 +88,10 @@
   "Show init time."
   (if desktop-save-mode
       (message "Emacs startup time: %.2fms Desktop restore time: %.2fms"
-	       (my-time-subtract-millis after-init-time before-init-time)
-	       (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
+			   (my-time-subtract-millis after-init-time before-init-time)
+			   (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
     (message "Emacs startup time: %.2fms"
-	     (my-time-subtract-millis after-init-time before-init-time)))
+			 (my-time-subtract-millis after-init-time before-init-time)))
   )
 
 
@@ -110,11 +110,11 @@
     (mapc 'my-load my-modules))
 
   (when (and custom-file
-	     (file-exists-p custom-file))
+			 (file-exists-p custom-file))
     (my-load custom-file))
 
   (add-hook 'after-init-hook
-  	    (lambda () (run-at-time 0 nil 'my-show-init-time)) t)
+			(lambda () (run-at-time 0 nil 'my-show-init-time)) t)
   )
 
 (provide 'my-init)
