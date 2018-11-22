@@ -24,16 +24,24 @@
 
 ;;; Code:
 
-(defvar my-dir)
-(defvar my-pinned-packages-file (expand-file-name "my-pinned-packages.el" my-dir))
-(defvar my-packages-save-dir (expand-file-name "elpa" user-emacs-directory))
-
 (require 'cl)
 (require 'package)
-(when (file-exists-p my-pinned-packages-file)
-  (load my-pinned-packages-file))
-(setq package-user-dir my-packages-save-dir)
+
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(setq package-archives '(
+                         ("melpa" . "http://mirrors.163.com/elpa/melpa/")
+                         ("melpa-stable" . "http://mirrors.163.com/elpa/melpa-stable/")
+                         ("gnu" . "http://mirrors.163.com/elpa/gnu/")
+                         ("org" . "http://mirrors.163.com/elpa/org/")
+			 ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")
+			 ))
+(setq package-pinned-packages
+      '((switch-window . "melpa-stable")))
+
+
 (setq package-enable-at-startup t)
+(setq package-user-dir my-packages-dir)
 (defvar my-packages '(bind-key use-package))
 
 (defun my-packages-installed-p ()
@@ -62,7 +70,7 @@ Missing packages are installed automatically."
     ;; install the missing packages
     (my-require-packages my-packages)))
 
-;; ;; run package installation
+;; run package installation
 (my-install-packages)
 
 (defun my/list-foreign-packages ()
@@ -77,8 +85,6 @@ removing unwanted packages."
 
 
 ;; use package
-;;(my-require-package 'diminish)
-;;(require 'diminish)
 (require 'bind-key)
 (require 'use-package)
 (setq

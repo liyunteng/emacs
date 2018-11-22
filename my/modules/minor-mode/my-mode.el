@@ -101,6 +101,7 @@ projectile cache when it's possible and update recentf list."
 Also kills associated buffer (if any exists) and invalidates
 projectile cache when it's possible.
 
+FILENAME is file or directory.
 When ASK-USER is non-nil, user will be asked to confirm file
 removal."
   (interactive "f")
@@ -123,7 +124,7 @@ FILENAME is deleted using `my/delete-file' function.."
 
 ;; from magnars
 (defun my/delete-current-buffer-file ()
-  "Removes file connected to current buffer and kills buffer."
+  "Remove file connected to current buffer and kill buffer."
   (interactive)
   (let ((filename (buffer-file-name))
         (buffer (current-buffer))
@@ -136,6 +137,25 @@ FILENAME is deleted using `my/delete-file' function.."
         (when (projectile-project-p)
           (call-interactively #'projectile-invalidate-cache))
         (message "Deleted file %s" filename)))))
+
+;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
+(defun my/show-and-copy-buffer-filename ()
+  "Show and copy the full path to the current file in the minibuffer."
+  (interactive)
+  ;; list-buffers-directory is the variable set in dired buffers
+  (let ((file-name (or (buffer-file-name) list-buffers-directory)))
+    (if file-name
+        (message (kill-new file-name))
+      (error "Buffer not visiting a file"))))
+;;(define-key my-mode-map (kbd "C-c C-s") 'my/rotate-windows-backward)
+
+(defun my--revert-buffer-function (ignore-auto noconfirm)
+  "Revert buffer if buffer without file, or call revert-buffer--default."
+  (if (buffer-file-name)
+      (funcall #'revert-buffer--default ignore-auto noconfirm)
+    (call-interactively major-mode)
+    ))
+(setq revert-buffer-function 'my--revert-buffer-function)
 
 (defgroup my-mode nil
   "My group."

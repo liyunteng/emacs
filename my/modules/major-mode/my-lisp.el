@@ -24,6 +24,10 @@
 
 ;;; Code:
 
+;; remove annoying ellipsis when printing sexp in message buffer
+(setq eval-expression-print-length nil
+      eval-expression-print-level nil)
+
 ;; (use-package hl-sexp)
 (use-package cl-lib-highlight
   :ensure t
@@ -62,14 +66,6 @@
   (add-hook 'eval-expression-minibuffer-setup-hook #'eldoc-mode)
   (add-hook 'ielm-mode-hook #'eldoc-mode))
 
-(use-package auto-compile
-  :ensure t
-  :commands (auto-compile-on-save-mode
-	     auto-compile-on-load-mode)
-  :init
-  (auto-compile-on-save-mode +1)
-  (auto-compile-on-load-mode +1))
-
 (defvar my-common-mode-hooks  '(emacs-lisp-mode-hook
 				ielm-mode-hook
 				help-mode-hook
@@ -83,34 +79,28 @@
   :commands (rainbow-mode
 	     rainbow-turn-on)
   :init
-  (dolist (hook my-common-mode-hooks)
-    (add-hook hook 'rainbow-turn-on))
-  )
+  (my-add-to-hooks 'rainbow-turn-on my-common-mode-hooks))
 
 (use-package rainbow-delimiters
   :ensure t
   :diminish rainbow-delimiters-mode
   :commands (rainbow-delimiters-mode)
   :init
-  (dolist (hook my-common-mode-hooks)
-    (add-hook hook 'rainbow-delimiters-mode-enable))
-  )
+  (my-add-to-hooks 'rainbow-delimiters-mode-enable my-common-mode-hooks))
 
 (use-package highlight-quoted
   :ensure t
   :commands (highlight-quoted-mode
 	     highlight-quoted--turn-on)
   :init
-  (dolist (hook my-common-mode-hooks)
-    (add-hook hook 'highlight-quoted--turn-on))
+  (my-add-to-hooks 'highlight-quoted--turn-on my-common-mode-hooks)
   (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode))
 
 (use-package elisp-slime-nav
   :ensure t
   :diminish elisp-slime-nav-mode
   :init
-  (dolist (hook my-common-mode-hooks)
-    (add-hook hook 'turn-on-elisp-slime-nav-mode)))
+  (my-add-to-hooks 'turn-on-elisp-slime-nav-mode my-common-mode-hooks))
 
 ;; (use-package ipretty
 ;;   :ensure t
@@ -133,8 +123,8 @@
   (defadvice pp-display-expression (after my-make-read-only (expression out-buffer-name) activate)
     "Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
     (when (get-buffer out-buffer-name)
-      (with-current-buffer out-buffer-name
-	(view-mode 1))))
+      (with-current-buffer out-buffer-name (view-mode 1))
+      (view-buffer-other-window out-buffer-name)))
 
   (defun my-maybe-set-bundled-elisp-readonly ()
     "If this elisp appears to be part of Emacs, then disallow editing."

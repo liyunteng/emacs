@@ -26,24 +26,26 @@
 
 (use-package tramp
   :defines (tramp-default-user-alist)
+  :bind ("C-x M-f" . find-file-root)
   :init
-  (setq-default tramp-verbose 0)
+  (setq tramp-verbose 0)
   ;; (setq-default tramp-default-method "ssh")
-  (setq-default tramp-default-method "rcp")
-  (setq-default tramp-default-user "root")
-  (setq-default tramp-default-host "127.0.0.1")
+  (setq tramp-default-method "rcp")
+  (setq tramp-default-user "root")
+  (setq tramp-default-host "127.0.0.1")
 
-  (setq-default tramp-chunksize 8196)
-  (setq-default password-cache t)
-  (setq-default password-cache-expiry 36000)
-  (setq-default tramp-connection-timeout 10)
+  (setq tramp-chunksize 8196)
+  (setq password-cache t)
+  (setq password-cache-expiry 36000)
+  (setq tramp-connection-timeout 10)
 
 ;;; 解决tramp登陆失败，导致emacs假死的问题
   ;; (setq tramp-ssh-controlmaster-options nil)
-  (setq-default tramp-use-ssh-controlmaster-options nil)
+  (setq tramp-use-ssh-controlmaster-options nil)
 
   ;;(add-to-list 'tramp-remote-process-environment
   ;;(format "DISPALY=%s" (getenv "DISPLAY")))
+
 
   ;;使用sudo 编辑文件
   (defvar find-file-root-prefix (if (featurep 'xemacs) "/[sudo/root@localhost]" "/sudo:root@localhost:" )

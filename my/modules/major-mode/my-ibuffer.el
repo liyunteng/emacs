@@ -26,7 +26,7 @@
 
 (use-package ibuffer
   :bind ("C-X C-b" . ibuffer)
-  :config
+  :init
   (use-package ibuf-ext
     :config
     (setq ibuffer-never-show-predicates nil)
@@ -36,54 +36,54 @@
 
     ;; 使用/ r来进行切换
     (setq ibuffer-saved-filters
-	  '(("c" ((or
-		   (mode . c-mode)
-		   (mode . c++-mode)
-		   (mode . makefile-gmake-mode)
-		   (mode . asm-mode))))
+	  '(("c" (or
+		  (mode . c-mode)
+		  (mode . c++-mode)
+		  (mode . makefile-gmake-mode)
+		  (mode . asm-mode)))
 
-	    ("lisp" ((or
-		      (mode . emacs-lisp-mode)
-		      (mode . lisp-mode)
-		      (mode . lisp-interaction-mode)
-		      (mode . inferior-emacs-lisp-mode))))
+	    ("lisp" (or
+		     (mode . emacs-lisp-mode)
+		     (mode . lisp-mode)
+		     (mode . lisp-interaction-mode)
+		     (mode . inferior-emacs-lisp-mode)))
 
-	    ("go" ((mode . go-mode)))
+	    ("go" (mode . go-mode))
 
-	    ("programming" ((or
-			     (mode . emacs-lisp-mode)
-			     (mode . cperl-mode)
-			     (mode . c-mode)
-			     (mode . c++-mode)
-			     (mode . makefile-gmake-mode)
-			     (mode . java-mode)
-			     (mode . python-mode)
-			     (mode . idl-mode)
-			     (mode . lisp-mode)
-			     (mode . sh-mode)
-			     (mode . html-mode)
-			     (mode . js2-mode)
-			     (mode . nxml-mode)
-			     (mode . sql-mode)
-			     (mode . php-mode))))
+	    ("programming" (or
+			    (mode . emacs-lisp-mode)
+			    (mode . cperl-mode)
+			    (mode . c-mode)
+			    (mode . c++-mode)
+			    (mode . makefile-gmake-mode)
+			    (mode . java-mode)
+			    (mode . python-mode)
+			    (mode . idl-mode)
+			    (mode . lisp-mode)
+			    (mode . sh-mode)
+			    (mode . html-mode)
+			    (mode . js2-mode)
+			    (mode . nxml-mode)
+			    (mode . sql-mode)
+			    (mode . php-mode)))
 
-	    ("file" ((or
-		      (filename . ".*"))))
+	    ("file" (or
+		     (filename . ".*")))
 
-	    ("gnus" ((or
-		      (mode . message-mode)
-		      (mode . mail-mode)
-		      (mode . gnus-server-mode)
-		      (mode . gnus-group-mode)
-		      (mode . gnus-summary-mode)
-		      (mode . gnus-article-mode))))
+	    ("gnus" (or
+		     (mode . message-mode)
+		     (mode . mail-mode)
+		     (mode . gnus-server-mode)
+		     (mode . gnus-group-mode)
+		     (mode . gnus-summary-mode)
+		     (mode . gnus-article-mode)))
 
-	    ("tramp" ((or
-		       (filename . "^/ssh:")
-		       (filename . "^/telnet:")
-		       (filename . "^/rsync:")
-		       (filename . "^/sshx:")
-		       (filename . "^/ssh2"))))
+	    ("tramp" (or
+		      (filename . "^/ssh:")
+		      (filename . "^/telnet:")
+		      (filename . "^/rsync:")
+		      (filename . "^/sshx:")
+		      (filename . "^/ssh2")))
 	    ))
 
 
@@ -232,8 +232,7 @@
 
 		(cons "ext" '(("*buffer*" (name . "\\*.*\\*"))
 			      ("TAGS" (name . "^TAGS\\(<[0-9]+>\\)?$"))
-			      ("dired" (mode . dired-mode))))))
-    )
+			      ("dired" (mode . dired-mode)))))))
 
   (use-package ibuffer-vc
     :ensure t)

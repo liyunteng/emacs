@@ -241,10 +241,10 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company web-mode '(company-web))
 
 (my|defvar-company-backends emacs-lisp-mode)
-(my|enable-company emacs-lisp-mode '(company-capf company-elisp))
+(my|enable-company emacs-lisp-mode '(company-elisp company-capf))
 
 (my|defvar-company-backends lisp-interaction-mode)
-(my|enable-company lisp-interaction-mode '(company-capf company-elisp))
+(my|enable-company lisp-interaction-mode '(company-elisp company-capf))
 
 (my|defvar-company-backends java-mode)
 (my|enable-company java-mode '(company-eclim))

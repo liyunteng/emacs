@@ -31,24 +31,26 @@
   :ensure t
   :diminish helm-mode
   :commands (helm-mode)
+  :bind (("C-c C-j" . helm-imenu))
   :init
   (helm-mode +1)
   :config
   (require 'helm-config)
   (require 'helm-grep)
 
-  (use-package helm-ag
-    :ensure t
-    :bind
-    (("M-s s" . helm-ag)
-     ("M-s M-s" . helm-do-ag)
-     :map helm-ag-map
-     ("C-M-n" . helm-ag--next-file)
-     ("C-M-p" . helm-ag--previous-file)
-     )
-    :config
-    (setq next-error-function 'next-error)
-    )
+  (when (executable-find "ag")
+    (use-package helm-ag
+      :ensure t
+      :bind
+      (("M-s s" . helm-ag)
+       ("M-s M-s" . helm-do-ag)
+       :map helm-ag-map
+       ("C-M-n" . helm-ag--next-file)
+       ("C-M-p" . helm-ag--previous-file)
+       )
+      :config
+      (setq next-error-function 'next-error)
+      ))
 
   (use-package helm-descbinds
     :ensure t

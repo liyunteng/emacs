@@ -93,17 +93,19 @@
   "My kernel include path.")
 
 (defconst my-src-path (list
-                       "src"
+		       "./"
+                       "src/"
                        "../src"
                        "../../src")
   "My local src path.")
 
 ;;;###autoload
 (defconst my-include-path (list
-                           "include"
-                           "inc"
-                           "export"
-                           ".."
+                           "include/"
+                           "inc/"
+                           "export/"
+			   "./"
+                           "../"
                            "../include"
                            "../inc"
                            "../export"
@@ -235,6 +237,108 @@
 ;; 	       (show-trailing-whitespace . t)
 ;; 	       (c-offsets-alist
 ;; 		(statement-cont . (c-lineup-assignments +)))))
+
+(use-package semantic
+  :defer t
+  :commands (semantic-mode)
+  :init
+  (defconst my-project-roots '("~/git/ihi/client/c9service"
+                               "/usr/src/linux")
+    "My project roots to setq semanticdb-project-roots.")
+  ;;global-semantic-decoration-mode
+  (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
+  ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+  ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
+  ;; (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
+
+  (add-to-list 'semantic-default-submodes 'global-semantic-highlight-edits-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-show-unmatched-syntax-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-show-parser-state-mode)
+  :config
+  ;; for debug
+  ;; (setq semantic-dump-parse t)
+  ;; (setq semantic-edits-verbose-flag t)
+  ;; (setq semantic-idle-scheduler-verbose-flag t)
+  ;; (setq semantic-lex-debug-analyzers t)
+  ;; (setq semantic-update-mode-line t)
+
+  (use-package semantic/idle
+    :defines (semantic-idle-scheduler-idle-time
+	      semantic-idle-scheduler-max-buffer-size
+	      semantic-idle-scheduler-work-idle-time
+	      semantic-idle-work-update-headers-flag
+	      )
+    :init
+    (setq semantic-idle-scheduler-idle-time 1)
+    (setq semantic-idle-scheduler-max-buffer-size 10240000)
+    (setq semantic-idle-scheduler-work-idle-time 30)
+    (setq semantic-idle-work-update-headers-flag t)
+    (setq semantic-idle-work-parse-neighboring-files-flag t)
+
+    ;; (add-hook 'semantic-init-hooks 'semantic-idle-completions-mode)
+    )
+
+  (require 'semantic/dep)
+  (semantic-add-system-include "/usr/local/include")
+  ;; (require 'semantic/decorate/include)
+  (require 'semantic/bovine/c)
+  ;;   ;; (require 'semantic/bovine/make)
+  ;;   ;; (require 'semantic/bovine/c-by)
+  (require 'semantic/wisent)
+
+  (after-load 'cc-mode
+    (defcustom-mode-local-semantic-dependency-system-include-path
+      c-mode my-c-system-include (semantic-gcc-get-include-paths "c"))
+    (defcustom-mode-local-semantic-dependency-system-include-path
+      c++-mode my-c++-system-include (semantic-gcc-get-include-paths "c++"))
+
+    (setq-mode-local c-mode semantic-dependency-include-path my-include-path)
+    (setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
+    )
+
+  (use-package semantic/ia
+    :init
+    (defun my/semantic-find-definition (arg)
+      (interactive "P")
+      (when (fboundp 'xref-push-marker-stack)
+  	(xref-push-marker-stack (push-mark (point))))
+      (semantic-ia-fast-jump (point))
+      (recenter-top-bottom)
+      ))
+
+  ;; (require 'semantic/lex-spp)
+  ;; (setq semantic-lex-maximum-depth 200)
+  ;; 设置头文件路径
+
+  ;; (use-package semantic/senator
+  ;; 	:init
+  ;; 	(setq senator-highlight-found t))
+
+  ;; ;;;semantic Database
+  (use-package semantic/db
+    :init
+    (setq semanticdb-search-system-databases t)
+    (setq semanticdb-project-roots my-project-roots)
+    )
+
+  (use-package semantic/db-find
+    :init
+    (setq semanticdb-find-default-throttle
+	  '(local project unloaded system recursive)
+	  )
+    )
+
+  (use-package semantic/db-global
+    :init
+    (semanticdb-enable-gnu-global-databases 'c-mode)
+    (semanticdb-enable-gnu-global-databases 'c++-mode)
+    ))
+
 (defun my-c-mode-hooks ()
   "My c common mode hooks."
   (unless semantic-mode

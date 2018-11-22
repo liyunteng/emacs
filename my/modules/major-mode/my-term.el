@@ -73,6 +73,13 @@
     (setq-local scroll-margin 0)
     (auto-fill-mode -1)
     )
+
+  (defun my/comint-clear-buffer ()
+    "Clear comint buffer."
+    (interactive)
+    (let ((comint-buffer-maximum-size 0))
+      (comint-truncate-buffer)))
+
   (add-hook 'comint-mode-hook 'my-comint-mode-hook)
   :config
   (setq comint-scroll-to-bottom-on-input nil

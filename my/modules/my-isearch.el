@@ -23,65 +23,75 @@
 ;;
 
 ;;; Code:
-(use-package anzu
-  :ensure t
-  :bind (([remap query-replace-regexp] . anzu-query-replace-regexp)
-	 ([remap query-relace] . anzu-query-replace)
-	 )
-  :defines anzu-mode-line-update-function anzu--state
-  :config
-  (defun my-anzu-update-mode-line (here total)
-    "Custom update function which does not propertize the status."
-    (when anzu--state
-      (let ((status (cl-case anzu--state
-		      (search (format "(%s/%d%s)"
-				      (anzu--format-here-position here total)
-				      total (if anzu--overflow-p "+" "")))
-		      (replace-query (format "(%d replace)" total))
-		      (replace (format "(%d/%d)" here total)))))
-	status)))
-  (setq anzu-mode-line-update-function 'my-anzu-update-mode-line)
-  (setq anzu-mode-lighter "")
-  (global-anzu-mode +1)
+
+
+(use-package isearch
+  :bind  (:map isearch-mode-map
+	       ("C-o" . isearch-occur)
+	       ("C-q" . isearch-del-char)
+	       ("C-w" . isearch-delete-char)
+
+	       ("C-y" . isearch-yank-word-or-char)
+	       ("M-l" . isearch-yank-line)
+	       ("M-w" . isearch-yank-kill)
+	       ("C-M-w" . my/isearch-yank-symbol)
+	       ("C-M-y" . isearch-yank-pop)
+
+	       ("C-e" . isearch-edit-string)
+
+	       ("M-i" . isearch-toggle-case-fold)
+	       ("M-r" . isearch-toggle-regexp)
+
+	       ([(control return)] . my/isearch-exit-other-end)
+	       )
+  :init
+  (use-package anzu
+    :ensure t
+    :bind (([remap query-replace-regexp] . anzu-query-replace-regexp)
+	   ([remap query-relace] . anzu-query-replace))
+    :diminish anzu-mode
+    :defines anzu-mode-line-update-function anzu--state
+    :init
+    (defun my-anzu-update-mode-line (here total)
+      "Custom update function which does not propertize the status."
+      (when anzu--state
+	(let ((status (cl-case anzu--state
+			(search (format "(%s/%d%s) "
+					(anzu--format-here-position here total)
+					total (if anzu--overflow-p "+" "")))
+			(replace-query (format "(%d replace) " total))
+			(replace (format "(%d/%d) " here total)))))
+	  status)))
+    (setq anzu-mode-line-update-function 'my-anzu-update-mode-line)
+    (global-anzu-mode +1))
+
+
+  ;; Search back/forth for the symbol at point
+  ;; See http://www.emacswiki.org/emacs/SearchAtPoint
+  (defun my/isearch-yank-symbol ()
+    "*Put symbol at current point into search string."
+    (interactive)
+    (let ((sym (symbol-at-point)))
+      (if sym
+          (progn
+            (setq isearch-regexp t
+                  isearch-string (concat "\\_<" (regexp-quote (symbol-name sym)) "\\_>")
+                  isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
+                  isearch-yank-flag t))
+	(ding)))
+    (isearch-search-and-update))
+
+  ;; http://www.emacswiki.org/emacs/ZapToISearch
+  (defun my/isearch-exit-other-end ()
+    "Exit isearch, but at the other end of the search string.
+This is useful when followed by an immediate kill."
+    (interactive)
+    (isearch-exit)
+    (goto-char isearch-other-end))
   )
 
-;; Search back/forth for the symbol at point
-;; See http://www.emacswiki.org/emacs/SearchAtPoint
-(defun my/isearch-yank-symbol ()
-  "*Put symbol at current point into search string."
-  (interactive)
-  (let ((sym (symbol-at-point)))
-    (if sym
-        (progn
-          (setq isearch-regexp t
-                isearch-string (concat "\\_<" (regexp-quote (symbol-name sym)) "\\_>")
-                isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
-                isearch-yank-flag t))
-      (ding)))
-  (isearch-search-and-update))
 
-;; http://www.emacswiki.org/emacs/ZapToISearch
-(defun my/isearch-exit-other-end ()
-  "Exit isearch, but at the other end of the search string.
-This is useful when followed by an immediate kill."
-  (interactive)
-  (isearch-exit)
-  (goto-char isearch-other-end))
 
-;; DEL during isearch should edit the search string, not jump back to the previous result
-(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
-;; Activate occur easily inside isearch
-(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
-(define-key isearch-mode-map (kbd "M-w") 'swiper-from-isearch)
-(define-key isearch-mode-map [(control return)] 'my/isearch-exit-other-end)
-(define-key isearch-mode-map "\C-\M-w" 'my/isearch-yank-symbol)
-(define-key isearch-mode-map (kbd "C-q") 'isearch-del-char)
-(define-key isearch-mode-map (kbd "C-w") 'isearch-delete-char)
-(define-key isearch-mode-map (kbd "M-i") 'isearch-toggle-case-fold)
-(define-key isearch-mode-map (kbd "C-y") 'isearch-yank-word-or-char)
-(define-key isearch-mode-map (kbd "C-M-y") 'isearch-yank-pop)
-(define-key isearch-mode-map (kbd "M-l") 'isearch-yank-line)
-(define-key isearch-mode-map (kbd "C-e") 'isearch-edit-string)
 
 (provide 'my-isearch)
 ;;; my-isearch.el ends here

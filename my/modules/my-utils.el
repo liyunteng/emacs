@@ -68,19 +68,8 @@
     result))
 
 
-;; COPY FROM SPACEMACS
-(defun my-add-to-load-path (dir &optional append)
-  "Add DIR to load path, if APPEND add to end."
-  (add-to-list 'load-path dir append))
-
-(defun my-add-to-load-path-if-exists (dir &optional append)
-  "If DIR exists in the file system, add it to `load-path'.
-If APPEND add to end."
-  (when (file-exists-p dir)
-    (my-add-to-load-path dir append)))
-
 (defun my-add-to-hook (hook funs)
-  "Add list of functions to hook."
+  "Add list of FUNS to HOOK."
   (dolist (fun funs)
     (add-hook hook fun)))
 
@@ -90,11 +79,13 @@ If APPEND add to end."
     (add-hook hook fun)))
 
 (defun my-add-all-to-hook (hook &rest funs)
-  "Add functions to hook."
+  "Add FUNS to HOOK."
   (my-add-to-hook hook funs))
 
 (defun my/echo (msg &rest args)
-  "Display MSG in echo-area withou logging it in *Messages* buffer."
+  "Display message in echo-area without logging it in *Messages* buffer.
+MSG format-string or string.
+ARGS if MSG is format-string ARGS contain message."
   (interactive)
   (let ((message-log-max nil))
     (apply 'message msg args)))
@@ -176,8 +167,7 @@ If APPEND add to end."
 
 
 (defun my/alternate-buffer (&optional window)
-  "Switch back and forth between current and last buffer in the
-current window."
+  "Switch back and forth between current and last buffer in the current window."
   (interactive)
   (let ((current-buffer (window-buffer window))
         (buffer-predicate
@@ -203,12 +193,6 @@ current frame."
     (unless prev-window (user-error "Last window not found"))
     (select-window prev-window)))
 
-(defun my/comint-clear-buffer ()
-  (interactive)
-  (let ((comint-buffer-maximum-size 0))
-    (comint-truncate-buffer)))
-
-
 ;; keybinding
 (defun my--create-key-binding-form (props func)
   "Helper which returns a from to bind FUNC to a key according to PROPS.
@@ -231,8 +215,8 @@ Supported properties:
            (define-key (eval (car val)) (kbd (cdr val)) ',func)))))))
 
 (defvar my-toggles '()
-  "List of all declared toggles. The structure of an element is a
-property list (name :func FUNCTION :doc STRING :key STRING).")
+  "List of all declared toggles.
+The structure of an element is a property list (name :func FUNCTION :doc STRING :key STRING).")
 
 (defmacro my|add-toggle (name &rest props)
   "Add a toggle with NAME symbol.
