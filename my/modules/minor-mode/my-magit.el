@@ -35,6 +35,8 @@
 	 ("M-RET" . magit-diff-visit-file-other-window)
 	 )
   :ensure t
+  :init
+  (require 'magit-git)
   :config
   (use-package gitconfig-mode
     :ensure t)
@@ -44,6 +46,8 @@
     :ensure t)
   (use-package smeargle
     :ensure t)
+  (after-load 'diff-hl
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
   (setq magit-branch-read-upstream-first 'fallback)
   (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
 

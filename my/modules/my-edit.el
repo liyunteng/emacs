@@ -59,11 +59,11 @@
 ;; 递归minibuffer
 (setq enable-recursive-minibuffers t)
 
+;; resize mini-window to fit the text displayed in them
+(setq resize-mini-windows nil)
+
 ;; suggest key bindings
 (setq suggest-key-bindings t)
-
-;; resize mini-window to fit the text displayed in them
-(setq resize-mini-windows t)
 
 ;; default major mode
 (setq-default default-major-mode 'text-mode)
@@ -819,7 +819,7 @@ at the end of the line."
     :documentation "Global highlight diff")
   :config
   (global-diff-hl-mode +1)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+  )
 
 ;; undo-tree
 (use-package undo-tree

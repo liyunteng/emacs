@@ -291,7 +291,7 @@
   ;;   ;; (require 'semantic/bovine/c-by)
   (require 'semantic/wisent)
 
-  (after-load 'my-c
+  (after-load 'cc-mode
     (defcustom-mode-local-semantic-dependency-system-include-path
       c-mode my-c-system-include (semantic-gcc-get-include-paths "c"))
     (defcustom-mode-local-semantic-dependency-system-include-path
