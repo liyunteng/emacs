@@ -32,12 +32,10 @@
 	 ("C-x M-g" . magit-dispatch-popup)
 	 ("C-x v =" . magit-diff-buffer-file)
 	 :map magit-status-mode-map
-	 ("M-RET" . magit-diff-visit-file-other-window)
-	 )
+	 ("M-RET" . magit-diff-visit-file-other-window))
+
   :ensure t
   :init
-  (require 'magit-git)
-  :config
   (use-package gitconfig-mode
     :ensure t)
   (use-package gitignore-mode
@@ -46,11 +44,12 @@
     :ensure t)
   (use-package smeargle
     :ensure t)
+
+  :config
   (after-load 'diff-hl
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
   (setq magit-branch-read-upstream-first 'fallback)
   (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
-
   )
 
 ;; 激活magit-log，可在magit-log中操作magit

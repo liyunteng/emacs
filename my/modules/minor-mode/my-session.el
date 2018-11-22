@@ -108,6 +108,11 @@
   ;; 		 (/ (my-time-subtract-millis (current-time) start-time) 1000)))))
 
 
+  (defun my/desktop-remove ()
+    "Desktop clear and Desktop remove."
+    (interactive)
+    (desktop-clear)
+    (desktop-remove))
 
   (defvar before-desktop-read-time nil)
   (defvar after-desktop-read-time nil)

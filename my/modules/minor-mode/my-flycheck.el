@@ -28,6 +28,7 @@
   :bind (:map flycheck-mode-map
 	      ("C-c ! L" . my/flycheck-error-list-and-switch))
   :init
+  (setq flycheck-checker-error-threshold 10000)
   (defvar syntax-checking-use-original-bitmaps t)
   (when (and (fboundp 'define-fringe-bitmap)
 	     (not syntax-checking-use-original-bitmaps))
