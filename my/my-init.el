@@ -69,9 +69,9 @@
     my-json
     my-term
     my-mu4e
-
     ;; my-qt
     ;; my-header
+
     my-jump
     my-yas
     my-server

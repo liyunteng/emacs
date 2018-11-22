@@ -26,6 +26,7 @@
 
 
 (use-package hide-comnt
+  :ensure t
   :bind ("C-c m ;" . hide/show-comments-toggle))
 
 (use-package hideshow

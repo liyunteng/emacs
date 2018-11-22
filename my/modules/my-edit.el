@@ -310,12 +310,6 @@
     :mode whitespace-mode
     :documentation "Show whitespace")
 
-  (my|add-toggle whitespace-cleanup-mode
-    :status whitespace-cleanup-mode
-    :on (whitespace-cleanup-mode +1)
-    :off (whitespace-cleanup-mode -1)
-    :documentation "Cleanup whitesapce")
-
   (setq whitespace-line-column fill-column)
   (setq whitespace-style
 	'(face
@@ -330,8 +324,17 @@
 	  newline
 	  newline-mark))
 
-  (require 'my-whitespace-cleanup-mode)
-  (global-whitespace-cleanup-mode +1)
+  (use-package my-whitespace-cleanup-mode
+    :init
+    (my|add-toggle whitespace-cleanup-mode
+      :status whitespace-cleanup-mode
+      :on (whitespace-cleanup-mode +1)
+      :off (whitespace-cleanup-mode -1)
+      :documentation "Cleanup whitesapce")
+    :config
+    (global-whitespace-cleanup-mode +1))
+  ;; (require 'my-whitespace-cleanup-mode)
+  ;; (global-whitespace-cleanup-mode +1)
 
   ;; (set-face-attribute 'whitespace-space nil
   ;; 					  :background nil
