@@ -27,12 +27,11 @@
 ;; syslog-mode
 (use-package hide-lines
   :ensure t)
-;; (unless (package-installed-p 'syslog-mode)
-;;   (package-install 'syslog-mode))
-(autoload 'syslog-mode "syslog-mode")
+
 (use-package syslog-mode
-  :defines syslog-setup-on-load
-  :init (setq syslog-setup-on-load t)
+  :ensure t
+  :init
+  (setq syslog-setup-on-load t)
   :mode ("\\(messages\\(\\.[0-9]\\)?\\|SYSLOG\\|dmesg\\|\\.log.*\\)\\'" . syslog-mode)
   :config
   (defun my-enable-goto-address-mode ()

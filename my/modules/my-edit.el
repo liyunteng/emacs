@@ -174,7 +174,8 @@
   :config
   (defadvice linum-schedule (around my-linum-schedule () activate)
     "Updated line number every second."
-    (run-with-idle-timer 1 nil #'linum-update-current))
+    (run-with-idle-timer 1 nil #'linum-update-current)
+    ad-do-it)
   (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
   )
 
@@ -309,12 +310,6 @@
     :mode whitespace-mode
     :documentation "Show whitespace")
 
-  (my|add-toggle whitespace-cleanup-mode
-    :status whitespace-cleanup-mode
-    :on (whitespace-cleanup-mode +1)
-    :off (whitespace-cleanup-mode -1)
-    :documentation "Cleanup whitesapce")
-
   (setq whitespace-line-column fill-column)
   (setq whitespace-style
 		'(face
@@ -329,8 +324,17 @@
 		  newline
 		  newline-mark))
 
-  (require 'my-whitespace-cleanup-mode)
-  (global-whitespace-cleanup-mode +1)
+  (use-package my-whitespace-cleanup-mode
+    :init
+    (my|add-toggle whitespace-cleanup-mode
+      :status whitespace-cleanup-mode
+      :on (whitespace-cleanup-mode +1)
+      :off (whitespace-cleanup-mode -1)
+      :documentation "Cleanup whitesapce")
+    :config
+    (global-whitespace-cleanup-mode +1))
+  ;; (require 'my-whitespace-cleanup-mode)
+  ;; (global-whitespace-cleanup-mode +1)
 
   ;; (set-face-attribute 'whitespace-space nil
   ;; 					  :background nil
@@ -726,6 +730,7 @@ at the end of the line."
     (indent-according-to-mode))
   :config
   (setq comment-style 'extra-line)
+  ;; (setq comment-style 'multi-line)
   (setq comment-fill-column 80)
   )
 

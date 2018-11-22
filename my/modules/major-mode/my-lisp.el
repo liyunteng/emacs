@@ -123,8 +123,8 @@
   (defadvice pp-display-expression (after my-make-read-only (expression out-buffer-name) activate)
     "Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
     (when (get-buffer out-buffer-name)
-      (with-current-buffer out-buffer-name (view-mode 1))
-      (view-buffer-other-window out-buffer-name)))
+      (with-current-buffer out-buffer-name
+	(view-buffer-other-window out-buffer-name nil 'kill-buffer-if-not-modified))))
 
   (defun my-maybe-set-bundled-elisp-readonly ()
     "If this elisp appears to be part of Emacs, then disallow editing."
