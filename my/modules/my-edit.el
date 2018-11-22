@@ -174,7 +174,8 @@
   :config
   (defadvice linum-schedule (around my-linum-schedule () activate)
     "Updated line number every second."
-    (run-with-idle-timer 1 nil #'linum-update-current))
+    (run-with-idle-timer 1 nil #'linum-update-current)
+    ad-do-it)
   (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
   )
 
@@ -712,6 +713,7 @@ at the end of the line."
     (indent-according-to-mode))
   :config
   (setq comment-style 'extra-line)
+  ;; (setq comment-style 'multi-line)
   (setq comment-fill-column 80)
   )
 

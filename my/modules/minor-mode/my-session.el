@@ -60,7 +60,7 @@
 	;; desktop-save 'ask-if-new
 	)
   ;; fix if no deskop-file desktop-read will close all window
-  (unless (or (not (desktop-full-file-name)) my-debug)
+  (unless (or (not (desktop-full-file-name)))
     (desktop-save-mode +1))
   :config
   ;; save a bunch of variables to the desktop file

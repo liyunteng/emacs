@@ -55,7 +55,9 @@
 (setq ad-redefinition-action 'accept)
 
 ;; toggle off debug-on-error
-(setq debug-on-error t)
+(if my-debug
+    (setq debug-on-error t)
+  (setq debug-on-error nil))
 
 ;; Always load newest byte code
 (setq load-prefer-newer t)

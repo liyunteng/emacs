@@ -118,7 +118,7 @@
     (defadvice load (around my-timed-load activate)
       (let ((start (current-time)) res delta)
         (setq res ad-do-it
-              delta (my-time-subtract-millis (current-time) start))
+	      delta (my-time-subtract-millis (current-time) start))
         (when (> delta my-debug-timer-threshold)
           (with-current-buffer (get-buffer-create my-debug-buffer-name)
             (goto-char (point-max))

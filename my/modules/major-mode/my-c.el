@@ -228,8 +228,13 @@
   )
 
 (use-package disaster
-  :ensure t)
-
+  :ensure t
+  :init
+  (defadvice disaster (after make-disaster-view-mode activate)
+    (when (get-buffer disaster-buffer-assembly)
+      (with-current-buffer disaster-buffer-assembly
+	(view-buffer-other-window disaster-buffer-assembly nil 'kill-buffer))))
+  )
 ;; (c-add-style "ffmpeg"
 ;; 	     '("k&r"
 ;; 	       (c-basic-offset . 4)
@@ -309,7 +314,17 @@
   	(xref-push-marker-stack (push-mark (point))))
       (semantic-ia-fast-jump (point))
       (recenter-top-bottom)
-      ))
+      )
+
+    ;; fix cursor not on word
+    (defadvice semantic-ia-show-doc (around fix-not-on-word  (apoint) activate)
+      (catch 'a
+	(if (semantic-analyze-current-context apoint)
+    	    ad-do-it
+    	  (message "Cursor not on symbol")
+	  (throw 'a nil)
+    	  )))
+    )
 
   ;; (require 'semantic/lex-spp)
   ;; (setq semantic-lex-maximum-depth 200)
@@ -405,6 +420,10 @@
   ;; 搜索函数被调用
   (local-set-key (kbd "C-c C-c r") 'semantic-symref-symbol)
   (local-set-key (kbd "C-c C-c R") 'semantic-symref-regexp)
+
+  ;; disaster
+  (local-set-key (kbd "C-c C-c d") 'disaster)
+
   ;; 现实文档
   (local-set-key (kbd "C-c C-d") 'semantic-ia-show-doc)
   (local-set-key (kbd "C-c C-l") 'semantic-ia-show-summary)
