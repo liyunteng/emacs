@@ -24,6 +24,7 @@
 
 ;;; Code:
 
+(setq debug-on-error t)
 (defvar my-debug nil)
 (defvar my-init-times nil
   "A list of (FEATURE TYPE LOAD-START-TIME LOAD-DURATION).
@@ -86,8 +87,8 @@ arguments is that we want to process these arguments as soon as possible."
   (setq tabulated-list-sort-key (cons "Start time (ms)" nil))
   (setq tabulated-list-entries #'my-init-times-tabulated-list-entries)
   ;; for auto-revert
-  (setq-local revert-buffer-function 'tabulated-list-revert)
-  (setq-local buffer-stale-function '(lambda (a) t))
+  ;; (setq-local revert-buffer-function 'tabulated-list-revert)
+  ;; (setq-local buffer-stale-function '(lambda (a) t))
   (tabulated-list-init-header))
 
 (defun my-init-times-sort-by-start-time-pred (entry1 entry2)
@@ -120,28 +121,9 @@ arguments is that we want to process these arguments as soon as possible."
     (display-buffer (current-buffer))
 	))
 
-
-
-;; (defun my-require-times-wrapper (orig feature &rest args)
-;;   "Note in `my-require-times' the time taken to require each feature."
-;;   (let* ((already-loaded (memq feature features))
-;;          (require-start-time (and (not already-loaded) (current-time))))
-;;     (prog1
-;;         (apply orig feature args)
-;;       (when (and (not already-loaded) (memq feature features))
-;;         (let ((time (my-time-subtract-millis (current-time) require-start-time)))
-;;           (add-to-list 'my-require-times
-;;                        (list feature require-start-time time)
-;;                        t))))))
-;; (advice-add 'require :around 'my-require-times-wrapper)
-(when my-debug
-  (add-hook 'after-init-hook 'my/show-init-times))
-
-
-(provide 'my-debug)
-;;; my-debug.el ends here
-
-
+(if my-debug
+	(add-hook 'after-init-hook 'my/show-init-times)
+  (setq debug-on-error nil))
 
 (provide 'my-debug)
 ;;; my-debug.el ends here

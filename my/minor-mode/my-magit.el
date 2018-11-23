@@ -29,27 +29,68 @@
 
 (use-package magit
   :bind (("C-x g" . magit-status)
-	 ("C-x M-g" . magit-dispatch-popup)
-	 ("C-x v =" . magit-diff-buffer-file)
-	 :map magit-status-mode-map
-	 ("M-RET" . magit-diff-visit-file-other-window))
+		 ("C-x M-g" . magit-dispatch-popup)
+		 ("C-x v =" . magit-diff-buffer-file)
+		 :map magit-status-mode-map
+		 ("M-RET" . magit-diff-visit-file-other-window))
 
   :ensure t
   :init
+  (use-package git-blamed
+	:defer t
+	:ensure t)
   (use-package gitconfig-mode
+	:defer t
     :ensure t)
   (use-package gitignore-mode
+	:defer t
     :ensure t)
   (use-package git-timemachine
+	:defer t
     :ensure t)
+  (use-package git-messenger
+	:defer t
+	:ensure t)
   (use-package smeargle
     :ensure t)
+  (use-package yagist
+	:ensure t
+	:defer t)
+  (use-package github-clone
+	:ensure t
+	:defer t)
+  (use-package magithub
+	:ensure t
+	:defer t)
+
+  (use-package git-commit
+	:ensure t
+	:init
+	(add-hook 'git-commit-mode-hook 'goto-address-mode))
+
+  (use-package magit-todos
+	:ensure t
+	:init
+	(add-hook 'magit-mode-hook 'magit-todos-mode))
+
+  (use-package bug-reference-github
+	:ensure t
+	:init
+	(add-hook 'prog-mode-hook 'bug-reference-prog-mode))
+
 
   :config
-  (after-load 'diff-hl
-    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
   (setq magit-branch-read-upstream-first 'fallback)
   (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
+  (setq magit-diff-refine-hunk t)
+  (after-load 'diff-hl
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+  (after-load 'compile
+	(dolist (defn (list '(git-svn-updated "^\t[A-Z]\t\\(.*\\)$" 1 nil nil 0 1)
+						'(git-svn-needs-update "^\\(.*\\): needs update$" 1 nil nil 2 1)))
+	  (add-to-list 'compilation-error-regexp-alist-alist defn)
+	  (add-to-list 'compilation-error-regexp-alist (car defn))))
+  (add-hook 'magit-popup-mode-hook 'my/toggle-show-trailing-whitespace-off)
   )
 
 ;; 激活magit-log，可在magit-log中操作magit

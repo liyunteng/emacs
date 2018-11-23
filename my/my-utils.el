@@ -45,6 +45,26 @@
          retval)
      ,@clean-up))
 
+(defun my-system-is-mac () "Is mac?"(eq system-type 'darwin))
+(defun my-system-is-linux () "Is linux?" (eq system-type 'gnu/linux))
+(defun my-system-is-mswindows () "Is ms window?" (eq system-type 'windows-nt))
+(defun my-window-system-is-mac () "Window system is mac?" (memq (window-system) '(mac ns)))
+
+
+(defun my-add-to-hook (hook funs)
+  "Add list of FUNS to HOOK."
+  (dolist (fun funs)
+    (add-hook hook fun)))
+
+(defun my-add-to-hooks (fun hooks)
+  "Add FUN to HOOKS."
+  (dolist (hook hooks)
+    (add-hook hook fun)))
+
+(defun my-add-all-to-hook (hook &rest funs)
+  "Add FUNS to HOOK."
+  (my-add-to-hook hook funs))
+
 (defun get-string-from-file (filepath)
   "Retrun FILEPATH's file content."
   (with-temp-buffer
@@ -66,115 +86,6 @@
       (push (match-string group str) result)
       (setq pos (match-end group)))
     result))
-
-
-(defun my-add-to-hook (hook funs)
-  "Add list of FUNS to HOOK."
-  (dolist (fun funs)
-    (add-hook hook fun)))
-
-(defun my-add-to-hooks (fun hooks)
-  "Add FUN to HOOKS."
-  (dolist (hook hooks)
-    (add-hook hook fun)))
-
-(defun my-add-all-to-hook (hook &rest funs)
-  "Add FUNS to HOOK."
-  (my-add-to-hook hook funs))
-
-(defun my/echo (msg &rest args)
-  "Display message in echo-area without logging it in *Messages* buffer.
-MSG format-string or string.
-ARGS if MSG is format-string ARGS contain message."
-  (interactive)
-  (let ((message-log-max nil))
-    (apply 'message msg args)))
-
-(defun my-derived-mode-p (mode &rest modes)
-  "Non-nil if MODE is derived from one of MODES."
-  (let ((major-mode mode))
-    (apply #'derived-mode-p modes)))
-
-(defun my-system-is-mac () "Is mac?"(eq system-type 'darwin))
-(defun my-system-is-linux () "Is linux?" (eq system-type 'gnu/linux))
-(defun my-system-is-mswindows () "Is ms window?" (eq system-type 'windows-nt))
-
-(defun my-window-system-is-mac () "Window system is mac?" (memq (window-system) '(mac ns)))
-
-(defun my-run-prog-mode-hooks () "Run `prog-mode-hook'." (run-hooks 'prog-mode-hook))
-(defun my-run-text-mode-hooks () "Run `text-mode-hook'." (run-hooks 'text-mode-hook))
-
-(defun my-mplist-get (plist prop)
-  "Get the values associated to  PLIST of PROP, a modified plist."
-  (let ((tail plist)
-        result)
-    (while (and (consp tail) (not (eq prop (car tail))))
-      (pop tail))
-    (pop tail)
-    (while (and (consp tail) (not (keywordp (car tail))))
-      (push (pop tail) result))
-    (nreverse result)))
-
-(defun my-mplist-remove (plist prop)
-  "Return a copy of a modified PLIST without PROP and its values."
-  (let ((tail plist)
-        result)
-    (while (and (consp tail) (not (eq prop (car tail))))
-      (push (pop tail) result))
-    (when (eq prop (car tail))
-      (pop tail)
-      (while (and (consp tail) (not (keywordp (car tail))))
-        (pop tail)))
-    (while (consp tail)
-      (push (pop tail) result))
-    (nreverse result)))
-
-(defun my-dump (varlist buffer)
-  "Insert the setq statement to recreate the variables in VARLIST to BUFFER.
-
-Example:
-	(setq a \"a\" b \"b\" c \"c\")
-	(setq x '(a b c))
-	(my-dump x (get-buffer \"*scratch*\"
-
-Output:
-	(setq a (quote \"a\"))
-	(setq b (quote \"b\"))
-    (setq c (quote \"c\"))."
-  (cl-loop for var in varlist do
-           (print (list 'setq var (list 'quote (symbol-value var)))
-                  buffer)))
-
-(defun my-dump-vars-to-file (varlist filename)
-  "Dump VARLIST to FILENAME."
-  (with-temp-file filename
-    (my-dump varlist (current-buffer))
-    (make-directory (file-name-directory filename) t)))
-
-(defvar-local hidden-mode-line-mode nil)
-(defvar-local hide-mode-line nil)
-(define-minor-mode hidden-mode-line-mode
-  "Minor mode to hide the mode-line in the current buffer."
-  :init-value nil
-  :global t
-  :variable hidden-mode-line-mode
-  :group 'editing-basics
-  (if hidden-mode-line-mode
-      (setq hide-mode-line mode-line-format
-            mode-line-format nil)
-    (setq mode-line-format hide-mode-line
-          hide-mode-line nil))
-  (force-mode-line-update)
-  ;; Apparently force-mode-line-update is not always enough to
-  ;; redisplay the mode-line
-  (redraw-display)
-  (when (and (called-interactively-p 'interactive)
-             hidden-mode-line-mode)
-    (run-with-idle-timer
-     0 nil 'message
-     (concat "Hidden Mode Line Mode enabled.  "
-             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
-
 
 (defun my/alternate-buffer (&optional window)
   "Switch back and forth between current and last buffer in the current window."
@@ -202,6 +113,192 @@ current frame."
     ;; Check window was not found successfully
     (unless prev-window (user-error "Last window not found"))
     (select-window prev-window)))
+
+(defun my/rename-file (filename &optional new-filename)
+  "Rename FILENAME to NEW-FILENAME.
+
+When NEW-FILENAME is not specified, asks user for a new name.
+
+Also renames associated buffer (if any exists), invalidates
+projectile cache when it's possible and update recentf list."
+  (interactive "f")
+  (when (and filename (file-exists-p filename))
+    (let* ((buffer (find-buffer-visiting filename))
+		   (short-name (file-name-nondirectory filename))
+		   (new-name (if new-filename new-filename
+					   (read-file-name
+						(format "Rename %s to: " short-name)))))
+      (cond ((get-buffer new-name)
+			 (error "A buffer named '%s' already exists!" new-name))
+			(t
+			 (let ((dir (file-name-directory new-name)))
+			   (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
+				 (make-directory dir t)))
+			 (rename-file filename new-name 1)
+			 (when buffer
+			   (kill-buffer buffer)
+			   (find-file new-name))
+			 (when (fboundp 'recentf-add-file)
+			   (recentf-add-file new-name)
+			   (recentf-remove-if-non-kept filename))
+			 (when (projectile-project-p)
+			   (call-interactively #'projectile-invalidate-cache))
+			 (message "File '%s' successfully renamed to '%s'" short-name
+					  (file-name-nondirectory new-name)))))))
+
+;; from magnars
+(defun my/rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let* ((name (buffer-name))
+         (filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        ;; (error "Buffer '%s' is not visiting a file!" name)
+        (rename-buffer (read-from-minibuffer "New name: " (buffer-name)))
+      (let* ((dir (file-name-directory filename))
+             (new-name (read-file-name "New name: " dir)))
+        (cond ((get-buffer new-name)
+               (error "A buffer named '%s' already exists!" new-name))
+              (t
+               (let ((dir (file-name-directory new-name)))
+                 (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
+                   (make-directory dir t)))
+               (rename-file filename new-name 1)
+               (rename-buffer new-name)
+               (set-visited-file-name new-name)
+               (set-buffer-modified-p nil)
+               (when (fboundp 'recentf-add-file)
+                 (recentf-add-file new-name)
+                 (recentf-remove-if-non-kept filename))
+               (when (projectile-project-p)
+                 (call-interactively #'projectile-invalidate-cache))
+               (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
+
+(defun my/delete-file (filename &optional ask-user)
+  "Remove specified file or directory.
+
+Also kills associated buffer (if any exists) and invalidates
+projectile cache when it's possible.
+
+FILENAME is file or directory.
+When ASK-USER is non-nil, user will be asked to confirm file
+removal."
+  (interactive "f")
+  (when (and filename (file-exists-p filename))
+    (let ((buffer (find-buffer-visiting filename)))
+      (when buffer
+        (kill-buffer buffer)))
+    (when (or (not ask-user)
+              (yes-or-no-p (format "Are you sure you want to delete %s? " filename)))
+      (delete-file filename)
+      (when (projectile-project-p)
+        (call-interactively #'projectile-invalidate-cache)))))
+
+(defun my/delete-file-confirm (filename)
+  "Remove specified file or directory after users approval.
+
+FILENAME is deleted using `my/delete-file' function.."
+  (interactive "f")
+  (funcall-interactively #'my/delete-file filename t))
+
+;; from magnars
+(defun my/delete-current-buffer-file ()
+  "Remove file connected to current buffer and kill buffer."
+  (interactive)
+  (let ((filename (buffer-file-name))
+        (buffer (current-buffer))
+        (name (buffer-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (kill-buffer)
+      (when (yes-or-no-p (format "Are you sure you want to delete %s? " filename))
+        (delete-file filename t)
+        (kill-buffer buffer)
+        (when (projectile-project-p)
+          (call-interactively #'projectile-invalidate-cache))
+        (message "Deleted file %s" filename)))))
+
+;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
+(defun my/show-and-copy-buffer-filename ()
+  "Show and copy the full path to the current file in the minibuffer."
+  (interactive)
+  ;; list-buffers-directory is the variable set in dired buffers
+  (let ((file-name (or (buffer-file-name) list-buffers-directory)))
+    (if file-name
+        (message (kill-new file-name))
+      (error "Buffer not visiting a file"))))
+;;(define-key my-mode-map (kbd "C-c C-s") 'my/rotate-windows-backward)
+
+(defun my--revert-buffer-function (ignore-auto noconfirm)
+  "Revert buffer if buffer without file, or call revert-buffer--default."
+  (if (buffer-file-name)
+      (funcall #'revert-buffer--default ignore-auto noconfirm)
+    (call-interactively major-mode)))
+;; (setq revert-buffer-function 'my--revert-buffer-function)
+
+
+(defun my-derived-mode-p (mode &rest modes)
+  "Non-nil if MODE is derived from one of MODES."
+  (let ((major-mode mode))
+    (apply #'derived-mode-p modes)))
+
+(defun my/echo (msg &rest args)
+  "Display message in echo-area without logging it in *Messages* buffer.
+MSG format-string or string.
+ARGS if MSG is format-string ARGS contain message."
+  (interactive)
+  (let ((message-log-max nil))
+    (apply 'message msg args)))
+
+(defun my-dump (varlist buffer)
+  "Insert the setq statement to recreate the variables in VARLIST to BUFFER.
+
+Example:
+	(setq a \"a\" b \"b\" c \"c\")
+	(setq x '(a b c))
+	(my-dump x (get-buffer \"*scratch*\"
+
+Output:
+	(setq a (quote \"a\"))
+	(setq b (quote \"b\"))
+    (setq c (quote \"c\"))."
+  (cl-loop for var in varlist do
+           (print (list 'setq var (list 'quote (symbol-value var)))
+                  buffer)))
+
+(defun my-dump-vars-to-file (varlist filename)
+  "Dump VARLIST to FILENAME."
+  (with-temp-file filename
+    (my-dump varlist (current-buffer))
+    (make-directory (file-name-directory filename) t)))
+
+
+
+
+
+(defun my-mplist-get (plist prop)
+  "Get the values associated to  PLIST of PROP, a modified plist."
+  (let ((tail plist)
+        result)
+    (while (and (consp tail) (not (eq prop (car tail))))
+      (pop tail))
+    (pop tail)
+    (while (and (consp tail) (not (keywordp (car tail))))
+      (push (pop tail) result))
+    (nreverse result)))
+
+(defun my-mplist-remove (plist prop)
+  "Return a copy of a modified PLIST without PROP and its values."
+  (let ((tail plist)
+        result)
+    (while (and (consp tail) (not (eq prop (car tail))))
+      (push (pop tail) result))
+    (when (eq prop (car tail))
+      (pop tail)
+      (while (and (consp tail) (not (keywordp (car tail))))
+        (pop tail)))
+    (while (consp tail)
+      (push (pop tail) result))
+    (nreverse result)))
 
 ;; keybinding
 (defun my--create-key-binding-form (props func)
@@ -335,7 +432,6 @@ my/toggle-company-mode-off."
                (interactive)
                (when (,wrapper-func-status) (,wrapper-func)))))
        ,@bindkeys)))
-
 
 (defmacro my|advise-commands (advice-name commands class &rest body)
   "Apply advice named ADVICE-NAME to multiple COMMANDS,

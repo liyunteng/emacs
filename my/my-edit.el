@@ -32,29 +32,16 @@
 ;;在鼠标光标处插入
 (setq mouse-yank-at-point t)
 
-;; no blink
-(blink-cursor-mode -1)
-
 ;; 光标靠近鼠标指针时，鼠标指针自动让开
 (mouse-avoidance-mode 'animate)
-
-;; (setq ring-bell-function 'ignore
-;;       visible-bell nil)
-;; 响铃
-(defun my--flash-mode-line ()
-  "My visible bell."
-  (invert-face 'mode-line)
-  (run-with-timer 0.05 nil 'invert-face 'mode-line))
-(setq ring-bell-function 'my--flash-mode-line)
-
 
 ;; 支持emacs和外部程序的拷贝粘贴
 (setq-default x-select-enable-clipboard t)
 
 ;; smooth scrolling
 (setq scroll-margin 3
-      scroll-conservatively 100000
-      scroll-preserve-screen-position t)
+	  scroll-conservatively 100000
+	  scroll-preserve-screen-position t)
 
 ;; 递归minibuffer
 (setq enable-recursive-minibuffers t)
@@ -91,6 +78,8 @@
 ;; Show column number in mode line
 (column-number-mode +1)
 (line-number-mode +1)
+;; show file size in mode-line
+(size-indication-mode +1)
 
 ;; draw underline lower
 (setq x-underline-at-descent-line t)
@@ -136,11 +125,13 @@
 ;; Don't try to ping things that look like domain names
 (setq-default ffap-machine-p-known 'reject)
 
-;; 在标题栏提示当前位置
-(setq frame-title-format
-      '( "Emacs - " (:eval (if (buffer-file-name)
-                               (abbreviate-file-name (buffer-file-name))
-                             "%b"))))
+(setq-default case-fold-search t)
+
+(setq-default tooltip-delay 1.5)
+
+;; initial mode
+;; (setq-default initial-major-mode
+;;               'lisp-interaction-mode)
 ;; initial scarch message
 (setq-default initial-scratch-message
               (concat ";; Happy Hacking, "
@@ -156,28 +147,27 @@
   (display-battery-mode t)
   )
 
-;; linum
-;;显示行列号
-(use-package linum
-  :init
-  (global-linum-mode +1)
-  :init
-  (setq linum-delay t)
-  (setq linum-format 'dynamic)
+;; linum replaced by nlinum
+;; (use-package linum
+;;   :init
+;;   (global-linum-mode +1)
+;;   :init
+;;   (setq linum-delay t)
+;;   (setq linum-format 'dynamic)
 
-  (my|add-toggle linum-mode
-    :status linum-mode
-    :on (linum-mode +1)
-    :off (linum-mode -1)
-    :documentation "Show line number")
+;;   (my|add-toggle linum-mode
+;;     :status linum-mode
+;;     :on (linum-mode +1)
+;;     :off (linum-mode -1)
+;;     :documentation "Show line number")
 
-  :config
-  (defadvice linum-schedule (around my-linum-schedule () activate)
-    "Updated line number every second."
-    (run-with-idle-timer 1 nil #'linum-update-current)
-    ad-do-it)
-  (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
-  )
+;;   :config
+;;   (defadvice linum-schedule (around my-linum-schedule () activate)
+;;     "Updated line number every second."
+;;     (run-with-idle-timer 1 nil #'linum-update-current)
+;;     ad-do-it)
+;;   (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
+;;   )
 
 ;; highlight current line
 (use-package hl-line
@@ -210,10 +200,12 @@
 (use-package uniquify
   :defer t
   :config
-  (setq uniquify-buffer-name-style 'forward)
-  (setq uniquify-separator "/")
+  (setq uniquify-buffer-name-style 'reverse)
+  (setq uniquify-separator " • ")
+  ;; (setq uniquify-buffer-name-style 'forward)
+  ;; (setq uniquify-separator "/")
   (setq uniquify-after-kill-buffer-p t)
-  (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+  (setq uniquify-ignore-buffers-re "^\\*")
   )
 
 ;; ediff
@@ -266,11 +258,13 @@
 
 ;; Auto revert
 (use-package autorevert
+  :diminish
   :config
   (setq global-auto-revert-non-file-buffers t
 		auto-revert-verbose nil)
   (add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode)
-  (global-auto-revert-mode +1))
+  :init
+  (add-hook 'after-init-hook 'global-auto-revert-mode))
 
 ;; which func
 (use-package which-func
@@ -446,17 +440,17 @@ indent yanked text (with prefix arg don't indent)."
     (use-package wgrep-ag
       :ensure t)
     (setq ag-highlight-search t)
-    )
-  )
+    ))
+(when (executable-find "rg")
+  (use-package rg
+	:ensure t
+	:bind ("M-?" . rg-project))
+  (use-package deadgrep
+	:ensure t))
 
 ;; 设置默认浏览器为firefox
 ;; (setq browse-url-firefox-new-window-is-tab t)
 ;; (setq browse-url-firefox-program "firefox")
-
-
-;;;启动时的默认模式
-;; (setq-default initial-major-mode
-;;               'lisp-interaction-mode)
 
 ;;;netstat命令的默认参数
 (use-package net-utils
@@ -752,30 +746,85 @@ at the end of the line."
   ;; (add-to-list 'desktop-globals-to-save '(window-configuration))
   )
 
-
-(use-package diminish
-  :ensure t)
-
-(use-package fill-column-indicator
-  :ensure t
-  :diminish fci-mode
-  :commands (turn-on-fci-mode
-			 turn-off-fci-mode
-			 fci-mode)
+(use-package paren
+  :defer t
   :init
-  (my|add-toggle fci-mode
-    :status fci-mode
-    :on (turn-on-fci-mode)
-    :off (turn-off-fci-mode)
-    :documentation "Display the fill column indicator"
-    :global-key "C-# i"
-    )
+  (show-paren-mode +1))
+
+(use-package goto-addr
+  :commands (goto-address-prog-mode goto-address-mode)
   :config
-  (setq fci-rule-width 1
-		;; fci-rule-color "#D0BF8F"
-		)
-  (push '(fci-mode "") minor-mode-alist)
+  (setq goto-address-url-face 'underline)
   )
+
+;; prog-mode-hook
+(use-package prog-mode
+  :init
+  (global-prettify-symbols-mode +1)
+  :config
+  (defun my-local-comment-auto-fill ()
+    "Turn on comment auto fill."
+    (set (make-local-variable 'comment-auto-fill-only-comments) t))
+  (defun my-font-lock-comment-annotations ()
+    "Highlight a bunch of well known comment annotations.
+
+This functions should be added to the hooks of major modes for programming."
+    (font-lock-add-keywords
+     nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|\\BUG\\):\\)"
+			1 font-lock-warning-face t))))
+  (defun my-prog-mode-defaults ()
+    "Default coding hook, useful with any programming language."
+    (goto-address-prog-mode +1)
+    (bug-reference-prog-mode +1)
+    (my-local-comment-auto-fill)
+    (my-font-lock-comment-annotations))
+  (add-hook 'prog-mode-hook 'my-prog-mode-defaults))
+
+
+(diminish 'subword-mode)
+
+(use-package nlinum
+  :ensure t
+  :defer t
+  :init
+  (my|add-toggle linum-mode
+    :status nlinum-mode
+    :on (nlinum-mode +1)
+    :off (nlinum-mode -1)
+    :documentation "Show line number")
+  )
+
+(use-package rainbow-delimiters
+  :ensure t
+  :diminish rainbow-delimiters-mode
+  :commands (rainbow-delimiters-mode)
+  :init
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
+
+(use-package auto-compile
+  :ensure t
+  :commands (auto-compile-on-save-mode
+			 auto-compile-on-load-mode)
+  :init
+  (auto-compile-on-save-mode +1)
+  (auto-compile-on-load-mode +1))
+
+(use-package move-dup
+  :ensure t
+  :bind (([M-up]  . 'md/move-line-up)
+         ([M-down] . 'md/move-line-down)
+         ([C-M-up] . 'md/move-lines-up)
+         ([C-M-down] . 'md/move-lines-down)))
+
+(use-package whole-line-or-region
+  :ensure t
+  :init
+  (whole-line-or-region-mode +1))
+
+(use-package highlight-escape-sequences
+  :ensure t
+  :init
+  (hes-mode +1))
 
 (use-package aggressive-indent
   :ensure t
@@ -809,6 +858,10 @@ at the end of the line."
 (use-package browse-kill-ring
   :ensure t
   :bind (("M-y" . browse-kill-ring))
+  :init
+  (setq browse-kill-ring-separator "\f")
+  (after-load 'page-break-lines
+    (push 'browse-kill-ring-mode page-break-lines-modes))
   :config
   (browse-kill-ring-default-keybindings)
   )
@@ -832,6 +885,7 @@ at the end of the line."
 (use-package diff-hl
   :ensure t
   :commands (diff-hl-mode global-diff-hl-mode)
+  :bind ("C-x v f" . 'diff-hl-diff-goto-hunk)
   :init
   (my|add-toggle diff-hl-mode
     :mode diff-hl-mode
@@ -839,6 +893,8 @@ at the end of the line."
   (my|add-toggle global-diff-hl-mode
     :mode global-diff-hl-mode
     :documentation "Global highlight diff")
+
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
   :config
   (global-diff-hl-mode +1)
   )
@@ -912,9 +968,10 @@ at the end of the line."
   :diminish symbol-overlay-mode
   :bind (:map symbol-overlay-mode-map
 			  ("M-n" . symbol-overlay-jump-next)
-			  ("M-p" . symbol-overlay-jump-prev))
+			  ("M-p" . symbol-overlay-jump-prev)
+              ("M-i" . symbol-overlay-put))
   :init
-  (dolist (hook '(prog-mode-hook html-mode-hook css-mode-hook))
+  (dolist (hook '(prog-mode-hook html-mode-hook yaml-mode-hook conf-mode-hook css-mode-hook))
     (add-hook hook 'symbol-overlay-mode))
   :config
   (set-face-attribute 'symbol-overlay-default-face nil
@@ -924,6 +981,22 @@ at the end of the line."
 					  :foreground
 					  (face-attribute 'isearch
 									  :foreground)))
+;; multi major mode
+(use-package mmm-mode
+  :ensure t
+  :init
+  (setq mmm-global-mode 'buffers-with-submode-classes)
+  (setq mmm-submode-decoration-level 2))
+
+(use-package unfill
+  :ensure t
+  :defer t)
+
+(use-package list-unicode-display
+  :ensure t
+  :defer t)
+
+
 
 (use-package google-translate
   :ensure t
@@ -972,32 +1045,7 @@ For instance pass En as source for English."
 ;; 				(ggtags-mode +1))))
 ;;   )
 
-(use-package goto-addr
-  :commands (goto-address-prog-mode goto-address-mode)
-  :config
-  (setq goto-address-url-face 'underline)
-  )
 
-;; prog-mode-hook
-(use-package prog-mode
-  :config
-  (defun my-local-comment-auto-fill ()
-    "Turn on comment auto fill."
-    (set (make-local-variable 'comment-auto-fill-only-comments) t))
-  (defun my-font-lock-comment-annotations ()
-    "Highlight a bunch of well known comment annotations.
-
-This functions should be added to the hooks of major modes for programming."
-    (font-lock-add-keywords
-     nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|\\BUG\\):\\)"
-			1 font-lock-warning-face t))))
-  (defun my-prog-mode-defaults ()
-    "Default coding hook, useful with any programming language."
-    (goto-address-prog-mode +1)
-    (bug-reference-prog-mode +1)
-    (my-local-comment-auto-fill)
-    (my-font-lock-comment-annotations))
-  (add-hook 'prog-mode-hook 'my-prog-mode-defaults))
 
 
 
@@ -1129,6 +1177,13 @@ Compare them on count first,and in case of tie sort them alphabetically."
         (message "No words.")))
     words))
 
+
+(defun my/kill-back-to-indentation ()
+  "Kill from point back to the first non-whitespace character on the line."
+  (interactive)
+  (let ((prev-pos (point)))
+    (back-to-indentation)
+    (kill-region (point) prev-pos)))
 
 (use-package find-file
   :defer t
@@ -1317,6 +1372,9 @@ Compare them on count first,and in case of tie sort them alphabetically."
 ;; (global-set-key (kbd "C-w") 'sp-backward-kill-word)
 ;;删除光标之前的字符(不保存到kill-ring)
 (global-set-key (kbd "C-q") 'backward-delete-char)
+
+
+(global-set-key (kbd "M-Z") 'zap-to-char)
 
 ;;删除选中区域
 (global-set-key (kbd "C-c C-k") 'kill-region)

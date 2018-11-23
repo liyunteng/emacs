@@ -24,7 +24,32 @@
 
 ;;; Code:
 
-
+(use-package anzu
+  :ensure t
+  :bind (([remap query-replace-regexp]. anzu-query-replace-regexp)
+		 ([remap query-replace] . anzu-query-replace))
+  :diminish anzu-mode
+  ;; :defines anzu-mode-line-update-function anzu--state
+  :init
+  ;; (defun my-anzu-update-mode-line (here total)
+  ;;   "Custom update function which does not propertize the status."
+  ;;   (when anzu--state
+  ;; 	(let ((status (cl-case state--anzu
+  ;; 					(search (format "(%s/%d%s) "
+  ;; 									(anzu--format-here-position here total)
+  ;; 									total (if anzu--overflow-p "+" "")))
+  ;; 					(replace-query (format "(%s/%d replace) "
+  ;; 										   (anzu--format-here-position here total)
+  ;; 										   total))
+  ;; 					(replace (format "(%s/%d replace) "
+  ;; 									 (anzu--format-here-position here total)
+  ;; 									 total))
+  ;; 					;; (replace-query (format "(%d replace) " total))
+  ;; 					;; (replace (format "(%d/%d) " here total))
+  ;; 					)))
+  ;; 	  status)))
+  ;; (setq anzu-mode-line-update-function 'my-anzu-update-mode-line)
+  (global-anzu-mode +1))
 
 (use-package isearch
   :bind  (
@@ -47,34 +72,7 @@
 
 			   ([(control return)] . my/isearch-exit-other-end)
 			   )
-  :init
-  (use-package anzu
-	:ensure t
-	:bind (([remap query-replace-regexp]. anzu-query-replace-regexp)
-		   ([remap query-replace] . anzu-query-replace))
-	;; :diminish anzu-mode
-	;; :defines anzu-mode-line-update-function anzu--state
-	:init
-	;; (defun my-anzu-update-mode-line (here total)
-	;;   "Custom update function which does not propertize the status."
-	;;   (when anzu--state
-	;; 	(let ((status (cl-case state--anzu
-	;; 					(search (format "(%s/%d%s) "
-	;; 									(anzu--format-here-position here total)
-	;; 									total (if anzu--overflow-p "+" "")))
-	;; 					(replace-query (format "(%s/%d replace) "
-	;; 										   (anzu--format-here-position here total)
-	;; 										   total))
-	;; 					(replace (format "(%s/%d replace) "
-	;; 									 (anzu--format-here-position here total)
-	;; 									 total))
-	;; 					;; (replace-query (format "(%d replace) " total))
-	;; 					;; (replace (format "(%d/%d) " here total))
-	;; 					)))
-	;; 	  status)))
-	;; (setq anzu-mode-line-update-function 'my-anzu-update-mode-line)
-	(global-anzu-mode +1))
-
+  :config
   ;; Search back/forth for the symbol at point
   ;; See http://www.emacswiki.org/emacs/SearchAtPoint
   (defun my/isearch-yank-symbol ()

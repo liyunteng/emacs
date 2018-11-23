@@ -56,7 +56,6 @@
   (make-directory my-cache-dir))
 
 (defconst my-dir (expand-file-name "my" user-emacs-directory) "My base directory.")
-(defconst my-modules-dir (expand-file-name  "modules" my-dir) "My modules directory.")
 (defconst my-forks-dir (expand-file-name "forks" my-dir) "My forks package directory.")
 (defconst my-libs-dir (expand-file-name "libs" my-dir) "My library directory.")
 (make-obsolete-variable 'my-libs-dir 'my-forks-dir)

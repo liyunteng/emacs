@@ -97,16 +97,16 @@
   (use-package helm-projectile
     :ensure t
     :commands (helm-projectile-switch-to-buffer
-	       helm-projectile-find-dir
-	       helm-projectile-dired-find-dir
-	       helm-projectile-recentf
-	       helm-projectile-find-file
-	       helm-projectile-grep
-	       helm-projectile
-	       helm-projectile-switch-project)
+			   helm-projectile-find-dir
+			   helm-projectile-dired-find-dir
+			   helm-projectile-recentf
+			   helm-projectile-find-file
+			   helm-projectile-grep
+			   helm-projectile
+			   helm-projectile-switch-project)
     :init
     (setq projectile-switch-project-action 'helm-projectile
-	  projectile-completion-system 'helm)
+		  projectile-completion-system 'helm)
     (helm-projectile-on)
     ;; (add-hook 'after-init-hook 'helm-projectile-on)
     )
@@ -122,44 +122,44 @@
       "Call `helm-swoop' with default input."
       (interactive)
       (let ((helm-swoop-pre-input-function
-	     (lambda ()
-	       (if (region-active-p)
-		   (buffer-substring-no-properties (region-beginning)
-						   (region-end))
-		 (let ((thing (thing-at-point 'symbol t)))
-		   (if thing thing ""))))))
-	(call-interactively 'helm-swoop)))
+			 (lambda ()
+			   (if (region-active-p)
+				   (buffer-substring-no-properties (region-beginning)
+												   (region-end))
+				 (let ((thing (thing-at-point 'symbol t)))
+				   (if thing thing ""))))))
+		(call-interactively 'helm-swoop)))
 
     (setq helm-multi-swoop-edit-save t
-	  helm-swoop-split-with-multiple-windows t
-	  helm-swoop-split-direction 'split-window-vertically
-	  helm-swoop-speed-or-color t
-	  helm-swoop-split-window-function 'helm-default-display-buffer
-	  helm-swoop-pre-input-function (lambda () ""))
+		  helm-swoop-split-with-multiple-windows t
+		  helm-swoop-split-direction 'split-window-vertically
+		  helm-swoop-speed-or-color t
+		  helm-swoop-split-window-function 'helm-default-display-buffer
+		  helm-swoop-pre-input-function (lambda () ""))
     )
 
   (require 'helm-bookmark)
   (setq helm-split-window-in-side-p t
-  	helm-buffers-fuzzy-matching t
-  	helm-move-to-line-cycle-in-source t
-  	helm-ff-search-library-in-sexp t
-  	helm-ff-file-compressed-list t
-  	helm-ff-file-name-history-use-recentf t
-  	helm-scroll-amount 8
-  	helm-echo-input-in-header-line nil
-	helm-display-header-line t
-	helm-always-two-windows t
-	;; helm-mode-fuzzy-match t
-	helm-org-headings-fontify t
-	helm-find-files-sort-directories t
-	helm-semantic-fuzzy-match t
-	helm-M-x-fuzzy-match t
-	helm-imenu-fuzzy-match t
-	;; helm-lisp-fuzzy-completion t
-	;; helm-apropos-fuzzy-match t
-	helm-buffer-skip-remote-checking t
-	helm-bookmark-show-location t
-	)
+		helm-buffers-fuzzy-matching t
+		helm-move-to-line-cycle-in-source t
+		helm-ff-search-library-in-sexp t
+		helm-ff-file-compressed-list t
+		helm-ff-file-name-history-use-recentf t
+		helm-scroll-amount 8
+		helm-echo-input-in-header-line nil
+		helm-display-header-line t
+		helm-always-two-windows t
+		;; helm-mode-fuzzy-match t
+		helm-org-headings-fontify t
+		helm-find-files-sort-directories t
+		helm-semantic-fuzzy-match t
+		helm-M-x-fuzzy-match t
+		helm-imenu-fuzzy-match t
+		;; helm-lisp-fuzzy-completion t
+		;; helm-apropos-fuzzy-match t
+		helm-buffer-skip-remote-checking t
+		helm-bookmark-show-location t
+		)
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
   (when (executable-find "curl")
@@ -176,29 +176,29 @@
     "Version of `helm-do-grep' with a default input."
     (interactive)
     (cl-letf*
-  	(((symbol-function 'this-fn) (symbol-function 'helm-do-grep-1))
-  	 ((symbol-function 'helm-do-grep-1)
-  	  (lambda (targets &optional recurse zgrep exts
-  			   default-input region-or-symbol-p)
-  	    (let* ((new-input (when region-or-symbol-p
-  				(if (region-active-p)
-  				    (buffer-substring-no-properties
-  				     (region-beginning) (region-end))
-  				  (thing-at-point 'symbol t))))
-  		   (quoted-input (when new-input
-  				   (rxt-quote-pcre new-input))))
-  	      (this-fn targets recurse zgrep exts
-  		       default-input quoted-input))))
-  	 (preselection (or (dired-get-filename nil t)
-  			   (buffer-file-name (current-buffer))))
-  	 (targets   (if targs
-  			targs
-  		      (helm-read-file-name
-  		       "Search in file(s): "
-  		       :marked-candidates t
-  		       :preselect (if helm-ff-transformer-show-only-basename
-  				      (helm-basename preselection)
-  				    preselection)))))
+		(((symbol-function 'this-fn) (symbol-function 'helm-do-grep-1))
+		 ((symbol-function 'helm-do-grep-1)
+		  (lambda (targets &optional recurse zgrep exts
+						   default-input region-or-symbol-p)
+			(let* ((new-input (when region-or-symbol-p
+								(if (region-active-p)
+									(buffer-substring-no-properties
+									 (region-beginning) (region-end))
+								  (thing-at-point 'symbol t))))
+				   (quoted-input (when new-input
+								   (rxt-quote-pcre new-input))))
+			  (this-fn targets recurse zgrep exts
+					   default-input quoted-input))))
+		 (preselection (or (dired-get-filename nil t)
+						   (buffer-file-name (current-buffer))))
+		 (targets   (if targs
+						targs
+					  (helm-read-file-name
+					   "Search in file(s): "
+					   :marked-candidates t
+					   :preselect (if helm-ff-transformer-show-only-basename
+									  (helm-basename preselection)
+									preselection)))))
       (helm-do-grep-1 targets nil nil nil nil use-region-or-symbol-p)))
 
   (defun my/helm-file-do-grep ()
@@ -213,12 +213,12 @@
   Removes the automatic guessing of the initial value based on thing at point."
     (interactive "P")
     (let* ((hist (and arg helm-ff-history (helm-find-files-history)))
-  	   (default-input hist)
-  	   (input (cond ((and (eq major-mode 'dired-mode) default-input)
-  			 (file-name-directory default-input))
-  			((and (not (string= default-input ""))
-  			      default-input))
-  			(t (expand-file-name (helm-current-directory))))))
+		   (default-input hist)
+		   (input (cond ((and (eq major-mode 'dired-mode) default-input)
+						 (file-name-directory default-input))
+						((and (not (string= default-input ""))
+							  default-input))
+						(t (expand-file-name (helm-current-directory))))))
       (set-text-properties 0 (length input) nil input)
       (helm-find-files-1 input)))
 
@@ -236,11 +236,11 @@
   (defun my--helm-hide-minibuffer-maybe ()
     (when (with-helm-buffer helm-echo-input-in-header-line)
       (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-  	(overlay-put ov 'window (selected-window))
-  	(overlay-put ov 'face
-  		     (let ((bg-color (face-background 'default nil)))
-  		       `(:background ,bg-color :foreground ,bg-color)))
-  	(setq-local cursor-type nil))))
+		(overlay-put ov 'window (selected-window))
+		(overlay-put ov 'face
+					 (let ((bg-color (face-background 'default nil)))
+					   `(:background ,bg-color :foreground ,bg-color)))
+		(setq-local cursor-type nil))))
   (add-hook 'helm-minibuffer-set-up-hook 'my--helm-hide-minibuffer-maybe)
 
   (helm-locate-set-command)
@@ -258,13 +258,13 @@
     "open last helm-ag or hgrep buffer."
     (interactive)
     (cond ((get-buffer "*helm ag results*")
-  	   (switch-to-buffer-other-window "*helm ag results*"))
-  	  ((get-buffer "*helm-ag*")
-  	   (helm-resume "*helm-ag*"))
-  	  ((get-buffer "*hgrep*")
-  	   (switch-to-buffer-other-window "*hgrep*"))
-  	  (t
-  	   (message "No previous search buffer found"))))
+		   (switch-to-buffer-other-window "*helm ag results*"))
+		  ((get-buffer "*helm-ag*")
+		   (helm-resume "*helm-ag*"))
+		  ((get-buffer "*hgrep*")
+		   (switch-to-buffer-other-window "*hgrep*"))
+		  (t
+		   (message "No previous search buffer found"))))
 
   ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
   ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
@@ -321,19 +321,17 @@
     (interactive)
     (let ((default (or (face-at-point) (thing-at-point 'symbol))))
       (helm :sources (helm-def-source--emacs-faces
-  		      (format "%s" (or default "default")))
-  	    :buffer "*helm faces*")))
+					  (format "%s" (or default "default")))
+			:buffer "*helm faces*")))
 
-  ;; shell history.
-  (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
 
   ;;; Save current position to mark ring
   (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
 
   ;; use helm to list eshell history
   (add-hook 'eshell-mode-hook
-  	    #'(lambda ()
-  		(substitute-key-definition 'eshell-list-history 'helm-eshell-history eshell-mode-map)))
+			#'(lambda ()
+				(substitute-key-definition 'eshell-list-history 'helm-eshell-history eshell-mode-map)))
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map)
   )

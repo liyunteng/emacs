@@ -81,8 +81,20 @@
   (setq zenburn-override-colors-alist my-zenburn-override-colors-alist)
   )
 
+(use-package color-theme-sanityinc-solarized
+  :ensure t
+  :defer t)
+(use-package color-theme-sanityinc-tomorrow
+  :ensure t
+  :defer t)
+
+(use-package dimmer
+  :ensure t)
+
 (defcustom my-theme 'zenburn
-  "My theme.")
+  "My theme."
+  :type 'string
+  :group 'my-config)
 
 (load-theme my-theme t)
 

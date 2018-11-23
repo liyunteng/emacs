@@ -54,17 +54,15 @@
 ;; disable ad redefinition warning
 (setq ad-redefinition-action 'accept)
 
-;; toggle off debug-on-error
-(if my-debug
-    (setq debug-on-error t)
-  (setq debug-on-error nil))
-
 ;; Always load newest byte code
 (setq load-prefer-newer t)
 
-;; reduce the frequency of garbage collection by making it happen on
-;; each 50MB of allocated data (the default is on every 0.76MB)
-(setq gc-cons-threshold 50000000)
+;; adjust grabage collection thresholds during startup, and thereafter
+(let ((normal-gc-cons-threshold (* 20 1024 1024))
+      (init-gc-cons-threshold (* 128 1024 1024)))
+  (setq gc-cons-threshold init-gc-cons-threshold)
+  (add-hook 'emacs-startup-hook
+            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
@@ -72,49 +70,7 @@
 ;; When emacs asks for "yes" or "no", let "y" or "n" suffice
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(use-package auto-compile
-  :ensure t
-  :commands (auto-compile-on-save-mode
-			 auto-compile-on-load-mode)
-  :init
-  (auto-compile-on-save-mode +1)
-  (auto-compile-on-load-mode +1))
 
-(use-package exec-path-from-shell
-  :ensure t
-  :config
-  (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE"))
-    (add-to-list 'exec-path-from-shell-variables var))
-
-  :if (memq window-system '(mac ns x))
-  :config
-  (exec-path-from-shell-initialize)
-  )
-
-(use-package smart-mode-line
-  :ensure t
-  :commands (smart-mode-line-enable sml/setup)
-  :init
-  (add-hook 'after-init-hook #'sml/setup)
-  :config
-  (setq sml/no-confirm-load-theme t)
-  (setq sml/theme 'respectful)
-  ;; (sml/setup)
-  )
-
-
-(use-package beacon
-  :ensure t
-  :commands (beacon-mode)
-  :diminish beacon-mode
-  :init
-  (beacon-mode +1))
-
-(use-package which-key
-  :ensure t
-  :diminish which-key-mode
-  :init
-  (which-key-mode +1))
 
 
 ;;========== backup =========

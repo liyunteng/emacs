@@ -26,41 +26,43 @@
 
 (defconst my-modules
   '(
+	my-base
 	my-utils
 	my-package
-	my-base
-    my-frame
+	my-frame
 	my-themes
-	my-window
-	my-edit
-	my-auto
 
-
-	my-mode
+	my-dired
+	my-ibuffer
 	my-isearch
-	my-avy
-	my-auto-insert
-	;; my-header
-	my-hideshow
-
-	my-jump
-	my-ac
-	;; my-auto-complete
-	my-yas
-	my-smartparens
-	my-flyspell
-	my-flycheck
+	my-window
+	my-session
 	my-helm
 	;; my-ido
 	;; my-ivy
-	my-ibuffer
-	my-dired
+
+
+	my-edit
+	my-smartparens
+	my-jump
+	my-flyspell
+	my-flycheck
+	my-yas
+	my-ac
+	;; my-auto-complete
+
 	my-term
 	my-magit
 	my-tramp
 	my-gud
 	my-mu4e
 
+	my-mode
+	my-avy
+	my-auto-insert
+	;; my-header
+	my-hideshow
+	my-auto
 
 	my-lisp
 	my-c
@@ -74,8 +76,6 @@
 	my-javascript
 	my-json
 
-
-	my-session
 	my-server
 	)
   "My auto load modules.")
@@ -85,29 +85,30 @@
   (unless (load (locate-library (format "%s" m)))
     (error "Loading %s failed" m)))
 
-(defun my-show-init-time ()
+(defun my/show-init-time ()
   "Show init time."
+  (interactive)
   (if desktop-save-mode
       (message "Emacs startup time: %.2fms Desktop restore time: %.2fms"
 			   (my-time-subtract-millis after-init-time before-init-time)
 			   (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
     (message "Emacs startup time: %.2fms"
-			 (my-time-subtract-millis after-init-time before-init-time)))
-  )
+			 (my-time-subtract-millis after-init-time before-init-time))))
 
 (defun my-init ()
   "Load my modules."
   (when (file-exists-p my-personal-info-file)
     (my-load my-personal-info-file))
 
-    (mapc 'my-load my-modules)
+  (mapc 'my-load my-modules)
 
   (when (and custom-file
 			 (file-exists-p custom-file))
     (my-load custom-file))
 
-  (add-hook 'after-init-hook
-			(lambda () (run-at-time 0 nil 'my-show-init-time)) t)
+  (add-hook 'after-init-hook 'my/show-init-time)
+  ;; (add-hook 'after-init-hook
+  ;; 			(lambda () (run-at-time 0 nil 'my/show-init-time)) t)
   )
 
 (provide 'my-init)

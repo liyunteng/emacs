@@ -37,32 +37,69 @@
       '((switch-window . "melpa-stable")))
 
 
-(setq package-enable-at-startup t)
-(setq package-user-dir my-packages-dir)
-(defvar my--pre-install-packages '(bind-key use-package))
+(require 'cl-lib)
 
-(defun require-package (package)
-  "Install PACKAGE unless already installed."
-  (unless (package-installed-p package)
-    (package-install package)))
+(setq package-user-dir my-packages-dir)
+(setq package-enable-at-startup nil)
+(package-initialize)
+
+(defvar my--pre-install-packages '(bind-key
+								   use-package
+								   diminish
+								   wgrep
+								   scratch
+								   command-log-mode
+								   uptimes))
+;; (defun require-package (package)
+;;   "Install PACKAGE unlesee already installed."
+;;   (unless (package-installed-p package)
+;; 	(package-install package)))
+
+;; (defun require-packages (packages)
+;;   "Ensure PACKAGES are installed.
+;; Missing packages are installed automatically."
+;;   (mapc #'require-package packages))
+
+;; (defun my--install-pre-install-packages ()
+;;   (unless (every #'package-installed-p my--pre-install-packages)
+;; 	(message "%s" "Emacs is now refreshhing its package database...")
+;; 	(package-refresh-contents)
+;; 	(message "%s" "done.")
+;; 	(require-packages my--pre-install-packages)))
+
+;; (my--install-pre-install-packages)
+
+(defun require-package (package &optional min-version no-refresh)
+  "Install given PACKAGE, optionally requiring MIN-VERSION.
+If NO-REFRESH is non-nil, the available package lists will not be
+re-downloaded in order to locate PACKAGE."
+  (or (package-installed-p package min-version)
+      (let* ((known (cdr (assoc package package-archive-contents)))
+             (versions (mapcar #'package-desc-version known)))
+        (if (cl-find-if (lambda (v) (version-list-<= min-version v)) versions)
+            (package-install package)
+          (if no-refresh
+              (error "No version of %s >= %S is available" package min-version)
+            (package-refresh-contents)
+            (require-package package min-version t))))))
+
+(defun maybe-require-package (package &optional min-version no-refresh)
+  "Try to install PACKAGE, and return non-nil if successful.
+In the event of failure, return nil and print a warning message.
+Optionally require MIN-VERSION.  If NO-REFRESH is non-nil, the
+available package lists will not be re-downloaded in order to
+locate PACKAGE."
+  (condition-case err
+      (require-package package min-version no-refresh)
+    (error
+     (message "Couldn't install optional package `%s': %S" package err)
+     nil)))
 
 (defun require-packages (packages)
-  "Ensure PACKAGES are installed.
-Missing packages are installed automatically."
   (mapc #'require-package packages))
 
-(defun my--install-pre-install-packages ()
-  "Install all packages listed in `my-packages'."
-  (unless (every #'package-installed-p my--pre-install-packages)
-    ;; check for new packages (package versions)
-    (message "%s" "Emacs My is now refreshing its package database...")
-    (package-refresh-contents)
-    (message "%s" " done.")
-    ;; install the missing packages
-    (require-packages my--pre-install-packages)))
+(require-packages my--pre-install-packages)
 
-;; run pre-install-package installation
-(my--install-pre-install-packages)
 
 (defun my/list-foreign-packages ()
   "Browse third-party packages not bundled with My.
@@ -76,6 +113,24 @@ removing unwanted packages."
    ;; (set-difference package-activated-list my--pre-install-packages)
    ))
 
+
+(defun my-set-tabulated-list-column-width (col-name width)
+  "Set any column with name COL-NAME to the given WIDTH."
+  (when (> width (length col-name))
+    (cl-loop for column across tabulated-list-format
+             when (string= col-name (car column))
+             do (setf (elt column 1) width))))
+
+(defun my-maybe-widen-package-menu-columns ()
+  "Widen some columns of the package menu table to avoid truncation."
+  (when (boundp 'tabulated-list-format)
+    (my-set-tabulated-list-column-width "Version" 13)
+    (let ((longest-archive-name (apply 'max (mapcar 'length (mapcar 'car package-archives)))))
+      (my-set-tabulated-list-column-width "Archive" longest-archive-name))))
+
+(add-hook 'package-menu-mode-hook 'my-maybe-widen-package-menu-columns)
+
+
 
 ;; use package
 (require 'bind-key)

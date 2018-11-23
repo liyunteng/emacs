@@ -22,71 +22,80 @@
 
 ;;
 
+;;; Code:
+
 (use-package flycheck
   :ensure t
-  :if (fboundp 'global-flycheck-mode)
   :bind (:map flycheck-mode-map
-			  ("C-c ! L" . my/flycheck-error-list-and-switch))
+			  ("C-c ! L" . my/flycheck-error-list-and-switch)
+			  ("C-c ! C-l" . my/flycheck-error-list-and-switch))
   :init
-  (setq flycheck-checker-error-threshold 10000)
-  (defvar syntax-checking-use-original-bitmaps t)
+  (setq flycheck-checker-error-threshold 500)
+  ;; (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
+  (use-package flycheck-color-mode-line
+	:ensure t
+	:init
+	(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+  (use-package flycheck-package
+	:ensure t
+	:init
+	(flycheck-package-setup))
+
+  (defvar syntax-checking-use-original-bitmaps nil)
   (when (and (fboundp 'define-fringe-bitmap)
 			 (not syntax-checking-use-original-bitmaps))
-    (define-fringe-bitmap 'my-flycheck-fringe-indicator
-      (vector
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00011100
-       #b00111110
-       #b00111110
-       #b00111110
-       #b00011100
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000)))
+	(define-fringe-bitmap 'my-flycheck-fringe-indicator
+	  (vector
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00011100
+	   #b00111110
+	   #b00111110
+	   #b00111110
+	   #b00011100
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000
+	   #b00000000)))
   (let ((bitmap (if syntax-checking-use-original-bitmaps
 					'flycheck-fringe-bitmap-double-arrow
 				  'my-flycheck-fringe-indicator)))
-    (flycheck-define-error-level 'error
-      :severity 2
-      :overlay-category 'flycheck-error-overlay
-      :fringe-bitmap bitmap
-      :fringe-face 'flycheck-fringe-error)
-    (flycheck-define-error-level 'warning
-      :severity 1
-      :overlay-category 'flycheck-warning-overlay
-      :fringe-bitmap bitmap
-      :fringe-face 'flycheck-fringe-warning)
-    (flycheck-define-error-level 'info
-      :severity 0
-      :overlay-category 'flycheck-info-overlay
-      :fringe-bitmap bitmap
-      :fringe-face 'flycheck-fringe-info))
+	(flycheck-define-error-level 'error
+	  :severity 2
+	  :overlay-category 'flycheck-error-overlay
+	  :fringe-bitmap bitmap
+	  :fringe-face 'flycheck-fringe-error)
+	(flycheck-define-error-level 'warning
+	  :severity 1
+	  :overlay-category 'flycheck-warning-overlay
+	  :fringe-bitmap bitmap
+	  :fringe-face 'flycheck-fringe-warning)
+	(flycheck-define-error-level 'info
+	  :severity 0
+	  :overlay-category 'flycheck-info-overlay
+	  :fringe-bitmap bitmap
+	  :fringe-face 'flycheck-fringe-info))
 
-
-  (use-package flycheck-package
-    :ensure t
-    :init
-    (flycheck-package-setup))
   (add-hook 'prog-mode-hook 'flycheck-mode)
+
+  (global-flycheck-mode +1)
 
   :config
   (when (display-graphic-p)
-    (use-package flycheck-pos-tip
-      :ensure t
-      :config
-      (after-load 'flycheck
+	(use-package flycheck-pos-tip
+	  :ensure t
+	  :config
+	  (after-load 'flycheck
 		(flycheck-pos-tip-mode 1))))
 
   (when (boundp 'popwin:special-display-config)
-    (push '("^\\*Flycheck.+\\*$"
+	(push '("^\\*Flycheck.+\\*$"
 			:regexp t
 			:dedicated t
 			:position bottom
@@ -95,27 +104,20 @@
 		  popwin:special-display-config))
 
   (defun my/flycheck-error-list-and-switch ()
-    "Open and goto the error list buffer."
-    (interactive)
-    (unless (get-buffer-window (get-buffer flycheck-error-list-buffer))
-      (flycheck-list-errors)
-      (switch-to-buffer-other-window flycheck-error-list-buffer)))
+	"Open and goto the error list buffer."
+	(interactive)
+	(unless (get-buffer-window (get-buffer flycheck-error-list-buffer))
+	  (flycheck-list-errors)
+	  (switch-to-buffer-other-window flycheck-error-list-buffer)))
 
   (defvar my-flycheck-temp-directory (expand-file-name "flycheck" my-cache-dir))
   (when (not (file-directory-p my-flycheck-temp-directory))
-    (make-directory my-flycheck-temp-directory))
+	(make-directory my-flycheck-temp-directory))
   (setq flycheck-temp-prefix (concat my-flycheck-temp-directory "/flycheck"))
 
   ;; remove emacs-lisp-checkdoc  replaced by use .dir-locals.el
   ;; (setq flycheck-checkers (remove 'emacs-lisp-checkdoc flycheck-checkers))
-
-  (global-flycheck-mode +1)
   )
-
-
-;;; Code:
-
-
 
 (provide 'my-flycheck)
 ;;; my-flycheck.el ends here
