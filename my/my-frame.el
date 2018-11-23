@@ -1,4 +1,4 @@
-;;; my-gui.el --- gui                                -*- lexical-binding: t; -*-
+;;; my-frame.el --- gui                                -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  liyunteng
 
@@ -118,5 +118,5 @@ Otherwise,add it to a queue of actions to perform after the first graphical fram
 (global-set-key (kbd "M-<f11>") 'toggle-frame-maximized)
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
 
-(provide 'my-gui)
-;;; my-gui.el ends here
+(provide 'my-frame)
+;;; my-frame.el ends here

@@ -24,46 +24,47 @@
 
 ;;; Code:
 
-(defgroup my-config nil
-  "My configurations."
-  :group 'emacs
-  :prefix "my-")
-
-(load-file (concat user-emacs-directory "my/my-load-path.el"))
-
 (defconst my-modules
   '(
-	my-debug
 	my-utils
 	my-package
 	my-base
-	my-gui
+    my-frame
 	my-themes
 	my-window
-	my-auto
-	my-avy
 	my-edit
-	my-isearch
+	my-auto
 
-	;; my-ido
-	;; my-ivy
+
 	my-mode
-	my-helm
-	my-tramp
-	my-magit
-	my-smartparens
-	my-gud
-	my-flyspell
-	my-flycheck
+	my-isearch
+	my-avy
 	my-auto-insert
+	;; my-header
 	my-hideshow
+
+	my-jump
 	my-ac
 	;; my-auto-complete
-
-	my-lisp
+	my-yas
+	my-smartparens
+	my-flyspell
+	my-flycheck
+	my-helm
+	;; my-ido
+	;; my-ivy
 	my-ibuffer
 	my-dired
+	my-term
+	my-magit
+	my-tramp
+	my-gud
+	my-mu4e
+
+
+	my-lisp
 	my-c
+	;; my-qt
 	my-go
 	my-python
 	my-org
@@ -72,15 +73,10 @@
 	my-syslog
 	my-javascript
 	my-json
-	my-term
-	my-mu4e
-	;; my-qt
-	;; my-header
 
-	my-jump
-	my-yas
-	my-server
+
 	my-session
+	my-server
 	)
   "My auto load modules.")
 
@@ -104,13 +100,7 @@
   (when (file-exists-p my-personal-info-file)
     (my-load my-personal-info-file))
 
-  (when (file-exists-p my-modules-dir)
-    (add-to-list 'load-path my-modules-dir)
-    ;; (dolist (module my-modules)
-    ;;   (message "Loading %s" module)
-    ;;   (require module)
-    ;;   )
-    (mapc 'my-load my-modules))
+    (mapc 'my-load my-modules)
 
   (when (and custom-file
 			 (file-exists-p custom-file))

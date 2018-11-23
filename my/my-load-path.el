@@ -24,6 +24,10 @@
 
 ;;; Code:
 
+(defgroup my-config nil "My configurations."
+  :group 'emacs
+  :prefix "my-")
+
 (defcustom my-packages-dir (expand-file-name "elpa" user-emacs-directory)
   "Download packages install directory."
   :type 'directory
