@@ -29,7 +29,11 @@
 (defvar my-debug-with-profile nil)
 (defvar my-debug-with-timed-requires t)
 (defvar my-debug-with-adv-timers nil)
-(defvar my-debug-buffer-name "*my-debug*")
+
+(defcustom my-debug-buffer-name "*my-debug*"
+  "The name of print debug info buffer, when my-debug turn on."
+  :type 'string
+  :group 'my-config)
 
 (defun my-time-subtract-millis (b a)
   "Subtract B A to Millis."

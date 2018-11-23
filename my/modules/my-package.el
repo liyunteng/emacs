@@ -27,51 +27,42 @@
 (require 'cl)
 (require 'package)
 
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(setq package-archives '(
-                         ("melpa" . "http://mirrors.163.com/elpa/melpa/")
+(setq package-archives '(("melpa" . "http://mirrors.163.com/elpa/melpa/")
                          ("melpa-stable" . "http://mirrors.163.com/elpa/melpa-stable/")
                          ("gnu" . "http://mirrors.163.com/elpa/gnu/")
                          ("org" . "http://mirrors.163.com/elpa/org/")
-			 ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")
-			 ))
+						 ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")
+						 ))
 (setq package-pinned-packages
       '((switch-window . "melpa-stable")))
 
 
 (setq package-enable-at-startup t)
 (setq package-user-dir my-packages-dir)
-(defvar my-packages '(bind-key use-package))
+(defvar my--pre-install-packages '(bind-key use-package))
 
-(defun my-packages-installed-p ()
-  "Check if all packages in `my-packages' are installed."
-  (every #'package-installed-p my-packages))
-
-(defun my-require-package (package)
+(defun require-package (package)
   "Install PACKAGE unless already installed."
-  (unless (memq package my-packages)
-    (add-to-list 'my-packages package))
   (unless (package-installed-p package)
     (package-install package)))
 
-(defun my-require-packages (packages)
+(defun require-packages (packages)
   "Ensure PACKAGES are installed.
 Missing packages are installed automatically."
-  (mapc #'my-require-package packages))
+  (mapc #'require-package packages))
 
-(defun my-install-packages ()
+(defun my--install-pre-install-packages ()
   "Install all packages listed in `my-packages'."
-  (unless (my-packages-installed-p)
+  (unless (every #'package-installed-p my--pre-install-packages)
     ;; check for new packages (package versions)
     (message "%s" "Emacs My is now refreshing its package database...")
     (package-refresh-contents)
     (message "%s" " done.")
     ;; install the missing packages
-    (my-require-packages my-packages)))
+    (require-packages my--pre-install-packages)))
 
-;; run package installation
-(my-install-packages)
+;; run pre-install-package installation
+(my--install-pre-install-packages)
 
 (defun my/list-foreign-packages ()
   "Browse third-party packages not bundled with My.
@@ -81,19 +72,20 @@ are installed and are not in `my-packages'.  Useful for
 removing unwanted packages."
   (interactive)
   (package-show-package-list
-   (set-difference package-activated-list my-packages)))
+   package-activated-list
+   ;; (set-difference package-activated-list my--pre-install-packages)
+   ))
 
 
 ;; use package
 (require 'bind-key)
 (require 'use-package)
-(setq
- use-package-always-ensure nil
- ;; use-package-verbose init-file-debug
- use-package-verbose nil
- use-package-inject-hooks t
- ;; use-package-always-defer t
- )
+(setq use-package-always-ensure nil
+	  ;; use-package-verbose init-file-debug
+	  use-package-verbose nil
+	  use-package-inject-hooks t
+	  ;; use-package-always-defer t
+	  )
 
 (defconst my--use-package-add-hook-keywords '(:pre-init
                                               :post-init
@@ -133,7 +125,6 @@ override lazy-loaded settings."
                                       (substring (format "%s" keyword) 1)))))
             (push `(add-hook ',hook (lambda nil ,@body t)) expanded-forms)))))
     `(progn ,@expanded-forms)))
-
 
 
 ;; test

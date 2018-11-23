@@ -24,22 +24,38 @@
 
 ;;; Code:
 
-(defvar my-packages-dir (expand-file-name "elpa" user-emacs-directory))
+(defcustom my-packages-dir (expand-file-name "elpa" user-emacs-directory)
+  "Download packages install directory."
+  :type 'directory
+  :group 'my-config)
 
-(defvar my-dir (expand-file-name "my" user-emacs-directory))
-(defvar my-modules-dir (expand-file-name  "modules" my-dir))
-(defvar my-forks-dir (expand-file-name "forks" my-dir))
-(defvar my-libs-dir (expand-file-name "libs" my-dir))
+(defcustom my-personal-dir (expand-file-name "personal" user-emacs-directory)
+  "My personal-info directory."
+  :type 'directory
+  :group 'my-config)
+(defcustom my-personal-info-file (expand-file-name "person-info.el" my-personal-dir)
+  "My personal-info file."
+  :type 'file
+  :group 'my-config)
 
-(defvar my-personal-dir (expand-file-name "personal" user-emacs-directory))
-(defvar my-personal-info-file (expand-file-name "person-info.el" my-personal-dir))
-
-(defvar my-custom-file (expand-file-name "custom.el" user-emacs-directory))
+(defcustom my-custom-file (expand-file-name "custom.el" user-emacs-directory)
+  "Custom file."
+  :type 'file
+  :group 'my-config)
 (setq-default custom-file my-custom-file)
 
-(defvar my-cache-dir (expand-file-name "cache" user-emacs-directory))
+(defcustom my-cache-dir (expand-file-name "cache" user-emacs-directory)
+  "Cache files directory."
+  :type 'directory
+  :group 'my-config)
 (unless (file-exists-p my-cache-dir)
   (make-directory my-cache-dir))
+
+(defconst my-dir (expand-file-name "my" user-emacs-directory) "My base directory.")
+(defconst my-modules-dir (expand-file-name  "modules" my-dir) "My modules directory.")
+(defconst my-forks-dir (expand-file-name "forks" my-dir) "My forks package directory.")
+(defconst my-libs-dir (expand-file-name "libs" my-dir) "My library directory.")
+(make-obsolete-variable 'my-libs-dir 'my-forks-dir)
 
 (defun my-add-to-load-path (dir &optional append)
   "Add DIR to load path, if APPEND add to end."
@@ -56,13 +72,13 @@ If APPEND add to end."
   (dolist (f (directory-files parent-dir))
     (let ((name (expand-file-name f parent-dir)))
       (when (and (file-directory-p name)
-		 (not (string-prefix-p "." f)))
-	(add-to-list 'load-path name)
-	(my-add-subfolders-to-load-path name)))))
+				 (not (string-prefix-p "." f)))
+		(add-to-list 'load-path name)
+		(my-add-subfolders-to-load-path name)))))
 
 (add-to-list 'load-path my-dir)
 (my-add-subfolders-to-load-path my-dir)
-(my-add-subfolders-to-load-path my-forks-dir)
+;; (my-add-subfolders-to-load-path my-forks-dir)
 
 
 

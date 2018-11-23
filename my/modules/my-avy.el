@@ -25,26 +25,26 @@
 ;;; Code:
 (use-package avy
   :ensure t
-  :bind-keymap ("C-x j" . avy-command-prefix)
-  :bind (:map avy-command-prefix
-	      ("j" . avy-goto-char)
-	      ("c" . avy-goto-char)
-	      ("w" . avy-goto-word-1)
-	      ("s" . avy-goto-symbol-1)
-	      ("." . avy-goto-word-or-subword-1)
-	      ("l" . avy-goto-line)
-	      ("m" . avy-move-line)
-	      ("p" . avy-copy-line)
-	      ("b" . avy-pop-mark)
-	      ("r" . avy-resume)
-	      ("u" . my/avy-goto-url)
-	      ("o" . my/avy-open-url)
-	      :map isearch-mode-map
-	      ("C-j" . avy-isearch)
-	      )
+  :bind-keymap ("C-x j" . my--avy-command-prefix)
+  :bind (:map my--avy-command-prefix
+			  ("j" . avy-goto-char)
+			  ("c" . avy-goto-char)
+			  ("w" . avy-goto-word-1)
+			  ("s" . avy-goto-symbol-1)
+			  ("." . avy-goto-word-or-subword-1)
+			  ("l" . avy-goto-line)
+			  ("m" . avy-move-line)
+			  ("p" . avy-copy-line)
+			  ("b" . avy-pop-mark)
+			  ("r" . avy-resume)
+			  ("u" . my/avy-goto-url)
+			  ("o" . my/avy-open-url)
+			  :map isearch-mode-map
+			  ("C-j" . avy-isearch)
+			  )
   :init
-  (defvar avy-command-prefix)
-  (define-prefix-command 'avy-command-prefix)
+  (defvar my--avy-command-prefix)
+  (define-prefix-command 'my--avy-command-prefix)
   :config
   (setq avy-background t)
   (setq avy-style 'at-full)

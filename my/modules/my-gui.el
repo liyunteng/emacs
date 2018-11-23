@@ -67,7 +67,7 @@ Otherwise,add it to a queue of actions to perform after the first graphical fram
   (my|do-after-display-system-init
    (my/echo "display-graphic-p is nil")))
 
-(defun my-removes-gui-elements ()
+(defun my--removes-gui-elements ()
   "Remove the menu bar, tool bar and scroll bars."
   ;; removes the GUI elements
   (tool-bar-mode -1)
@@ -85,13 +85,13 @@ Otherwise,add it to a queue of actions to perform after the first graphical fram
   (setq x-gtk-file-dialog-help-text nil)
   (setq inhibit-startup-screen t)
   (setq inhibit-startup-echo-area-message t))
-(my-removes-gui-elements)
+(my--removes-gui-elements)
 
 (let ((no-border '(internal-border-width . 0)))
   (add-to-list 'default-frame-alist no-border)
   (add-to-list 'initial-frame-alist no-border))
 
-(defun my-console-frame-setup ()
+(defun my--console-frame-setup ()
   "Mouse in a terminal (Use shift to paste with middle button)."
   (xterm-mouse-mode 1)
   (when (fboundp 'mwheel-install)

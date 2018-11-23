@@ -130,7 +130,17 @@ ARGS if MSG is format-string ARGS contain message."
     (nreverse result)))
 
 (defun my-dump (varlist buffer)
-  "Dump VARLIST to BUFFER."
+  "Insert the setq statement to recreate the variables in VARLIST to BUFFER.
+
+Example:
+	(setq a \"a\" b \"b\" c \"c\")
+	(setq x '(a b c))
+	(my-dump x (get-buffer \"*scratch*\"
+
+Output:
+	(setq a (quote \"a\"))
+	(setq b (quote \"b\"))
+    (setq c (quote \"c\"))."
   (cl-loop for var in varlist do
            (print (list 'setq var (list 'quote (symbol-value var)))
                   buffer)))
@@ -245,7 +255,7 @@ Avaiblabe PROPS:
     STRING describes what the toggle does.
 
 `:prefix SYMBOL'
-    SYMBOL is bound to the raw value of prefix-arg (same as calling
+    SYMBOL is bound to the raw value of 'PREFIX-ARG' (same as calling
     (interactive \"P\")) in the wrapper function.
 
 `:on-message EXPRESSION'
@@ -257,15 +267,17 @@ Avaiblabe PROPS:
 All properties supported by `my--create-key-binding-form' can be
 used.
 
-For example:
-\(my|add-toggle company-mode
+Example:
+ (my|add-toggle company-mode
   :status (not (equal company-mode nil))
   :on (company-mode 1)
   :off (company-mode -1)
   :define-key  (lisp-interaction-mode-map . \"C-x i\")
-  :global-key \"C-# i\"
-  \)
-"
+  :global-key \"C-# i\")
+
+Create my/toggle-company-mode my/toggle-company-mode-on and
+my/toggle-company-mode-off."
+
   (declare (indent 1))
   (let* ((wrapper-func (intern (format "my/toggle-%s"
                                        (symbol-name name))))
@@ -326,14 +338,17 @@ For example:
 
 
 (defmacro my|advise-commands (advice-name commands class &rest body)
-  "Apply advice named ADVICE-NAME to multiple COMMANDS.
+  "Apply advice named ADVICE-NAME to multiple COMMANDS,
 
-The body of the advice is in BODY."
+The ClASS is defadvice's CLASS.
+The body of the advice is in BODY.
+Exaple:
+   (my|advise-commands \"abc\" (proced) before (message \"from advise\"))"
   `(progn
-     ,@(mapcar (lambda (command)
-                 `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
-                    ,@body))
-               commands)))
+	 ,@(mapcar (lambda (command)
+				 `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
+					,@body))
+			   commands)))
 
 (provide 'my-utils)
 ;;; my-utils.el ends here

@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(defvar my-auto-install-alist
+(defvar my--auto-install-alist
   '(("\\.adoc?$" asciidoc adoc-mode)
     ("\\.clj\\'" clojure-mode clojure-mode)
     ("\\.cmake\\'" cmake-mode cmake-mode)
@@ -104,7 +104,7 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
          (mode (cadr (cdr entry))))
      (unless (package-installed-p package)
        (my|auto-install extension package mode))))
- my-auto-install-alist)
+ my--auto-install-alist)
 
 
 

@@ -24,65 +24,70 @@
 
 ;;; Code:
 
+(defgroup my-config nil
+  "My configurations."
+  :group 'emacs
+  :prefix "my-")
+
 (load-file (concat user-emacs-directory "my/my-load-path.el"))
 
-(defvar  my-modules
+(defconst my-modules
   '(
-    my-debug
-    my-utils
-    my-package
-    my-base
-    my-gui
-    my-themes
-    my-window
-    my-auto
-    my-avy
-    my-edit
-    my-isearch
+	my-debug
+	my-utils
+	my-package
+	my-base
+	my-gui
+	my-themes
+	my-window
+	my-auto
+	my-avy
+	my-edit
+	my-isearch
 
-    ;; my-ido
-    ;; my-ivy
-    my-mode
-    my-helm
-    my-tramp
-    my-magit
-    my-smartparens
-    my-gud
-    my-flyspell
-    my-flycheck
-    my-auto-insert
-    my-hideshow
-    my-ac
-    ;; my-auto-complete
+	;; my-ido
+	;; my-ivy
+	my-mode
+	my-helm
+	my-tramp
+	my-magit
+	my-smartparens
+	my-gud
+	my-flyspell
+	my-flycheck
+	my-auto-insert
+	my-hideshow
+	my-ac
+	;; my-auto-complete
 
-    my-lisp
-    my-ibuffer
-    my-dired
-    my-c
-    my-go
-    my-python
-    my-org
-    my-web
-    my-sh
-    my-syslog
-    my-javascript
-    my-json
-    my-term
-    my-mu4e
-    ;; my-qt
-    ;; my-header
+	my-lisp
+	my-ibuffer
+	my-dired
+	my-c
+	my-go
+	my-python
+	my-org
+	my-web
+	my-sh
+	my-syslog
+	my-javascript
+	my-json
+	my-term
+	my-mu4e
+	;; my-qt
+	;; my-header
 
-    my-jump
-    my-yas
-    my-server
-    my-session
-    ))
+	my-jump
+	my-yas
+	my-server
+	my-session
+	)
+  "My auto load modules.")
 
 (defun my-load (m)
   "Load feature M."
   (unless (load (locate-library (format "%s" m)))
     (error "Loading %s failed" m)))
-
 
 (defun my-show-init-time ()
   "Show init time."
@@ -93,8 +98,6 @@
     (message "Emacs startup time: %.2fms"
 			 (my-time-subtract-millis after-init-time before-init-time)))
   )
-
-
 
 (defun my-init ()
   "Load my modules."
