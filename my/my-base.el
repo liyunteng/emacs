@@ -70,8 +70,6 @@
 ;; When emacs asks for "yes" or "no", let "y" or "n" suffice
 (fset 'yes-or-no-p 'y-or-n-p)
 
-
-
 
 ;;========== backup =========
 ;; 不产生备份文件

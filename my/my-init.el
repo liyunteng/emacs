@@ -23,61 +23,62 @@
 ;;
 
 ;;; Code:
+(require 'my-debug nil t)
+(require 'my-load-path nil t)
 
 (defconst my-modules
   '(
-	my-base
-	my-utils
-	my-package
-	my-frame
-	my-themes
+    my-base
+    my-utils
+    my-package
+    my-frame
+    my-themes
 
-	my-dired
-	my-ibuffer
-	my-isearch
-	my-window
-	my-session
-	my-helm
-	;; my-ido
-	;; my-ivy
+    my-buffer
+    my-edit
+    my-dired
+    my-ibuffer
+    my-isearch
+    my-window
+    my-session
+    my-helm
+    ;; my-ido
+    ;; my-ivy
 
+    my-jump
+    my-smartparens
+    my-flyspell
+    my-flycheck
+    my-yas
+    my-ac
+    ;; my-auto-complete
 
-	my-edit
-	my-smartparens
-	my-jump
-	my-flyspell
-	my-flycheck
-	my-yas
-	my-ac
-	;; my-auto-complete
+    my-term
+    my-magit
+    my-tramp
+    my-gud
+    my-mu4e
 
-	my-term
-	my-magit
-	my-tramp
-	my-gud
-	my-mu4e
+    my-avy
+    my-auto-insert
+    my-header
+    my-hideshow
+    my-auto-mode
 
-	my-mode
-	my-avy
-	my-auto-insert
-	;; my-header
-	my-hideshow
-	my-auto
+    my-lisp
+    my-c
+    ;; my-qt
+    my-go
+    my-python
+    my-org
+    my-web
+    my-sh
+    my-syslog
+    my-javascript
+    my-json
 
-	my-lisp
-	my-c
-	;; my-qt
-	my-go
-	my-python
-	my-org
-	my-web
-	my-sh
-	my-syslog
-	my-javascript
-	my-json
-
-	my-server
-	)
+    my-server
+    )
   "My auto load modules.")
 
 (defun my-load (m)
@@ -85,31 +86,37 @@
   (unless (load (locate-library (format "%s" m)))
     (error "Loading %s failed" m)))
 
+(defun my-require (m)
+  "Require feature M."
+  (unless (require m)
+    (error "Requiring %s failed" m)))
+
 (defun my/show-init-time ()
   "Show init time."
   (interactive)
   (if desktop-save-mode
       (message "Emacs startup time: %.2fms Desktop restore time: %.2fms"
-			   (my-time-subtract-millis after-init-time before-init-time)
-			   (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
+	       (my-time-subtract-millis after-init-time before-init-time)
+	       (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
     (message "Emacs startup time: %.2fms"
-			 (my-time-subtract-millis after-init-time before-init-time))))
+	     (my-time-subtract-millis after-init-time before-init-time))))
+
 
 (defun my-init ()
   "Load my modules."
-  (when (file-exists-p my-personal-info-file)
-    (my-load my-personal-info-file))
+  (when (and my-personal-info-file
+             (file-exists-p my-personal-info-file))
+    (require 'person-info))
 
-  (mapc 'my-load my-modules)
+  ;;(mapc 'my-load my-modules)
+  (mapc 'my-require my-modules)
 
-  (when (and custom-file
-			 (file-exists-p custom-file))
-    (my-load custom-file))
+  (when (and custom-file (file-exists-p custom-file))
+    (load custom-file))
 
-  (add-hook 'after-init-hook 'my/show-init-time)
-  ;; (add-hook 'after-init-hook
-  ;; 			(lambda () (run-at-time 0 nil 'my/show-init-time)) t)
-  )
+  (add-hook 'after-init-hook
+  	    (lambda () (run-at-time 0 nil 'my/show-init-time)) t))
 
+(my-init)
 (provide 'my-init)
 ;;; my-init.el ends here

@@ -37,6 +37,7 @@
   "My personal-info directory."
   :type 'directory
   :group 'my-config)
+
 (defcustom my-personal-info-file (expand-file-name "person-info.el" my-personal-dir)
   "My personal-info file."
   :type 'file
@@ -46,7 +47,7 @@
   "Custom file."
   :type 'file
   :group 'my-config)
-(setq-default custom-file my-custom-file)
+(setq custom-file my-custom-file)
 
 (defcustom my-cache-dir (expand-file-name "cache" user-emacs-directory)
   "Cache files directory."
@@ -58,7 +59,9 @@
 (defconst my-dir (expand-file-name "my" user-emacs-directory) "My base directory.")
 (defconst my-forks-dir (expand-file-name "forks" my-dir) "My forks package directory.")
 (defconst my-libs-dir (expand-file-name "libs" my-dir) "My library directory.")
-(make-obsolete-variable 'my-libs-dir 'my-forks-dir)
+(make-obsolete-variable 'my-libs-dir 'my-forks-dir "25")
+
+(defconst my-init-file (expand-file-name "my-init.el" my-dir))
 
 (defun my-add-to-load-path (dir &optional append)
   "Add DIR to load path, if APPEND add to end."
@@ -80,6 +83,7 @@ If APPEND add to end."
 		(my-add-subfolders-to-load-path name)))))
 
 (add-to-list 'load-path my-dir)
+(add-to-list 'load-path my-personal-dir)
 (my-add-subfolders-to-load-path my-dir)
 ;; (my-add-subfolders-to-load-path my-forks-dir)
 

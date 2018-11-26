@@ -25,6 +25,8 @@
 ;;; Code:
 
 ;; after-load
+
+;;;###autoload
 (if (fboundp 'with-eval-after-load)
     (defalias 'after-load 'with-eval-after-load)
   (defmacro after-load (feature &rest body)
@@ -33,37 +35,23 @@
     `(eval-after-load ,feature
        '(progn ,@body))))
 
-;; elisp version of try...catch...finally
-(defmacro safe-wrap (fn &rest clean-up)
-  `(unwind-protect
-       (let (retval)
-         (condition-case ex
-             (setq retval (progn, fn))
-           ('error
-            (message (format "Caught exception: [%s]" ex))
-            (setq retval (cons 'exception (list ex)))))
-         retval)
-     ,@clean-up))
-
-(defun my-system-is-mac () "Is mac?"(eq system-type 'darwin))
-(defun my-system-is-linux () "Is linux?" (eq system-type 'gnu/linux))
-(defun my-system-is-mswindows () "Is ms window?" (eq system-type 'windows-nt))
-(defun my-window-system-is-mac () "Window system is mac?" (memq (window-system) '(mac ns)))
+(defun system-is-mac () "Is mac?"(eq system-type 'darwin))
+(defun system-is-linux () "Is linux?" (eq system-type 'gnu/linux))
+(defun system-is-mswindows () "Is ms window?" (eq system-type 'windows-nt))
+(defun window-system-is-mac () "Window system is mac?" (memq (window-system) '(mac ns)))
 
 
-(defun my-add-to-hook (hook funs)
+;;;###autoload
+(defun add-functions-to-hook (hook funs &optional append local)
   "Add list of FUNS to HOOK."
   (dolist (fun funs)
-    (add-hook hook fun)))
+    (add-hook hook fun append local)))
 
-(defun my-add-to-hooks (fun hooks)
+;;;###autoload
+(defun add-function-to-hooks (fun hooks &optional append local)
   "Add FUN to HOOKS."
   (dolist (hook hooks)
-    (add-hook hook fun)))
-
-(defun my-add-all-to-hook (hook &rest funs)
-  "Add FUNS to HOOK."
-  (my-add-to-hook hook funs))
+    (add-hook hook fun append local)))
 
 (defun get-string-from-file (filepath)
   "Retrun FILEPATH's file content."
@@ -77,167 +65,39 @@
     (insert-file-contents filepath)
     (split-string (buffer-string) "\n" t)))
 
-(defun string-all-matches (regex str &optional group)
-  "Find all matches for REGEX within STR, returning the full match string or group GROUP."
-  (let ((result nil)
-        (pos 0)
-        (group (or group 0)))
-    (while (string-match regex str pos)
-      (push (match-string group str) result)
-      (setq pos (match-end group)))
-    result))
+;;;###autoload
+(defun my/insert-current-time-string ()
+  "Insert the current time."
+  (interactive "*")
+  (insert (format-time-string "%Y/%m/%d %H:%M:%S" (current-time))))
+;; (insert (format-time-string "%H:%M:%S" (current-time))))
 
-(defun my/alternate-buffer (&optional window)
-  "Switch back and forth between current and last buffer in the current window."
+;;;###autoload
+(defun my/dos2unix-remove-M()
+  "Remove ^M in files."
   (interactive)
-  (let ((current-buffer (window-buffer window))
-        (buffer-predicate
-         (frame-parameter (window-frame window) 'buffer-predicate)))
-    ;; switch to first buffer previously shown in this window that matches
-    ;; frame-parameter `buffer-predicate'
-    (switch-to-buffer
-     (or (cl-find-if (lambda (buffer)
-                       (and (not (eq buffer current-buffer))
-                            (or (null buffer-predicate)
-                                (funcall buffer-predicate buffer))))
-                     (mapcar #'car (window-prev-buffers window)))
-         ;; `other-buffer' honors `buffer-predicate' so no need to filter
-         (other-buffer current-buffer t)))))
+  (goto-char (point-min))
+  (while (search-forward (string ?\C-m) nil t)
+    (replace-match "")))
 
-(defun my/alternate-window ()
-  "Switch back and forth between current and last window in the
-current frame."
+;;;###autoload
+(defun my/dos2unix ()
+  "Convert the current buffer to UNIX file format."
   (interactive)
-  (let (;; switch to first window previously shown in this frame
-        (prev-window (get-mru-window nil t t)))
-    ;; Check window was not found successfully
-    (unless prev-window (user-error "Last window not found"))
-    (select-window prev-window)))
+  (set-buffer-file-coding-system 'undecided-unix nil))
 
-(defun my/rename-file (filename &optional new-filename)
-  "Rename FILENAME to NEW-FILENAME.
-
-When NEW-FILENAME is not specified, asks user for a new name.
-
-Also renames associated buffer (if any exists), invalidates
-projectile cache when it's possible and update recentf list."
-  (interactive "f")
-  (when (and filename (file-exists-p filename))
-    (let* ((buffer (find-buffer-visiting filename))
-		   (short-name (file-name-nondirectory filename))
-		   (new-name (if new-filename new-filename
-					   (read-file-name
-						(format "Rename %s to: " short-name)))))
-      (cond ((get-buffer new-name)
-			 (error "A buffer named '%s' already exists!" new-name))
-			(t
-			 (let ((dir (file-name-directory new-name)))
-			   (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
-				 (make-directory dir t)))
-			 (rename-file filename new-name 1)
-			 (when buffer
-			   (kill-buffer buffer)
-			   (find-file new-name))
-			 (when (fboundp 'recentf-add-file)
-			   (recentf-add-file new-name)
-			   (recentf-remove-if-non-kept filename))
-			 (when (projectile-project-p)
-			   (call-interactively #'projectile-invalidate-cache))
-			 (message "File '%s' successfully renamed to '%s'" short-name
-					  (file-name-nondirectory new-name)))))))
-
-;; from magnars
-(defun my/rename-current-buffer-file ()
-  "Renames current buffer and file it is visiting."
+;;;###autoload
+(defun my/unix2dos ()
+  "Convert the current buffer to DOS file format."
   (interactive)
-  (let* ((name (buffer-name))
-         (filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        ;; (error "Buffer '%s' is not visiting a file!" name)
-        (rename-buffer (read-from-minibuffer "New name: " (buffer-name)))
-      (let* ((dir (file-name-directory filename))
-             (new-name (read-file-name "New name: " dir)))
-        (cond ((get-buffer new-name)
-               (error "A buffer named '%s' already exists!" new-name))
-              (t
-               (let ((dir (file-name-directory new-name)))
-                 (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
-                   (make-directory dir t)))
-               (rename-file filename new-name 1)
-               (rename-buffer new-name)
-               (set-visited-file-name new-name)
-               (set-buffer-modified-p nil)
-               (when (fboundp 'recentf-add-file)
-                 (recentf-add-file new-name)
-                 (recentf-remove-if-non-kept filename))
-               (when (projectile-project-p)
-                 (call-interactively #'projectile-invalidate-cache))
-               (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
+  (set-buffer-file-coding-system 'undecided-dos nil))
 
-(defun my/delete-file (filename &optional ask-user)
-  "Remove specified file or directory.
-
-Also kills associated buffer (if any exists) and invalidates
-projectile cache when it's possible.
-
-FILENAME is file or directory.
-When ASK-USER is non-nil, user will be asked to confirm file
-removal."
-  (interactive "f")
-  (when (and filename (file-exists-p filename))
-    (let ((buffer (find-buffer-visiting filename)))
-      (when buffer
-        (kill-buffer buffer)))
-    (when (or (not ask-user)
-              (yes-or-no-p (format "Are you sure you want to delete %s? " filename)))
-      (delete-file filename)
-      (when (projectile-project-p)
-        (call-interactively #'projectile-invalidate-cache)))))
-
-(defun my/delete-file-confirm (filename)
-  "Remove specified file or directory after users approval.
-
-FILENAME is deleted using `my/delete-file' function.."
-  (interactive "f")
-  (funcall-interactively #'my/delete-file filename t))
-
-;; from magnars
-(defun my/delete-current-buffer-file ()
-  "Remove file connected to current buffer and kill buffer."
-  (interactive)
-  (let ((filename (buffer-file-name))
-        (buffer (current-buffer))
-        (name (buffer-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (kill-buffer)
-      (when (yes-or-no-p (format "Are you sure you want to delete %s? " filename))
-        (delete-file filename t)
-        (kill-buffer buffer)
-        (when (projectile-project-p)
-          (call-interactively #'projectile-invalidate-cache))
-        (message "Deleted file %s" filename)))))
-
-;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
-(defun my/show-and-copy-buffer-filename ()
-  "Show and copy the full path to the current file in the minibuffer."
-  (interactive)
-  ;; list-buffers-directory is the variable set in dired buffers
-  (let ((file-name (or (buffer-file-name) list-buffers-directory)))
-    (if file-name
-        (message (kill-new file-name))
-      (error "Buffer not visiting a file"))))
-;;(define-key my-mode-map (kbd "C-c C-s") 'my/rotate-windows-backward)
-
-(defun my--revert-buffer-function (ignore-auto noconfirm)
-  "Revert buffer if buffer without file, or call revert-buffer--default."
-  (if (buffer-file-name)
-      (funcall #'revert-buffer--default ignore-auto noconfirm)
-    (call-interactively major-mode)))
-;; (setq revert-buffer-function 'my--revert-buffer-function)
-
-
+;;;###autoload
 (defun my-derived-mode-p (mode &rest modes)
-  "Non-nil if MODE is derived from one of MODES."
+  "Non-nil if MODE is derived from one of MODES.
+
+Example:
+(my-derived-mode-p 'lisp-interaction-mode 'text-mode 'prog-mode)"
   (let ((major-mode mode))
     (apply #'derived-mode-p modes)))
 
@@ -247,31 +107,7 @@ MSG format-string or string.
 ARGS if MSG is format-string ARGS contain message."
   (interactive)
   (let ((message-log-max nil))
-    (apply 'message msg args)))
-
-(defun my-dump (varlist buffer)
-  "Insert the setq statement to recreate the variables in VARLIST to BUFFER.
-
-Example:
-	(setq a \"a\" b \"b\" c \"c\")
-	(setq x '(a b c))
-	(my-dump x (get-buffer \"*scratch*\"
-
-Output:
-	(setq a (quote \"a\"))
-	(setq b (quote \"b\"))
-    (setq c (quote \"c\"))."
-  (cl-loop for var in varlist do
-           (print (list 'setq var (list 'quote (symbol-value var)))
-                  buffer)))
-
-(defun my-dump-vars-to-file (varlist filename)
-  "Dump VARLIST to FILENAME."
-  (with-temp-file filename
-    (my-dump varlist (current-buffer))
-    (make-directory (file-name-directory filename) t)))
-
-
+    (apply #'message msg args)))
 
 
 
@@ -325,6 +161,7 @@ Supported properties:
   "List of all declared toggles.
 The structure of an element is a property list (name :func FUNCTION :doc STRING :key STRING).")
 
+;;;###autoload
 (defmacro my|add-toggle (name &rest props)
   "Add a toggle with NAME symbol.
 
@@ -433,6 +270,7 @@ my/toggle-company-mode-off."
                (when (,wrapper-func-status) (,wrapper-func)))))
        ,@bindkeys)))
 
+;;;###autoload
 (defmacro my|advise-commands (advice-name commands class &rest body)
   "Apply advice named ADVICE-NAME to multiple COMMANDS,
 
@@ -441,10 +279,10 @@ The body of the advice is in BODY.
 Exaple:
    (my|advise-commands \"abc\" (proced) before (message \"from advise\"))"
   `(progn
-	 ,@(mapcar (lambda (command)
-				 `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
-					,@body))
-			   commands)))
+     ,@(mapcar (lambda (command)
+		 `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
+		    ,@body))
+	       commands)))
 
 (provide 'my-utils)
 ;;; my-utils.el ends here

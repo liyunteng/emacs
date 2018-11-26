@@ -24,7 +24,8 @@
 
 ;;; Code:
 (use-package json-mode
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (provide 'my-json)
 ;;; my-json.el ends here

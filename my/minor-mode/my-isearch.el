@@ -27,65 +27,60 @@
 (use-package anzu
   :ensure t
   :bind (([remap query-replace-regexp]. anzu-query-replace-regexp)
-		 ([remap query-replace] . anzu-query-replace))
+	 ([remap query-replace] . anzu-query-replace)
+	 ("M-s r" . anzu-query-replace)
+	 ("M-s M-r" . anzu-query-replace-regexp))
   :diminish anzu-mode
-  ;; :defines anzu-mode-line-update-function anzu--state
   :init
-  ;; (defun my-anzu-update-mode-line (here total)
-  ;;   "Custom update function which does not propertize the status."
-  ;;   (when anzu--state
-  ;; 	(let ((status (cl-case state--anzu
-  ;; 					(search (format "(%s/%d%s) "
-  ;; 									(anzu--format-here-position here total)
-  ;; 									total (if anzu--overflow-p "+" "")))
-  ;; 					(replace-query (format "(%s/%d replace) "
-  ;; 										   (anzu--format-here-position here total)
-  ;; 										   total))
-  ;; 					(replace (format "(%s/%d replace) "
-  ;; 									 (anzu--format-here-position here total)
-  ;; 									 total))
-  ;; 					;; (replace-query (format "(%d replace) " total))
-  ;; 					;; (replace (format "(%d/%d) " here total))
-  ;; 					)))
-  ;; 	  status)))
-  ;; (setq anzu-mode-line-update-function 'my-anzu-update-mode-line)
+  (defun my-anzu--update-mode-line (here total)
+    (when anzu--state
+      (let ((status (cl-case anzu--state
+                      (search (format "(%s/%d%s) "
+                                      (anzu--format-here-position here total)
+                                      total (if anzu--overflow-p "+" "")))
+                      (replace-query (format "(%d replace) " total))
+                      (replace (format "(%d/%d) " here total)))))
+	status)))
+
+  (setq anzu-mode-line-update-function 'my-anzu--update-mode-line)
   (global-anzu-mode +1))
 
 (use-package isearch
   :bind  (
-		  :map isearch-mode-map
-			   ("C-o" . isearch-occur)
-			   ("C-q" . isearch-del-char)
-			   ;; ("C-w" . isearch-delete-char)
-			   ("C-w" . back-kill-word)
+	  :map isearch-mode-map
+	  ("C-o" . isearch-occur)
+	  ("C-q" . isearch-del-char)
+	  ;; ("C-w" . isearch-delete-char)
+	  ("C-w" . back-kill-word)
 
-			   ("C-y" . isearch-yank-word-or-char)
-			   ("M-l" . isearch-yank-line)
-			   ("M-w" . isearch-yank-kill)
-			   ("C-M-w" . my/isearch-yank-symbol)
-			   ("C-M-y" . isearch-yank-pop)
+	  ("C-y" . isearch-yank-word-or-char)
+	  ("M-l" . isearch-yank-line)
+	  ("M-w" . isearch-yank-kill)
+	  ("C-M-w" . my/isearch-yank-symbol)
+	  ("C-M-y" . isearch-yank-pop)
 
-			   ("C-e" . isearch-edit-string)
+	  ("C-e" . isearch-edit-string)
 
-			   ("M-i" . isearch-toggle-case-fold)
-			   ("M-r" . isearch-toggle-regexp)
+	  ("M-i" . isearch-toggle-case-fold)
+	  ("M-r" . isearch-toggle-regexp)
 
-			   ([(control return)] . my/isearch-exit-other-end)
-			   )
+	  ([(control return)] . my/isearch-exit-other-end)
+	  )
+
   :config
   ;; Search back/forth for the symbol at point
   ;; See http://www.emacswiki.org/emacs/SearchAtPoint
   (defun my/isearch-yank-symbol ()
     "*Put symbol at current point into search string."
     (interactive)
-    (let ((sym (symbol-at-point)))
+    (let ((sym (thing-at-point 'symbol)))
       (if sym
           (progn
             (setq isearch-regexp t
-                  isearch-string (concat "\\_<" (regexp-quote (symbol-name sym)) "\\_>")
+                  isearch-string (concat "\\_<" (regexp-quote sym) "\\_>")
                   isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
                   isearch-yank-flag t))
-		(ding)))
+	(ding)))
     (isearch-search-and-update))
 
   ;; http://www.emacswiki.org/emacs/ZapToISearch

@@ -25,8 +25,6 @@
 ;;; Code:
 
 ;; syslog-mode
-(use-package hide-lines
-  :ensure t)
 
 (use-package syslog-mode
   :ensure t

@@ -27,19 +27,24 @@
 (defconst gpl-license-content
   "This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or (at
-your option) any later version.
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
-  )
-(defconst gpl-license (list "GPL" gpl-license-content))
-(defvar auto-insert-license gpl-license)
+along with this program.  If not, see <https://www.gnu.org/licenses/>.")
+
+(defconst gpl-license (cons "GPL" gpl-license-content))
+(defconst null-license (cons nil nil))
+(defcustom auto-insert-license gpl-license
+  "Auto insert used license."
+  :type 'symbol
+  :group 'my-config)
+(setq auto-insert-license null-license)
 
 (use-package autoinsert
   :commands (auto-insert auto-insert-mode)
@@ -66,31 +71,27 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.\n\n"
   (setq auto-insert-query nil)
   ;; (setq auto-insert-directory "~/.emacs.d/autoinsert/")
   ;; (define-auto-insert "\.c" "c-temp.c")
-
   (defun my-header (&optional prefix postfix)
     "My header with PREFIX and POSTFIX."
     (append
-     '((beginning-of-buffer) (insert "\n") (beginning-of-buffer) "")
-     (if prefix prefix)
-     '(
-       (null (setq-local begin (point)))
+     '((goto-char (point-min)) "")
+     (if prefix prefix "")
+     '('(setq-local auto-insert--begin (point))
        ;; "Filename: " (file-name-nondirectory (buffer-file-name)) "\n"
        ;; "Description: " (read-string "Description: ") "\n\n"
        "Description: " (file-name-base (buffer-file-name)) "\n\n"
        ;; "Author: " user-full-name (if (search-backward "&" (line-beginning-position) t) (replace-match (capitalize (user-login-name)) t t)) " <" user-mail-address ">\n"
        (when (car auto-insert-license)
-	 (concat "License: "
-		 (car auto-insert-license)
-		 "\n"))
+         (concat "License: " (car auto-insert-license) "\n"))
        "Copyright (C) " (format-time-string "%Y") " " (getenv "ORGANIZATION") | (concat user-full-name) "\n"
        "Last-Updated: <>\n"
-       (when (car (cdr auto-insert-license))
-	 (concat "\n"
-		 (car (cdr auto-insert-license))))
-       (comment-region begin (point)))
-     (if postfix postfix)))
+       (when (cdr auto-insert-license)
+         (concat "\n"(cdr auto-insert-license) "\n"))
+       (comment-region auto-insert--begin (point)))
+     (if postfix postfix "")
+     ))
 
-  (define-auto-insert 'sh-mode (my-header '("#!/usr/bin/bash\n\n")))
+  (define-auto-insert 'sh-mode (my-header '("#!/usr/bin/bash\n")))
   (define-auto-insert 'python-mode
     (my-header '("#!/usr/bin/env python\n" "# -*- coding: utf-8 -*-\n\n")))
   (define-auto-insert 'go-mode (my-header))

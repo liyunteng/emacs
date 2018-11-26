@@ -31,15 +31,16 @@
 (use-package dired
   :commands (dired dired-jump dired-jump-other-window)
   :bind (("C-x d" . dired)
-		 ("C-x M-j" . dired-jump-other-window))
+	 ("C-x M-j" . dired-jump-other-window)
+         ("C-x C-j" . dired-jump))
 
   :config
   (use-package dired-x
     :config
     (setq dired-omit-verbose nil
-		  ;; dired忽略的上限
-		  dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
-		  )
+	  ;; dired忽略的上限
+	  dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
+	  )
     (dolist (ex '(".cache" ".o" ".ui"))
       (add-to-list 'dired-omit-extensions ex))
     (add-hook 'dired-mode-hook 'dired-omit-mode))
@@ -64,40 +65,40 @@
       :type-for-docstring "code"
       :extensions
       '(
-		"a"
-		"ahk"
-		"asm"
-		"C"
-		"c"
-		"cc"
-		"cpp"
-		"cs"
-		"css"
-		"ddl"
-		"el"
-		"erl"
-		"go"
-		"h"
-		"hrl"
-		"JAVA"
-		"java"
-		"m"
-		"mm"
-		"lisp"
-		"livecode"
-		"lua"
-		"p"
-		"pas"
-		"php"
-		"pl"
-		"py"
-		"rb"
-		"rev"
-		"sch"
-		"scheme"
-		"scm"
-		"sql"
-		"st"))
+	"a"
+	"ahk"
+	"asm"
+	"C"
+	"c"
+	"cc"
+	"cpp"
+	"cs"
+	"css"
+	"ddl"
+	"el"
+	"erl"
+	"go"
+	"h"
+	"hrl"
+	"JAVA"
+	"java"
+	"m"
+	"mm"
+	"lisp"
+	"livecode"
+	"lua"
+	"p"
+	"pas"
+	"php"
+	"pl"
+	"py"
+	"rb"
+	"rev"
+	"sch"
+	"scheme"
+	"scm"
+	"sql"
+	"st"))
     (deffiletype-setup "code" "code"))
 
   (setq
@@ -106,30 +107,29 @@
    dired-recursive-copies 'top)
   ;;传给ls的参数
   (if (or (eq system-type 'linux)
-		  (eq system-type 'gnu/linux))
+	  (eq system-type 'gnu/linux))
       (setq dired-listing-switches "-alhqD")
     (setq dired-listing-switches "-alh"))
 
   ;; goto parent dir
-  (defvar my/subdir-parent nil)
+  (defvar-local my--subdir-parent nil)
   (defadvice dired-maybe-insert-subdir (around dirname (&optional switches no-error-if-not-dir-p) activate)
     (progn (if (ad-get-arg 0)
-			   (setq my/subdir-parent (ad-get-arg 0)))
-		   ad-do-it))
+  	       (setq my--subdir-parent (ad-get-arg 0)))
+  	   ad-do-it))
 
   (defadvice dired-kill-subdir (around back-to-parent-dir activate)
     (progn
       ad-do-it
-      (if my/subdir-parent
-		  (progn
-			(dired-goto-file my/subdir-parent)
-			(setq my/subdir-parent nil)))))
+      (if my--subdir-parent
+  	  (progn
+  	    (dired-goto-file my--subdir-parent)
+  	    (setq my--subdir-parent nil)))))
 
   (defun my/dired-view-file-other-window ()
     "In Dired, view this file or directory in another window."
     (interactive)
-    (view-file-other-window (dired-get-file-for-visit))
-    )
+    (view-file-other-window (dired-get-file-for-visit)))
 
   (defun my/dired-run-git-command (command &optional arg file-list)
     "Run a shell command `git COMMAND`' on the marked files.

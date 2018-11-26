@@ -27,6 +27,7 @@
 (use-package yasnippet
   :commands (yas-global-mode yas-minor-mode yas-minor-mode-on)
   :ensure t
+  :defer
   ;; :bind
   ;; (:map yas-minor-mode-map ("TAB" . yas-expand))
   :init
@@ -34,34 +35,36 @@
   ;; 		yas-wrap-around-region t)
   ;; (setq yas-prompt-functions '(yas-completing-prompt))
 
-  (dolist (hook '(prog-mode-hook
-		  latex-mode-hook
-		  plain-text-mode
-		  nxml-mode-hook
-		  html-mode-hook
-		  web-mode
-
-		  autoconf-mode-hook
-		  conf-unix-mode-hook
-		  cmake-mode-hook
-		  css-mode-hook
-		  m4-mode-hook
-		  ;; org-mode-hook
-		  makefile-gmake-mode-hook
-		  sql-mode-hook
-		  snippet-mode-hook
-		  udev-mode-hook
-		  ))
-    (add-hook hook 'yas-minor-mode-on))
   (my|add-toggle yas-minor-mode
     :mode yas-minor-mode
     :documentation "yas minor mode")
 
 
   (use-package yasnippet-snippets
-    :ensure t)
+    :ensure t
+    :defer t)
 
   :config
+  ;; (dolist (hook '(prog-mode-hook
+  ;;       	  latex-mode-hook
+  ;;       	  plain-text-mode
+  ;;       	  nxml-mode-hook
+  ;;       	  html-mode-hook
+  ;;       	  web-mode
+
+  ;;       	  autoconf-mode-hook
+  ;;       	  conf-unix-mode-hook
+  ;;       	  cmake-mode-hook
+  ;;       	  css-mode-hook
+  ;;       	  m4-mode-hook
+  ;;       	  ;; org-mode-hook
+  ;;       	  makefile-gmake-mode-hook
+  ;;       	  sql-mode-hook
+  ;;       	  snippet-mode-hook
+  ;;       	  udev-mode-hook
+  ;;       	  ))
+  ;;   (add-hook hook 'yas-minor-mode-on))
+
   ;; (use-package dropdown-list
   ;; 	:ensure t)
   ;; (setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))

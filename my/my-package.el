@@ -31,8 +31,8 @@
                          ("melpa-stable" . "http://mirrors.163.com/elpa/melpa-stable/")
                          ("gnu" . "http://mirrors.163.com/elpa/gnu/")
                          ("org" . "http://mirrors.163.com/elpa/org/")
-						 ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")
-						 ))
+			 ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")
+			 ))
 (setq package-pinned-packages
       '((switch-window . "melpa-stable")))
 
@@ -44,12 +44,12 @@
 (package-initialize)
 
 (defvar my--pre-install-packages '(bind-key
-								   use-package
-								   diminish
-								   wgrep
-								   scratch
-								   command-log-mode
-								   uptimes))
+				   use-package
+				   diminish
+				   wgrep
+				   scratch
+				   command-log-mode
+				   ))
 ;; (defun require-package (package)
 ;;   "Install PACKAGE unlesee already installed."
 ;;   (unless (package-installed-p package)
@@ -136,11 +136,11 @@ removing unwanted packages."
 (require 'bind-key)
 (require 'use-package)
 (setq use-package-always-ensure nil
-	  ;; use-package-verbose init-file-debug
-	  use-package-verbose nil
-	  use-package-inject-hooks t
-	  ;; use-package-always-defer t
-	  )
+      ;; use-package-verbose init-file-debug
+      use-package-verbose nil
+      use-package-inject-hooks t
+      ;; use-package-always-defer t
+      )
 
 (defconst my--use-package-add-hook-keywords '(:pre-init
                                               :post-init

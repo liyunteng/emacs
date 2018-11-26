@@ -27,6 +27,7 @@
 ;; js2-mode
 (use-package js2-mode
   :ensure t
+  :defer t
   :commands (js2-mode js2-minor-mode js2-jsx-mode2)
   :init
   (defcustom preferred-javascript-mode

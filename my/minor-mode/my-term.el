@@ -65,7 +65,6 @@
   :defer t
   :init
   (defun my-comint-mode-hook ()
-    (my-mode -1)
     (setq-local mouse-yank-at-point t)
     (setq-local transient-mark-mode nil)
     (setq-local global-hl-line-mode nil)
@@ -83,36 +82,37 @@
   (add-hook 'comint-mode-hook 'my-comint-mode-hook)
   :config
   (setq comint-scroll-to-bottom-on-input nil
-		comint-scroll-to-bottom-on-output nil
-		comint-scroll-show-maximum-output nil
-		comint-prompt-read-only t
-		comint-move-point-for-output t
-		)
+	comint-scroll-to-bottom-on-output nil
+	comint-scroll-show-maximum-output nil
+	comint-prompt-read-only t
+	comint-move-point-for-output t
+	)
 
   (setq comint-input-sender
-		(lambda (proc command)
-		  (cond
-		   ;; Check for clear command and execute it.
-		   ((string-match "^[ \t]*clear[ \t]*$" command)
-			(comint-send-string proc "\n")
-			(erase-buffer))
-		   ;; Check for man command and execute it.
-		   ((string-match "^[ \t]*man[ \t]*" command)
-			(comint-send-string proc "\n")
-			(setq command (replace-regexp-in-string
-						   "^[ \t]*man[ \t]*" "" command))
-			(setq command (replace-regexp-in-string
-						   "[ \t]+$" "" command))
-			(funcall 'man command))
-		   ;; Send other commands to the default handler.
-		   (t (comint-simple-send proc command)))))
+	(lambda (proc command)
+	  (cond
+	   ;; Check for clear command and execute it.
+	   ((string-match "^[ \t]*clear[ \t]*$" command)
+	    (comint-send-string proc "\n")
+	    (erase-buffer))
+	   ;; Check for man command and execute it.
+	   ((string-match "^[ \t]*man[ \t]*" command)
+	    (comint-send-string proc "\n")
+	    (setq command (replace-regexp-in-string
+			   "^[ \t]*man[ \t]*" "" command))
+	    (setq command (replace-regexp-in-string
+			   "[ \t]+$" "" command))
+	    (funcall 'man command))
+	   ;; Send other commands to the default handler.
+	   (t (comint-simple-send proc command)))))
   )
+
 (use-package shell
   :defer t
   :commands (shell)
+  :if (fboundp 'helm-comint-input-ring)
   :config
-  (if (functionp 'helm-comint-input-ring)
-	  (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)))
+  (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring))
 
 (use-package multi-term
   :ensure t
@@ -164,13 +164,12 @@
   (defun my/term-mode-toggle-line-mode ()
     (interactive)
     (if (eq major-mode 'term-mode)
-		(if (term-in-char-mode)
-			(term-line-mode)
-		  (term-char-mode))
+	(if (term-in-char-mode)
+	    (term-line-mode)
+	  (term-char-mode))
       (message "not term-mode")))
 
   (defun my-term-mode-hook ()
-    (my-mode -1)
     (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
     (setq-local mouse-yank-at-point t)
     (setq-local transient-mark-mode nil)
@@ -191,20 +190,20 @@
     "My term dedicated toggle and select."
     (interactive)
     (if (multi-term-dedicated-exist-p)
-		(progn
-		  (multi-term-dedicated-close)
-		  (switch-to-buffer my-multi-term-dedicated-old-buf))
+	(progn
+	  (multi-term-dedicated-close)
+	  (switch-to-buffer my-multi-term-dedicated-old-buf))
       (progn
-		(setq my-multi-term-dedicated-old-buf (current-buffer))
-		(multi-term-dedicated-open)
-		(multi-term-dedicated-select))))
+	(setq my-multi-term-dedicated-old-buf (current-buffer))
+	(multi-term-dedicated-open)
+	(multi-term-dedicated-select))))
 
   :config
   (setq multi-term-program my-term-shell
-		multi-term-scroll-to-bottom-on-output t
-		multi-term-scroll-show-maximum-output nil
-		multi-term-switch-after-close nil
-		)
+	multi-term-scroll-to-bottom-on-output t
+	multi-term-scroll-show-maximum-output nil
+	multi-term-switch-after-close nil
+	)
   ;; (setq-default multi-term-program "/bin/bash")
   ;; (setq multi-term-dedicated-close-back-to-open-buffer-p t)
   ;; (setq multi-term-dedicated-select-after-open-p t)

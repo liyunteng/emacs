@@ -27,9 +27,9 @@
 
 (use-package go-mode
   :ensure t
+  :defer t
   :commands (go-mode)
   :bind (:map go-mode-map
-	      ("C-h f" . helm-apropos)
 	      ("C-c C-d" . godoc-at-point)  ; need go-tools's go doc
 	      ("C-c C-p" . godoc)	    ; need godoc
 	      ("C-M-\\" . gofmt)

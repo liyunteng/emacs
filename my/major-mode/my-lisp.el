@@ -25,8 +25,18 @@
 ;;; Code:
 
 ;; remove annoying ellipsis when printing sexp in message buffer
+
 (setq eval-expression-print-length nil
       eval-expression-print-level nil)
+
+;; automatically compile Emacs Lisp libraries
+(use-package auto-compile
+  :ensure t
+  :commands (auto-compile-on-save-mode
+             auto-compile-on-load-mode)
+  :init
+  (auto-compile-on-save-mode +1)
+  (auto-compile-on-load-mode +1))
 
 ;; (use-package hl-sexp)
 (use-package cl-lib-highlight
@@ -39,18 +49,14 @@
   :ensure t
   :diminish immortal-scratch-mode
   :init
-  (defun my/switch-to-scratch ()
-    (interactive)
-    (switch-to-buffer "*scratch*"))
-  (global-set-key (kbd "C-x S") 'my/switch-to-scratch)
   (immortal-scratch-mode +1))
 
 (use-package macrostep
   :ensure t
   :bind (:map emacs-lisp-mode-map
-			  ("C-x e" . macrostep-expand)
-			  :map lisp-interaction-mode-map
-			  ("C-x e" . macrostep-expand)))
+	      ("C-x e" . macrostep-expand)
+	      :map lisp-interaction-mode-map
+	      ("C-x e" . macrostep-expand)))
 
 (use-package eldoc-eval
   :ensure t
@@ -67,33 +73,32 @@
   (add-hook 'ielm-mode-hook #'eldoc-mode))
 
 (defvar my-common-mode-hooks  '(emacs-lisp-mode-hook
-								ielm-mode-hook
-								help-mode-hook
-								messages-buffer-mode-hook
-								completion-list-mode-hook
-								debugger-mode-hook
-								))
+				ielm-mode-hook
+				help-mode-hook
+				messages-buffer-mode-hook
+				completion-list-mode-hook
+				debugger-mode-hook))
 (use-package rainbow-mode
   :diminish rainbow-mode
   :ensure t
   :commands (rainbow-mode
-			 rainbow-turn-on)
+	     rainbow-turn-on)
   :init
-  (my-add-to-hooks 'rainbow-turn-on my-common-mode-hooks))
+  (add-function-to-hooks 'rainbow-turn-on my-common-mode-hooks))
 
 (use-package highlight-quoted
   :ensure t
   :commands (highlight-quoted-mode
-			 highlight-quoted--turn-on)
+	     highlight-quoted--turn-on)
   :init
-  (my-add-to-hooks 'highlight-quoted--turn-on my-common-mode-hooks)
+  (add-function-to-hooks 'highlight-quoted--turn-on my-common-mode-hooks)
   (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode))
 
 (use-package elisp-slime-nav
   :ensure t
   :diminish elisp-slime-nav-mode
   :init
-  (my-add-to-hooks 'turn-on-elisp-slime-nav-mode my-common-mode-hooks))
+  (add-function-to-hooks 'turn-on-elisp-slime-nav-mode my-common-mode-hooks))
 
 ;; (use-package ipretty
 ;;   :ensure t
@@ -103,26 +108,26 @@
 
 ;; Make C-x C-e run 'eval-region if the region is active
 (use-package pp
-  :bind
-  (([remap eval-expression] . pp-eval-expression))
+  :bind (([remap eval-expression] . pp-eval-expression))
+  :defer t
   :init
   (defun my/eval-last-sexp-or-region (prefix)
     "Eval PREFIX if active, otherwise the last sexp."
     (interactive "P")
     (if (and (mark) (use-region-p))
-		(eval-region (min (point) (mark)) (max (point) (mark)))
+	(eval-region (min (point) (mark)) (max (point) (mark)))
       (pp-eval-last-sexp prefix)))
 
   (defadvice pp-display-expression (after my-make-read-only (expression out-buffer-name) activate)
     "Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
     (when (get-buffer out-buffer-name)
       (with-current-buffer out-buffer-name
-		(view-mode 1))))
+	(view-mode 1))))
 
   (defun my-maybe-set-bundled-elisp-readonly ()
     "If this elisp appears to be part of Emacs, then disallow editing."
     (when (and (buffer-file-name)
-			   (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
+	       (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
       (setq buffer-read-only t)
       (view-mode 1)))
   (add-hook 'emacs-lisp-mode-hook 'my-maybe-set-bundled-elisp-readonly))
@@ -130,6 +135,7 @@
 ;; Use C-c C-z to toggle between elisp files and an ielm session
 ;; I might generalise this to ruby etc., or even just adopt the repl-toggle package.
 (use-package ielm
+  :defer t
   :init
   (defvar my-repl-original-buffer nil
     "Buffer from which we jumped to this REPL.")
@@ -139,7 +145,7 @@
     "Switch back to the buffer from which we reached this REPL."
     (interactive)
     (if my-repl-original-buffer
-		(funcall my-repl-switch-function my-repl-original-buffer)
+	(funcall my-repl-switch-function my-repl-original-buffer)
       (error "No original buffer")))
 
   (defun my/switch-to-ielm ()
@@ -148,17 +154,17 @@
 
     (let ((orig-buffer (current-buffer)))
       (if (get-buffer "*ielm*")
-		  (funcall my-repl-switch-function "*ielm*")
-		(ielm))
+	  (funcall my-repl-switch-function "*ielm*")
+	(ielm))
       (setq-local my-repl-original-buffer orig-buffer)))
 
   :bind (:map ielm-map
-			  ("C-c C-z" . my/repl-switch-back)
-			  :map emacs-lisp-mode-map
-			  ("C-c C-z" . my/switch-to-ielm)
-			  :map lisp-interaction-mode-map
-			  ("C-c C-z" . my/switch-to-ielm)
-			  ))
+	      ("C-c C-z" . my/repl-switch-back)
+	      :map emacs-lisp-mode-map
+	      ("C-c C-z" . my/switch-to-ielm)
+	      :map lisp-interaction-mode-map
+	      ("C-c C-z" . my/switch-to-ielm)
+	      ))
 
 ;; ----------------------------------------------------------------------------
 ;; Hippie-expand
@@ -269,7 +275,7 @@
   "If reverting from VC, delete any .elc file that will now be out of sync."
   (when my-vc-reverting
     (when (and (eq 'emacs-lisp-mode major-mode)
-			   buffer-file-name
+	       buffer-file-name
                (string= "el" (file-name-extension buffer-file-name)))
       (let ((elc (concat buffer-file-name "c")))
         (when (file-exists-p elc)

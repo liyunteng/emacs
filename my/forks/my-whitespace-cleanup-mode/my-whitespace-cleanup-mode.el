@@ -38,8 +38,8 @@
 
   :group 'whitespace-cleanup-mode
   :type '(choice (const :tag "all whitespace" 'all)
-				 (const :tag "trailing whitespace" 'trailing)
-				 (const :tag "changed lines" 'changed)))
+		 (const :tag "trailing whitespace" 'trailing)
+		 (const :tag "changed lines" 'changed)))
 
 ;;;###autoload
 (define-minor-mode whitespace-cleanup-mode
@@ -49,10 +49,11 @@ The minor mode is based on the value of the dotfile variable
  `dotspacemacs-whitespace-cleanup' to determine the behavior
 of the cleanup."
   :lighter " WSC"
+  :
   :group 'whitespace-cleanup-mode
   (if whitespace-cleanup-mode
-	  (whitespace-cleanup//turn-on)
-	(whitespace-cleanup//turn-off)))
+      (whitespace-cleanup//turn-on)
+    (whitespace-cleanup//turn-off)))
 
 ;;;###autoload
 (define-globalized-minor-mode global-whitespace-cleanup-mode
@@ -61,32 +62,32 @@ of the cleanup."
 (defun whitespace-cleanup/on-message ()
   "Return a string to display when the mode is activated. GLOBAL?"
   (pcase my-whitespace-cleanup
-	(`all
-	 (format "whitespace-cleanup enabled (all whitespace)"))
-	(`trailing
-	 (format "whitespace-cleanup enabled (trailing whitespace)"))
-	(`changed
-	 (format "whitespace-cleanup enabled (changed lines)"))))
+    (`all
+     (format "whitespace-cleanup enabled (all whitespace)"))
+    (`trailing
+     (format "whitespace-cleanup enabled (trailing whitespace)"))
+    (`changed
+     (format "whitespace-cleanup enabled (changed lines)"))))
 
 (defun whitespace-cleanup//turn-on ()
   "Turn on `my-whitespace-cleanup-mode'. GLOBAL?"
   (pcase my-whitespace-cleanup
-	(`all
-	 (add-hook 'before-save-hook 'whitespace-cleanup nil t))
-	(`trailing
-	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t))
-	(`changed
-	 (when (fboundp 'ws-butler-mode) (ws-butler-mode)))))
+    (`all
+     (add-hook 'before-save-hook 'whitespace-cleanup nil t))
+    (`trailing
+     (add-hook 'before-save-hook 'delete-trailing-whitespace nil t))
+    (`changed
+     (when (fboundp 'ws-butler-mode) (ws-butler-mode)))))
 
 (defun whitespace-cleanup//turn-off ()
   "Turn off `my-whitespace-cleanup-mode'. GLOBAL?"
   (pcase my-whitespace-cleanup
-	(`all
-	 (remove-hook 'before-save-hook 'whitespace-cleanup t))
-	(`trailing
-	 (remove-hook 'before-save-hook 'delete-trailing-whitespace t))
-	(`changed
-	 (when (fboundp 'ws-butler-mode) (ws-butler-mode -1)))))
+    (`all
+     (remove-hook 'before-save-hook 'whitespace-cleanup t))
+    (`trailing
+     (remove-hook 'before-save-hook 'delete-trailing-whitespace t))
+    (`changed
+     (when (fboundp 'ws-butler-mode) (ws-butler-mode -1)))))
 
 (provide 'my-whitespace-cleanup-mode)
 ;;; my-whitespace-cleanup-mode.el ends here

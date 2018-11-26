@@ -161,7 +161,9 @@ Please note RUN-TOGETHER will make aspell less capable. So it should only be use
     :ensure t
     :init
     (flyspell-correct-auto-mode t))
+
   (use-package flyspell-correct-helm
+    :if (fboundp 'helm-mode)
     :ensure t)
 
   ;; (defun my/clean-aspell-dict ()

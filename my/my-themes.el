@@ -82,14 +82,14 @@
   )
 
 (use-package color-theme-sanityinc-solarized
+  :disabled
   :ensure t
   :defer t)
 (use-package color-theme-sanityinc-tomorrow
+  :disabled
   :ensure t
   :defer t)
 
-(use-package dimmer
-  :ensure t)
 
 (defcustom my-theme 'zenburn
   "My theme."

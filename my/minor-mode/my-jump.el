@@ -25,7 +25,7 @@
 ;;; Code:
 
 ;; jump
-(defvar my-default-jump-handlers '()
+(defvar my-default-jump-handlers '(xref-find-definitions)
   "List of jump handlers available in every mode.")
 (defvar-local my-jump-handlers '()
   "List of jump handlers local to this buffer.")
@@ -41,8 +41,8 @@ Example:
 \(my-define-jump-handlers c-mode\)
 "
   (let ((mode-hook (intern (format "%S-hook" mode)))
-	(func (intern (format "my--init-jump-handlers-%S" mode)))
-	(handlers-list (intern (format "my-jump-handlers-%S" mode))))
+	(func (intern (format "my--jump-init-handlers-%S" mode)))
+	(handlers-list (intern (format "my--jump-handlers-%S" mode))))
     `(progn
        (defvar ,handlers-list ',handlers
 	 ,(format (concat "List of mode-specific jump handlers for %S. "
@@ -108,11 +108,12 @@ Example:
 
 ;; (my|define-jump-handlers lisp-interaction-mode elisp-slime-nav-find-elisp-thing-at-point)
 ;; (my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
-(my|define-jump-handlers elisp-slime-nav-mode elisp-slime-nav-find-elisp-thing-at-point)
-(my|define-jump-handlers c-mode my/semantic-find-definition find-tag)
-(my|define-jump-handlers c++-mode my/semantic-find-definition find-tag)
-(my|define-jump-handlers go-mode godef-jump find-tag)
-(my|define-jump-handlers python-mode elpy-goto-definition find-tag)
+;; (my|define-jump-handlers elisp-slime-nav-mode elisp-slime-nav-find-elisp-thing-at-point)
+(my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
+(my|define-jump-handlers c-mode my/semantic-find-definition)
+(my|define-jump-handlers c++-mode my/semantic-find-definition)
+(my|define-jump-handlers go-mode godef-jump)
+(my|define-jump-handlers python-mode elpy-goto-definition)
 
 (global-set-key (kbd "M-.") 'my/jump-to-definition)
 (global-set-key (kbd "C-M-.") 'my/jump-to-definition-other-window)

@@ -35,9 +35,8 @@
 		 emacs-version))
 
 (message "Emacs is Loading ...")
-(load-file (concat user-emacs-directory "my/my-debug.el"))
-(load-file (concat user-emacs-directory "my/my-load-path.el"))
-(load-file (concat user-emacs-directory "my/my-init.el"))
-(my-init)
+(add-to-list 'load-path (expand-file-name "my" user-emacs-directory))
+(require 'my-init nil t)
 
+(provide 'init)
 ;;; init.el ends here

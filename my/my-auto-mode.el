@@ -1,4 +1,4 @@
-;;; my-auto.el --- auto mode                         -*- lexical-binding: t; -*-
+;;; my-auto-mode.el --- auto mode                         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  StreamOcean
 
@@ -108,5 +108,5 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
 
 
 
-(provide 'my-auto)
-;;; my-auto.el ends here
+(provide 'my-auto-mode)
+;;; my-auto-mode.el ends here

@@ -25,7 +25,6 @@
 ;;; Code:
 
 (setq window-combination-resize t)
-
 (setq-default display-buffer-reuse-frames t)
 (setq-default split-height-threshold 80)
 (setq-default split-width-threshold 160)
@@ -33,20 +32,20 @@
 (setq-default fit-window-to-buffer-horizontally t)
 (setq-default fit-frame-to-buffer t)
 
-(use-package switch-window
-  :ensure t
-  :bind
-  ("C-x o" . switch-window)
-  :config
-  (setq switch-window-shortcut-style 'alphabet)
-  (setq switch-window-timeout nil))
+;; (use-package switch-window
+;;   :ensure t
+;;   :bind
+;;   ("C-x o" . switch-window)
+;;   :config
+;;   (setq switch-window-shortcut-style 'alphabet)
+;;   (setq switch-window-timeout nil))
 
 (use-package window-numbering
   :ensure t
-  :defer t
   :config
   (set-face-attribute 'window-numbering-face nil
-  		      :foreground "#ABC")
+  		      :foreground "orange"
+  		      )
   (window-numbering-mode +1))
 
 ;; use shift + arrow keys to switch between visible buffers
@@ -78,10 +77,31 @@
 
 
 
+(defun my/window-toggle-show ()
+  "Delete other windows in frame if any, or restore previous window config."
+  (interactive)
+  (if (and winner-mode
+           (equal (selected-window) (next-window)))
+      (winner-undo)
+    (delete-other-windows)))
+
+;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
+(defun my/window-split ()
+  "Split the window to see the most recent buffer in the other window.
+Call a second time to restore the original window configuration."
+  (interactive)
+  (if (eq last-command 'my/split-window)
+      (progn
+        (jump-to-register :my/split-window)
+        (setq this-command 'my/unsplit-window))
+    (window-configuration-to-register :my/window-split)
+    (switch-to-buffer-other-window nil)))
+
+
 ;;----------------------------------------------------------------------------
 ;; when splitting window, show (other-buffer) in the new window
 ;;----------------------------------------------------------------------------
-(defun my-split-window-func-with-other-buffer (split-function)
+(defun my-window-split-func-with-other-buffer (split-function)
   "Split window use SPLIT-FUNCTION."
   (lexical-let ((s-f split-function))
     (lambda (&optional arg)
@@ -93,52 +113,33 @@
         (unless arg
           (select-window target-window))))))
 
-(defun my/toggle-delete-other-windows ()
-  "Delete other windows in frame if any, or restore previous window config."
-  (interactive)
-  (if (and winner-mode
-           (equal (selected-window) (next-window)))
-      (winner-undo)
-    (delete-other-windows)))
-
 ;;----------------------------------------------------------------------------
 ;; Rearrange split windows
 ;;----------------------------------------------------------------------------
-(defun my/split-window-horizontally-instead ()
+(defun my/window-split-horizontally-instead ()
   (interactive)
   (save-excursion
     (delete-other-windows)
-    (funcall (my-split-window-func-with-other-buffer 'split-window-horizontally))))
+    (funcall (my-window-split-func-with-other-buffer 'split-window-horizontally))))
 
-(defun my/split-window-vertically-instead ()
+(defun my/window-split-vertically-instead ()
   (interactive)
   (save-excursion
     (delete-other-windows)
-    (funcall (my-split-window-func-with-other-buffer 'split-window-vertically))))
+    (funcall (my-window-split-func-with-other-buffer 'split-window-vertically))))
 
-(defun my/split-window-horizontally-then-switch ()
+(defun my/window-split-horizontally-then-switch ()
   (interactive)
   (save-excursion
-    (funcall (my-split-window-func-with-other-buffer 'split-window-horizontally))))
+    (funcall (my-window-split-func-with-other-buffer 'split-window-horizontally))))
 
-(defun my/split-window-vertically-then-switch ()
+(defun my/window-split-vertically-then-switch ()
   (interactive)
   (save-excursion
-    (funcall (my-split-window-func-with-other-buffer 'split-window-vertically))))
+    (funcall (my-window-split-func-with-other-buffer 'split-window-vertically))))
 
-;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
-(defun my/split-window()
-  "Split the window to see the most recent buffer in the other window.
-Call a second time to restore the original window configuration."
-  (interactive)
-  (if (eq last-command 'my/split-window)
-      (progn
-        (jump-to-register :my/split-window)
-        (setq this-command 'my/unsplit-window))
-    (window-configuration-to-register :my/split-window)
-    (switch-to-buffer-other-window nil)))
 
-(defun my/toggle-current-window-dedication ()
+(defun my/window-toggle-current-file-dedication ()
   "Toggle whether the current window is dedicated to its current buffer."
   (interactive)
   (let* ((window (selected-window))
@@ -150,37 +151,6 @@ Call a second time to restore the original window configuration."
     (message "Window %sdedicated to %s"
              (if was-dedicated "no longer " "")
              (buffer-name))))
-
-(defun my/layout-triple-columns ()
-  " Set the layout to triple columns. "
-  (interactive)
-  (delete-other-windows)
-  (dotimes (i 2) (split-window-right))
-  (balance-windows))
-
-(defun my/layout-double-columns ()
-  " Set the layout to double columns. "
-  (interactive)
-  (delete-other-windows)
-  (split-window-right))
-
-(defun my-swap-windows (window1 window2)
-  "Swap two windows.
-WINDOW1 and WINDOW2 must be valid windows. They may contain child
-windows."
-  (let ((state1 (window-state-get window1))
-        (state2 (window-state-get window2)))
-    ;; to put state into dedicated windows, we must undedicate them first (not
-    ;; needed with Emacs 25.1)
-    (dolist (win (list window1 window2))
-      (if (window-live-p win)
-          (set-window-dedicated-p win nil)
-        ;; win has sub-windows, undedicate all of them
-        (walk-window-subtree (lambda (leaf-window)
-                               (set-window-dedicated-p leaf-window nil))
-                             win)))
-    (window-state-put state1 window2)
-    (window-state-put state2 window1)))
 
 ;; from @bmag
 (defun my/window-layout-toggle ()
@@ -203,7 +173,7 @@ windows."
 
 ;; originally from magnars and modified by ffevotte for dedicated windows
 ;; support, it has quite diverged by now
-(defun my/rotate-windows-forward (count)
+(defun my/window-rotate-forward (count)
   "Rotate each window forwards.
 A negative prefix argument rotates each window backwards.
 Dedicated (locked) windows are left untouched."
@@ -218,25 +188,24 @@ Dedicated (locked) windows are left untouched."
         (window-state-put
          (elt states i)
          (elt non-dedicated-windows (% (+ step i) num-windows)))))))
-;;(define-key my-mode-map (kbd "C-c s") 'my/rotate-windows-forward)
 
-(defun my/rotate-windows-backward (count)
+(defun my/window-rotate-backward (count)
   "Rotate each window backwards.
 Dedicated (locked) windows are left untouched."
   (interactive "p")
-  (my/rotate-windows-forward (* -1 count)))
+  (my/windows-rotate-forward (* -1 count)))
 
 
 (global-set-key (kbd "C-x 0") 'delete-window)
-(global-set-key (kbd "C-x 1") 'my/toggle-delete-other-windows)
-(global-set-key (kbd "C-x 2") 'my/split-window-vertically-then-switch)
-(global-set-key (kbd "C-x 3") 'my/split-window-horizontally-then-switch)
-(global-set-key (kbd "C-x |") 'my/split-window-horizontally-instead)
-(global-set-key (kbd "C-x _") 'my/split-window-vertically-instead)
+(global-set-key (kbd "C-x 1") 'my/window-toggle-show)
+(global-set-key (kbd "C-x 2") 'my/window-split-vertically-then-switch)
+(global-set-key (kbd "C-x 3") 'my/window-split-horizontally-then-switch)
+(global-set-key (kbd "C-x |") 'my/window-split-horizontally-instead)
+(global-set-key (kbd "C-x _") 'my/window-split-vertically-instead)
 (global-set-key [mouse-4] (lambda () (interactive) (scroll-down 1)))
 (global-set-key [mouse-5] (lambda () (interactive) (scroll-up 1)))
-(global-set-key (kbd "C-x C-n") 'my/toggle-current-window-dedication)
-(global-set-key (kbd "<f1>") 'my/split-window)
+(global-set-key (kbd "C-x C-n") 'my/window-toggle-current-file-dedication)
+(global-set-key (kbd "<f1>") 'my/window-split)
 ;; 调整window大小
 (global-set-key (kbd "C-M-)") 'balance-windows)
 (global-set-key (kbd "C-M-+") 'enlarge-window)
@@ -244,8 +213,11 @@ Dedicated (locked) windows are left untouched."
 (global-set-key (kbd "C-M-<") 'enlarge-window-horizontally)
 (global-set-key (kbd "C-M->") 'shrink-window-horizontally)
 
-
-(global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
+;; replace (compose-mail)
+(global-set-key (kbd "C-x m") 'my/window-toggle-show)
+(global-set-key (kbd "C-x C-m") 'my/window-split)
+(global-set-key (kbd "C-x C-k") 'kill-buffer)
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
 
 
 (provide 'my-window)

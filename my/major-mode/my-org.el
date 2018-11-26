@@ -87,6 +87,7 @@
 	(setq org-ditaa-jar-path (expand-file-name jar-name my-cache-dir))
 	(unless (file-exists-p org-ditaa-jar-path)
 	  (my-grab-ditaa url jar-name)))))
+
   (setq org-agenda-files (list
 			  my-org-inbox-file
 			  my-org-task-file
@@ -413,10 +414,6 @@ If EXPAND-SCOPE is `all' then run `outline-show-all' at the matched line."
 
   (define-key org-mode-map (kbd "C-M-<up>") 'org-up-element)
   (define-key org-mode-map (kbd "C-c C-.") 'org-time-stamp-inactive)
-
-  (defun my-org-mode-hook ()
-    (my-mode -1))
-  (add-hook 'org-mode-hook 'my-org-mode-hook)
   )
 
 

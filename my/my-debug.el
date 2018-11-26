@@ -24,12 +24,13 @@
 
 ;;; Code:
 
-(setq debug-on-error t)
+
 (defvar my-debug nil)
 (defvar my-init-times nil
   "A list of (FEATURE TYPE LOAD-START-TIME LOAD-DURATION).
 LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
+;;;###autoload
 (defun my-time-subtract-millis (b a)
   "Subtract B A to Millis."
   (* 1000.0 (float-time (time-subtract b a))))
@@ -122,8 +123,8 @@ arguments is that we want to process these arguments as soon as possible."
 	))
 
 (if my-debug
-	(add-hook 'after-init-hook 'my/show-init-times)
-  (setq debug-on-error nil))
+	(add-hook 'after-init-hook 'my/show-init-times))
+
 
 (provide 'my-debug)
 ;;; my-debug.el ends here

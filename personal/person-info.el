@@ -24,48 +24,40 @@
 
 ;;; Code:
 
-(require 'my-utils)
-;; (unless (getenv "ORGANIZATION")
-;;   (setenv "ORGANIZATION" "StreamOcean"))
-
-(defconst streamocean-license-content "")
-(defconst streamocean-license (list "StreamOcean" streamocean-license-content))
-
-(defconst null-license-content "")
-(defconst null-license (list nil nil))
 
 (setq user-full-name "liyunteng"
       user-mail-address "li_yunteng@163.com")
 
-(if (equal (getenv "ORGANIZATION") "StreamOcean")
-    (setq user-mail-address "liyunteng@streamocean.com"
-	  auto-insert-license streamocean-license))
-(setq auto-insert-license null-license)
+(when (equal (getenv "ORGANIZATION") "StreamOcean")
+  (defconst streamocean-license-content "")
+  (defconst streamocean-license (cons "StreamOcean" streamocean-license-content))
+  (setq user-mail-address "liyunteng@streamocean.com")
 
+  (eval-after-load 'autoinsert
+    (setq auto-insert-license streamocean-license))
 
-(after-load 'smtpmail
-  (setq
-   ;; smtpmail-smtp-server "smtp.163.com"
-   ;; smtpmail-stream-type 'ssl
-   ;; smtpmail-smtp-service 25		;ssl 994/465
-   ;; smtpmail-smtp-user "li_yunteng"
+  (eval-after-load 'smtpmail
+    (setq
+     ;; smtpmail-smtp-server "smtp.163.com"
+     ;; smtpmail-stream-type 'ssl
+     ;; smtpmail-smtp-service 25		;ssl 994/465
+     ;; smtpmail-smtp-user "li_yunteng"
 
-   smtpmail-smtp-server "smtp.qiye.163.com"
-   smtpmail-stream-type 'starttls
-   smtpmail-smtp-service 25		;ssl 994/465
-   smtpmail-smtp-user "liyunteng@streamocean.com"
+     smtpmail-smtp-server "smtp.qiye.163.com"
+     smtpmail-stream-type 'starttls
+     smtpmail-smtp-service 25		;ssl 994/465
+     smtpmail-smtp-user "liyunteng@streamocean.com"
 
-   ;; smtpmail-local-domain "localhost"
-   ;; smtpmail-sendto-domain "smtp.qiye.163.com"
-   ;; smtpmail-debug-info t
-   )
-  (after-load 'mu4e
+     ;; smtpmail-local-domain "localhost"
+     ;; smtpmail-sendto-domain "smtp.qiye.163.com"
+     ;; smtpmail-debug-info t
+     ))
+
+  (eval-after-load 'mu4e
     (setq mu4e-maildir-shortcuts
 	  '(("/streamocean/INBOX" . ?t)
 	    ("/163/INBOX" . ?c))))
   )
-
-
 
 ;; gnus
 ;; imap
