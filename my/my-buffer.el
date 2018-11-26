@@ -24,6 +24,12 @@
 
 ;;; Code:
 
+(defvar my--special-buffer-name-alist
+  '("*Help*"
+    "*scratch*"
+    "*Messages*")
+  "Auto generate switch-to-buffer and view-buffer.")
+
 (defmacro my|switch-to-buffer (buffer-name)
   "My switch to BUFFER-NAME buffer."
   (let* ((name (if (string-match "\\*\\(.*\\)\\*" buffer-name)
@@ -73,15 +79,11 @@
              (message "No %s buffer" ,name)))))))
 
 
-(my|switch-to-buffer "*Help*")
-(my|view-buffer "*Help*")
-
-
-(my|switch-to-buffer "*scratch*")
-(my|view-buffer "*scratch*")
-
-(my|switch-to-buffer "*Messages*")
-(my|view-buffer "*Messages*")
+;; (mapc
+;;  (lambda (entry)
+;;    (my|switch-to-buffer entry)
+;;    (my|view-buffer entry))
+;;  my--special-buffer-name-alist)
 
 (provide 'my-buffer)
 ;;; my-buffer.el ends here

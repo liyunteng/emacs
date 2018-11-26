@@ -34,14 +34,20 @@
 	      ("M-S" . sp-splice-sexp))
 
   :init
-  (defun my--conditionally-enable-smartparens-mode ()
-    "Enable `smartparens-mode' in the minibuffer, during `eval-expression'."
-    (if (or (eq this-command 'eval-expression)
-	    (eq this-command 'pp-eval-expression)
-	    (eq this-command 'eldoc-eval-expression)
-	    )
-	(smartparens-mode)))
-  (add-hook 'minibuffer-setup-hook 'my--conditionally-enable-smartparens-mode)
+  (setq sp-show-pair-delay 0.2
+	sp-show-pair-from-inside t
+	sp-cancel-autoskip-on-backward-movement t
+	sp-highlight-pair-overlay t
+	sp-highlight-wrap-overlay t
+	sp-highlight-wrap-tag-overlay t)
+  (setq sp-base-key-bindings 'smartparens
+	sp-autoskip-closing-pair 'always-end
+	sp-hybrid-kill-entire-symbol nil
+	blink-matching-paren nil)
+
+  (require 'smartparens-config)
+  ;; (sp-use-paredit-bindings)
+  (sp-use-smartparens-bindings)
 
   (my|add-toggle smartparens
     :mode smartparens-mode
@@ -51,25 +57,19 @@
     :documentation "Enable smartparens strict.")
 
   (add-hook 'prog-mode-hook 'smartparens-mode)
+  (show-smartparens-global-mode +1)
 
   :config
-  (require 'smartparens-config)
-  ;; (sp-use-paredit-bindings)
-  (sp-use-smartparens-bindings)
-  (setq sp-base-key-bindings 'smartparens
-	sp-autoskip-closing-pair 'always
-	sp-hybrid-kill-entire-symbol nil
-	blink-matching-paren nil
-	)
 
-  (setq sp-show-pair-delay 0.2
-	sp-show-pair-from-inside nil
-	sp-cancel-autoskip-on-backward-movement t
-	sp-highlight-pair-overlay t
-	sp-highlight-wrap-overlay t
-	sp-highlight-wrap-tag-overlay t)
+  (defun my--conditionally-enable-smartparens-mode ()
+    "Enable `smartparens-mode' in the minibuffer, during `eval-expression'."
+    (if (or (eq this-command 'eval-expression)
+	    (eq this-command 'pp-eval-expression)
+	    (eq this-command 'eldoc-eval-expression)
+	    )
+	(smartparens-mode)))
+  (add-hook 'minibuffer-setup-hook 'my--conditionally-enable-smartparens-mode)
 
-  (show-smartparens-global-mode +1)
   (defun my--smartparens-pair-newline-and-indent (id action context)
     (save-excursion
       (newline)
@@ -110,6 +110,7 @@
   ;; (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)
   (define-key smartparens-mode-map (kbd "C-M-a") nil)
   (define-key smartparens-mode-map (kbd "C-M-e") nil)
+  (define-key smartparens-mode-map (kbd "C-w") 'sp-backward-kill-word)
   ;; (define-key smartparens-mode-map [remap backward-delete-char] 'sp-backward-delete-char)
   ;; (define-key smartparens-mode-map [remap backward-kill-word] 'sp-backward-kill-word)
   ;; (define-key smartparens-mode-map [remap backward-kill-sexp] 'sp-backward-kill-sexp)

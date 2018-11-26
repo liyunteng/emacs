@@ -801,6 +801,15 @@ This functions should be added to the hooks of major modes for programming."
   :init
   (setq uptimes-database (expand-file-name ".uptime.el" my-cache-dir)))
 
+(use-package keyfreq
+  :ensure t
+  :diminish keyfreq-mode
+  :init
+  (setq keyfreq-file (expand-file-name ".keyfreq" my-cache-dir))
+  (setq keyfreq-file-lock (expand-file-name ".keyfreq.lock" my-cache-dir))
+  (keyfreq-mode +1)
+  (keyfreq-autosave-mode +1))
+
 (use-package move-dup
   :diminish move-dup-mode
   :ensure t
@@ -902,10 +911,11 @@ This functions should be added to the hooks of major modes for programming."
   :ensure t
   :diminish undo-tree-mode
   :init
-  (setq undo-tree-auto-save-history t)
-  :config
+  ;; (setq undo-tree-auto-save-history t)
+  ;; (setq undo-tree-history-directory-alist `((".*" . ,(expand-file-name "undo-tree/" my-cache-dir))))
   ;; fix undo-tree maybe cause menu-bar can't work in scrach buffer
   ;; (add-to-list 'undo-tree-incompatible-major-modes 'lisp-interaction-mode)
+  ;; (add-to-list 'undo-tree-incompatible-major-modes 'web-mode)
   (global-undo-tree-mode +1))
 
 ;; use settings from .editorconfig file when present
@@ -1092,6 +1102,15 @@ Compare them on count first,and in case of tie sort them alphabetically."
   (let ((prev-pos (point)))
     (back-to-indentation)
     (kill-region (point) prev-pos)))
+
+(defun my/kill-back-word-or-region (&optional arg)
+  "Call `kill-region' when a region is active and
+`backward-kill-word' otherwise. ARG is passed to
+`backward-kill-word' if no region is active."
+  (interactive "p")
+  (if (region-active-p)
+      (call-interactively #'kill-region)
+    (backward-kill-word arg)))
 
 (defun my/alternate-buffer (&optional window)
   "Switch back and forth between current and last buffer in the current window."
@@ -1444,6 +1463,7 @@ FILENAME is deleted using `my/delete-file' function.."
 ;; C-u C-SPC to pop
 (global-set-key (kbd "C-SPC") 'set-mark-command)
 (global-set-key (kbd "C-.") 'mark-sexp)
+(global-set-key (kbd "C-,") 'mark-word)
 
 ;; pop mark
 (global-set-key (kbd "C-x C-.") 'pop-global-mark)
@@ -1452,7 +1472,7 @@ FILENAME is deleted using `my/delete-file' function.."
 
 
 ;;删除光标之前的单词(保存到kill-ring)
-(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-w") 'my/kill-back-word-or-region)
 (global-set-key (kbd "C-c C-w") 'backward-kill-sexp)
 ;;删除光标之前的字符(不保存到kill-ring)
 (global-set-key (kbd "C-q") 'backward-delete-char)

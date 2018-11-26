@@ -29,7 +29,6 @@
 
 (use-package magit
   :ensure t
-  :defer t
   :bind (("C-x g" . magit-status)
 	 ("C-x M-g" . magit-dispatch-popup)
 	 ("C-x v =" . magit-diff-buffer-file)
@@ -63,13 +62,6 @@
     :ensure t
     :init
     (add-hook 'git-commit-mode-hook 'goto-address-mode))
-
-  (use-package magit-todos
-    :ensure t
-    :defer t
-    :init
-    (setq magit-todos-exclude-globs '("\\*.org$"))
-    (add-hook 'magit-mode-hook 'magit-todos-mode))
 
   (use-package bug-reference-github
     :ensure t

@@ -100,8 +100,6 @@
 (setq-default ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir))
 (setq-default smex-save-file (expand-file-name "smex-items" my-cache-dir))
 
-;; undo-tree
-(setq-default undo-tree-history-directory-alist `((".*" . ,(expand-file-name "undo-tree/" my-cache-dir))))
 
 ;; saveplace remembers your location in a file when saving files
 (setq-default save-place-file (expand-file-name "saveplace" my-cache-dir))
