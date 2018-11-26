@@ -97,6 +97,13 @@ Call a second time to restore the original window configuration."
     (window-configuration-to-register :my/window-split)
     (switch-to-buffer-other-window nil)))
 
+(defun my/window-delete (&optional arg)
+  "Delete the current window.
+If the universal prefix argument is used then kill the buffer too."
+  (interactive "P")
+  (if (equal '(4) arg)
+      (kill-buffer-and-window)
+    (delete-window)))
 
 ;;----------------------------------------------------------------------------
 ;; when splitting window, show (other-buffer) in the new window
@@ -202,16 +209,44 @@ Dedicated (locked) windows are left untouched."
 (global-set-key (kbd "C-x 3") 'my/window-split-horizontally-then-switch)
 (global-set-key (kbd "C-x |") 'my/window-split-horizontally-instead)
 (global-set-key (kbd "C-x _") 'my/window-split-vertically-instead)
+(global-set-key (kbd "C-x C-n") 'my/window-toggle-current-file-dedication)
 (global-set-key [mouse-4] (lambda () (interactive) (scroll-down 1)))
 (global-set-key [mouse-5] (lambda () (interactive) (scroll-up 1)))
-(global-set-key (kbd "C-x C-n") 'my/window-toggle-current-file-dedication)
-(global-set-key (kbd "<f1>") 'my/window-split)
+
+(defvar my-window-keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "s") 'my/window-rotate-forward)
+    (define-key map (kbd "r") 'my/window-rotate-backward)
+
+    (define-key map (kbd "<") 'enlarge-window-horizontally)
+    (define-key map (kbd ">") 'shrink-window-horizontally)
+    (define-key map (kbd "+") 'enlarge-window)
+    (define-key map (kbd "_") 'shrink-window)
+    (define-key map (kbd ")") 'balance-windows)
+
+    (define-key map (kbd "o") 'other-window)
+    (define-key map (kbd "m") 'my/window-toggle-show)
+    (define-key map (kbd "q") 'my/window-delete)
+
+    (define-key map (kbd "d") 'delete-window)
+    (define-key map (kbd "t") 'my/window-toggle-show)
+    (define-key map (kbd "2") 'my/window-split-vertically-then-switch)
+    (define-key map (kbd "|") 'my/window-split-vertically-instead)
+    (define-key map (kbd "3") 'my/window-split-horizontally-then-switch)
+    (define-key map (kbd "_") 'my/window-split-horizontally-instead)
+
+    (define-key map (kbd "n") 'my/window-toggle-current-file-dedication)
+    map)
+  "My window group keymap.")
+(define-key ctl-x-map "w" my-window-keymap)
+;; (global-set-key (kbd "C-x C-n") 'my/window-toggle-current-file-dedication)
+;; (global-set-key (kbd "<f1>") 'my/window-split)
 ;; 调整window大小
-(global-set-key (kbd "C-M-)") 'balance-windows)
-(global-set-key (kbd "C-M-+") 'enlarge-window)
-(global-set-key (kbd "C-M-_") 'shrink-window)
-(global-set-key (kbd "C-M-<") 'enlarge-window-horizontally)
-(global-set-key (kbd "C-M->") 'shrink-window-horizontally)
+;; (global-set-key (kbd "C-M-)") 'balance-windows)
+;; (global-set-key (kbd "C-M-+") 'enlarge-window)
+;; (global-set-key (kbd "C-M-_") 'shrink-window)
+;; (global-set-key (kbd "C-M-<") 'enlarge-window-horizontally)
+;; (global-set-key (kbd "C-M->") 'shrink-window-horizontally)
 
 ;; replace (compose-mail)
 (global-set-key (kbd "C-x m") 'my/window-toggle-show)

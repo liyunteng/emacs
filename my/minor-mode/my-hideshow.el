@@ -44,7 +44,6 @@
 	      ([shfit mouse-1] . hs-mouse-toggle-hiding))
 
   :init
-
   (defvar my-hs-hide nil "Current state of hideshow for toggling all.")
   (defun my/hs-toggle-hiding-all ()
     "Toggle hideshow all."
@@ -75,6 +74,14 @@ This can be useful if you have huge RCS logs in those comments."
 	       (hs-already-hidden-p))
 	  (hs-show-initial-comment-block)
 	(hs-hide-initial-comment-block))))
+
+  (my|add-toggle hs-minor-mode
+    :status hs-minor-mode
+    :on (hs-minor-mode +1)
+    :off (hs-minor-mode -1)
+    :documentation "Hide Show fold mode.")
+
+  (add-hook 'prog-mode-hook 'my/toggle-hs-minor-mode-on)
 
   :config
   (setq hs-set-up-overlay

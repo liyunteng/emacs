@@ -27,7 +27,7 @@
 (use-package yasnippet
   :commands (yas-global-mode yas-minor-mode yas-minor-mode-on)
   :ensure t
-  :defer
+  :defer t
   ;; :bind
   ;; (:map yas-minor-mode-map ("TAB" . yas-expand))
   :init
@@ -43,6 +43,7 @@
   (use-package yasnippet-snippets
     :ensure t
     :defer t)
+  (yas-global-mode +1)
 
   :config
   ;; (dolist (hook '(prog-mode-hook
@@ -70,7 +71,7 @@
   ;; (setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))
   (yas-reload-all)
   ;; (add-hook 'after-init-hook 'yas-reload-all)
-  (yas-global-mode +1)
+
   )
 
 (provide 'my-yas)

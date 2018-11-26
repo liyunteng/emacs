@@ -62,7 +62,6 @@
               (expand-file-name "term" my-cache-dir))
 
 (use-package comint
-  :defer t
   :init
   (defun my-comint-mode-hook ()
     (setq-local mouse-yank-at-point t)
@@ -108,7 +107,6 @@
   )
 
 (use-package shell
-  :defer t
   :commands (shell)
   :if (fboundp 'helm-comint-input-ring)
   :config
