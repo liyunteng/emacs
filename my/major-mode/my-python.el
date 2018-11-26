@@ -133,7 +133,6 @@
     "My python shell mode hook."
     (when semantic-mode
       (semantic-mode -1))
-    (turn-on-smartparens-mode)
     ;; (set (make-local-variable 'tab-width) 4)
     ;; (if (boundp 'python-shell-completion-native-enable)
     ;; 	(setq python-shell-completion-native-enable t))

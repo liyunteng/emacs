@@ -35,7 +35,7 @@
 ;; (use-package monokai-theme
 ;;   :ensure t
 ;;   :disabled t)
-(use-package color)
+(require 'color)
 
 (use-package zenburn-theme
   :ensure t
@@ -78,8 +78,7 @@
       ("zenburn-blue-4"   . "#0000FF")
       ("zenburn-blue-5"   . "#0000FF")
       ("zenburn-magenta"  . "#FF00FF")))
-  (setq zenburn-override-colors-alist my-zenburn-override-colors-alist)
-  )
+  (setq zenburn-override-colors-alist my-zenburn-override-colors-alist))
 
 (use-package color-theme-sanityinc-solarized
   :disabled

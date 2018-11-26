@@ -123,32 +123,6 @@
    ("C-x t p" . multi-term-prev))
 
   :init
-  ;; (defun ash-term-hooks ()
-  ;; 	"Ash term hooks."
-  ;; 	;; dabbrev-expand in term
-  ;; 	(define-key term-raw-escape-map "/"
-  ;; 	  (lambda ()
-  ;; 		(interactive)
-  ;; 		(let ((beg (point)))
-  ;; 		  (dabbrev-expand nil)
-  ;; 		  (kill-region beg (point)))
-  ;; 		(term-send-raw-string (substring-no-properties (current-kill 0)))))
-  ;; 	;; yank in term (bound to C-c C-y)
-  ;; 	(define-key term-raw-escape-map "\C-y"
-  ;; 	  (lambda ()
-  ;; 		(interactive)
-  ;; 		(term-send-raw-string (current-kill 0)))))
-  ;; (add-hook 'term-mode-hook 'ash-term-hooks)
-
-  ;; (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
-  ;;   "Kill the buffer when terminal is exited."
-  ;;   (if (memq (process-status proc) '(signal exit))
-  ;;       (let ((buffer (process-buffer proc)))
-  ;;         ad-do-it
-  ;;         (kill-buffer buffer))
-  ;;     ad-do-it))
-  ;; (ad-activate 'term-sentinel)
-
   (defadvice ansi-term (before force-bash)
     "Always use bash."
     (interactive (list my-term-shell)))
@@ -183,6 +157,14 @@
     )
   (add-hook 'term-mode-hook 'my-term-mode-hook)
 
+
+  :config
+  (setq multi-term-program my-term-shell
+	multi-term-scroll-to-bottom-on-output t
+	multi-term-scroll-show-maximum-output nil
+	multi-term-switch-after-close nil
+	)
+
   (defvar my-multi-term-dedicated-old-buf nil)
   (defun my/multi-term-dedicated-toggle-and-select ()
     "My term dedicated toggle and select."
@@ -196,12 +178,6 @@
 	(multi-term-dedicated-open)
 	(multi-term-dedicated-select))))
 
-  :config
-  (setq multi-term-program my-term-shell
-	multi-term-scroll-to-bottom-on-output t
-	multi-term-scroll-show-maximum-output nil
-	multi-term-switch-after-close nil
-	)
   ;; (setq-default multi-term-program "/bin/bash")
   ;; (setq multi-term-dedicated-close-back-to-open-buffer-p t)
   ;; (setq multi-term-dedicated-select-after-open-p t)
@@ -238,6 +214,7 @@
 (use-package eshell
   :defer t
   :init
+  (setq eshell-directory-name (expand-file-name "eshell" my-cache-dir))
   (defun my--protect-eshell-prompt ()
     "Protect Eshell's prompt like Comint's prompts.
 

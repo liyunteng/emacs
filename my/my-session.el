@@ -26,6 +26,7 @@
 
 (use-package recentf
   :init
+  (setq recentf-save-file (expand-file-name "recentf" my-cache-dir))
   (recentf-mode +1)
   :config
   (setq
@@ -155,24 +156,25 @@
 ;; savehist keeps track of some history
 (use-package savehist
   :init
+  (setq savehist-file (expand-file-name "savehist" my-cache-dir))
   (savehist-mode +1)
   :config
   (setq savehist-additional-variables
-		'(mark-ring
-		  global-mark-ring
-		  search-ring
-		  regexp-search-ring
-		  extended-command-history
-		  )
-		;; save every minute
-		savehist-autosave-interval 60
-		history-length 1000
-		))
+	'(mark-ring
+	  global-mark-ring
+	  search-ring
+	  regexp-search-ring
+	  extended-command-history
+	  )
+	;; save every minute
+	savehist-autosave-interval 60
+	history-length 1000
+	))
 
 (use-package saveplace
   :init
-  (if (fboundp 'save-place-mode)
-      (save-place-mode +1)))
+  (setq save-place-file (expand-file-name "saveplace" my-cache-dir))
+  (save-place-mode +1))
 
 (use-package super-save
   :ensure t

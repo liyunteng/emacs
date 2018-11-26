@@ -39,20 +39,8 @@
 	 )
 
   :config
-  ;; make web-mode play nice with smartparens
   (setq web-mode-enable-auto-pairing nil
 	web-mode-indent-style 4)
-
-  (sp-with-modes '(web-mode)
-    (sp-local-pair "%" "%"
-		   :unless '(sp-in-string-p)
-		   :post-handlers '(((lambda (&rest _ignored)
-				       (just-one-space)
-				       (save-excursion (insert " ")))
-				     "SPC" "=" "#")))
-    (sp-local-tag "%" "<% "  " %>")
-    (sp-local-tag "=" "<%= " " %>")
-    (sp-local-tag "#" "<%# " " %>"))
   )
 
 (provide 'my-web)

@@ -24,66 +24,104 @@
 
 ;;; Code:
 
-(defvar my--special-buffer-name-alist
-  '("*Help*"
-    "*scratch*"
-    "*Messages*")
-  "Auto generate switch-to-buffer and view-buffer.")
-
-(defmacro my|switch-to-buffer (buffer-name)
-  "My switch to BUFFER-NAME buffer."
-  (let* ((name (if (string-match "\\*\\(.*\\)\\*" buffer-name)
-                   (match-string 1 buffer-name)
-                 buffer-name))
-         (fname (intern (format "my/switch-to-buffer--%s" name)))
-         (foname (intern (format "my/switch-to-buffer-other-window--%s" name))))
-    `(progn
-       (defun ,fname ()
-         ,(format "Switch to %s buffer." name)
-         (interactive)
-         (let ((buffer (get-buffer ,buffer-name)))
-           (if buffer
-               (switch-to-buffer buffer)
-             (message "No %s buffer" ,name))))
-
-       (defun ,foname ()
-         ,(format "Switch to %s buffer in other window." name)
-         (interactive)
-         (let ((buffer (get-buffer ,buffer-name)))
-           (if buffer
-               (switch-to-buffer-other-window buffer)
-             (message "No %s buffer" ,name)))))))
-
 (defmacro my|view-buffer (buffer-name)
   "My view BUFFER-NAME buffer."
-  (let* ((name (if (string-match "\\*\\(.*\\)\\*" buffer-name)
-                   (match-string 1 buffer-name)
-                 buffer-name))
-         (fname (intern (format "my/view-buffer--%s" name)))
-         (foname (intern (format "my/view-buffer-other-window--%s" name))))
+  (let* ((bn (if (symbolp buffer-name)
+                 (symbol-value buffer-name)
+               buffer-name))
+         (name (if (string-match "\\*+\\([a-z][A-Z]+\\)\\*+" bn)
+                   (match-string 1 bn)
+                 bn))
+         (vname (intern (format "my/view-buffer--%s" name)))
+         (voname (intern (format "my/view-buffer-other-window--%s" name)))
+         (sname (intern (format "my/switch-buffer--%s" name)))
+         (soname (intern (format "my/switch-buffer-other-window--%s" name))))
+    `(mapc
+      )
     `(progn
-       (defun ,fname ()
-         ,(format "View %s buffer." name)
+       (defun ,vname ()
+         ,(format "View %s buffer." bn)
          (interactive)
          (let ((buffer (get-buffer ,buffer-name)))
            (if buffer
                (view-buffer buffer)
              (message "No %s buffer" ,name))))
 
-       (defun ,foname ()
-         ,(format "View %s buffer in other window." name)
+       (defun ,voname ()
+         ,(format "View %s buffer in other window." bn)
          (interactive)
          (let ((buffer (get-buffer ,buffer-name)))
            (if buffer
                (view-buffer-other-window buffer)
-             (message "No %s buffer" ,name)))))))
+             (message "No %s buffer" ,name))))
+
+       (defun ,sname ()
+         ,(format "Switch %s buffer." bn)
+         (interactive)
+         (let ((buffer (get-buffer ,buffer-name)))
+           (if buffer
+               (switch-to-buffer buffer)
+             (message "No %s buffer" ,name))))
+
+       (defun ,soname ()
+         ,(format "Switch %s buffer in other window." bn)
+         (interactive)
+         (let ((buffer (get-buffer ,buffer-name)))
+           (if buffer
+               (switch-to-buffer-other-window buffer)
+             (message "No %s buffer" ,name))))
+       )))
 
 
-;; (mapc
-;;  (lambda (entry)
-;;    (my|switch-to-buffer entry)
-;;    (my|view-buffer entry))
-;;  my--special-buffer-name-alist)
+(defun my/alternate-buffer (&optional window)
+  "Switch back and forth between current and last buffer in the current window."
+  (interactive)
+  (let ((current-buffer (window-buffer window))
+        (buffer-predicate
+         (frame-parameter (window-frame window) 'buffer-predicate)))
+    ;; switch to first buffer previously shown in this window that matches
+    ;; frame-parameter `buffer-predicate'
+    (switch-to-buffer
+     (or (cl-find-if (lambda (buffer)
+                       (and (not (eq buffer current-buffer))
+                            (or (null buffer-predicate)
+                                (funcall buffer-predicate buffer))))
+                     (mapcar #'car (window-prev-buffers window)))
+         ;; `other-buffer' honors `buffer-predicate' so no need to filter
+         (other-buffer current-buffer t)))))
+
+(defun my/alternate-buffer-other-window (&optional window)
+  "Switch back and forth between current and last buffer in other window."
+  (interactive)
+  (let ((current-buffer (window-buffer window))
+        (buffer-predicate
+         (frame-parameter (window-frame window) 'buffer-predicate)))
+    ;; switch to first buffer previously shown in this window that matches
+    ;; frame-parameter `buffer-predicate'
+    (switch-to-buffer-other-window
+     (or (cl-find-if (lambda (buffer)
+                       (and (not (eq buffer current-buffer))
+                            (or (null buffer-predicate)
+                                (funcall buffer-predicate buffer))))
+                     (mapcar #'car (window-prev-buffers window)))
+         ;; `other-buffer' honors `buffer-predicate' so no need to filter
+         (other-buffer current-buffer t)))))
+
+(my|view-buffer "*Help*")
+(my|view-buffer "*Messages*")
+(my|view-buffer "*scratch*")
+(my|view-buffer "*info*")
+(my|view-buffer "*Backtrace*")
+
+(global-set-key (kbd "M-g i") 'my/switch-buffer--info)
+(global-set-key (kbd "M-g s") 'my/switch-buffer-other-window--scratch)
+(global-set-key (kbd "M-g m") 'my/view-buffer-other-window--Messages)
+(global-set-key (kbd "M-g h") 'my/view-buffer-other-window--Help)
+
+(global-set-key (kbd "C-x C-k") 'kill-buffer)
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
+(global-set-key (kbd "C-x m") 'my/alternate-buffer)
+(global-set-key (kbd "C-x C-m") 'my/alternate-buffer-other-window)
 
 (provide 'my-buffer)
 ;;; my-buffer.el ends here

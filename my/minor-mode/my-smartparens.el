@@ -45,36 +45,37 @@
 	sp-hybrid-kill-entire-symbol nil
 	blink-matching-paren nil)
 
-  (require 'smartparens-config)
-  ;; (sp-use-paredit-bindings)
-  (sp-use-smartparens-bindings)
-
   (my|add-toggle smartparens
     :mode smartparens-mode
     :documentation "Enable smartparens.")
+
   (my|add-toggle smartparens-strict-mode
     :mode smartparens-strict-mode
     :documentation "Enable smartparens strict.")
 
-  (add-hook 'prog-mode-hook 'smartparens-mode)
+  (add-hook 'prog-mode-hook 'my/toggle-smartparens-on)
   (show-smartparens-global-mode +1)
 
   :config
+  (require 'smartparens-config)
+  ;; (sp-use-paredit-bindings)
+  (sp-use-smartparens-bindings)
 
   (defun my--conditionally-enable-smartparens-mode ()
     "Enable `smartparens-mode' in the minibuffer, during `eval-expression'."
     (if (or (eq this-command 'eval-expression)
 	    (eq this-command 'pp-eval-expression)
 	    (eq this-command 'eldoc-eval-expression)
-	    )
+            (eq this-command 'helm-eval-expression)
+            (eq this-command 'edebug-eval-expression)
+            (eq this-command 'debugger-eval-expression))
 	(smartparens-mode)))
   (add-hook 'minibuffer-setup-hook 'my--conditionally-enable-smartparens-mode)
 
   (defun my--smartparens-pair-newline-and-indent (id action context)
     (save-excursion
       (newline)
-      (indent-according-to-mode)
-      )
+      (indent-according-to-mode))
     (indent-according-to-mode))
   (defun my/smart-closing-parenthesis ()
     (interactive)
@@ -91,6 +92,17 @@
 	(sp-up-sexp))
        (t
 	(insert-char ?\))))))
+
+  (sp-with-modes '(web-mode)
+    (sp-local-pair "%" "%"
+		   :unless '(sp-in-string-p)
+		   :post-handlers '(((lambda (&rest _ignored)
+				       (just-one-space)
+				       (save-excursion (insert " ")))
+				     "SPC" "=" "#")))
+    (sp-local-tag "%" "<% "  " %>")
+    (sp-local-tag "=" "<%= " " %>")
+    (sp-local-tag "#" "<%# " " %>"))
 
   (sp-pair "{" "}"
 	   :unless '(sp-in-comment-p sp-in-string-p)

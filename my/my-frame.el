@@ -25,8 +25,8 @@
 ;;; Code:
 
 (use-package exec-path-from-shell
-  :if (memq window-system '(mac ns x))
   :ensure t
+  :if (memq window-system '(mac ns x))
   :config
   (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE"))
     (add-to-list 'exec-path-from-shell-variables var))
@@ -109,7 +109,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (setq default-frame-alist (append '((font . "fontset-my")) default-frame-alist))
 (set-frame-font "fontset-my")
 
-
+
 
 ;; 调整frame透明度
 (defun my--adjust-opacity (frame incr)
@@ -127,13 +127,13 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (defun my/frame-opacity-increase (&optional n)
   "Increase frame opacity."
   (interactive "p")
-  (let ((num (if n n 2)))
+  (let ((num (if n n 5)))
     (my--adjust-opacity nil num)))
 
 (defun my/frame-opacity-reduce (&optional n)
   "Reduce frame opacity."
   (interactive "p")
-  (let ((num (if n (- 0 n) -2)))
+  (let ((num (if n (- 0 n) -5)))
     (my--adjust-opacity nil num)))
 
 (defun my/frame-opacity-reset ()
@@ -141,17 +141,16 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (interactive)
   (modify-frame-parameters nil `((alpha . 100))))
 
-(global-set-key (kbd "C-M-9") 'my/frame-opacity-increase)
-(global-set-key (kbd "C-M-8") 'my/frame-opacity-reduce)
+(global-set-key (kbd "C-M-=") 'my/frame-opacity-increase)
+(global-set-key (kbd "C-M--") 'my/frame-opacity-reduce)
 (global-set-key (kbd "C-M-0") 'my/frame-opacity-reset)
 
 
 (use-package default-text-scale
   :ensure t
-  :defer t
-  :bind (("C-M-=" . default-text-scale-increase)
-         ("C-M--" . default-text-scale-decrease)
-	 ("C-M-0" . default-text-scale-reset)))
+  :bind (("C-M-+" . default-text-scale-increase)
+         ("C-M-_" . default-text-scale-decrease)
+	 ("C-M-)" . default-text-scale-reset)))
 
 (use-package disable-mouse
   :disabled
@@ -243,7 +242,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
 (global-set-key (kbd "<f11>") 'toggle-frame-fullscreen)
 (global-set-key (kbd "M-<f11>") 'toggle-frame-maximized)
-(global-set-key (kbd "<f12>") 'menu-bar-mode)
+(global-set-key (kbd "<f12>") 'toggle-menu-bar-mode-from-frame)
+;; (global-set-key (kbd "<f12>") 'menu-bar-mode)
 
 (provide 'my-frame)
 ;;; my-frame.el ends here

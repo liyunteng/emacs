@@ -139,8 +139,18 @@
     )
 
   (require 'helm-bookmark)
-  (setq helm-split-window-in-side-p t
-	helm-buffers-fuzzy-matching t
+
+  (setq helm-split-window-inside-p t
+        helm-mode-fuzzy-match t
+        helm-M-x-fuzzy-match t
+	helm-buffers-fuzzy-matching nil
+        helm-recentf-fuzzy-match nil
+        helm-imenu-fuzzy-match nil
+        helm-semantic-fuzzy-match nil
+        helm-ff-fuzzy-matching nil
+        ;; helm-apropos-fuzzy-match t
+        ;; helm-lisp-fuzzy-completion t
+
 	helm-move-to-line-cycle-in-source t
 	helm-ff-search-library-in-sexp t
 	helm-ff-file-compressed-list t
@@ -149,17 +159,12 @@
 	helm-echo-input-in-header-line nil
 	helm-display-header-line t
 	helm-always-two-windows t
-	;; helm-mode-fuzzy-match t
 	helm-org-headings-fontify t
-	helm-find-files-sort-directories t
-	helm-semantic-fuzzy-match t
-	helm-M-x-fuzzy-match t
-	helm-imenu-fuzzy-match t
-	;; helm-lisp-fuzzy-completion t
-	;; helm-apropos-fuzzy-match t
+
 	helm-buffer-skip-remote-checking t
 	helm-bookmark-show-location t
-        helm-mode-reverse-history nil
+        helm-mode-reverse-history t
+        helm-M-x-reverse-history nil
 	)
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
@@ -169,7 +174,7 @@
 
   (defun my--helm-cleanup ()
     "Cleanup some helm related states when quitting."
-    ;; deactivate any running transient map (transient-state)
+    ;; deqactivate any running transient map (transient-state)
     (setq overriding-terminal-local-map nil))
   (add-hook 'helm-cleanup-hook 'my--helm-cleanup)
 

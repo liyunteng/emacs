@@ -28,6 +28,9 @@
   :defines (tramp-default-user-alist)
   :bind ("C-x M-f" . find-file-root)
   :init
+  (setq tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
+  (setq tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))
+
   (setq tramp-verbose 0)
   ;; (setq-default tramp-default-method "ssh")
   (setq tramp-default-method "rcp")

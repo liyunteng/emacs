@@ -214,12 +214,12 @@
   (setq bookmark-default-file (expand-file-name "bookmarks" my-cache-dir)))
 
 ;; abbrev config
-(use-package abbrev
-  :diminish abbrev-mode
-  :if (file-exists-p abbrev-file-name)
-  :config
-  (setq abbrev-file-name (expand-file-name "abbrev_defs" my-cache-dir))
-  (abbrev-mode +1))
+(when (file-exists-p abbrev-file-name)
+  (use-package abbrev
+    :diminish abbrev-mode
+    :config
+    (setq abbrev-file-name (expand-file-name "abbrev_defs" my-cache-dir))
+    (abbrev-mode +1)))
 
 ;; make a shell script executable automatically on save
 (use-package executable
@@ -900,6 +900,10 @@ This functions should be added to the hooks of major modes for programming."
               ("A a" . projectile-add-known-project)
               ("A d" . projectile-remove-known-project))
   :ensure t
+  :init
+  (setq projectile-cache-file (expand-file-name  "projectile.cache" my-cache-dir))
+  (setq projectile-known-projects-file (expand-file-name "projectile-bookmarks" my-cache-dir))
+
   :config
   (setq projectile-sort-order 'recentf
         projectile-indexing-method 'alien)
@@ -913,12 +917,50 @@ This functions should be added to the hooks of major modes for programming."
   :ensure t
   :diminish undo-tree-mode
   :init
-  ;; (setq undo-tree-auto-save-history t)
-  ;; (setq undo-tree-history-directory-alist `((".*" . ,(expand-file-name "undo-tree/" my-cache-dir))))
-  ;; fix undo-tree maybe cause menu-bar can't work in scrach buffer
-  ;; (add-to-list 'undo-tree-incompatible-major-modes 'lisp-interaction-mode)
-  ;; (add-to-list 'undo-tree-incompatible-major-modes 'web-mode)
-  (global-undo-tree-mode +1))
+  (setq undo-tree-auto-save-history t)
+  (setq undo-tree-history-directory-alist `((".*" . ,(expand-file-name "undo-tree/" my-cache-dir))))
+  (global-undo-tree-mode +1)
+
+  ;; fix undo-tree maybe cause menu-bar can't work
+  ;; (remove-hook 'menu-bar-update-hook 'undo-tree-update-menu-bar)
+  (defun undo-tree-update-menu-bar ()
+    "Update `undo-tree-mode' Edit menu items."
+    (if undo-tree-mode
+        (progn
+	  ;; save old undo menu item, and install undo/redo menu items
+	  (setq undo-tree-old-undo-menu-item
+	        (cdr (assq 'undo (lookup-key global-map [menu-bar edit]))))
+	  (define-key (lookup-key global-map [menu-bar edit])
+	    [undo] '(menu-item "Undo" undo-tree-undo
+			       :enable (and undo-tree-mode
+					    (not buffer-read-only)
+					    (not (eq t buffer-undo-list))
+                                            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                            ;; add buffer-undo-tree judgement ;;
+                                            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+					    (and buffer-undo-tree
+                                                 (undo-tree-node-previous
+					          (undo-tree-current buffer-undo-tree))))
+			       :help "Undo last operation"))
+	  (define-key-after (lookup-key global-map [menu-bar edit])
+	    [redo] '(menu-item "Redo" undo-tree-redo
+			       :enable (and undo-tree-mode
+					    (not buffer-read-only)
+					    (not (eq t buffer-undo-list))
+                                            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                            ;; add buffer-undo-tree judgement ;;
+                                            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+					    (and buffer-undo-tree
+                                                 (undo-tree-node-next
+					          (undo-tree-current buffer-undo-tree))))
+			       :help "Redo last operation")
+	    'undo))
+      ;; uninstall undo/redo menu items
+      (define-key (lookup-key global-map [menu-bar edit])
+        [undo] undo-tree-old-undo-menu-item)
+      (define-key (lookup-key global-map [menu-bar edit])
+        [redo] nil)))
+  )
 
 ;; use settings from .editorconfig file when present
 (use-package editorconfig
@@ -1113,40 +1155,6 @@ Compare them on count first,and in case of tie sort them alphabetically."
   (if (region-active-p)
       (call-interactively #'kill-region)
     (backward-kill-word arg)))
-
-(defun my/alternate-buffer (&optional window)
-  "Switch back and forth between current and last buffer in the current window."
-  (interactive)
-  (let ((current-buffer (window-buffer window))
-        (buffer-predicate
-         (frame-parameter (window-frame window) 'buffer-predicate)))
-    ;; switch to first buffer previously shown in this window that matches
-    ;; frame-parameter `buffer-predicate'
-    (switch-to-buffer
-     (or (cl-find-if (lambda (buffer)
-                       (and (not (eq buffer current-buffer))
-                            (or (null buffer-predicate)
-                                (funcall buffer-predicate buffer))))
-                     (mapcar #'car (window-prev-buffers window)))
-         ;; `other-buffer' honors `buffer-predicate' so no need to filter
-         (other-buffer current-buffer t)))))
-
-(defun my/alternate-buffer-other-window (&optional window)
-  "Switch back and forth between current and last buffer in other window."
-  (interactive)
-  (let ((current-buffer (window-buffer window))
-        (buffer-predicate
-         (frame-parameter (window-frame window) 'buffer-predicate)))
-    ;; switch to first buffer previously shown in this window that matches
-    ;; frame-parameter `buffer-predicate'
-    (switch-to-buffer-other-window
-     (or (cl-find-if (lambda (buffer)
-                       (and (not (eq buffer current-buffer))
-                            (or (null buffer-predicate)
-                                (funcall buffer-predicate buffer))))
-                     (mapcar #'car (window-prev-buffers window)))
-         ;; `other-buffer' honors `buffer-predicate' so no need to filter
-         (other-buffer current-buffer t)))))
 
 (defun my/rename-file (filename &optional new-filename)
   "Rename FILENAME to NEW-FILENAME.
@@ -1430,10 +1438,12 @@ FILENAME is deleted using `my/delete-file' function.."
     (define-key map (kbd "a") 'append-to-file)
     (define-key map (kbd "i") 'insert-file)
     (define-key map (kbd "d") 'delete-file)
+    (define-key map (kbd "w") 'write-file)
     (define-key map (kbd "r") 'my/rename-current-buffer-file)
     (define-key map (kbd "C-r") 'my/rename-file)
     (define-key map (kbd "k") 'my/delete-current-buffer-file)
     (define-key map (kbd "C-k") 'delete-file)
+    (define-key map (kbd  "R") 'read-only-mode)
 
     (define-key map (kbd "I") 'crux-find-user-init-file)
     (define-key map (kbd "S") 'crux-find-shell-init-file)

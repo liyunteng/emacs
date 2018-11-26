@@ -26,7 +26,6 @@
 
 ;; after-load
 
-;;;###autoload
 (if (fboundp 'with-eval-after-load)
     (defalias 'after-load 'with-eval-after-load)
   (defmacro after-load (feature &rest body)
@@ -41,13 +40,19 @@
 (defun window-system-is-mac () "Window system is mac?" (memq (window-system) '(mac ns)))
 
 
-;;;###autoload
+(defmacro for (var from init to final do &rest body)
+  "Execute a simple \"for\" loop.
+     For example, (for i from 1 to 10 do (print i))."
+  `(let ((,var ,init))
+     (while (<= ,var ,final)
+       ,@body
+       (setq ,var (1+ ,var)))))
+
 (defun add-functions-to-hook (hook funs &optional append local)
   "Add list of FUNS to HOOK."
   (dolist (fun funs)
     (add-hook hook fun append local)))
 
-;;;###autoload
 (defun add-function-to-hooks (fun hooks &optional append local)
   "Add FUN to HOOKS."
   (dolist (hook hooks)
@@ -65,14 +70,12 @@
     (insert-file-contents filepath)
     (split-string (buffer-string) "\n" t)))
 
-;;;###autoload
 (defun my/insert-current-time-string ()
   "Insert the current time."
   (interactive "*")
   (insert (format-time-string "%Y/%m/%d %H:%M:%S" (current-time))))
 ;; (insert (format-time-string "%H:%M:%S" (current-time))))
 
-;;;###autoload
 (defun my/dos2unix-remove-M()
   "Remove ^M in files."
   (interactive)
@@ -80,19 +83,16 @@
   (while (search-forward (string ?\C-m) nil t)
     (replace-match "")))
 
-;;;###autoload
 (defun my/dos2unix ()
   "Convert the current buffer to UNIX file format."
   (interactive)
   (set-buffer-file-coding-system 'undecided-unix nil))
 
-;;;###autoload
 (defun my/unix2dos ()
   "Convert the current buffer to DOS file format."
   (interactive)
   (set-buffer-file-coding-system 'undecided-dos nil))
 
-;;;###autoload
 (defun my-derived-mode-p (mode &rest modes)
   "Non-nil if MODE is derived from one of MODES.
 
@@ -161,7 +161,6 @@ Supported properties:
   "List of all declared toggles.
 The structure of an element is a property list (name :func FUNCTION :doc STRING :key STRING).")
 
-;;;###autoload
 (defmacro my|add-toggle (name &rest props)
   "Add a toggle with NAME symbol.
 
@@ -270,7 +269,7 @@ my/toggle-company-mode-off."
                (when (,wrapper-func-status) (,wrapper-func)))))
        ,@bindkeys)))
 
-;;;###autoload
+
 (defmacro my|advise-commands (advice-name commands class &rest body)
   "Apply advice named ADVICE-NAME to multiple COMMANDS,
 

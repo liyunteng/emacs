@@ -75,8 +75,6 @@
                   "*esh command on file*"
                   ))))
 
-
-
 (defun my/window-toggle-show ()
   "Delete other windows in frame if any, or restore previous window config."
   (interactive)
@@ -200,9 +198,16 @@ Dedicated (locked) windows are left untouched."
   "Rotate each window backwards.
 Dedicated (locked) windows are left untouched."
   (interactive "p")
-  (my/windows-rotate-forward (* -1 count)))
+  (my/window-rotate-forward (* -1 count)))
 
+(defun my/window-rotate (&optional arg)
+  "Rotate use `my/window-rotate-backward'."
+  (interactive "P")
+  (if arg
+      (my/window-rotate-forward -1)
+    (my/window-rotate-forward 1)))
 
+(global-set-key (kbd "<f1>") 'my/window-toggle-show)
 (global-set-key (kbd "C-x 0") 'delete-window)
 (global-set-key (kbd "C-x 1") 'my/window-toggle-show)
 (global-set-key (kbd "C-x 2") 'my/window-split-vertically-then-switch)
@@ -212,6 +217,7 @@ Dedicated (locked) windows are left untouched."
 (global-set-key (kbd "C-x C-n") 'my/window-toggle-current-file-dedication)
 (global-set-key [mouse-4] (lambda () (interactive) (scroll-down 1)))
 (global-set-key [mouse-5] (lambda () (interactive) (scroll-up 1)))
+(global-set-key (kbd "C-c C-s") 'my/window-rotate)
 
 (defvar my-window-keymap
   (let ((map (make-sparse-keymap)))
@@ -227,6 +233,7 @@ Dedicated (locked) windows are left untouched."
     (define-key map (kbd "o") 'other-window)
     (define-key map (kbd "m") 'my/window-toggle-show)
     (define-key map (kbd "q") 'my/window-delete)
+    (define-key map (kbd "k") 'kill-buffer-and-window)
 
     (define-key map (kbd "d") 'delete-window)
     (define-key map (kbd "t") 'my/window-toggle-show)
@@ -239,21 +246,10 @@ Dedicated (locked) windows are left untouched."
     map)
   "My window group keymap.")
 (define-key ctl-x-map "w" my-window-keymap)
-;; (global-set-key (kbd "C-x C-n") 'my/window-toggle-current-file-dedication)
-;; (global-set-key (kbd "<f1>") 'my/window-split)
-;; 调整window大小
-;; (global-set-key (kbd "C-M-)") 'balance-windows)
-;; (global-set-key (kbd "C-M-+") 'enlarge-window)
-;; (global-set-key (kbd "C-M-_") 'shrink-window)
-;; (global-set-key (kbd "C-M-<") 'enlarge-window-horizontally)
-;; (global-set-key (kbd "C-M->") 'shrink-window-horizontally)
 
 ;; replace (compose-mail)
-(global-set-key (kbd "C-x m") 'my/window-toggle-show)
-(global-set-key (kbd "C-x C-m") 'my/window-split)
-(global-set-key (kbd "C-x C-k") 'kill-buffer)
-(global-set-key (kbd "C-x k") 'kill-current-buffer)
-
+;; (global-set-key (kbd "C-x m") 'my/window-toggle-show)
+;; (global-set-key (kbd "C-x C-m") 'my/window-split)
 
 (provide 'my-window)
 ;;; my-window.el ends here

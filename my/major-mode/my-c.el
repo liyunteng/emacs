@@ -251,6 +251,7 @@
   :defer t
   :commands (semantic-mode)
   :init
+  (setq semanticdb-default-save-directory (expand-file-name "semanticdb" my-cache-dir))
   (defconst my-project-roots '("~/git/ihi/client/c9service"
                                "/usr/src/linux")
     "My project roots to setq semanticdb-project-roots.")
@@ -275,7 +276,6 @@
   ;; (setq semantic-idle-scheduler-verbose-flag t)
   ;; (setq semantic-lex-debug-analyzers t)
   ;; (setq semantic-update-mode-line t)
-
   (use-package semantic/idle
     :defines (semantic-idle-scheduler-idle-time
 	      semantic-idle-scheduler-max-buffer-size
