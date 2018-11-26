@@ -6,3 +6,4 @@ my/custom.el
 custom.el
 *.pyc
 *.elc
+.uptimes.el

@@ -75,7 +75,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
     "My header with PREFIX and POSTFIX."
     (append
      '((goto-char (point-min)) "")
-     (if prefix prefix "")
+     (if prefix prefix)
      '('(setq-local auto-insert--begin (point))
        ;; "Filename: " (file-name-nondirectory (buffer-file-name)) "\n"
        ;; "Description: " (read-string "Description: ") "\n\n"
@@ -88,7 +88,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
        (when (cdr auto-insert-license)
          (concat "\n"(cdr auto-insert-license) "\n"))
        (comment-region auto-insert--begin (point)))
-     (if postfix postfix "")
+     (if postfix postfix)
      ))
 
   (define-auto-insert 'sh-mode (my-header '("#!/usr/bin/bash\n")))

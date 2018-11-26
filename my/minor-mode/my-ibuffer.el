@@ -36,41 +36,24 @@
 
     :config
     ;; 使用/ r来进行切换
-    ;; TODO:
-    (append
-     '(
-       ("programming" (or
-                       (derived-mode . prog-moe)
-                       (moe . ess-mode)
-                       (mode . compilation-mode)))
-       ("text document" (and
-                         (derived-mode . text-mode)
-                         (not
-                          (starred-name))))
+    (setq ibuffer-saved-filters
+          (append '(("c" (or
+	                  (mode . c-mode)
+	                  (mode . c++-mode)
+	                  (mode . makefile-gmake-mode)
+	                  (mode . asm-mode)))
 
-       ("c" (or
-	     (mode . c-mode)
-	     (mode . c++-mode)
-	     (mode . makefile-gmake-mode)
-	     (mode . asm-mode)))
+                    ("lisp" (or
+		             (mode . emacs-lisp-mode)
+		             (mode . lisp-mode)
+		             (mode . lisp-interaction-mode)
+		             (mode . inferior-emacs-lisp-mode)))
 
-       ("lisp" (or
-		(mode . emacs-lisp-mode)
-		(mode . lisp-mode)
-		(mode . lisp-interaction-mode)
-		(mode . inferior-emacs-lisp-mode)))
+                    ("go" (mode . go-mode))
 
-       ("go" (mode . go-mode))
+                    ("file" (filename . ".*")))
+                  ibuffer-saved-filters))
 
-       ("file" (filename . ".*"))
-
-       ("tramp" (or
-		 (filename . "^/ssh:")
-		 (filename . "^/telnet:")
-		 (filename . "^/rsync:")
-		 (filename . "^/sshx:")
-		 (filename . "^/ssh2"))))
-     ibuffer-saved-filters)
 
     (defun my--ibuffer-get-major-modes-ibuffer-rules-list (mm-list result-list)
       (if mm-list
@@ -263,7 +246,7 @@
 	(ibuffer-do-sort-by-alphabetic))
       )
     (define-key ibuffer-mode-map (kbd "/ p") 'my/ibuffer-group-by-projects))
-  
+
   (use-package ibuf-macs
     :after ibuffer
     :config
@@ -324,4 +307,3 @@
 
 (provide 'my-ibuffer)
 ;;; my-ibuffer.el ends here
-
