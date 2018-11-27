@@ -836,9 +836,10 @@ This functions should be added to the hooks of major modes for programming."
   (my|add-toggle global-diff-hl-mode
     :mode global-diff-hl-mode
     :documentation "Global highlight diff")
-  :config
   (global-diff-hl-mode +1)
-  (add-hook 'dired-mode-hook 'diff-hl-dir-mode))
+  :config
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+  )
 
 (use-package aggressive-indent
   :ensure t
@@ -864,10 +865,6 @@ This functions should be added to the hooks of major modes for programming."
   (setq expand-region-contract-fast-key ",")
   (setq expand-region-smart-cursor nil)
   )
-
-(use-package iedit
-  :ensure t
-  :bind (("C-;" . iedit-mode)))
 
 ;; easy-kill
 (use-package easy-kill

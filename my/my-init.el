@@ -23,8 +23,8 @@
 ;;
 
 ;;; Code:
-(require 'my-debug nil t)
-(require 'my-load-path nil t)
+(require 'my-debug)
+(require 'my-load-path)
 
 (defconst my-modules
   '(
