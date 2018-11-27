@@ -49,6 +49,8 @@
 				   wgrep
 				   scratch
 				   command-log-mode
+
+                                   try
 				   ))
 ;; (defun require-package (package)
 ;;   "Install PACKAGE unlesee already installed."

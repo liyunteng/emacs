@@ -812,14 +812,16 @@ This functions should be added to the hooks of major modes for programming."
   (keyfreq-mode +1)
   (keyfreq-autosave-mode +1))
 
+
 (use-package move-dup
-  :diminish move-dup-mode
   :ensure t
-  :bind (([M-up]  . md/move-line-up)
-         ([M-down] . md/move-line-down)
-         ([C-M-up] . md/move-lines-up)
-         ([C-M-down] . md/move-lines-down))
-  :init
+  :diminish move-dup-mode
+  :config
+  (my|add-toggle move-dup-mode
+    :mode move-dup-mode
+    :on (move-dup-mode +1)
+    :off (move-dup-mode)
+    :documentation "Move line up/down.")
   (global-move-dup-mode +1))
 
 (use-package highlight-escape-sequences
@@ -1064,6 +1066,11 @@ This functions should be added to the hooks of major modes for programming."
          ("C-c t" . crux-visit-term-buffer)
          ("C-c e" . crux-eval-and-replace)
          ("M-J" . crux-top-join-line)))
+
+;; (use-package lorem-ipsum
+;;   :ensure
+;;   :init
+;;   (lorem-ipsum-use-default-bindings))
 
 ;; GTAGS
 ;; (use-package ggtags
@@ -1476,7 +1483,6 @@ FILENAME is deleted using `my/delete-file' function.."
 (global-set-key (kbd "C-SPC") 'set-mark-command)
 (global-set-key (kbd "C-.") 'mark-sexp)
 (global-set-key (kbd "C-,") 'mark-word)
-
 ;; pop mark
 (global-set-key (kbd "C-x C-.") 'pop-global-mark)
 ;; equal C-u C-SPC

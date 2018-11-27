@@ -32,13 +32,13 @@
 (setq-default fit-window-to-buffer-horizontally t)
 (setq-default fit-frame-to-buffer t)
 
-;; (use-package switch-window
-;;   :ensure t
-;;   :bind
-;;   ("C-x o" . switch-window)
-;;   :config
-;;   (setq switch-window-shortcut-style 'alphabet)
-;;   (setq switch-window-timeout nil))
+(use-package switch-window
+  :ensure t
+  :bind
+  ("C-x o" . switch-window)
+  :config
+  (setq switch-window-shortcut-style 'alphabet)
+  ;;   (setq switch-window-timeout nil))
 
 (use-package window-numbering
   :ensure t

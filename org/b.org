@@ -1,0 +1,17 @@
+#+STARTUP: showall hidestars
+
+* Links
+   - [[http://www.baidu.com][Here is naidu]]
+* Lesson 1
+** Part 1
+  Introducing the series and setting up the package mannager
+  - show melpa
+  - set up melpa
+** Installing some packages
+  - installed use-package
+  - installed try
+  - show some org-mode
+* Lesson 2
+  - installed which-key
+  - review init.el
+   - set up Readme.org

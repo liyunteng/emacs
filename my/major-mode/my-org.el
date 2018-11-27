@@ -414,9 +414,17 @@ If EXPAND-SCOPE is `all' then run `outline-show-all' at the matched line."
 
   (define-key org-mode-map (kbd "C-M-<up>") 'org-up-element)
   (define-key org-mode-map (kbd "C-c C-.") 'org-time-stamp-inactive)
+
+  ;; confilct with move-dup
+  (define-key org-mode-map (kbd "M-<up>") 'org-metaup)
+  (define-key org-mode-map (kbd "M-<down>") 'org-metadown)
   )
 
 
+(use-package org-bullets
+  :ensure t
+  :init
+  (add-hook 'org-mode-hook 'org-bullets-mode))
 
 (define-minor-mode prose-mode
   "Set up a buffer for prose editing.

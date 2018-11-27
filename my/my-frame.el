@@ -81,6 +81,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (setq x-gtk-use-old-file-dialog nil)
   (setq x-gtk-file-dialog-help-text nil)
   (setq inhibit-startup-screen t)
+
   (setq inhibit-startup-echo-area-message t)
 
 
@@ -145,12 +146,9 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (global-set-key (kbd "C-M--") 'my/frame-opacity-reduce)
 (global-set-key (kbd "C-M-0") 'my/frame-opacity-reset)
 
-
-(use-package default-text-scale
-  :ensure t
-  :bind (("C-M-+" . default-text-scale-increase)
-         ("C-M-_" . default-text-scale-decrease)
-	 ("C-M-)" . default-text-scale-reset)))
+(global-set-key (kbd "C-x C-=") 'text-scale-adjust)
+(global-set-key (kbd "C-x C--") 'text-scale-adjust)
+(global-set-key (kbd "C-x C-0") 'text-scale-adjust)
 
 (use-package disable-mouse
   :disabled
