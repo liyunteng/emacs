@@ -53,7 +53,7 @@
   :defines (desktop-save)
   :init
   (setq desktop-path (list my-cache-dir)
-	desktop-dirname my-cache-dir
+	;; desktop-dirname my-cache-dir
 	desktop-auto-save-timeout 600
 	desktop-missing-file-warning t
 	desktop-restore-in-current-display t
@@ -61,13 +61,16 @@
 	;; desktop-save 'ask-if-new
 	)
 
-  (use-package session
-    :ensure t
-    :init
-    (setq session-save-file (expand-file-name ".session" my-cache-dir))
-    (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
-    (setq session-save-file-coding-system 'utf-8)
-    (add-hook 'after-init-hook 'session-initialize))
+  ;; don't save /tmp/*
+  (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
+
+  ;; (use-package session
+  ;;   :ensure t
+  ;;   :init
+  ;;   (setq session-save-file (expand-file-name ".session" my-cache-dir))
+  ;;   (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
+  ;;   (setq session-save-file-coding-system 'utf-8)
+  ;;   (add-hook 'after-init-hook 'session-initialize))
 
   ;; fix if no deskop-file desktop-read will close all window
   (unless (or (not (desktop-full-file-name)))
@@ -107,16 +110,6 @@
 		  (shell-command-history    . 50)
 		  tags-file-name
 		  tags-table-list)))
-
-
-  ;; (defadvice desktop-read (around time-restore activate)
-  ;;   (let ((start-time (current-time)))
-  ;;     (prog1
-  ;; 	  ad-do-it
-  ;; 	(message "Emacs startup time: %.2fs Desktop restored in %.2fs"
-  ;; 		 (/ (my-time-subtract-millis after-init-time before-init-time) 1000)
-  ;; 		 (/ (my-time-subtract-millis (current-time) start-time) 1000)))))
-
 
   (defun my/desktop-clear ()
     "Desktop clear and Desktop remove."

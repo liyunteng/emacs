@@ -70,8 +70,8 @@
 ;; 行距
 (setq line-spacing 0.0)
 
-;; fill-column 70
-(setq fill-column 70)
+;; fill-column 80
+(setq fill-column 80)
 (setq-default adaptive-fill-regexp
               "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
 
@@ -413,21 +413,16 @@ indent yanked text (with prefix arg don't indent)."
         grep-scroll-output t
         ))
 
-
+;; need install the_silver_searcher
 (when (executable-find "ag")
   (use-package ag
     :ensure t
-    :bind ("M-s ?" . ag)
+    :bind (("M-s a" . ag)
+           ("M-s d" . ag-dired))
     :config
     (use-package wgrep-ag :ensure t)
     (setq ag-highlight-search t)))
 
-(when (executable-find "rg")
-  (use-package rg
-    :ensure t
-    :bind ("M-s /" . rg-project))
-  (use-package deadgrep
-    :ensure t))
 
 ;; 设置默认浏览器为firefox
 ;; (setq browse-url-firefox-new-window-is-tab t)
@@ -686,7 +681,7 @@ at the end of the line."
   :config
   (setq comment-style 'extra-line)
   ;; (setq comment-style 'multi-line)
-  (setq comment-fill-column 70)
+  (setq comment-fill-column 80)
   )
 
 (use-package register
@@ -841,11 +836,9 @@ This functions should be added to the hooks of major modes for programming."
   (my|add-toggle global-diff-hl-mode
     :mode global-diff-hl-mode
     :documentation "Global highlight diff")
-
-  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
   :config
   (global-diff-hl-mode +1)
-  )
+  (add-hook 'dired-mode-hook 'diff-hl-dir-mode))
 
 (use-package aggressive-indent
   :ensure t
@@ -857,6 +850,11 @@ This functions should be added to the hooks of major modes for programming."
     :documentation "Always keep code indent.")
   (aggressive-indent-mode -1))
 
+(use-package hungry-delete
+  :ensure t
+  :config
+  (global-hungry-delete-mode +1))
+
 ;; expand-region
 (use-package expand-region
   :ensure t
@@ -866,6 +864,10 @@ This functions should be added to the hooks of major modes for programming."
   (setq expand-region-contract-fast-key ",")
   (setq expand-region-smart-cursor nil)
   )
+
+(use-package iedit
+  :ensure t
+  :bind (("C-;" . iedit-mode)))
 
 ;; easy-kill
 (use-package easy-kill
@@ -1277,6 +1279,28 @@ FILENAME is deleted using `my/delete-file' function.."
         (message (kill-new file-name))
       (error "Buffer not visiting a file"))))
 
+
+(defun my/narrow-or-widen-dwim (p)
+  "Ifconfig the buffer is narrowed, it windens. Otherwise, it narrows intelligently.
+Intelligently means: region, org-src-block, org-subtree, or defun,
+whichever applies first.
+Narrowing to org-src-block actually Call `org-edit-src-code'.
+
+With prefix P, dont' widen, just narrow even if buffer is already narrowed."
+  (interactive "P")
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing command.
+         ;; Remove this first conditional if you don't want it.
+         (cond ((ignore-errors (org-edit-src-code))
+                (delete-other-window))
+               ((org-at-block-p)
+                (org-narrow-to-block))
+               (t (org-narrow-to-subtree))))
+        (t (narrow-to-defun))))
+;; (define-key ctl-x-map (kbd "n") #'my/narrow-or-widen-dwim)
 
 (defvar-local hidden-mode-line-mode nil)
 (defvar-local hide-mode-line nil)

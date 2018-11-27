@@ -116,7 +116,7 @@
 
   (add-hook 'after-init-hook
   	    (lambda () (run-at-time 0 nil 'my/show-init-time)) t))
-
 (my-init)
+
 (provide 'my-init)
 ;;; my-init.el ends here

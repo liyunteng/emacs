@@ -32,7 +32,8 @@
   :commands (dired dired-jump dired-jump-other-window)
   :bind (("C-x d" . dired)
 	 ("C-x M-j" . dired-jump-other-window)
-         ("C-x C-j" . dired-jump))
+         ("C-x C-j" . dired-jump)
+         ("M-s f" . find-name-dired))
 
   :config
   (use-package dired-x
@@ -46,7 +47,9 @@
     (add-hook 'dired-mode-hook 'dired-omit-mode))
 
   (use-package dired-quick-sort
-    :ensure t)
+    :ensure t
+    :bind (:map dired-mode-map
+                ("s" . hydra-dired-quick-sort/body)))
 
   ;; (use-package dired+
   ;;   :init
@@ -111,6 +114,7 @@
       (setq dired-listing-switches "-alhqD")
     (setq dired-listing-switches "-alh"))
 
+  :config
   ;; goto parent dir
   (defvar-local my--subdir-parent nil)
   (defadvice dired-maybe-insert-subdir (around dirname (&optional switches no-error-if-not-dir-p) activate)
@@ -147,13 +151,16 @@ if no files marked, always operate on current line in dired-mode."
     (dired-do-shell-command command arg file-list)
     (message command))
 
+
+  (define-key dired-mode-map (kbd "M-s a") nil)
+  (define-key dired-mode-map (kbd "M-s f") 'find-name-dired)
+
   (define-key dired-mode-map [mouse-2] 'dired-find-file)
   (define-key dired-mode-map (kbd "M-<return>") 'dired-do-find-marked-files)
   (define-key dired-mode-map (kbd "C-M-<return>") 'diredp-do-find-marked-files-recursive)
   (define-key dired-mode-map (kbd "e") 'my/dired-view-file-other-window)
   (define-key dired-mode-map (kbd "c") 'dired-kill-subdir)
   (define-key dired-mode-map (kbd "TAB") 'dired-hide-all)
-  (define-key dired-mode-map (kbd "s") 'hydra-dired-quick-sort/body)
   (define-key dired-mode-map (kbd "C-M-f") 'find-grep)
   (define-key dired-mode-map (kbd "C-M-S-f") 'find-grep-dired)
   (define-key dired-mode-map (kbd "\\") 'my/dired-run-git-command)

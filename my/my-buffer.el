@@ -42,18 +42,12 @@
        (defun ,vname ()
          ,(format "View %s buffer." bn)
          (interactive)
-         (let ((buffer (get-buffer ,buffer-name)))
-           (if buffer
-               (view-buffer buffer)
-             (message "No %s buffer" ,name))))
+         (display-buffer  ,buffer-name 'display-buffer-in-same-window))
 
        (defun ,voname ()
          ,(format "View %s buffer in other window." bn)
          (interactive)
-         (let ((buffer (get-buffer ,buffer-name)))
-           (if buffer
-               (view-buffer-other-window buffer)
-             (message "No %s buffer" ,name))))
+         (display-buffer ,buffer-name 'display-buffer-in-side-window))
 
        (defun ,sname ()
          ,(format "Switch %s buffer." bn)
@@ -124,4 +118,6 @@
 (global-set-key (kbd "C-x C-m") 'my/alternate-buffer-other-window)
 
 (provide 'my-buffer)
+
+
 ;;; my-buffer.el ends here

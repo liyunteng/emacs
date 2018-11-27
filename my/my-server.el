@@ -58,7 +58,7 @@ Just call:
 
 and file 'filename' will be opened and cursor set on line 'linenumber'"
     (ad-set-arg 0
-		(mapcar (lambda (fn)
+                (mapcar (lambda (fn)
 			  (let ((name (car fn)))
 			    (if (string-match "^\\(.*?\\):\\([0-9]+\\)\\(?::\\([0-9]+\\)\\)?$" name)
 				(cons

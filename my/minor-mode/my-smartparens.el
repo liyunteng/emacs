@@ -31,7 +31,8 @@
 	     smartparens-global-mode
 	     smartparens-global-strict-mode)
   :bind (:map smartparens-mode-map
-	      ("M-S" . sp-splice-sexp))
+	      ("M-S" . sp-split-sexp)
+              ("M-D" . sp-splice-sexp))
 
   :init
   (setq sp-show-pair-delay 0.2

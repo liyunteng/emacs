@@ -38,7 +38,7 @@
   ("C-x o" . switch-window)
   :config
   (setq switch-window-shortcut-style 'alphabet)
-  ;;   (setq switch-window-timeout nil))
+  (setq switch-window-timeout nil))
 
 (use-package window-numbering
   :ensure t

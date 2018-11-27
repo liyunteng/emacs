@@ -106,9 +106,11 @@ Selectively runs either `my-after-make-console-frame-hooks' or
    "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my,
  chinese-gbk: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1,
  chinese-iso-8bit: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1,
- chinese-big5: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1"))
-(setq default-frame-alist (append '((font . "fontset-my")) default-frame-alist))
-(set-frame-font "fontset-my")
+ chinese-big5: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1")
+  (setq default-frame-alist (append '((font . "fontset-my")) default-frame-alist))
+  (set-frame-font "fontset-my"))
+
+
 
 
 
