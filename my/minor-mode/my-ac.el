@@ -53,7 +53,6 @@
 	)
   :commands (global-company-mode company-mode)
   :init
-  (setq company-lighter-base "ac")
   (defalias 'completion-at-point 'company-complete-common)
 
   (global-company-mode -1)
@@ -68,7 +67,7 @@
       :bind
       (:map company-active-map
 	    ("C-h"  . company-quickhelp-manual-begin))
-      :config
+      :init
       ;; maybe crash
       ;; (setq company-quickhelp-delay 1)
       ;; (setq company-quickhelp-max-lines 30)
@@ -88,18 +87,22 @@
 	(setq company--manual-action nil))))
 
   (setq company-show-numbers t
-	company-minimum-prefix-length 2
-	company-search-filtering t
-	company-auto-complete t
-	company-idle-delay 1
-	company-tooltip-idle-delay 0.5
-	company-transformers '(company-sort-by-backend-importance company-sort-by-occurrence)
-	company-tooltip-limit 10
-	company-tooltip-align-annotations t
-	company-tooltip-flip-when-above t
-	company-abort-manual-when-too-short t
-	company-selection-wrap-around nil
-	)
+        ;; company-lighter-base "ac"
+        company-minimum-prefix-length 2
+        company-search-filtering t
+        company-auto-complete t
+        company-idle-delay 1
+        company-tooltip-idle-delay 0.5
+        company-transformers '(company-sort-by-backend-importance
+                               company-sort-by-occurrence
+                               company-sort-prefer-same-case-prefix)
+        company-tooltip-limit 10
+        company-tooltip-align-annotations t
+        company-tooltip-flip-when-above t
+        company-abort-manual-when-too-short t
+        company-selection-wrap-around nil
+        )
+
 
   (when (eq my-theme 'zenburn)
     (custom-theme-set-faces
@@ -243,10 +246,10 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company web-mode '(company-web))
 
 (my|defvar-company-backends emacs-lisp-mode)
-(my|enable-company emacs-lisp-mode '(company-elisp company-capf))
+(my|enable-company emacs-lisp-mode '(company-capf company-elisp))
 
 (my|defvar-company-backends lisp-interaction-mode)
-(my|enable-company lisp-interaction-mode '(company-elisp company-capf))
+(my|enable-company lisp-interaction-mode '(company-capf company-elisp))
 
 (my|defvar-company-backends java-mode)
 (my|enable-company java-mode '(company-eclim))

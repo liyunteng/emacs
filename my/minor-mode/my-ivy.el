@@ -42,10 +42,6 @@
                 (man . "^")
                 (woman . "^")))
 
-;; IDO-style directory navigation
-(define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
-(define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
-
 (defun my/enable-ivy-flx-matching ()
   "Make `ivy' matching work more like IDO."
   (interactive)
@@ -72,6 +68,7 @@
 ;; (setq-default ivy-use-virtual-buffers nil)
 (setq-default ivy-ignore-buffers '("\\*"))
 (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
+(define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
 (define-key ivy-minibuffer-map (kbd "C-g") #'minibuffer-keyboard-quit)
 (define-key ivy-minibuffer-map (kbd "C-y") #'ivy-yank-word)
 (define-key ivy-minibuffer-map (kbd "C-c C-a") #'ivy-toggle-ignore)

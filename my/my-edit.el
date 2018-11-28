@@ -162,7 +162,7 @@
   ;; can't in :config
   (global-hl-line-mode +1))
 
-;; 启用cua
+
 ;; (use-package cua-base
 ;;   :init
 ;;   ;; When called with no active region, do not activate mark.
@@ -395,35 +395,6 @@ indent yanked text (with prefix arg don't indent)."
   ;; (setq proced-post-display-hook '(fit-window-to-buffer))
   )
 
-;;; grep 默认递归查找
-(use-package grep
-  :commands (grep-mode
-             grep
-             grep-find
-             find-grep
-             lgrep
-             rgrep
-             zrgrep
-             rzgrep)
-  :bind (("M-s /" . find-grep)
-         ("M-s g" . grep))
-  :config
-  (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r -e "
-        grep-highlight-matches t
-        grep-scroll-output t
-        ))
-
-;; need install the_silver_searcher
-(when (executable-find "ag")
-  (use-package ag
-    :ensure t
-    :bind (("M-s a" . ag)
-           ("M-s d" . ag-dired))
-    :config
-    (use-package wgrep-ag :ensure t)
-    (setq ag-highlight-search t)))
-
-
 ;; 设置默认浏览器为firefox
 ;; (setq browse-url-firefox-new-window-is-tab t)
 ;; (setq browse-url-firefox-program "firefox")
@@ -580,19 +551,6 @@ compile-command, will auto insert new-compile-command to code file.
       (let ((inhibit-read-only t))
         (ansi-color-apply-on-region (point-min) (point-max)))))
   (add-hook 'compilation-filter-hook #'my/colorize-compilation-buffer))
-
-;; highlight
-(use-package hi-lock
-  :commands (hi-lock-mode global-hi-lock-mode)
-  :diminish hi-lock-mode
-  :bind (("M-s h l" . highlight-lines-matching-regexp)
-         ("M-s h f" . hi-lock-find-patterns)
-         ("M-s h r" . highlight-regexp)
-         ("M-s h p" . highlight-phrase)
-         ("M-s h ." . highlight-symbol-at-point)
-         ("M-s h u" . unhighlight-regexp)
-         ("M-s h b" . hi-louck-write-interactive-patterns)
-         ))
 
 ;; align
 (use-package align
@@ -960,8 +918,7 @@ This functions should be added to the hooks of major modes for programming."
       (define-key (lookup-key global-map [menu-bar edit])
         [undo] undo-tree-old-undo-menu-item)
       (define-key (lookup-key global-map [menu-bar edit])
-        [redo] nil)))
-  )
+        [redo] nil))))
 
 ;; use settings from .editorconfig file when present
 (use-package editorconfig

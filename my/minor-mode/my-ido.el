@@ -69,7 +69,7 @@
   (use-package idomenu
     :ensure t)
   )
-o
+
 
 (provide 'my-ido)
 ;;; my-ido.el ends here

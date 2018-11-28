@@ -110,11 +110,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (setq default-frame-alist (append '((font . "fontset-my")) default-frame-alist))
   (set-frame-font "fontset-my"))
 
-
-
 
-
-;; 调整frame透明度
+;; frame opacity
 (defun my--adjust-opacity (frame incr)
   "Adjust the background opacity of FRAME by increment INCR."
   (unless (display-graphic-p frame)
@@ -123,30 +120,32 @@ Selectively runs either `my-after-make-console-frame-hooks' or
          ;; The 'alpha frame param became a pair at some point in
          ;; emacs 24.x, e.g. (100 100)
          (oldalpha (if (listp oldalpha) (car oldalpha) oldalpha))
-         (newalpha (+ incr oldalpha)))
+         (newalpha (min (+ incr oldalpha) 100)))
     (when (and (<= frame-alpha-lower-limit newalpha) (>= 100 newalpha))
       (modify-frame-parameters frame (list (cons 'alpha newalpha))))))
 
-(defun my/frame-opacity-increase (&optional n)
-  "Increase frame opacity."
+(defun my/frame-opacity-adjust (inc)
   (interactive "p")
-  (let ((num (if n n 5)))
-    (my--adjust-opacity nil num)))
-
-(defun my/frame-opacity-reduce (&optional n)
-  "Reduce frame opacity."
-  (interactive "p")
-  (let ((num (if n (- 0 n) -5)))
-    (my--adjust-opacity nil num)))
-
-(defun my/frame-opacity-reset ()
-  "Reset frame opacity."
-  (interactive)
-  (modify-frame-parameters nil `((alpha . 100))))
-
-(global-set-key (kbd "C-M-=") 'my/frame-opacity-increase)
-(global-set-key (kbd "C-M--") 'my/frame-opacity-reduce)
-(global-set-key (kbd "C-M-0") 'my/frame-opacity-reset)
+  (let ((ev last-command-event)
+        (echo-keystrokes nil))
+    (let* ((base (event-basic-type ev))
+           (step (pcase base
+                   ((or ?+ ?=) (* 5 inc))
+                   (?- (* 5 (- inc)))
+                   (?0 100)
+                   (_ inc))))
+      (my--adjust-opacity nil step))
+    (message "Use +,-,0 for further adjustment")
+    (set-transient-map
+     (let ((map (make-sparse-keymap)))
+       (dolist (mods '(() (control)))
+         (dolist (key '(?- ?+ ?= ?0))
+           (define-key map (vector (append mods (list key)))
+             (lambda () (interactive) (my/frame-opacity-adjust (abs inc))))))
+       map))))
+(global-set-key (kbd "C-M-=") 'my/frame-opacity-adjust)
+(global-set-key (kbd "C-M--") 'my/frame-opacity-adjust)
+(global-set-key (kbd "C-M-0") 'my/frame-opacity-adjust)
 
 (global-set-key (kbd "C-x C-=") 'text-scale-adjust)
 (global-set-key (kbd "C-x C--") 'text-scale-adjust)
@@ -159,15 +158,20 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   ;; (disable-mouse-global-mode +1)
   )
 
-(use-package smart-mode-line
+;; (use-package smart-mode-line
+;;   :ensure t
+;;   :commands (smart-mode-line-enable sml/setup)
+;;   :init
+;;   (setq sml/no-confirm-load-theme t)
+;;   (setq sml/theme 'respectful)
+;;   (sml/setup)
+;;   ;; (add-hook 'after-init-hook #'sml/setup)
+;;   )
+
+(use-package powerline
   :ensure t
-  :commands (smart-mode-line-enable sml/setup)
   :init
-  (setq sml/no-confirm-load-theme t)
-  (setq sml/theme 'respectful)
-  (sml/setup)
-  ;; (add-hook 'after-init-hook #'sml/setup)
-  )
+  (powerline-default-theme))
 
 (use-package beacon
   :ensure t

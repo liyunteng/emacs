@@ -38,7 +38,7 @@
     my-edit
     my-dired
     my-ibuffer
-    my-isearch
+    my-search
     my-window
     my-session
     my-helm

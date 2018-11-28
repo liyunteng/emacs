@@ -1,4 +1,4 @@
-;;; My-auto-complete.el --- my auto complete
+;;; my-auto-complete.el --- my auto complete
 
 ;; Copyright (C) 2014  liyunteng
 
@@ -24,24 +24,22 @@
 
 ;;; Code:
 
-(use-package auto-complete)
-(use-package popup)
-(use-package ac-c-headers)
-(use-package auto-complete-clang)
-(use-package ac-dabbrev)
-(use-package pos-tip)
-(use-package fuzzy)
+(use-package auto-complete :ensure t)
+(use-package popup :ensure t)
+(use-package ac-c-headers :ensure t)
+(use-package auto-complete-clang :ensure t)
+(use-package pos-tip :ensure t)
+(use-package fuzzy :ensure t)
 ;;(use-package auto-complete-clang-async)
 ;;(use-package ac-etags)
-(use-package go-autocomplete)
-(use-package go-eldoc)
+(use-package go-autocomplete :ensure t)
+(use-package go-eldoc :ensure t)
 
 (require 'auto-complete-config)
 (require 'popup)
 (require 'pos-tip)
 (require 'ac-c-headers)
 (require 'auto-complete-clang)
-(require 'ac-dabbrev)
 ;;(ac-etags-ac-setup)
 (require 'go-autocomplete)
 (require 'go-eldoc)
@@ -56,7 +54,7 @@
 (setq-default ac-auto-start nil)
 (setq-default ac-dwim t) ; To get pop-ups with docs even if a word is
                                         ; uniquely completed
-(setq-default ac-dabbrev-sort t)
+
 (setq-default ac-inline nil)
 
 (global-auto-complete-mode nil)
@@ -125,7 +123,6 @@
                ;; ac-source-functions
                ;; ac-source-abbrev
                ;; ac-source-imenu
-               ac-source-dabbrev
                ;; ac-source-dictionary
                ;; ac-source-words-in-buffer
                ac-source-words-in-same-mode-buffers
@@ -182,13 +179,6 @@
 
 (define-key ac-complete-mode-map "\C-n" 'ac-next)
 (define-key ac-complete-mode-map "\C-p" 'ac-previous)
-
-;; Exclude very large buffers from dabbrev
-(defun my/dabbrev-friend-buffer (other-buffer)
-  "Exclude very large 'OTHER-BUFFER' from dabbrev."
-  (< (buffer-size other-buffer) (* 1 1024 1024)))
-
-(setq dabbrev-friend-buffer-function 'my/dabbrev-friend-buffer)
 
 (provide 'my-auto-complete)
 ;;; my-auto-complete.el ends here
