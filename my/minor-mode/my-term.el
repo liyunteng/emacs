@@ -68,9 +68,7 @@
     (setq-local transient-mark-mode nil)
     (setq-local global-hl-line-mode nil)
     (setq-local beacon-mode nil)
-    (setq-local scroll-margin 0)
-    (auto-fill-mode -1)
-    )
+    (setq-local scroll-margin 0))
 
   (defun my/comint-clear-buffer ()
     "Clear comint buffer."
@@ -81,29 +79,29 @@
   (add-hook 'comint-mode-hook 'my-comint-mode-hook)
   :config
   (setq comint-scroll-to-bottom-on-input nil
-	comint-scroll-to-bottom-on-output nil
-	comint-scroll-show-maximum-output nil
-	comint-prompt-read-only t
-	comint-move-point-for-output t
-	)
+	    comint-scroll-to-bottom-on-output nil
+	    comint-scroll-show-maximum-output nil
+	    comint-prompt-read-only t
+	    comint-move-point-for-output t
+	    )
 
   (setq comint-input-sender
-	(lambda (proc command)
-	  (cond
-	   ;; Check for clear command and execute it.
-	   ((string-match "^[ \t]*clear[ \t]*$" command)
-	    (comint-send-string proc "\n")
-	    (erase-buffer))
-	   ;; Check for man command and execute it.
-	   ((string-match "^[ \t]*man[ \t]*" command)
-	    (comint-send-string proc "\n")
-	    (setq command (replace-regexp-in-string
-			   "^[ \t]*man[ \t]*" "" command))
-	    (setq command (replace-regexp-in-string
-			   "[ \t]+$" "" command))
-	    (funcall 'man command))
-	   ;; Send other commands to the default handler.
-	   (t (comint-simple-send proc command)))))
+	    (lambda (proc command)
+	      (cond
+	       ;; Check for clear command and execute it.
+	       ((string-match "^[ \t]*clear[ \t]*$" command)
+	        (comint-send-string proc "\n")
+	        (erase-buffer))
+	       ;; Check for man command and execute it.
+	       ((string-match "^[ \t]*man[ \t]*" command)
+	        (comint-send-string proc "\n")
+	        (setq command (replace-regexp-in-string
+			               "^[ \t]*man[ \t]*" "" command))
+	        (setq command (replace-regexp-in-string
+			               "[ \t]+$" "" command))
+	        (funcall 'man command))
+	       ;; Send other commands to the default handler.
+	       (t (comint-simple-send proc command)))))
   )
 
 (use-package shell
@@ -136,9 +134,9 @@
   (defun my/term-mode-toggle-line-mode ()
     (interactive)
     (if (eq major-mode 'term-mode)
-	(if (term-in-char-mode)
-	    (term-line-mode)
-	  (term-char-mode))
+	    (if (term-in-char-mode)
+	        (term-line-mode)
+	      (term-char-mode))
       (message "not term-mode")))
 
   (defun my-term-mode-hook ()
@@ -148,35 +146,30 @@
     (setq-local global-hl-line-mode nil)
     (setq-local beacon-mode nil)
     (setq-local scroll-margin 0)
-    (setq-default system-uses-terminfo t)
-    (auto-fill-mode -1)
+    (setq-default system-uses-terminfo t))
 
-    ;; deactive smart-mode-line advice
-    ;; (if (ad-get-advice-info 'term-command-hook)
-    ;; 	(ad-deactivate'term-command-hook))
-    )
   (add-hook 'term-mode-hook 'my-term-mode-hook)
 
 
   :config
   (setq multi-term-program my-term-shell
-	multi-term-scroll-to-bottom-on-output t
-	multi-term-scroll-show-maximum-output nil
-	multi-term-switch-after-close nil
-	)
+	    multi-term-scroll-to-bottom-on-output t
+	    multi-term-scroll-show-maximum-output nil
+	    multi-term-switch-after-close nil
+	    )
 
   (defvar my-multi-term-dedicated-old-buf nil)
   (defun my/multi-term-dedicated-toggle-and-select ()
     "My term dedicated toggle and select."
     (interactive)
     (if (multi-term-dedicated-exist-p)
-	(progn
-	  (multi-term-dedicated-close)
-	  (switch-to-buffer my-multi-term-dedicated-old-buf))
+	    (progn
+	      (multi-term-dedicated-close)
+	      (switch-to-buffer my-multi-term-dedicated-old-buf))
       (progn
-	(setq my-multi-term-dedicated-old-buf (current-buffer))
-	(multi-term-dedicated-open)
-	(multi-term-dedicated-select))))
+	    (setq my-multi-term-dedicated-old-buf (current-buffer))
+	    (multi-term-dedicated-open)
+	    (multi-term-dedicated-select))))
 
   ;; (setq-default multi-term-program "/bin/bash")
   ;; (setq multi-term-dedicated-close-back-to-open-buffer-p t)
@@ -225,10 +218,10 @@ is achieved by adding the relevant text properties."
        (point-at-bol)
        (point)
        '(rear-nonsticky t
-			inhibit-line-move-field-capture t
-			field output
-			read-only t
-			front-sticky (field inhibit-line-move-field-capture)))))
+			            inhibit-line-move-field-capture t
+			            field output
+			            read-only t
+			            front-sticky (field inhibit-line-move-field-capture)))))
 
   (add-hook 'eshell-after-prompt-hook 'my--protect-eshell-prompt)
   (autoload 'eshell-delchar-or-maybe-eof "em-rebind")
@@ -259,23 +252,23 @@ is achieved by adding the relevant text properties."
   (add-hook 'eshell-mode-hook 'my--init-eshell)
   :config
   (setq eshell-cmpl-cycle-completions nil
-	;; auto truncate after 20k lines
-	eshell-buffer-maximum-lines 20000
-	;; history size
-	eshell-history-size 350
-	;; no duplicates in history
-	eshell-hist-ignoredups t
-	;; buffer shorthand -> echo foo > #'buffer
-	eshell-buffer-shorthand t
-	;; my prompt is easy enough to see
-	eshell-highlight-prompt nil
-	;; treat 'echo' like shell echo
-	eshell-plain-echo-behavior t
+	    ;; auto truncate after 20k lines
+	    eshell-buffer-maximum-lines 20000
+	    ;; history size
+	    eshell-history-size 350
+	    ;; no duplicates in history
+	    eshell-hist-ignoredups t
+	    ;; buffer shorthand -> echo foo > #'buffer
+	    eshell-buffer-shorthand t
+	    ;; my prompt is easy enough to see
+	    eshell-highlight-prompt nil
+	    ;; treat 'echo' like shell echo
+	    eshell-plain-echo-behavior t
 
-	eshell-send-direct-to-subprocesses t
-	eshell-scroll-to-bottom-on-input nil
-	eshell-scroll-to-bottom-on-output nil
-	)
+	    eshell-send-direct-to-subprocesses t
+	    eshell-scroll-to-bottom-on-input nil
+	    eshell-scroll-to-bottom-on-output nil
+	    )
   )
 
 (provide 'my-term)

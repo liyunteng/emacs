@@ -30,30 +30,6 @@
   "A list of (FEATURE TYPE LOAD-START-TIME LOAD-DURATION).
 LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
-;;;###autoload
-(defun my-time-subtract-millis (b a)
-  "Subtract B A to Millis."
-  (* 1000.0 (float-time (time-subtract b a))))
-
-(defadvice require (around my-require-times-ad () activate)
-  (let* ((feature (ad-get-arg 0))
-		 (already-loaded (memq feature features))
-		 (require-start-time (and (not already-loaded) (current-time))))
-	ad-do-it
-	(when (and (not already-loaded) (memq feature features))
-	  (let ((time (my-time-subtract-millis (current-time) require-start-time)))
-		(add-to-list 'my-init-times
-					 (list (format "%s" feature) "require" require-start-time time)
-					 t)))))
-
-(defadvice load (around my-require-times-ad () activate)
-  (let* ((filename (ad-get-arg 0))
-		 (load-start-time (current-time)))
-	ad-do-it
-	(let ((time (my-time-subtract-millis (current-time) load-start-time)))
-	  (add-to-list 'my-init-times
-				   (list filename "load" load-start-time time) t))))
-
 (defun my--parse-command-line (args)
   "Handle specific command line ARGS.
 The reason why we don't use the Emacs hooks for processing user defined
@@ -75,8 +51,40 @@ arguments is that we want to process these arguments as soon as possible."
 	  (setq i (1+ i)))
 	(nreverse new-args)))
 (setq command-line-args (my--parse-command-line command-line-args))
-
 
+(defun my-time-subtract-millis (b a)
+  "Subtract B A to Millis."
+  (* 1000.0 (float-time (time-subtract b a))))
+
+(defadvice require (around my-require-times-ad () activate)
+  (let* ((feature (ad-get-arg 0))
+		 (already-loaded (memq feature features))
+		 (require-start-time (and (not already-loaded) (current-time))))
+	ad-do-it
+	(when (and (not already-loaded) (memq feature features))
+	  (let ((time (my-time-subtract-millis (current-time) require-start-time)))
+		(add-to-list 'my-init-times
+					 (list (format "%s" feature) "require" require-start-time time)
+					 t)))))
+(defadvice load (around my-require-times-ad () activate)
+  (let* ((filename (ad-get-arg 0))
+		 (load-start-time (current-time)))
+	ad-do-it
+	(let ((time (my-time-subtract-millis (current-time) load-start-time)))
+	  (add-to-list 'my-init-times
+				   (list filename "load" load-start-time time) t))))
+(when my-debug
+  (defadvice autoload (around my-autoload-times-ad () activate)
+    (let* ((functionname (ad-get-arg 0))
+           (filename (ad-get-arg 1))
+	       (load-start-time (current-time)))
+	  ad-do-it
+	  (let ((time (my-time-subtract-millis (current-time) load-start-time)))
+	    (add-to-list 'my-init-times
+				     (list (format "%s#'%s" functionname filename) "autoload" load-start-time time) t)))))
+
+
+
 (define-derived-mode my-init-times-mode tabulated-list-mode "Init-Times"
   "Show times taken to `require' or `load' packages."
   (setq tabulated-list-format
@@ -122,8 +130,8 @@ arguments is that we want to process these arguments as soon as possible."
     (display-buffer (current-buffer))
 	))
 
-(if my-debug
-	(add-hook 'after-init-hook 'my/show-init-times))
+(and my-debug
+     (add-hook 'after-init-hook 'my/show-init-times))
 
 
 (provide 'my-debug)

@@ -249,27 +249,6 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   :init
   (which-key-mode +1))
 
-(use-package fill-column-indicator
-  :ensure t
-  :defer t
-  :diminish fci-mode
-  :commands (turn-on-fci-mode
-	     turn-off-fci-mode
-	     fci-mode)
-  :init
-  (my|add-toggle fci-mode
-    :status fci-mode
-    :on (turn-on-fci-mode)
-    :off (turn-off-fci-mode)
-    :documentation "Display the fill column indicator"
-    :global-key "C-# i"
-    )
-  :config
-  (setq fci-rule-width 2
-	;; fci-rule-color "#D0BF8F"
-	)
-  (push '(fci-mode "") minor-mode-alist))
-
 ;; (setq ring-bell-function 'ignore
 ;;       visible-bell nil)
 ;; (setq ring-bell-function

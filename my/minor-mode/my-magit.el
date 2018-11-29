@@ -30,10 +30,10 @@
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status)
-	 ("C-x M-g" . magit-dispatch-popup)
-	 ("C-x v =" . magit-diff-buffer-file)
-	 :map magit-status-mode-map
-	 ("M-RET" . magit-diff-visit-file-other-window))
+	     ("C-x M-g" . magit-dispatch-popup)
+	     ("C-x v =" . magit-diff-buffer-file)
+	     :map magit-status-mode-map
+	     ("M-RET" . magit-diff-visit-file-other-window))
   :config
   (use-package git-blamed
     :defer t
@@ -77,7 +77,7 @@
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
   (after-load 'compile
     (dolist (defn (list '(git-svn-updated "^\t[A-Z]\t\\(.*\\)$" 1 nil nil 0 1)
-			'(git-svn-needs-update "^\\(.*\\): needs update$" 1 nil nil 2 1)))
+			            '(git-svn-needs-update "^\\(.*\\): needs update$" 1 nil nil 2 1)))
       (add-to-list 'compilation-error-regexp-alist-alist defn)
       (add-to-list 'compilation-error-regexp-alist (car defn))))
   ;; (add-hook 'magit-popup-mode-hook 'my/toggle-show-trailing-whitespace-off)

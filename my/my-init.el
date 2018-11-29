@@ -25,59 +25,59 @@
 ;;; Code:
 (require 'my-load-path)
 
-(defconst my-modules
-  '(
-    my-base
-    my-utils
-    my-package
-    my-frame
-    my-themes
+(defconst my-modules '(
+                       my-utils
+                       my-package
+                       my-base
+                       my-frame
+                       my-themes
 
-    my-buffer
-    my-edit
-    my-dired
-    my-ibuffer
-    my-search
-    my-window
-    my-session
-    my-helm
-    ;; my-ido
-    ;; my-ivy
+                       my-edit
+                       my-extension
+                       my-buffer
+                       my-dired
+                       my-ibuffer
+                       my-search
+                       my-window
+                       my-session
+                       my-helm
+                       ;; my-ido
+                       ;; my-ivy
 
-    my-jump
-    my-smartparens
-    my-flyspell
-    my-flycheck
-    my-yas
-    my-ac
-    ;; my-auto-complete
+                       my-jump
+                       my-smartparens
+                       my-flyspell
+                       my-flycheck
+                       my-yas
+                       my-ac
+                       ;; my-auto-complete
 
-    my-term
-    my-magit
-    my-tramp
-    my-gud
-    my-mu4e
+                       my-term
+                       my-magit
+                       my-tramp
+                       my-gud
+                       my-mu4e
 
-    my-avy
-    my-auto-insert
-    my-header
-    my-hideshow
-    my-auto-mode
+                       my-avy
+                       my-auto-insert
+                       my-header
+                       my-hideshow
+                       my-auto-mode
 
-    my-lisp
-    my-c
-    ;; my-qt
-    my-go
-    my-python
-    my-org
-    my-web
-    my-sh
-    my-syslog
-    my-javascript
-    my-json
+                       my-lisp
+                       my-c
+                       ;; my-qt
+                       my-go
+                       my-python
+                       my-org
+                       my-web
+                       my-sh
+                       my-syslog
+                       my-javascript
+                       my-json
 
-    my-server
-    )
+                       my-server
+                       )
   "My auto load modules.")
 
 (defun my-load (m)
@@ -95,10 +95,10 @@
   (interactive)
   (if desktop-save-mode
       (message "Emacs startup time: %.2fms Desktop restore time: %.2fms"
-	       (my-time-subtract-millis after-init-time before-init-time)
-	       (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
+	           (my-time-subtract-millis after-init-time before-init-time)
+	           (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
     (message "Emacs startup time: %.2fms"
-	     (my-time-subtract-millis after-init-time before-init-time))))
+	         (my-time-subtract-millis after-init-time before-init-time))))
 
 
 (defun my-init ()
@@ -114,7 +114,7 @@
     (load custom-file))
 
   (add-hook 'after-init-hook
-  	    (lambda () (run-at-time 0 nil 'my/show-init-time)) t))
+  	        (lambda () (run-at-time 0 nil 'my/show-init-time)) t))
 (my-init)
 
 (provide 'my-init)

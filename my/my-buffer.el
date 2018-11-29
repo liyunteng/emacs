@@ -118,6 +118,4 @@
 (global-set-key (kbd "C-x C-m") 'my/alternate-buffer-other-window)
 
 (provide 'my-buffer)
-
-
 ;;; my-buffer.el ends here

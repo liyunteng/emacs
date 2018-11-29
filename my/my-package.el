@@ -31,8 +31,8 @@
                          ("melpa-stable" . "http://mirrors.163.com/elpa/melpa-stable/")
                          ("gnu" . "http://mirrors.163.com/elpa/gnu/")
                          ("org" . "http://mirrors.163.com/elpa/org/")
-			 ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")
-			 ))
+			             ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")
+			             ))
 (setq package-pinned-packages
       '((switch-window . "melpa-stable")))
 
@@ -44,14 +44,14 @@
 (package-initialize)
 
 (defvar my--pre-install-packages '(bind-key
-				   use-package
-				   diminish
-				   wgrep
-				   scratch
-				   command-log-mode
+				                   use-package
+				                   diminish
+				                   wgrep
+				                   scratch
+				                   command-log-mode
 
                                    try
-				   ))
+				                   ))
 ;; (defun require-package (package)
 ;;   "Install PACKAGE unlesee already installed."
 ;;   (unless (package-installed-p package)

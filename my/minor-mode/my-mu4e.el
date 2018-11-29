@@ -43,22 +43,21 @@
     :defer t)
 
   (setq message-confirm-send t						;防止误发邮件, 发邮件前需要确认
-	message-kill-buffer-on-exit t				;设置发送邮件后删除buffer
-	message-from-style 'angles					;`From' 头的显示风格
-	message-syntax-checks '((sender . disabled));语法检查
-	message-send-mail-function 'smtpmail-send-it
+	    message-kill-buffer-on-exit t				;设置发送邮件后删除buffer
+	    message-from-style 'angles					;`From' 头的显示风格
+	    message-syntax-checks '((sender . disabled));语法检查
+	    message-send-mail-function 'smtpmail-send-it
 
-	message-cite-function 'message-cite-original-without-signature ;;引用设置：不要原来的签名，引用全文
+	    message-cite-function 'message-cite-original-without-signature ;;引用设置：不要原来的签名，引用全文
 
-	message-kill-buffer-on-exit t
-	message-elide-ellipsis "[...]\n"
-	)
+	    message-kill-buffer-on-exit t
+	    message-elide-ellipsis "[...]\n"
+	    )
 
   (add-hook 'mail-citation-hook 'sc-cite-original)
   ;;写消息时如何打开自动折行 (word-wrap) ？
   ;; (add-hook 'message-mode-hook
   ;; 			(lambda ()
-  ;; 			  (setq fill-column 80)
   ;; 			  (turn-on-auto-fill)))
   )
 
@@ -71,17 +70,17 @@
   :config
   (use-package mu4e-vars
     :defines (mu4e-maildir
-	      mu4e-trash-folder
-	      mu4e-refile-folder
-	      mu4e-sent-folder
-	      mu4e-drafts-folder
-	      mu4e-get-mail-command
-	      mu4e-update-interval
-	      mu4e-view-show-images
-	      mu4e-maildir-shortcuts
-	      mu4e-bookmarks
-	      mu4e-compose-parent-message
-	      mu4e-completing-read-function)
+	          mu4e-trash-folder
+	          mu4e-refile-folder
+	          mu4e-sent-folder
+	          mu4e-drafts-folder
+	          mu4e-get-mail-command
+	          mu4e-update-interval
+	          mu4e-view-show-images
+	          mu4e-maildir-shortcuts
+	          mu4e-bookmarks
+	          mu4e-compose-parent-message
+	          mu4e-completing-read-function)
     :init
     (setq
      mu4e-maildir "~/Maildir"
@@ -95,38 +94,38 @@
      )
 
     (setq mu4e-bookmarks
-	  `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
-	    ("date:today..now" "Today's messages" ?t)
-	    ("date:7d..now" "Last 7 days" ?w)
-	    ("mime:image/*" "Messages with images" ?p)
-	    (,(mapconcat 'identity
-			 (mapcar
-			  (lambda (maildir)
-			    (concat "maildir:" (car maildir)))
-			  mu4e-maildir-shortcuts) " OR ")
-	     "All inboxes" ?i)))
+	      `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
+	        ("date:today..now" "Today's messages" ?t)
+	        ("date:7d..now" "Last 7 days" ?w)
+	        ("mime:image/*" "Messages with images" ?p)
+	        (,(mapconcat 'identity
+			             (mapcar
+			              (lambda (maildir)
+			                (concat "maildir:" (car maildir)))
+			              mu4e-maildir-shortcuts) " OR ")
+	         "All inboxes" ?i)))
 
     (setq mu4e-completing-read-function 'completing-read)
     )
 
   (use-package mu4e-message
     :defines (mu4e-view-show-addresses
-	      mu4e-view-prefer-html
-	      mu4e-html2text-command)
+	          mu4e-view-prefer-html
+	          mu4e-html2text-command)
     :init
     (setq mu4e-view-show-addresses t
-	  mu4e-view-prefer-html t)
+	      mu4e-view-prefer-html t)
 
     (defun my-render-html-message ()
       (let ((dom (libxml-parse-html-region (point-min) (point-max))))
-	(erase-buffer)
-	(shr-insert-document dom)
-	(goto-char (point-min))))
+	    (erase-buffer)
+	    (shr-insert-document dom)
+	    (goto-char (point-min))))
     (setq mu4e-html2text-command 'my-render-html-message))
 
   (use-package mu4e-draft
     :defines (mu4e-compose-signature
-	      mu4e-compose-signature-auto-include)
+	          mu4e-compose-signature-auto-include)
     :init
     (setq
      mu4e-compose-signature-auto-include nil))
@@ -137,13 +136,13 @@
     :init
     (setq org-mu4e-convert-to-html nil)
     (add-hook 'mu4e-compose-mode-hook
-	      'org-mu4e-compose-org-mode))
+	          'org-mu4e-compose-org-mode))
 
   (use-package mu4e-view
     :defines (mu4e-view-actions)
     :init
     (add-to-list 'mu4e-view-actions
-		 '("View in browser" . mu4e-action-view-in-browser) t))
+		         '("View in browser" . mu4e-action-view-in-browser) t))
 
   (use-package mu4e-alert
     :ensure t
