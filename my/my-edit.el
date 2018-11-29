@@ -995,7 +995,6 @@ This functions should be added to the hooks of major modes for programming."
   :commands iedit-mode
   :bind (("C-;" . iedit-mode))
   :init
-  (setq iedit-log-level 0)
   (setq iedit-toggle-key-default nil)
   (add-hook 'iedit-mode-hook
             '(lambda ()
@@ -1227,8 +1226,7 @@ FILENAME is deleted using `my/delete-file' function.."
   "Remove file connected to current buffer and kill buffer."
   (interactive)
   (let ((filename (buffer-file-name))
-        (buffer (current-buffer))
-        (name (buffer-name)))
+        (buffer (current-buffer)))
     (if (not (and filename (file-exists-p filename)))
         (kill-buffer)
       (when (yes-or-no-p (format "Are you sure you want to delete %s? " filename))

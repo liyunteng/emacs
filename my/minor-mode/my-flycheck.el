@@ -23,25 +23,19 @@
 ;;
 
 ;;; Code:
-
 (use-package flycheck
   :ensure t
-  :bind (:map flycheck-mode-map
-	      ("C-c ! L" . my/flycheck-error-list-and-switch)
-	      ("C-c ! C-l" . my/flycheck-error-list-and-switch))
+  :bind ((:map flycheck-mode-map
+	       ("C-c ! L" . my/flycheck-error-list-and-switch)
+	       ("C-c ! C-l" . my/flycheck-error-list-and-switch)))
   :init
-  ;; (let ((temp-dir (expand-file-name "flycheck" my-cache-dir)))
-  ;;   (unless (file-directory-p temp-dir)
-  ;;     (make-directory temp-dir))
-  ;;   (setq flycheck-temp-prefix (concat temp-dir "/flycheck")))
   (setq flycheck-mode-line-prefix "flycheck")
-  (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
+  ;; (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
 
   (defcustom syntax-checking-use-original-bitmaps nil
     "Use flycheck bitmaps."
     :type 'boolean
     :group 'my-config)
-
   (when (and (fboundp 'define-fringe-bitmap)
              (not syntax-checking-use-original-bitmaps))
     (define-fringe-bitmap 'my-flycheck-fringe-indicator
@@ -82,9 +76,9 @@
         :fringe-bitmap bitmap
         :fringe-face 'flycheck-fringe-info)))
 
+
   (add-hook 'after-init-hook 'global-flycheck-mode)
 
-  :config
   (when (display-graphic-p)
     (use-package flycheck-pos-tip
       :ensure t

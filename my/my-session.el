@@ -173,7 +173,7 @@
   :ensure t
   :diminish super-save-mode
   :init
-  (super-save-mode +1)
+  (add-hook 'after-init-hook 'super-save-mode)
   :config
   (add-to-list 'super-save-triggers 'dired-jump)
   (add-to-list 'super-save-triggers 'dired-jump-other-window))

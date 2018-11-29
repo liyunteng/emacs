@@ -47,7 +47,7 @@
     my-jump
     my-smartparens
     my-flyspell
-    ;; my-flycheck
+    my-flycheck
     my-yas
     my-ac
     ;; my-auto-complete
