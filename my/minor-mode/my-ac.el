@@ -66,11 +66,11 @@
       :ensure t
       :bind
       (:map company-active-map
-	    ("C-h"  . company-quickhelp-manual-begin))
+	    ("C-h"  . company-quickhelp-mode))
       :init
       ;; maybe crash
       ;; (setq company-quickhelp-delay 1)
-      ;; (setq company-quickhelp-max-lines 30)
+      (setq company-quickhelp-max-lines 30)
       (company-quickhelp-mode 1)
       ))
 
@@ -122,21 +122,21 @@
 
   ;; Suspend page-break-lines-mode while company menu is active
   ;; (see https://github.com/company-mode/company-mode/issues/416)
-  (after-load 'page-break-lines-mode
-    (defvar my/page-break-lines-on-p nil)
-    (make-variable-buffer-local 'my/page-break-lines-on-p)
+  ;; (after-load 'page-break-lines-mode
+  ;;   (defvar my/page-break-lines-on-p nil)
+  ;;   (make-variable-buffer-local 'my/page-break-lines-on-p)
 
-    (defun my/page-break-lines-disable (&rest ignore)
-      (when (setq my/page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
-	(page-break-lines-mode -1)))
+  ;;   (defun my/page-break-lines-disable (&rest ignore)
+  ;;     (when (setq my/page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
+  ;;       (page-break-lines-mode -1)))
 
-    (defun my/page-break-lines-maybe-reenable (&rest ignore)
-      (when my/page-break-lines-on-p
-	(page-break-lines-mode 1)))
+  ;;   (defun my/page-break-lines-maybe-reenable (&rest ignore)
+  ;;     (when my/page-break-lines-on-p
+  ;;       (page-break-lines-mode 1)))
 
-    (add-hook 'company-completion-started-hook 'sanityinc/page-break-lines-disable)
-    (add-hook 'company-completion-finished-hook 'sanityinc/page-break-lines-maybe-reenable)
-    (add-hook 'company-completion-cancelled-hook 'sanityinc/page-break-lines-maybe-reenable))
+  ;;   (add-hook 'company-completion-started-hook 'sanityinc/page-break-lines-disable)
+  ;;   (add-hook 'company-completion-finished-hook 'sanityinc/page-break-lines-maybe-reenable)
+  ;;   (add-hook 'company-completion-cancelled-hook 'sanityinc/page-break-lines-maybe-reenable))
   )
 
 ;; copy from spacemacs
@@ -246,10 +246,10 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company web-mode '(company-web))
 
 (my|defvar-company-backends emacs-lisp-mode)
-(my|enable-company emacs-lisp-mode '(company-capf company-elisp))
+(my|enable-company emacs-lisp-mode '((company-capf company-elisp)))
 
 (my|defvar-company-backends lisp-interaction-mode)
-(my|enable-company lisp-interaction-mode '(company-capf company-elisp))
+(my|enable-company lisp-interaction-mode '((company-capf company-elisp)))
 
 (my|defvar-company-backends java-mode)
 (my|enable-company java-mode '(company-eclim))

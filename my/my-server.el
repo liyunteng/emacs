@@ -28,9 +28,7 @@
   :commands (server-running-p
 	     server-mode)
   :init
-  (unless (server-running-p)
-    (server-mode t))
-  :config
+
   ;; (setq-default noninteractive t)
 
   ;; (setq server-host "127.0.0.1"
@@ -67,6 +65,7 @@ and file 'filename' will be opened and cursor set on line 'linenumber'"
 				       (string-to-number (or (match-string 3 name) ""))))
 			      fn))) files)))
 
+  (or (server-running-p) (server-mode t))
   )
 
 (provide 'my-server)

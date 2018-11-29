@@ -34,7 +34,7 @@
   ;;   (unless (file-directory-p temp-dir)
   ;;     (make-directory temp-dir))
   ;;   (setq flycheck-temp-prefix (concat temp-dir "/flycheck")))
-
+  (setq flycheck-mode-line-prefix "flycheck")
   (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
 
   (defcustom syntax-checking-use-original-bitmaps nil

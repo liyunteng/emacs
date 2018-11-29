@@ -39,7 +39,7 @@
 (setq-default x-select-enable-clipboard t)
 
 ;; smooth scrolling
-(setq scroll-margin 3
+(setq scroll-margin 2
       scroll-conservatively 100000
       scroll-preserve-screen-position t)
 
@@ -57,6 +57,9 @@
 
 ;; Show a marker in the left fringe for lines not in the buffer
 (setq indicate-empty-lines t)
+
+;; margin width
+(fringe-mode  '(8 . 0))
 
 ;; message max
 (setq message-log-max 16384)
@@ -92,6 +95,8 @@
 
 ;; add final newline
 (setq-default require-final-newline t)
+
+;; (setq-default recenter-positions '(top middle bottom))
 
 ;; Use system trash for file deletion
 ;; should work on Windows and Linux distros
@@ -828,9 +833,7 @@ This functions should be added to the hooks of major modes for programming."
 (use-package easy-kill
   :ensure t
   :commands (easy-kill easy-mark)
-  :bind (([remap kill-ring-save] . easy-kill)
-         ([remap mark-sexp] . easy-mark))
-  )
+  :bind (([remap kill-ring-save] . easy-kill)))
 
 ;; page-break-lines "s-q C-l"
 (use-package page-break-lines
@@ -962,7 +965,6 @@ This functions should be added to the hooks of major modes for programming."
   :bind (("C-h RET" . discover-my-major))
   :ensure t)
 
-;; symbol-overlay
 (use-package symbol-overlay
   :ensure t
   :diminish symbol-overlay-mode
@@ -987,6 +989,19 @@ This functions should be added to the hooks of major modes for programming."
                       :foreground
                       (face-attribute 'isearch
                                       :foreground)))
+
+(use-package iedit
+  :ensure t
+  :commands iedit-mode
+  :bind (("C-;" . iedit-mode))
+  :init
+  (setq iedit-log-level 0)
+  (setq iedit-toggle-key-default nil)
+  (add-hook 'iedit-mode-hook
+            '(lambda ()
+               (define-key iedit-occurrence-keymap (kbd "M-n") 'iedit-next-occurrence)
+               (define-key iedit-occurrence-keymap (kbd "M-p") 'iedit-prev-occurrence))))
+
 ;; multi major mode
 (use-package mmm-mode
   :ensure t

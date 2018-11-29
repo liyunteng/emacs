@@ -36,6 +36,7 @@
 
 (message "Emacs is Loading ...")
 (add-to-list 'load-path (expand-file-name "my" user-emacs-directory))
-(require 'my-init) 
+(require 'my-debug)
+(require 'my-init)
 
 ;;; init.el ends here

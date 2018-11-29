@@ -33,8 +33,7 @@
 ;;   :ensure t
 ;;   :disabled t)
 ;; (use-package monokai-theme
-;;   :ensure t
-;;   :disabled t)
+;;   :ensure t)
 (require 'color)
 
 (use-package zenburn-theme
@@ -81,21 +80,22 @@
   (setq zenburn-override-colors-alist my-zenburn-override-colors-alist))
 
 (use-package color-theme-sanityinc-solarized
-  :disabled
   :ensure t
   :defer t)
 (use-package color-theme-sanityinc-tomorrow
-  :disabled
   :ensure t
   :defer t)
-
+(use-package eclipse-theme
+  :ensure t)
 
 (defcustom my-theme 'zenburn
   "My theme."
   :type 'string
   :group 'my-config)
 
-(load-theme my-theme t)
+(setq my-theme 'zenburn)
+(when (display-graphic-p)
+  (load-theme my-theme t))
 
 (provide 'my-themes)
 ;;; my-themes.el ends here

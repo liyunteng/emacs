@@ -61,6 +61,8 @@
   (require 'smartparens-config)
   ;; (sp-use-paredit-bindings)
   (sp-use-smartparens-bindings)
+  (diminish 'smartparens-mode
+            '(" sp" (:eval (if smartparens-strict-mode "/s"))))
 
   (defun my--conditionally-enable-smartparens-mode ()
     "Enable `smartparens-mode' in the minibuffer, during `eval-expression'."

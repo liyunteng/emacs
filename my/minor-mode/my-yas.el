@@ -31,8 +31,8 @@
   ;; :bind
   ;; (:map yas-minor-mode-map ("TAB" . yas-expand))
   :init
-  ;; (setq yas-triggers-in-field t
-  ;; 		yas-wrap-around-region t)
+  (setq yas-triggers-in-field t
+  	yas-wrap-around-region t)
   ;; (setq yas-prompt-functions '(yas-completing-prompt))
 
   (my|add-toggle yas-minor-mode
@@ -43,7 +43,6 @@
   (use-package yasnippet-snippets
     :ensure t
     :defer t)
-  (yas-global-mode +1)
 
   :config
   ;; (dolist (hook '(prog-mode-hook
@@ -70,6 +69,7 @@
   ;; 	:ensure t)
   ;; (setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))
   (yas-reload-all)
+  (yas-global-mode +1)
   ;; (add-hook 'after-init-hook 'yas-reload-all)
 
   )

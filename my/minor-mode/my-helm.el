@@ -125,33 +125,34 @@
     :ensure t
     :bind
     (("M-s i" . helm-swoop)
+     ("M-s I" . helm-swoop-back-to-last-point)
      ("M-s M-i" . helm-multi-swoop)
+     ("M-s M-I" . helm-multi-swoop-all)
      :map helm-swoop-map
      ("C-w" . backward-kill-word))
-    :config
-    (defun my/helm-swoop-region-or-symbol ()
-      "Call `helm-swoop' with default input."
-      (interactive)
-      (let ((helm-swoop-pre-input-function
-	     (lambda ()
-	       (if (region-active-p)
-		   (buffer-substring-no-properties (region-beginning)
-						   (region-end))
-		 (let ((thing (thing-at-point 'symbol t)))
-		   (if thing thing ""))))))
-	(call-interactively 'helm-swoop)))
 
+    :init
     (setq helm-multi-swoop-edit-save t
 	  helm-swoop-split-with-multiple-windows t
 	  helm-swoop-split-direction 'split-window-vertically
 	  helm-swoop-speed-or-color t
-	  helm-swoop-split-window-function 'helm-default-display-buffer
-	  helm-swoop-pre-input-function (lambda () "")))
+	  ;; helm-swoop-split-window-function 'helm-default-display-buffer
+          )
+    :config
+    (defun my--helm-swoop-region-or-symbol ()
+      (if (region-active-p)
+	  (buffer-substring-no-properties (region-beginning)
+					  (region-end))
+	(let ((thing (thing-at-point 'symbol t)))
+	  (if thing thing ""))))
+    (setq helm-swoop-pre-input-function (lambda ()))
+    ;; (setq helm-swoop-pre-input-function (lambda () (thing-at-point 'symbol)))
+    )
 
   (setq helm-split-window-inside-p t
         helm-mode-fuzzy-match t
         helm-M-x-fuzzy-match t
-	helm-buffers-fuzzy-matching nil
+        helm-buffers-fuzzy-matching nil
         helm-recentf-fuzzy-match nil
         helm-imenu-fuzzy-match nil
         helm-semantic-fuzzy-match nil
@@ -159,21 +160,21 @@
         ;; helm-apropos-fuzzy-match t
         ;; helm-lisp-fuzzy-completion t
 
-	helm-move-to-line-cycle-in-source t
-	helm-ff-search-library-in-sexp t
-	helm-ff-file-compressed-list t
-	helm-ff-file-name-history-use-recentf t
-	helm-scroll-amount 8
-	helm-echo-input-in-header-line nil
-	helm-display-header-line t
-	helm-always-two-windows t
-	helm-org-headings-fontify t
+        helm-move-to-line-cycle-in-source t
+        helm-ff-search-library-in-sexp t
+        helm-ff-file-compressed-list t
+        helm-ff-file-name-history-use-recentf t
+        helm-scroll-amount 8
+        helm-echo-input-in-header-line nil
+        helm-display-header-line nil
+        helm-always-two-windows t
+        helm-org-headings-fontify t
 
-	helm-buffer-skip-remote-checking t
-	helm-bookmark-show-location t
+        helm-buffer-skip-remote-checking t
+        helm-bookmark-show-location t
         helm-mode-reverse-history t
         helm-M-x-reverse-history nil
-	)
+        )
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
   (when (executable-find "curl")
@@ -232,17 +233,16 @@
   (define-key helm-command-prefix (kbd "m") 'helm-man-woman)
   (define-key helm-command-prefix (kbd "u") 'my/resume-last-search-buffer)
 
+
   (define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)
 
-  ;; swap <tab> and C-z
-  ;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-  ;; (define-key helm-map (kbd "C-z") 'helm-select-action)
-
+  (define-key helm-map (kbd "C-z") 'helm-toggle-suspend-update)
   (define-key helm-map (kbd "C-w") 'backward-kill-word)
   (define-key helm-map (kbd "C-y") 'helm-yank-text-at-point)
   (define-key helm-map (kbd "C-M-y") 'yank)
   ;; disable helm-select-action
-  ;; (define-key helm-map (kbd "C-i") nil)
+  (define-key helm-map (kbd "C-i") nil)
+  (define-key helm-map (kbd "M-x") 'helm-select-action)
 
   (defun my/helm-faces ()
     "Describe face."

@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-(require 'my-debug)
 (require 'my-load-path)
 
 (defconst my-modules
@@ -48,7 +47,7 @@
     my-jump
     my-smartparens
     my-flyspell
-    my-flycheck
+    ;; my-flycheck
     my-yas
     my-ac
     ;; my-auto-complete

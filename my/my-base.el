@@ -78,10 +78,11 @@
 ;;所有的备份文件转移到Backup目录下
 (when make-backup-files
   (setq save-silently t
-	version-control t
+	version-control nil
 	kept-old-versions 2
 	kept-new-versions 2
 	delete-old-versions t
+        create-lockfiles nil
 	backup-by-copying t))
 
 ;; replaced by super-save
