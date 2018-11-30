@@ -27,15 +27,15 @@
 (use-package ido
   :bind
   (:map ido-completion-map
-	("C-k" . ido-delete-file-at-head)
-	("C-w" . ido-delete-backward-word-updir)
-	("C-o" . ido-copy-current-file-name)
-	("C-f" . ido-magic-forward-char)
-	("C-l" . ido-toggle-case)
-	;; ("C-p" . previous-history-element)
-	;; ("C-n" . next-history-element)
-	("C-y" . ido-copy-current-word)
-	("C-t" . ido-toogle-regexp))
+	    ("C-k" . ido-delete-file-at-head)
+	    ("C-w" . ido-delete-backward-word-updir)
+	    ("C-o" . ido-copy-current-file-name)
+	    ("C-f" . ido-magic-forward-char)
+	    ("C-l" . ido-toggle-case)
+	    ;; ("C-p" . previous-history-element)
+	    ;; ("C-n" . next-history-element)
+	    ("C-y" . ido-copy-current-word)
+	    ("C-t" . ido-toogle-regexp))
 
   :init
   (ido-mode t)

@@ -26,8 +26,8 @@
 (use-package flycheck
   :ensure t
   :bind ((:map flycheck-mode-map
-	       ("C-c ! L" . my/flycheck-error-list-and-switch)
-	       ("C-c ! C-l" . my/flycheck-error-list-and-switch)))
+	           ("C-c ! L" . my/flycheck-error-list-and-switch)
+	           ("C-c ! C-l" . my/flycheck-error-list-and-switch)))
   :init
   (setq flycheck-mode-line-prefix "flycheck")
   ;; (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
@@ -58,8 +58,8 @@
        #b00000000
        #b00000000))
     (let ((bitmap (if syntax-checking-use-original-bitmaps
-        	      'flycheck-fringe-bitmap-double-arrow
-        	    'my-flycheck-fringe-indicator)))
+        	          'flycheck-fringe-bitmap-double-arrow
+        	        'my-flycheck-fringe-indicator)))
       (flycheck-define-error-level 'error
         :severity 2
         :overlay-category 'flycheck-error-overlay

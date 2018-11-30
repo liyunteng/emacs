@@ -70,18 +70,18 @@ Example:
   (interactive)
   (catch 'done
     (let ((old-buffer (current-buffer))
-	  (old-point (point))
-	  (marker (point-marker))
-	  )
+	      (old-point (point))
+	      (marker (point-marker))
+	      )
       (dolist (-handler my-jump-handlers)
-	(let ((handler (if (listp -handler) (car -handler) -handler)))
-	  (ignore-errors
-	    (call-interactively handler))
-	  (when (or
-		 (not (eq old-point (point)))
-		 (not (equal old-buffer (current-buffer))))
-	    (ring-insert my-jump-mark-ring marker)
-	    (throw 'done t)))))
+	    (let ((handler (if (listp -handler) (car -handler) -handler)))
+	      (ignore-errors
+	        (call-interactively handler))
+	      (when (or
+		         (not (eq old-point (point)))
+		         (not (equal old-buffer (current-buffer))))
+	        (ring-insert my-jump-mark-ring marker)
+	        (throw 'done t)))))
     (message "No jump handler was able to find this symbol.")
     ))
 
@@ -99,11 +99,11 @@ Example:
     (user-error "Jump mark ring is empty"))
   (let ((marker (ring-remove my-jump-mark-ring 0)))
     (switch-to-buffer (or (marker-buffer marker)
-			  (user-error "The marked buffer has been deleted")))
+			              (user-error "The marked buffer has been deleted")))
     (goto-char (marker-position marker))
     (set-marker marker nil nil)
     (if (> (length (window-list)) 1)
-	(delete-window))))
+	    (delete-window))))
 
 
 ;; (my|define-jump-handlers lisp-interaction-mode elisp-slime-nav-find-elisp-thing-at-point)

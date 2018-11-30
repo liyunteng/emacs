@@ -32,25 +32,25 @@
   :ensure t
   :bind
   (:map company-mode-map
-	("C-M-/" . company-other-backend)
-	("C-M-?" . company-begin-backend)
-	("M-SPC" . company-other-backend)
-	("M-/" . hippie-expand)
-	;; ("TAB" . company-indent-or-complete-common)
-	("TAB" . 'indent-for-tab-command)
-	:map company-active-map
-	("TAB" . company-complete-common)
-	("C-w" . nil)
-	("C-l" . company-show-location)
-	("C-n" . company-select-next)
-	("C-p" . company-select-previous)
-	("C-v" . company-next-page)
-	("C-d" . company-show-doc-buffer)
-	("M-v" . company-previous-page)
-	:map company-search-map
-	("C-n" . company-select-next)
-	("C-p" . company-select-previous)
-	)
+	    ("C-M-/" . company-other-backend)
+	    ("C-M-?" . company-begin-backend)
+	    ("M-SPC" . company-other-backend)
+	    ("M-/" . hippie-expand)
+	    ;; ("TAB" . company-indent-or-complete-common)
+	    ("TAB" . 'indent-for-tab-command)
+	    :map company-active-map
+	    ("TAB" . company-complete-common)
+	    ("C-w" . nil)
+	    ("C-l" . company-show-location)
+	    ("C-n" . company-select-next)
+	    ("C-p" . company-select-previous)
+	    ("C-v" . company-next-page)
+	    ("C-d" . company-show-doc-buffer)
+	    ("M-v" . company-previous-page)
+	    :map company-search-map
+	    ("C-n" . company-select-next)
+	    ("C-p" . company-select-previous)
+	    )
   :commands (global-company-mode company-mode)
   :init
   (defalias 'completion-at-point 'company-complete-common)
@@ -66,7 +66,7 @@
       :ensure t
       :bind
       (:map company-active-map
-	    ("C-h"  . company-quickhelp-mode))
+	        ("C-h"  . company-quickhelp-mode))
       :init
       ;; maybe crash
       ;; (setq company-quickhelp-delay 1)
@@ -80,11 +80,11 @@
     (company-assert-enabled)
     (setq company--manual-action t)
     (unwind-protect
-	(let ((company-minimum-prefix-length 1))
-	  (or company-candidates
-	      (company-auto-begin)))
+	    (let ((company-minimum-prefix-length 1))
+	      (or company-candidates
+	          (company-auto-begin)))
       (unless company-candidates
-	(setq company--manual-action nil))))
+	    (setq company--manual-action nil))))
 
   (setq company-show-numbers t
         ;; company-lighter-base "ac"
@@ -109,34 +109,34 @@
      'zenburn
      `(company-tooltip-search
        ((t (:background
-	    ,(color-darken-name (face-attribute 'default :background) 40)
-	    :foreground "red"))))
+	        ,(color-darken-name (face-attribute 'default :background) 40)
+	        :foreground "red"))))
      `(company-tooltip-search-selection
        ((t (:background
-	    ,(color-darken-name (face-attribute 'default :background) 20)
-	    :foreground "red" :weight bold))))
+	        ,(color-darken-name (face-attribute 'default :background) 20)
+	        :foreground "red" :weight bold))))
      `(company-template-field
        ((t (:background
-	    ,(color-darken-name (face-attribute 'default :background) 10)))))
+	        ,(color-darken-name (face-attribute 'default :background) 10)))))
      ))
 
   ;; Suspend page-break-lines-mode while company menu is active
   ;; (see https://github.com/company-mode/company-mode/issues/416)
-  ;; (after-load 'page-break-lines-mode
-  ;;   (defvar my/page-break-lines-on-p nil)
-  ;;   (make-variable-buffer-local 'my/page-break-lines-on-p)
+  (when (boundp 'page-break-lines-mode)
+    (defvar my---page-break-lines-on-p nil)
+    (make-variable-buffer-local 'my--page-break-lines-on-p)
 
-  ;;   (defun my/page-break-lines-disable (&rest ignore)
-  ;;     (when (setq my/page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
-  ;;       (page-break-lines-mode -1)))
+    (defun my--page-break-lines-disable (&rest ignore)
+      (when (setq my--page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
+        (page-break-lines-mode -1)))
 
-  ;;   (defun my/page-break-lines-maybe-reenable (&rest ignore)
-  ;;     (when my/page-break-lines-on-p
-  ;;       (page-break-lines-mode 1)))
+    (defun my--page-break-lines-maybe-reenable (&rest ignore)
+      (when my--page-break-lines-on-p (page-break-lines-mode 1)))
 
-  ;;   (add-hook 'company-completion-started-hook 'sanityinc/page-break-lines-disable)
-  ;;   (add-hook 'company-completion-finished-hook 'sanityinc/page-break-lines-maybe-reenable)
-  ;;   (add-hook 'company-completion-cancelled-hook 'sanityinc/page-break-lines-maybe-reenable))
+    (add-hook 'company-completion-started-hook 'my--page-break-lines-disable)
+    (add-hook 'company-completion-finished-hook 'my--page-break-lines-maybe-reenable)
+    (add-hook 'company-completion-cancelled-hook 'my--page-break-lines-maybe-reenable))
+
   )
 
 ;; copy from spacemacs
@@ -162,7 +162,7 @@ The variable name format is company-backends-MODE."
 
 (defun my--show-snippets-in-company (backend)
   (if (or (not company-enable-snippets-in-popup)
-	  (and (listp backend) (member 'company-yasnippet backend)))
+	      (and (listp backend) (member 'company-yasnippet backend)))
       backend
     (append
      (if (consp backend) backend (list backend))
@@ -175,18 +175,18 @@ The variable name format is company-backends-MODE."
 MODE must match the symbol passed in `my|defvar-company-backends'.
 The initialization function is hooked to `MODE-hook'."
   (let ((mode-hook (intern (format "%S-hook" mode)))
-	(func (intern (format "my--init-company-%S" mode)))
-	(backend-list (intern (format "company-backends-%S" mode))))
+	    (func (intern (format "my--init-company-%S" mode)))
+	    (backend-list (intern (format "company-backends-%S" mode))))
     `(progn
        (defun ,func ()
-	 ,(format "Initialize company for %S" mode)
-	 ;; add yasnippet to every backend
-	 ;; (when company-enable-snippets-in-popup
-	 ;;   (setq ,backend-list (mapcar 'my--show-snippets-in-company
-	 ;;   							   ,backend-list))
-	 ;;   )
-	 (set (make-variable-buffer-local 'company-backends)
-	      ,backend-list))
+	     ,(format "Initialize company for %S" mode)
+	     ;; add yasnippet to every backend
+	     ;; (when company-enable-snippets-in-popup
+	     ;;   (setq ,backend-list (mapcar 'my--show-snippets-in-company
+	     ;;   							   ,backend-list))
+	     ;;   )
+	     (set (make-variable-buffer-local 'company-backends)
+	          ,backend-list))
        (setq ,backend-list (append ,backends ,backend-list))
        (add-hook ',mode-hook ',func t)
        (add-hook ',mode-hook 'company-mode t))))
@@ -196,7 +196,7 @@ The initialization function is hooked to `MODE-hook'."
 MODE parameter must match the parameter used in the call to
 `my|enable-company'."
   (let ((mode-hook (intern (format "%S-hook" mode)))
-	(func (intern (format "my--init-company-%S" mode))))
+	    (func (intern (format "my--init-company-%S" mode))))
     `(progn
        (remove-hook ',mode-hook ',func)
        (remove-hook ',mode-hook 'company-mode))))
@@ -221,7 +221,7 @@ MODE parameter must match the parameter used in the call to
   :ensure t
   :defer t
   :commands (company-shell
-	     company-shell-env))
+	         company-shell-env))
 (my|defvar-company-backends sh-mode)
 (my|enable-company sh-mode '(company-shell company-shell-env))
 

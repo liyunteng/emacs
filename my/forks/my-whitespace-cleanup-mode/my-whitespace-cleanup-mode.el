@@ -38,8 +38,8 @@
 
   :group 'whitespace-cleanup-mode
   :type '(choice (const :tag "all whitespace" 'all)
-		 (const :tag "trailing whitespace" 'trailing)
-		 (const :tag "changed lines" 'changed)))
+		         (const :tag "trailing whitespace" 'trailing)
+		         (const :tag "changed lines" 'changed)))
 
 ;;;###autoload
 (define-minor-mode whitespace-cleanup-mode

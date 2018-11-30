@@ -128,7 +128,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (defun my/frame-opacity-adjust (inc)
   (interactive "p")
   (let ((ev last-command-event)
-        (echo-keystrokes nil))
+        (echo-keystrokes t))
     (let* ((base (event-basic-type ev))
            (step (pcase base
                    ((or ?+ ?=) (* 5 inc))
@@ -136,7 +136,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
                    (?0 100)
                    (_ inc))))
       (my--adjust-opacity nil step))
-    (message "Use +,-,0 for further adjustment")
+    (and echo-keystrokes
+         (message "Use +,-,0 for further adjustment"))
     (set-transient-map
      (let ((map (make-sparse-keymap)))
        (dolist (mods '(() (control)))
@@ -268,16 +269,16 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   :config
   (setq speedbar-show-unknown-files t)
   (setq speedbar-tag-hierarchy-method
-	'(speedbar-prefix-group-tag-hierarchy))
+	    '(speedbar-prefix-group-tag-hierarchy))
 
   (speedbar-add-supported-extension ".go")
   (add-hook 'speedbar-mode-hook
-	    (lambda ()
-	      (auto-raise-mode t)
-	      (setq dframe-update-speed 1)
-	      ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
-	      ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
-	      )))
+	        (lambda ()
+	          (auto-raise-mode t)
+	          (setq dframe-update-speed 1)
+	          ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
+	          ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
+	          )))
 
 (global-set-key (kbd "<f11>") 'toggle-frame-fullscreen)
 (global-set-key (kbd "M-<f11>") 'toggle-frame-maximized)

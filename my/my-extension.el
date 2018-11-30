@@ -373,12 +373,9 @@
 
 ;; make useless word
 (use-package lorem-ipsum
-  :ensure t)
-
-;; (use-package lorem-ipsum
-;;   :ensure
-;;   :init
-;;   (lorem-ipsum-use-default-bindings))
+  :ensure
+  :init
+  (lorem-ipsum-use-default-bindings))
 
 ;; GTAGS
 ;; (use-package ggtags

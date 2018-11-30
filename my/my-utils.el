@@ -109,6 +109,28 @@ ARGS if MSG is format-string ARGS contain message."
   (let ((message-log-max nil))
     (apply #'message msg args)))
 
+(defun my/indent-file (filename)
+  "Indent FILENAME"
+  (interactive "f")
+  (if (file-exists-p filename)
+      (progn
+        (find-file filename)
+        (indent-region (point-min) (point-max))
+        (save-buffer)
+        (kill-buffer nil))
+    (user-error "Invalid filename %s" filename)))
+
+(defun my--indent-directory (dir regex)
+  "Indent Directory."
+  (interactive "D")
+  (if(and (file-exists-p dir))
+      (dolist (file (directory-files-recursively dir regex))
+        (my/indent-file file))
+    (user-error "Invalid directory %s" dir)))
+
+(defun my/indent-my-emacs-lisp ()
+  (interactive)
+  (my--indent-directory my-dir ".*.el"))
 
 
 (defun my-mplist-get (plist prop)
@@ -278,9 +300,13 @@ Exaple:
    (my|advise-commands \"abc\" (proced) before (message \"from advise\"))"
   `(progn
      ,@(mapcar (lambda (command)
-		 `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
-		    ,@body))
-	       commands)))
+		         `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
+		            ,@body))
+	           commands)))
 
 (provide 'my-utils)
 ;;; my-utils.el ends here
+
+;; Local Variables:
+;; compile-command: "make -k "
+;; End:

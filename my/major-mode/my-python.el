@@ -33,14 +33,14 @@
     :commands (elpy-mode)
     :bind
     (:map elpy-mode-map
-	  ("C-c C-d" . elpy-doc)
-	  ;; ("C-c C-j" . elpy-goto-definition)
-	  ;; ("C-c C-J" . elpy-goto-definition-other-window)
+	      ("C-c C-d" . elpy-doc)
+	      ;; ("C-c C-j" . elpy-goto-definition)
+	      ;; ("C-c C-J" . elpy-goto-definition-other-window)
 
-	  ("C-c C-q" . my/elpy-shell-kill)
-	  ("C-c C-Q" . my/elpy-shell-kill-all)
-	  ;; ("C-c C-k" . kill-region)
-	  )
+	      ("C-c C-q" . my/elpy-shell-kill)
+	      ("C-c C-Q" . my/elpy-shell-kill-all)
+	      ;; ("C-c C-k" . kill-region)
+	      )
     :init
     (setq elpy-shell-echo-input nil)
     (defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
@@ -55,8 +55,8 @@
 
     (when (executable-find "ipython")
       (progn (setq python-shell-interpreter "ipython"
-		   python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i")
-	     (add-to-list 'my-python-elpy-dependency "ipython")))
+		           python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i")
+	         (add-to-list 'my-python-elpy-dependency "ipython")))
 
     (defun my/elpy-shell-kill ()
       "My elpy shell kill."
@@ -70,35 +70,35 @@
 
     :config
     (setq elpy-modules '(elpy-module-sane-defaults
-			 elpy-module-eldoc
-			 elpy-module-flymake
-			 elpy-module-pyvenv
-			 elpy-module-yasnippet
-			 elpy-module-django))
+			             elpy-module-eldoc
+			             elpy-module-flymake
+			             elpy-module-pyvenv
+			             elpy-module-yasnippet
+			             elpy-module-django))
 
     (defun my-install-python-virtualenv ()
       "My install python virtualenv."
       (if (or (not (file-exists-p my-python-virtualenv-dir))
-	      (not (file-exists-p my-python-virtualenv-workon-dir)))
-	  (progn
-	    (let ((virtualenvbin (executable-find "virtualenv")))
-	      (if (null virtualenvbin)
-		  (message "virtualenv not found, please install virtualenv")
-		(message "%s %s ..." virtualenvbin my-python-virtualenv-workon-dir)
-		(shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir) nil)
+	          (not (file-exists-p my-python-virtualenv-workon-dir)))
+	      (progn
+	        (let ((virtualenvbin (executable-find "virtualenv")))
+	          (if (null virtualenvbin)
+		          (message "virtualenv not found, please install virtualenv")
+		        (message "%s %s ..." virtualenvbin my-python-virtualenv-workon-dir)
+		        (shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir) nil)
 
-		(setenv "WORKON_HOME" my-python-virtualenv-dir)
-		(pyvenv-workon my-python-virtualenv-workon-name)
-		(let ((install-cmd (or (executable-find "pip")
-				       (executable-find "easy_install"))))
-		  (if install-cmd
-		      (mapc (lambda (n)
-			      (message "%s installing %s ..." install-cmd n)
-			      (shell-command (format "%s install %s" install-cmd n) nil))
-			    my-python-elpy-dependency)
-		    (message "pip/easy_install not found, please install pip/easy_install")))
-		(elpy-rpc-restart)
-		(message "Done"))))))
+		        (setenv "WORKON_HOME" my-python-virtualenv-dir)
+		        (pyvenv-workon my-python-virtualenv-workon-name)
+		        (let ((install-cmd (or (executable-find "pip")
+				                       (executable-find "easy_install"))))
+		          (if install-cmd
+		              (mapc (lambda (n)
+			                  (message "%s installing %s ..." install-cmd n)
+			                  (shell-command (format "%s install %s" install-cmd n) nil))
+			                my-python-elpy-dependency)
+		            (message "pip/easy_install not found, please install pip/easy_install")))
+		        (elpy-rpc-restart)
+		        (message "Done"))))))
 
     (my-install-python-virtualenv)
     (pyvenv-workon my-python-virtualenv-workon-name)
@@ -118,7 +118,7 @@
     ;; 						   'after)))))
     (when (fboundp #'python-imenu-create-index)
       (setq-local imenu-create-index-function
-		  #'python-imenu-create-index))
+		          #'python-imenu-create-index))
     ;; (add-hook 'post-self-insert-hook
     ;; 		  #'electric-layout-post-self-insert-function nil 'local)
     ;; (add-hook 'completion-at-point-functions

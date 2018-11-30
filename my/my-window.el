@@ -49,7 +49,7 @@
   ;;   (let ((s (concat (int-to-string (window-numbering-get-number window)) " ")))
   ;;     (propertize s 'face 'window-numbering-face)))
   (set-face-attribute 'window-numbering-face nil
-  		      :foreground "orange")
+  		              :foreground "orange")
   (window-numbering-mode +1))
 
 ;; use shift + arrow keys to switch between visible buffers
@@ -155,7 +155,7 @@ If the universal prefix argument is used then kill the buffer too."
          (was-dedicated (window-dedicated-p window)))
     (set-window-dedicated-p window (not was-dedicated))
     (if was-dedicated
-	(setq-local mode-line-process nil)
+	    (setq-local mode-line-process nil)
       (setq-local mode-line-process " [D]"))
     (message "Window %sdedicated to %s"
              (if was-dedicated "no longer " "")

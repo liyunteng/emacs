@@ -53,14 +53,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   (defadvice auto-insert (around check-custom-file-auto-insert activate)
     (when custom-file
       (if (not (equal (buffer-file-name)
-		      custom-file))
-	  ad-do-it)))
+		              custom-file))
+	      ad-do-it)))
   :config
   (use-package time-stamp
     :config
     (defun my/update-time-stamp ()
       (when time-stamp-active
-	(time-stamp)))
+	    (time-stamp)))
     (setq time-stamp-line-limit 15)
     (setq time-stamp-start "Last-Updated:[ \t]+\\\\?[\"<]+")
     (setq time-stamp-format "%04Y/%02m/%02d %02H:%02M:%02S %U")

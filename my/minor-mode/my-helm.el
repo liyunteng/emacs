@@ -38,7 +38,6 @@
          ([remap list-bookmarks] . helm-bookmarks)
          ([remap browse-kill-ring] . helm-show-kill-ring)
          ([remap info] . helm-info)
-         ([remap occur] . helm-occur)
          ([remap find-name-dired] . helm-find)
          ([remap find-tag] . helm-etags-select)
          ("C-c C-j" . helm-imenu)
@@ -107,16 +106,16 @@
   (use-package helm-projectile
     :ensure t
     :commands (helm-projectile-switch-to-buffer
-	       helm-projectile-find-dir
-	       helm-projectile-dired-find-dir
-	       helm-projectile-recentf
-	       helm-projectile-find-file
-	       helm-projectile-grep
-	       helm-projectile
-	       helm-projectile-switch-project)
+	           helm-projectile-find-dir
+	           helm-projectile-dired-find-dir
+	           helm-projectile-recentf
+	           helm-projectile-find-file
+	           helm-projectile-grep
+	           helm-projectile
+	           helm-projectile-switch-project)
     :init
     (setq projectile-switch-project-action 'helm-projectile
-	  projectile-completion-system 'helm)
+	      projectile-completion-system 'helm)
     (helm-projectile-on)
     ;; (add-hook 'after-init-hook 'helm-projectile-on)
     )
@@ -133,18 +132,18 @@
 
     :init
     (setq helm-multi-swoop-edit-save t
-	  helm-swoop-split-with-multiple-windows t
-	  helm-swoop-split-direction 'split-window-vertically
-	  helm-swoop-speed-or-color t
-	  ;; helm-swoop-split-window-function 'helm-default-display-buffer
+	      helm-swoop-split-with-multiple-windows t
+	      helm-swoop-split-direction 'split-window-vertically
+	      helm-swoop-speed-or-color t
+	      ;; helm-swoop-split-window-function 'helm-default-display-buffer
           )
     :config
     (defun my--helm-swoop-region-or-symbol ()
       (if (region-active-p)
-	  (buffer-substring-no-properties (region-beginning)
-					  (region-end))
-	(let ((thing (thing-at-point 'symbol t)))
-	  (if thing thing ""))))
+	      (buffer-substring-no-properties (region-beginning)
+					                      (region-end))
+	    (let ((thing (thing-at-point 'symbol t)))
+	      (if thing thing ""))))
     (setq helm-swoop-pre-input-function (lambda ()))
     ;; (setq helm-swoop-pre-input-function (lambda () (thing-at-point 'symbol)))
     )
@@ -191,22 +190,22 @@
     "open last helm-ag or hgrep buffer."
     (interactive)
     (cond ((get-buffer "*helm ag results*")
-	   (switch-to-buffer-other-window "*helm ag results*"))
-	  ((get-buffer "*helm-ag*")
-	   (helm-resume "*helm-ag*"))
-	  ((get-buffer "*hgrep*")
-	   (switch-to-buffer-other-window "*hgrep*"))
-	  (t
-	   (message "No previous search buffer found"))))
+	       (switch-to-buffer-other-window "*helm ag results*"))
+	      ((get-buffer "*helm-ag*")
+	       (helm-resume "*helm-ag*"))
+	      ((get-buffer "*hgrep*")
+	       (switch-to-buffer-other-window "*hgrep*"))
+	      (t
+	       (message "No previous search buffer found"))))
 
   (defun my--helm-hide-minibuffer-maybe ()
     (when (with-helm-buffer helm-echo-input-in-header-line)
       (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-	(overlay-put ov 'window (selected-window))
-	(overlay-put ov 'face
-		     (let ((bg-color (face-background 'default nil)))
-		       `(:background ,bg-color :foreground ,bg-color)))
-	(setq-local cursor-type nil))))
+	    (overlay-put ov 'window (selected-window))
+	    (overlay-put ov 'face
+		             (let ((bg-color (face-background 'default nil)))
+		               `(:background ,bg-color :foreground ,bg-color)))
+	    (setq-local cursor-type nil))))
   (add-hook 'helm-minibuffer-set-up-hook 'my--helm-hide-minibuffer-maybe)
 
   (when (executable-find "locate")
@@ -224,6 +223,7 @@
 
   (global-set-key (kbd "C-c h") 'helm-command-prefix)
   (define-key helm-command-prefix (kbd "r") 'helm-recentf)
+  (define-key helm-command-prefix (kbd "o") 'helm-occur)
   (define-key helm-command-prefix (kbd "C-l") 'helm-locateI-library)
   (define-key helm-command-prefix (kbd "i") 'helm-semantic-or-imenu)
   (define-key helm-command-prefix (kbd "I") 'helm-imenu)
@@ -232,6 +232,7 @@
   (define-key helm-command-prefix (kbd "x") 'my/helm-faces)
   (define-key helm-command-prefix (kbd "m") 'helm-man-woman)
   (define-key helm-command-prefix (kbd "u") 'my/resume-last-search-buffer)
+
 
 
   (define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)
@@ -249,8 +250,8 @@
     (interactive)
     (let ((default (or (face-at-point) (thing-at-point 'symbol))))
       (helm :sources (helm-def-source--emacs-faces
-		      (format "%s" (or default "default")))
-	    :buffer "*helm faces*")))
+		              (format "%s" (or default "default")))
+	        :buffer "*helm faces*")))
 
 
   ;;; Save current position to mark ring

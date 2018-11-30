@@ -37,8 +37,8 @@
 (use-package org
   :defer t
   :bind (("C-x c" . org-capture)
-	 ("C-x l" . org-stored-links)
-	 ("C-x a" . org-agenda))
+	     ("C-x l" . org-stored-links)
+	     ("C-x a" . org-agenda))
 
   :config
   (use-package ox
@@ -70,40 +70,40 @@
       ;; TODO: handle errors
       (message "Grabbing %s for org." jar-name)
       (let ((zip-temp (make-temp-name "emacs-ditaa")))
-	(unwind-protect
-	    (progn
-	      (when (executable-find "unzip")
-		(url-copy-file url zip-temp)
-		(shell-command (concat "unzip -p " (shell-quote-argument zip-temp)
-				       " " (shell-quote-argument jar-name) " > "
-				       (shell-quote-argument org-ditaa-jar-path)))))
-	  (when (file-exists-p zip-temp)
-	    (delete-file zip-temp)))))
+	    (unwind-protect
+	        (progn
+	          (when (executable-find "unzip")
+		        (url-copy-file url zip-temp)
+		        (shell-command (concat "unzip -p " (shell-quote-argument zip-temp)
+				                       " " (shell-quote-argument jar-name) " > "
+				                       (shell-quote-argument org-ditaa-jar-path)))))
+	      (when (file-exists-p zip-temp)
+	        (delete-file zip-temp)))))
 
     (unless (and (boundp 'org-ditaa-jar-path)
-		 (file-exists-p org-ditaa-jar-path))
+		         (file-exists-p org-ditaa-jar-path))
       (let ((jar-name "ditaa0_9.jar")
-	    (url "http://jaist.dl.sourceforge.net/project/ditaa/ditaa/0.9/ditaa0_9.zip"))
-	(setq org-ditaa-jar-path (expand-file-name jar-name my-cache-dir))
-	(unless (file-exists-p org-ditaa-jar-path)
-	  (my-grab-ditaa url jar-name)))))
+	        (url "http://jaist.dl.sourceforge.net/project/ditaa/ditaa/0.9/ditaa0_9.zip"))
+	    (setq org-ditaa-jar-path (expand-file-name jar-name my-cache-dir))
+	    (unless (file-exists-p org-ditaa-jar-path)
+	      (my-grab-ditaa url jar-name)))))
 
   (setq org-agenda-files (list
-			  my-org-inbox-file
-			  my-org-task-file
-			  my-org-note-file
-			  my-org-project-file
-			  my-org-finished-file))
+			              my-org-inbox-file
+			              my-org-task-file
+			              my-org-note-file
+			              my-org-project-file
+			              my-org-finished-file))
 
   (setq org-log-done t
-	org-edit-timestamp-down-means-later t
-	org-hide-emphasis-markers t
-	org-catch-invisible-edits 'show
-	org-fast-tag-selection-single-key 'expert
-	org-html-validation-link nil
-	org-tags-column -80
-	org-support-shift-select t
-	)
+	    org-edit-timestamp-down-means-later t
+	    org-hide-emphasis-markers t
+	    org-catch-invisible-edits 'show
+	    org-fast-tag-selection-single-key 'expert
+	    org-html-validation-link nil
+	    org-tags-column -80
+	    org-support-shift-select t
+	    )
 
   (setq org-refile-use-cache nil)
   ;; Targets include this file and any file contributing to the agenda - up to 5 levels deep
@@ -117,121 +117,121 @@
 
   ;;; To-do settings
   (setq org-todo-keywords
-	(quote ((sequence "TODO(t)" "|" "DONE(d!/!)")
-		(sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
-		(sequence "PROJECT(p)" "|" "DONE(d!/!)")
-		(sequence "WAITING(w@/!)" "DELEGATED(e!)" "HOLD(h)")
-		(sequence "|" "CANCELLED(c@/!)")
-		))
-	org-todo-repeat-to-state "NEXT")
+	    (quote ((sequence "TODO(t)" "|" "DONE(d!/!)")
+		        (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
+		        (sequence "PROJECT(p)" "|" "DONE(d!/!)")
+		        (sequence "WAITING(w@/!)" "DELEGATED(e!)" "HOLD(h)")
+		        (sequence "|" "CANCELLED(c@/!)")
+		        ))
+	    org-todo-repeat-to-state "NEXT")
 
   (setq org-todo-keyword-faces
-	(quote (("NEXT" :inherit warning)
-		("PROJECT" :inherit font-lock-string-face))))
+	    (quote (("NEXT" :inherit warning)
+		        ("PROJECT" :inherit font-lock-string-face))))
 
   (setq org-capture-templates
-	`(
-	  ;; ("t" "todo" entry (file+olp (concat org-directory
-	  ;;                                     "/inbox.org") "todo")
-	  ;;  "* TODO %? %T :TODO:\n\n%a\n\n")
+	    `(
+	      ;; ("t" "todo" entry (file+olp (concat org-directory
+	      ;;                                     "/inbox.org") "todo")
+	      ;;  "* TODO %? %T :TODO:\n\n%a\n\n")
 
-	  ("t" "todo" entry (file+olp my-org-task-file "TASKS")
-	   "* TODO %? %T \n  %l\n\n")
+	      ("t" "todo" entry (file+olp my-org-task-file "TASKS")
+	       "* TODO %? %T \n  %l\n\n")
 
-	  ("n" "note" entry (file+olp my-org-note-file "NOTES")
-	   "* %?  %T :NOTE:\n  %l\n\n" :clock-resume t)
+	      ("n" "note" entry (file+olp my-org-note-file "NOTES")
+	       "* %?  %T :NOTE:\n  %l\n\n" :clock-resume t)
 
-	  ("i" "Inbox" entry (file+olp my-org-inbox-file "INBOX")
-	   "* %? %T :INBOX:\n  %l\n" :clock-resume t)
-	  ))
+	      ("i" "Inbox" entry (file+olp my-org-inbox-file "INBOX")
+	       "* %? %T :INBOX:\n  %l\n" :clock-resume t)
+	      ))
 
   (setq org-tag-alist
-	'((:startgroup . nil)
-	  ("@home" . ?h)
-	  ("@work" . ?w)
-	  (:endgroup . nil)
-	  ("NOTE" . ?n)
-	  ("INBOX" . ?p)
-	  ))
+	    '((:startgroup . nil)
+	      ("@home" . ?h)
+	      ("@work" . ?w)
+	      (:endgroup . nil)
+	      ("NOTE" . ?n)
+	      ("INBOX" . ?p)
+	      ))
 
   (let ((active-project-match "-INBOX/PROJECT"))
     (setq org-stuck-projects
-	  `(,active-project-match ("NEXT")))
+	      `(,active-project-match ("NEXT")))
     (setq org-agenda-compact-blocks t
-	  org-agenda-sticky t
-	  org-agenda-start-on-weekday nil
-	  org-agenda-span 'day
-	  org-agenda-include-diary nil
-	  org-agenda-sorting-strategy
-	  '((agenda habit-down time-up user-defined-up effort-up category-keep)
-	    (todo category-up effort-up)
-	    (tags category-up effort-up)
-	    (search category-up))
-	  org-agenda-window-setup 'current-window
-	  org-agenda-custom-commands
-	  `(("n" "Notes"
-	     ((tags "NOTE"
-		    ((org-agenda-overriding-header "NOTES")
-		     (org-tags-match-list-sublevels nil)
-		     (org-agenda-sorting-strategy
-		      '(category-keep))))))
-	    ("g" "GTD"
-	     ((agenda "" nil)
-	      (tags "INBOX"
-		    ((org-agenda-overriding-header "Inbox")
-		     (org-tags-match-list-sublevels nil)))
-	      (stuck ""
-		     ((org-agenda-overriding-header "Stuck Projects")
-		      (org-agenda-tags-todo-honor-ignore-options t)
-		      (org-tags-match-list-sublevels t)
-		      (org-agenda-todo-ignore-scheduled 'future)))
-	      (tags-todo "-INBOX/NEXT"
-			 ((org-agenda-overriding-header "Next Actions")
-			  (org-agenda-tags-todo-honor-ignore-options t)
-			  (org-agenda-todo-ignore-scheduled 'future)
-			  ;; TODO: skip if a parent is WAITING or HOLD
-			  (org-tags-match-list-sublevels t)
-			  (org-agenda-sorting-strategy
-			   '(todo-state-down effort-up category-keep))))
-	      (tags-todo ,active-project-match
-			 ((org-agenda-overriding-header "Projects")
-			  (org-tags-match-list-sublevels t)
-			  (org-agenda-sorting-strategy
-			   '(category-keep))))
-	      (tags-todo "-INBOX/-NEXT"
-			 ((org-agenda-overriding-header "Orphaned Tasks")
-			  (org-agenda-tags-todo-honor-ignore-options t)
-			  (org-agenda-todo-ignore-scheduled 'future)
-			  ;; TODO: skip if a parent is a project
-			  (org-agenda-skip-function
-			   '(lambda ()
-			      (or (org-agenda-skip-subtree-if 'todo '("PROJECT" "HOLD" "WAITING" "DELEGATED"))
-				  (org-agenda-skip-subtree-if 'nottododo '("TODO")))))
-			  (org-tags-match-list-sublevels t)
-			  (org-agenda-sorting-strategy
-			   '(category-keep))))
-	      (tags-todo "/WAITING"
-			 ((org-agenda-overriding-header "Waiting")
-			  (org-agenda-tags-todo-honor-ignore-options t)
-			  (org-agenda-todo-ignore-scheduled 'future)
-			  (org-agenda-sorting-strategy
-			   '(category-keep))))
-	      (tags-todo "/DELEGATED"
-			 ((org-agenda-overriding-header "Delegated")
-			  (org-agenda-tags-todo-honor-ignore-options t)
-			  (org-agenda-todo-ignore-scheduled 'future)
-			  (org-agenda-sorting-strategy
-			   '(category-keep))))
-	      (tags-todo "-INBOX/HOLD"
-			 ((org-agenda-overriding-header "On Hold")
-			  ;; TODO: skip if a parent is WAITING or HOLD
-			  (org-tags-match-list-sublevels nil)
-			  (org-agenda-sorting-strategy
-			   '(category-keep))))
-	      ;; (tags-todo "-NEXT"
-	      ;;            ((org-agenda-overriding-header "All other TODOs")
-	      ;;             (org-match-list-sublevels t)))
-	      )))))
+	      org-agenda-sticky t
+	      org-agenda-start-on-weekday nil
+	      org-agenda-span 'day
+	      org-agenda-include-diary nil
+	      org-agenda-sorting-strategy
+	      '((agenda habit-down time-up user-defined-up effort-up category-keep)
+	        (todo category-up effort-up)
+	        (tags category-up effort-up)
+	        (search category-up))
+	      org-agenda-window-setup 'current-window
+	      org-agenda-custom-commands
+	      `(("n" "Notes"
+	         ((tags "NOTE"
+		            ((org-agenda-overriding-header "NOTES")
+		             (org-tags-match-list-sublevels nil)
+		             (org-agenda-sorting-strategy
+		              '(category-keep))))))
+	        ("g" "GTD"
+	         ((agenda "" nil)
+	          (tags "INBOX"
+		            ((org-agenda-overriding-header "Inbox")
+		             (org-tags-match-list-sublevels nil)))
+	          (stuck ""
+		             ((org-agenda-overriding-header "Stuck Projects")
+		              (org-agenda-tags-todo-honor-ignore-options t)
+		              (org-tags-match-list-sublevels t)
+		              (org-agenda-todo-ignore-scheduled 'future)))
+	          (tags-todo "-INBOX/NEXT"
+			             ((org-agenda-overriding-header "Next Actions")
+			              (org-agenda-tags-todo-honor-ignore-options t)
+			              (org-agenda-todo-ignore-scheduled 'future)
+			              ;; TODO: skip if a parent is WAITING or HOLD
+			              (org-tags-match-list-sublevels t)
+			              (org-agenda-sorting-strategy
+			               '(todo-state-down effort-up category-keep))))
+	          (tags-todo ,active-project-match
+			             ((org-agenda-overriding-header "Projects")
+			              (org-tags-match-list-sublevels t)
+			              (org-agenda-sorting-strategy
+			               '(category-keep))))
+	          (tags-todo "-INBOX/-NEXT"
+			             ((org-agenda-overriding-header "Orphaned Tasks")
+			              (org-agenda-tags-todo-honor-ignore-options t)
+			              (org-agenda-todo-ignore-scheduled 'future)
+			              ;; TODO: skip if a parent is a project
+			              (org-agenda-skip-function
+			               '(lambda ()
+			                  (or (org-agenda-skip-subtree-if 'todo '("PROJECT" "HOLD" "WAITING" "DELEGATED"))
+				                  (org-agenda-skip-subtree-if 'nottododo '("TODO")))))
+			              (org-tags-match-list-sublevels t)
+			              (org-agenda-sorting-strategy
+			               '(category-keep))))
+	          (tags-todo "/WAITING"
+			             ((org-agenda-overriding-header "Waiting")
+			              (org-agenda-tags-todo-honor-ignore-options t)
+			              (org-agenda-todo-ignore-scheduled 'future)
+			              (org-agenda-sorting-strategy
+			               '(category-keep))))
+	          (tags-todo "/DELEGATED"
+			             ((org-agenda-overriding-header "Delegated")
+			              (org-agenda-tags-todo-honor-ignore-options t)
+			              (org-agenda-todo-ignore-scheduled 'future)
+			              (org-agenda-sorting-strategy
+			               '(category-keep))))
+	          (tags-todo "-INBOX/HOLD"
+			             ((org-agenda-overriding-header "On Hold")
+			              ;; TODO: skip if a parent is WAITING or HOLD
+			              (org-tags-match-list-sublevels nil)
+			              (org-agenda-sorting-strategy
+			               '(category-keep))))
+	          ;; (tags-todo "-NEXT"
+	          ;;            ((org-agenda-overriding-header "All other TODOs")
+	          ;;             (org-match-list-sublevels t)))
+	          )))))
 
 
   ;;; Org clock
@@ -249,7 +249,7 @@
 
   ;; Show clock sums as hours and minutes, not "n days" etc.
   (setq org-time-clocksum-format
-	'(:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t))
+	    '(:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t))
 
 
 ;;; Agenda views
@@ -312,18 +312,18 @@ If EXPAND-SCOPE is `all' then run `outline-show-all' at the matched line."
     (when anchor-text
       ;; If `anchor-text' is GitHub style link.
       (if (string-prefix-p "#" anchor-text)
-	  ;; If the toc-org package is loaded.
-	  (if (memq 'toc-org features)
-	      ;; For each heading. Search the heading that corresponds
-	      ;; to `anchor-text'.
-	      (while (and (re-search-forward "^[\\*]+\s\\(.*\\).*$" nil t)
-			  (not (string= (toc-org-hrefify-gh (match-string 1))
-					anchor-text))))
-	    ;; This is not a problem because without the space-doc package
-	    ;; those links will be opened in the browser.
-	    (message (format (concat "Can't follow the GitHub style anchor: '%s' "
-				     "without the org layer.") anchor-text)))
-	(re-search-forward anchor-text)))
+	      ;; If the toc-org package is loaded.
+	      (if (memq 'toc-org features)
+	          ;; For each heading. Search the heading that corresponds
+	          ;; to `anchor-text'.
+	          (while (and (re-search-forward "^[\\*]+\s\\(.*\\).*$" nil t)
+			              (not (string= (toc-org-hrefify-gh (match-string 1))
+					                    anchor-text))))
+	        ;; This is not a problem because without the space-doc package
+	        ;; those links will be opened in the browser.
+	        (message (format (concat "Can't follow the GitHub style anchor: '%s' "
+				                     "without the org layer.") anchor-text)))
+	    (re-search-forward anchor-text)))
     (beginning-of-line)
     (cond
      ((eq expand-scope 'subtree)
@@ -402,15 +402,15 @@ If EXPAND-SCOPE is `all' then run `outline-show-all' at the matched line."
      (sqlite . t)))
 
   (setq org-startup-with-inline-images t
-	org-src-fontify-natively t
-	;; this is consistent with the value of
-	;; `helm-org-headings-max-depth'.
-	org-imenu-depth 8)
+	    org-src-fontify-natively t
+	    ;; this is consistent with the value of
+	    ;; `helm-org-headings-max-depth'.
+	    org-imenu-depth 8)
   (font-lock-add-keywords
    'org-mode '(("\\(@@html:<kbd>@@\\) \\(.*\\) \\(@@html:</kbd>@@\\)"
-		(1 font-lock-comment-face prepend)
-		(2 font-lock-function-name-face)
-		(3 font-lock-comment-face prepend))))
+		        (1 font-lock-comment-face prepend)
+		        (2 font-lock-function-name-face)
+		        (3 font-lock-comment-face prepend))))
 
   (define-key org-mode-map (kbd "C-M-<up>") 'org-up-element)
   (define-key org-mode-map (kbd "C-c C-.") 'org-time-stamp-inactive)

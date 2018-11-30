@@ -106,7 +106,7 @@
                (my-gcc-include "include")
                (my-gcc-include "include-fixed")
                "-I/usr/include"
-	       "-I/usr/local/include"
+	           "-I/usr/local/include"
                "-I/usr/src/linux/include"
                "-I/usr/src/linux/arch/x86/include"
                ))
