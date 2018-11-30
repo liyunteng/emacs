@@ -28,7 +28,7 @@
 (defun my-utf8-locale-p (v)
   "Return whether locale string V relates to a UTF-8 locale."
   (and v (or (string-match "UTF-8" v)
-	     (string-match "utf8" v))))
+	         (string-match "utf8" v))))
 
 (defun my-locale-is-utf8-p ()
   "Return t iff the \"locale\" command or environment variables prefer UTF-8."
@@ -151,8 +151,10 @@
 ;; Show column number in mode line
 (column-number-mode +1)
 (line-number-mode +1)
-;; show file size in mode-line
+;; show file size in mode line
 (size-indication-mode +1)
+;; show which function in mode line
+(which-function-mode +1)
 
 ;; mark visible
 (transient-mark-mode +1)
@@ -204,21 +206,22 @@
 ;;所有的备份文件转移到Backup目录下
 (when make-backup-files
   (setq save-silently t
-	version-control nil
-	kept-old-versions 2
-	kept-new-versions 2
-	delete-old-versions t
+	    version-control nil
+	    kept-old-versions 2
+	    kept-new-versions 2
+	    delete-old-versions t
         create-lockfiles nil
-	backup-by-copying t))
+	    backup-by-copying t))
+
 
 ;; replaced by super-save
 (setq auto-save-default t)
 (setq auto-save-list-file-prefix
       (cond ((eq system-type 'ms-dos)
-	     ;; MS-DOS cannot have initial dot, and allows only 8.3 names
-	     (concat (expand-file-name "auto-save/" my-cache-dir) "_saves-") )
+	         ;; MS-DOS cannot have initial dot, and allows only 8.3 names
+	         (concat (expand-file-name "auto-save/" my-cache-dir) "_saves-") )
             (t
-	     (concat (expand-file-name "auto-save/" my-cache-dir) ".saves-"))))
+	         (concat (expand-file-name "auto-save/" my-cache-dir) ".saves-"))))
 
 
 ;; 将保存的文件移动到.emacs.d/目录中

@@ -111,6 +111,7 @@
 (global-set-key (kbd "M-g s") 'my/switch-buffer-other-window--scratch)
 (global-set-key (kbd "M-g m") 'my/view-buffer-other-window--Messages)
 (global-set-key (kbd "M-g h") 'my/view-buffer-other-window--Help)
+(global-set-key (kbd "M-g b") 'my/view-buffer-other-window--Backtrace)
 
 (global-set-key (kbd "C-x C-k") 'kill-buffer)
 (global-set-key (kbd "C-x k") 'kill-current-buffer)

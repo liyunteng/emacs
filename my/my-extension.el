@@ -136,6 +136,7 @@
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
   )
 
+;; auto indent
 (use-package aggressive-indent
   :ensure t
   :diminish aggressive-indent-mode
@@ -146,6 +147,7 @@
     :documentation "Always keep code indent.")
   (aggressive-indent-mode -1))
 
+;; delete space
 (use-package hungry-delete
   :ensure t
   :config
@@ -368,6 +370,10 @@
          ("C-c t" . crux-visit-term-buffer)
          ("C-c e" . crux-eval-and-replace)
          ("M-J" . crux-top-join-line)))
+
+;; make useless word
+(use-package lorem-ipsum
+  :ensure t)
 
 ;; (use-package lorem-ipsum
 ;;   :ensure

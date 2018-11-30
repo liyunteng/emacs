@@ -38,16 +38,16 @@
     ;; 使用/ r来进行切换
     (setq ibuffer-saved-filters
           (append '(("c" (or
-	                  (mode . c-mode)
-	                  (mode . c++-mode)
-	                  (mode . makefile-gmake-mode)
-	                  (mode . asm-mode)))
+	                      (mode . c-mode)
+	                      (mode . c++-mode)
+	                      (mode . makefile-gmake-mode)
+	                      (mode . asm-mode)))
 
                     ("lisp" (or
-		             (mode . emacs-lisp-mode)
-		             (mode . lisp-mode)
-		             (mode . lisp-interaction-mode)
-		             (mode . inferior-emacs-lisp-mode)))
+		                     (mode . emacs-lisp-mode)
+		                     (mode . lisp-mode)
+		                     (mode . lisp-interaction-mode)
+		                     (mode . inferior-emacs-lisp-mode)))
 
                     ("go" (mode . go-mode))
 
@@ -232,7 +232,7 @@
     (defun ibuffer-set-up-preferred-filters ()
       (ibuffer-vc-set-filter-groups-by-vc-root)
       (unless (eq ibuffer-sorting-mode 'filename/process)
-	(ibuffer-do-sort-by-filename/process)))
+	    (ibuffer-do-sort-by-filename/process)))
 
     (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters))
 
@@ -243,7 +243,7 @@
       (interactive)
       (ibuffer-projectile-set-filter-groups)
       (unless (eq ibuffer-sorting-mode 'alphabetic)
-	(ibuffer-do-sort-by-alphabetic))
+	    (ibuffer-do-sort-by-alphabetic))
       )
     (define-key ibuffer-mode-map (kbd "/ p") 'my/ibuffer-group-by-projects))
 
@@ -259,35 +259,35 @@
        (t (format "%8d" (buffer-size)))))
     ;; Modify the default ibuffer-formats (toggle with `)
     (setq ibuffer-formats
-	  '((mark modified read-only vc-status-mini " "
-		  (name 30 30 :left :elide)
-		  " "
-		  (size-h 9 -1 :right)
-		  " "
-		  (mode 16 16 :left :elide)
-		  " "
-		  filename-and-process)
-	    (mark modified read-only vc-status-mini " "
-		  (name 30 30 :left :elide)
-		  " "
-		  (size-h 9 -1 :right)
-		  " "
-		  (mode 16 16 :left :elide)
-		  " "
-		  (vc-status 16 16 :left)
-		  " "
-		  filename-and-process))))
+	      '((mark modified read-only vc-status-mini " "
+		          (name 30 30 :left :elide)
+		          " "
+		          (size-h 9 -1 :right)
+		          " "
+		          (mode 16 16 :left :elide)
+		          " "
+		          filename-and-process)
+	        (mark modified read-only vc-status-mini " "
+		          (name 30 30 :left :elide)
+		          " "
+		          (size-h 9 -1 :right)
+		          " "
+		          (mode 16 16 :left :elide)
+		          " "
+		          (vc-status 16 16 :left)
+		          " "
+		          filename-and-process))))
 
   (define-key ibuffer-mode-map (kbd "/ g") 'ibuffer-switch-to-saved-filter-groups)
   ;; 禁用filter-groups decompose 和 pop
   (define-key ibuffer-mode-map (kbd "/ D") nil)
   ;; (define-key ibuffer-mode-map (kbd "/ P") nil)
-  ;; (define-key ibuffer-mode-map (kbd "/ d") nil)
+  (define-key ibuffer-mode-map (kbd "/ d") nil)
+
   (define-key ibuffer-mode-map (kbd "/ S") nil)
   (define-key ibuffer-mode-map (kbd "/ X") nil)
   (define-key ibuffer-mode-map (kbd "/ s") nil)
   (define-key ibuffer-mode-map (kbd "/ x") nil)
-  (define-key ibuffer-mode-map (kbd "/ s") 'ibuffer-negate-filter)
 
   (define-key ibuffer-mode-map (kbd "s c") 'ibuffer-do-sort-by-vc-status)
   (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-invert-sorting)

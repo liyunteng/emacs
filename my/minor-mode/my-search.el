@@ -44,25 +44,25 @@
 
 (use-package isearch
   :bind  (
-	  :map isearch-mode-map
-	  ("C-o" . isearch-occur)
-	  ("C-q" . isearch-del-char)
-	  ;; ("C-w" . isearch-delete-char)
-	  ("C-w" . my/isearch-backward-kill-word)
+	      :map isearch-mode-map
+	      ("C-o" . isearch-occur)
+	      ("C-q" . isearch-del-char)
+	      ;; ("C-w" . isearch-delete-char)
+	      ("C-w" . my/isearch-backward-kill-word)
 
-	  ("C-y" . isearch-yank-word-or-char)
-	  ("M-l" . isearch-yank-line)
-	  ("M-w" . isearch-yank-kill)
-	  ("C-M-w" . my/isearch-yank-symbol)
-	  ("C-M-y" . isearch-yank-pop)
+	      ("C-y" . isearch-yank-word-or-char)
+	      ("M-l" . isearch-yank-line)
+	      ("M-w" . isearch-yank-kill)
+	      ("C-M-w" . my/isearch-yank-symbol)
+	      ("C-M-y" . isearch-yank-pop)
 
-	  ("C-e" . isearch-edit-string)
+	      ("C-e" . isearch-edit-string)
 
-	  ("M-i" . isearch-toggle-case-fold)
-	  ("M-r" . isearch-toggle-regexp)
+	      ("M-i" . isearch-toggle-case-fold)
+	      ("M-r" . isearch-toggle-regexp)
 
-	  ([(control return)] . my/isearch-exit-other-end)
-	  )
+	      ([(control return)] . my/isearch-exit-other-end)
+	      )
 
   :config
   ;; backward kill word in isearch
@@ -96,7 +96,7 @@
                   isearch-string (concat "\\_<" (regexp-quote sym) "\\_>")
                   isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
                   isearch-yank-flag t))
-	(ding)))
+	    (ding)))
     (isearch-search-and-update))
 
   ;; http://www.emacswiki.org/emacs/ZapToISearch
@@ -120,9 +120,9 @@ This is useful when followed by an immediate kill."
 (use-package anzu
   :ensure t
   :bind (([remap query-replace-regexp]. anzu-query-replace-regexp)
-	 ([remap query-replace] . anzu-query-replace)
-	 ("M-s r" . anzu-query-replace)
-	 ("M-s M-r" . anzu-query-replace-regexp))
+	     ([remap query-replace] . anzu-query-replace)
+	     ("M-s r" . anzu-query-replace)
+	     ("M-s M-r" . anzu-query-replace-regexp))
   :diminish anzu-mode
   :init
   (defun my-anzu--update-mode-line (here total)
@@ -133,11 +133,10 @@ This is useful when followed by an immediate kill."
                                       total (if anzu--overflow-p "+" "")))
                       (replace-query (format "(%d replace) " total))
                       (replace (format "(%d/%d) " here total)))))
-	status)))
+	    status)))
 
   (setq anzu-mode-line-update-function 'my-anzu--update-mode-line)
   (global-anzu-mode +1))
-
 
 
 ;; highlight

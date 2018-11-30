@@ -41,20 +41,20 @@ Example:
 \(my-define-jump-handlers c-mode\)
 "
   (let ((mode-hook (intern (format "%S-hook" mode)))
-	(func (intern (format "my--jump-init-handlers-%S" mode)))
-	(handlers-list (intern (format "my--jump-handlers-%S" mode))))
+	    (func (intern (format "my--jump-init-handlers-%S" mode)))
+	    (handlers-list (intern (format "my--jump-handlers-%S" mode))))
     `(progn
        (defvar ,handlers-list ',handlers
-	 ,(format (concat "List of mode-specific jump handlers for %S. "
-			  "These take priority over those in "
-			  "`my-default-jump-handlers'.")
-		  mode))
+	     ,(format (concat "List of mode-specific jump handlers for %S. "
+			              "These take priority over those in "
+			              "`my-default-jump-handlers'.")
+		          mode))
        (defun ,func ()
-	 (setq my-jump-handlers
-	       (append ,handlers-list
-		       my-default-jump-handlers))
-	 ;; (message "handlers-list: %s" ,handlers-list)
-	 )
+	     (setq my-jump-handlers
+	           (append ,handlers-list
+		               my-default-jump-handlers))
+	     ;; (message "handlers-list: %s" ,handlers-list)
+	     )
        (add-hook ',mode-hook ',func)
        ;; (with-eval-after-load 'bind-map
        ;;   (spacemacs/set-leader-keys-for-major-mode ',mode

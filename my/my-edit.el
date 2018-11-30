@@ -992,6 +992,9 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
 ;; equal C-u C-SPC
 (global-set-key (kbd "C-x C-,") 'pop-to-mark-command)
 
+(global-unset-key (kbd "C-x SPC"))
+(global-set-key (kbd "C-<return>") 'cua-rectangle-mark-mode)
+
 
 ;;删除光标之前的单词(保存到kill-ring)
 (global-set-key (kbd "C-w") 'my/kill-back-word-or-region)

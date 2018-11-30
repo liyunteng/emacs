@@ -25,12 +25,12 @@
 ;;; Code:
 
 (setq window-combination-resize t)
+(setq split-height-threshold 80)
+(setq split-width-threshold 160)
+(setq switch-to-buffer-preserve-window-point t)
+(setq fit-window-to-buffer-horizontally t)
+(setq fit-frame-to-buffer t)
 (setq-default display-buffer-reuse-frames t)
-(setq-default split-height-threshold 80)
-(setq-default split-width-threshold 160)
-(setq-default switch-to-buffer-preserve-window-point t)
-(setq-default fit-window-to-buffer-horizontally t)
-(setq-default fit-frame-to-buffer t)
 
 (use-package switch-window
   :ensure t
@@ -211,6 +211,27 @@ Dedicated (locked) windows are left untouched."
       (my/window-rotate-forward -1)
     (my/window-rotate-forward 1)))
 
+(defun my/window-size-adjust (inc)
+  (interactive "p")
+  (let ((ev last-command-event)
+        (echo-keystrokes nil))
+    (let* ((base (event-basic-type ev)))
+      (pcase base
+        (?j (enlarge-window 5))
+        (?k (enlarge-window -5))
+        (?h (enlarge-window-horizontally 5))
+        (?l (enlarge-window-horizontally -5))
+        (?0 (balance-windows))))
+    (message "Use h,j,k,l,0 for further adjustment")
+
+    (set-transient-map
+     (let ((map (make-sparse-keymap)))
+       (dolist (mods '(() (control)))
+         (dolist (key '(?j ?h ?k ?l ?0))
+           (define-key map (vector (append mods (list key)))
+             (lambda () (interactive) (my/window-size-adjust (abs inc))))))
+       map))))
+
 (global-set-key (kbd "<f1>") 'my/window-toggle-show)
 (global-set-key (kbd "C-x 0") 'delete-window)
 (global-set-key (kbd "C-x 1") 'my/window-toggle-show)
@@ -222,16 +243,15 @@ Dedicated (locked) windows are left untouched."
 (global-set-key [mouse-4] (lambda () (interactive) (scroll-down 1)))
 (global-set-key [mouse-5] (lambda () (interactive) (scroll-up 1)))
 (global-set-key (kbd "C-c C-s") 'my/window-rotate)
+(global-set-key (kbd "M-+") 'my/window-size-adjust)
 
 (defvar my-window-keymap
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "s") 'my/window-rotate-forward)
     (define-key map (kbd "r") 'my/window-rotate-backward)
 
-    (define-key map (kbd "<") 'enlarge-window-horizontally)
-    (define-key map (kbd ">") 'shrink-window-horizontally)
-    (define-key map (kbd "+") 'enlarge-window)
-    (define-key map (kbd "_") 'shrink-window)
+    (define-key map (kbd "<") 'my/window-size-adjust)
+    (define-key map (kbd ">") 'my/window-size-adjust)
     (define-key map (kbd ")") 'balance-windows)
 
     (define-key map (kbd "o") 'other-window)
