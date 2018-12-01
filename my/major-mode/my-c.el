@@ -373,6 +373,7 @@
   (define-key c-mode-base-map (kbd "C-c C-a") 'ff-find-related-file)     ;c-toggle-auto-newline
 
   (define-key c-mode-base-map (kbd "C-c C-m") 'my/smart-compile)
+  (define-key c-mode-base-map (kbd "C-c C-s") nil)                       ;c-show-syntactic-information
   (define-key c-mode-base-map (kbd "C-c C-c") nil)                       ;comment-region
   (define-key c-mode-base-map (kbd "C-c C-b") nil)                       ;c-submit-bug-report
   (define-key c-mode-base-map (kbd "C-c C-k") 'kill-region)              ;c-toggle-comment-style

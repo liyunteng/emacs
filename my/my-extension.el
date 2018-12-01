@@ -344,6 +344,7 @@
   :ensure t
   :bind (([remap move-beginning-of-line] . crux-move-beginning-of-line)
          ([remap open-line] . crux-smart-open-line)
+         ("C-x M-;" . crux-duplicate-and-comment-current-line-or-region)
          ("C-x M-o" . crux-open-with)
          ;; ("C-c u" . crux-view-url)
          ("C-x M-k" . crux-kill-other-buffers)

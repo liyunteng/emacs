@@ -165,11 +165,12 @@
   (defun my/multi-term ()
     "My term start and select."
     (interactive)
-    (let (term-buffer)
-      (setq term-buffer (multi-term-get-buffer current-prefix-arg))
-      (setq multi-term-buffer-list (nconc multi-term-buffer-list (list term-buffer)))
-      (set-buffer term-buffer)
-      (multi-term-internal)
+    (let ((term-buffer (car  multi-term-buffer-list)))
+      (unless term-buffer
+        (setq term-buffer (multi-term-get-buffer current-prefix-arg))
+        (setq multi-term-buffer-list (nconc multi-term-buffer-list (list term-buffer)))
+        (set-buffer term-buffer)
+        (multi-term-internal))
       (switch-to-buffer-other-window term-buffer)))
 
   ;; (setq-default multi-term-program "/bin/bash")

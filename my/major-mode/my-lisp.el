@@ -54,9 +54,9 @@
 (use-package macrostep
   :ensure t
   :bind (:map emacs-lisp-mode-map
-	          ("C-x e" . macrostep-expand)
+	          ("C-c C-e" . macrostep-expand)
 	          :map lisp-interaction-mode-map
-	          ("C-x e" . macrostep-expand)))
+	          ("C-c C-e" . macrostep-expand)))
 
 (use-package eldoc-eval
   :ensure t
