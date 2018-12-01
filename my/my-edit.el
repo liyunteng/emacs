@@ -24,6 +24,27 @@
 
 ;;; Code:
 
+;; (use-package linum
+;;   :init
+;;   (global-linum-mode +1)
+;;   :init
+;;   (setq linum-delay t)
+;;   (setq linum-format 'dynamic)
+
+;;   (my|add-toggle linum-mode
+;;     :status linum-mode
+;;     :on (linum-mode +1)
+;;     :off (linum-mode -1)
+;;     :documentation "Show line number")
+
+;;   :config
+;;   (defadvice linum-schedule (around my-linum-schedule () activate)
+;;     "Updated line number every second."
+;;     (run-with-idle-timer 1 nil #'linum-update-current)
+;;     ad-do-it)
+;;   (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
+;;   )
+
 ;; highlight current line
 (use-package hl-line
   :commands (global-hl-line-mode
@@ -561,7 +582,9 @@ at the end of the line."
 This functions should be added to the hooks of major modes for programming."
     (font-lock-add-keywords
      nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|\\BUG\\):\\)"
-            1 font-lock-warning-face t))))
+            1 font-lock-warning-face t)))
+
+    )
   (defun my-prog-mode-defaults ()
     "Default coding hook, useful with any programming language."
     (setq indent-tabs-mode nil)
@@ -780,7 +803,7 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
                 (org-narrow-to-block))
                (t (org-narrow-to-subtree))))
         (t (narrow-to-defun))))
-;; (define-key ctl-x-map (kbd "n") #'my/narrow-or-widen-dwim)
+(define-key ctl-x-map (kbd "n") #'my/narrow-or-widen-dwim)
 
 (defvar-local hidden-mode-line-mode nil)
 (defvar-local hide-mode-line nil)
@@ -1019,6 +1042,7 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
 (global-set-key (kbd "s-q") 'quoted-insert)
 
 (global-set-key (kbd "RET") 'newline-and-indent)
+
 
 (provide 'my-edit)
 ;;; my-edit.el ends here

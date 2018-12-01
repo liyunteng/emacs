@@ -55,8 +55,8 @@
 
   (eval-after-load 'mu4e
     (setq mu4e-maildir-shortcuts
-	  '(("/streamocean/INBOX" . ?t)
-	    ("/163/INBOX" . ?c))))
+	      '(("/streamocean/INBOX" . ?t)
+	        ("/163/INBOX" . ?c))))
   )
 
 ;; gnus

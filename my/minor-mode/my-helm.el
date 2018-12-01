@@ -40,7 +40,7 @@
          ([remap info] . helm-info)
          ([remap find-name-dired] . helm-find)
          ([remap find-tag] . helm-etags-select)
-         ("C-c C-j" . helm-imenu)
+         ("C-c C-j" . helm-semantic-or-imenu)
          ("M-U" . helm-resume))
   :init
   (setq helm-kill-ring-separator "\f")
@@ -159,7 +159,7 @@
         ;; helm-apropos-fuzzy-match t
         ;; helm-lisp-fuzzy-completion t
 
-        helm-move-to-line-cycle-in-source t
+        helm-move-to-line-cycle-in-source nil
         helm-ff-search-library-in-sexp t
         helm-ff-file-compressed-list t
         helm-ff-file-name-history-use-recentf t
@@ -225,8 +225,8 @@
   (define-key helm-command-prefix (kbd "r") 'helm-recentf)
   (define-key helm-command-prefix (kbd "o") 'helm-occur)
   (define-key helm-command-prefix (kbd "C-l") 'helm-locateI-library)
-  (define-key helm-command-prefix (kbd "i") 'helm-semantic-or-imenu)
-  (define-key helm-command-prefix (kbd "I") 'helm-imenu)
+  (define-key helm-command-prefix (kbd "I") 'helm-semantic-or-imenu)
+  (define-key helm-command-prefix (kbd "i") 'helm-imenu)
   (define-key helm-command-prefix (kbd "C-c w") 'helm-wikipedia-suggest)
   (define-key helm-command-prefix (kbd "SPC") 'helm-all-mark-rings)
   (define-key helm-command-prefix (kbd "x") 'my/helm-faces)

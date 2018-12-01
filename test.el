@@ -16,7 +16,8 @@
   (interactive)
   (message "%S" (completing-read "test: " '(a b c d e))))
 
-(defun helm-foo/test-completing-read-handler (prompt collection
+(defun helm-foo/test-completing-read-handler (prompt
+                                              collection
                                               predicate require-match
                                               initial-input hist def
                                               inherit-input-method

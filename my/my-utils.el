@@ -113,11 +113,13 @@ ARGS if MSG is format-string ARGS contain message."
   "Indent FILENAME"
   (interactive "f")
   (if (file-exists-p filename)
-      (progn
-        (find-file filename)
-        (indent-region (point-min) (point-max))
-        (save-buffer)
-        (kill-buffer nil))
+      (condition-case nil
+          (progn
+            (find-file filename)
+            (indent-region (point-min) (point-max))
+            (save-buffer)
+            (kill-buffer nil))
+        (user-error "failed inent %s" filename))
     (user-error "Invalid filename %s" filename)))
 
 (defun my--indent-directory (dir regex)
@@ -125,7 +127,9 @@ ARGS if MSG is format-string ARGS contain message."
   (interactive "D")
   (if(and (file-exists-p dir))
       (dolist (file (directory-files-recursively dir regex))
-        (my/indent-file file))
+        (message "indenting %s" file)
+        (my/indent-file file)
+        (message "indented %s\n" file))
     (user-error "Invalid directory %s" dir)))
 
 (defun my/indent-my-emacs-lisp ()

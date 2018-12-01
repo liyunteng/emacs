@@ -64,14 +64,6 @@
   ;; don't save /tmp/*
   (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
 
-  ;; (use-package session
-  ;;   :ensure t
-  ;;   :init
-  ;;   (setq session-save-file (expand-file-name ".session" my-cache-dir))
-  ;;   (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
-  ;;   (setq session-save-file-coding-system 'utf-8)
-  ;;   (add-hook 'after-init-hook 'session-initialize))
-
   ;; fix if no deskop-file desktop-read will close all window
   (unless (or (not (desktop-full-file-name)))
     (desktop-save-mode +1))
@@ -79,9 +71,9 @@
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
   (setq desktop-globals-to-save
-	    (append '(desktop-missing-file-warning
-		          (comint-input-ring        . 50)
+	    (append '((comint-input-ring        . 50)
 		          (compile-history          . 30)
+                  desktop-missing-file-warning
 		          (dired-regexp-history     . 20)
 		          (extended-command-history . 30)
 		          (face-name-history        . 20)
@@ -90,6 +82,8 @@
 		          (grep-history             . 30)
 		          (helm-ff-history          . 100)
 		          (helm-file-name-history   . 100)
+                  (helm-M-x-input-history   . 100)
+                  (helm-external-command-history . 30)
 		          (helm-grep-history        . 30)
 		          (helm-occur-history       . 30)
 		          (ido-buffer-history       . 100)
@@ -111,12 +105,12 @@
 		          tags-file-name
 		          tags-table-list)))
 
+
   (defun my/desktop-clear ()
     "Desktop clear and Desktop remove."
     (interactive)
     (desktop-clear)
     (desktop-remove))
-
 
   (defvar before-desktop-read-time nil)
   (defvar after-desktop-read-time nil)
@@ -150,24 +144,20 @@
 (use-package savehist
   :init
   (setq savehist-file (expand-file-name "savehist" my-cache-dir))
-  (savehist-mode +1)
-  :config
-  (setq savehist-additional-variables
-	    '(mark-ring
-	      global-mark-ring
-	      search-ring
-	      regexp-search-ring
-	      extended-command-history
-	      )
-	    ;; save every minute
-	    savehist-autosave-interval 60
-	    history-length 1000
-	    ))
+  (add-hook 'after-init-hook 'savehist-mode))
 
 (use-package saveplace
   :init
   (setq save-place-file (expand-file-name "saveplace" my-cache-dir))
   (save-place-mode +1))
+
+;; (use-package session
+;;   :ensure t
+;;   :init
+;;   (setq session-save-file (expand-file-name ".session" my-cache-dir))
+;;   (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
+;;   (setq session-save-file-coding-system 'utf-8)
+;;   (add-hook 'after-init-hook 'session-initialize))
 
 (use-package super-save
   :ensure t

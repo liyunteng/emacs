@@ -74,7 +74,6 @@
                        my-sh
                        my-syslog
                        my-javascript
-                       my-json
 
                        my-server
                        )
@@ -82,12 +81,14 @@
 
 (defun my-load (m)
   "Load feature M."
-  (unless (load (locate-library (format "%s" m)))
+  (if (load (locate-library (format "%s" m)))
+      (message "Loading %s" m)
     (error "Loading %s failed" m)))
 
 (defun my-require (m)
   "Require feature M."
-  (unless (require m)
+  (if (require m)
+      (message "Loading %s" m)
     (error "Requiring %s failed" m)))
 
 (defun my/show-init-time ()

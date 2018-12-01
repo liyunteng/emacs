@@ -64,8 +64,8 @@
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
-;; warn when opening files bigger than 100MB
-(setq large-file-warning-threshold 100000000)
+;; warn when opening files bigger than 10MB
+(setq large-file-warning-threshold 10000000)
 
 ;; When emacs asks for "yes" or "no", let "y" or "n" suffice
 (fset 'yes-or-no-p 'y-or-n-p)

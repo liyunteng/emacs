@@ -34,8 +34,7 @@
 
 (use-package switch-window
   :ensure t
-  :bind
-  ("C-x o" . switch-window)
+  :bind (("C-x o" . switch-window))
   :config
   (setq switch-window-shortcut-style 'alphabet)
   (setq switch-window-timeout nil))

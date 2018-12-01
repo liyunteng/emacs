@@ -96,6 +96,8 @@
 
 (use-package elisp-slime-nav
   :ensure t
+  :bind (:map elisp-slime-nav-mode-map
+              ("C-c C-d" . elisp-slime-nav-describe-elisp-thing-at-point))
   :diminish elisp-slime-nav-mode
   :init
   (add-function-to-hooks 'turn-on-elisp-slime-nav-mode my-common-mode-hooks))
@@ -136,6 +138,13 @@
 ;; I might generalise this to ruby etc., or even just adopt the repl-toggle package.
 (use-package ielm
   :defer t
+  :bind (:map ielm-map
+	          ("C-c C-z" . my/repl-switch-back)
+	          :map emacs-lisp-mode-map
+	          ("C-c C-z" . my/switch-to-ielm)
+	          :map lisp-interaction-mode-map
+	          ("C-c C-z" . my/switch-to-ielm)
+	          )
   :init
   (defvar my-repl-original-buffer nil
     "Buffer from which we jumped to this REPL.")
@@ -156,25 +165,17 @@
       (if (get-buffer "*ielm*")
 	      (funcall my-repl-switch-function "*ielm*")
 	    (ielm))
-      (setq-local my-repl-original-buffer orig-buffer)))
-
-  :bind (:map ielm-map
-	          ("C-c C-z" . my/repl-switch-back)
-	          :map emacs-lisp-mode-map
-	          ("C-c C-z" . my/switch-to-ielm)
-	          :map lisp-interaction-mode-map
-	          ("C-c C-z" . my/switch-to-ielm)
-	          ))
+      (setq-local my-repl-original-buffer orig-buffer))))
 
 ;; ----------------------------------------------------------------------------
 ;; Hippie-expand
 ;; ----------------------------------------------------------------------------
 
-(defun set-up-hippie-expand-for-elisp ()
-  "Locally set `hippie-expand' completion functions for use with Emacs Lisp."
-  (make-local-variable 'hippie-expand-try-functions-list)
-  (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol t)
-  (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol-partially t))
+;; (defun set-up-hippie-expand-for-elisp ()
+;;   "Locally set `hippie-expand' completion functions for use with Emacs Lisp."
+;;   (make-local-variable 'hippie-expand-try-functions-list)
+;;   (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol t)
+;;   (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol-partially t))
 
 
 ;; Prevent flickery behaviour due to hl-sexp-mode unhighlighting before each command
@@ -205,16 +206,11 @@
   "Run `check-parens' when the current buffer is saved."
   (add-hook 'after-save-hook #'check-parens nil t))
 
-;; (defun my-disable-indent-guide ()
-;;   (when (bound-and-true-p indent-guide-mode)
-;;     (indent-guide-mode -1)))
-
 (defun my-lispy-modes-setup ()
   "My lispy mode hooks."
   ;; (eldoc-mode +1)
   ;; hl-sexp-mode
   (aggressive-indent-mode)
-  ;; my-disable-indent-guide
   (my-enable-check-parens-on-save)
   (turn-on-smartparens-strict-mode)
   (rainbow-mode +1)
@@ -222,6 +218,7 @@
   (local-set-key (kbd "C-c C-b") 'eval-buffer)
   (local-set-key (kbd "C-c C-c") 'eval-defun)
   (local-set-key (kbd "C-x C-e") 'my/eval-last-sexp-or-region)
+  ;; (set-up-hippie-expand-for-elisp)
 
   (if (boundp 'yas-minor-mode)
       (yas-minor-mode -1))
@@ -231,26 +228,14 @@
       (setq mode-name "LI"))
   )
 
-(defun my-emacs-lisp-setup ()
-  "Enable features useful when working with elisp."
-  (set-up-hippie-expand-for-elisp))
-
-(defconst my-elispy-modes
-  '(emacs-lisp-mode ielm-mode)
-  "Major modes relating to elisp.")
-
 (defconst my-lispy-modes
-  (append my-elispy-modes
-          '(lisp-mode inferior-lisp-mode lisp-interaction-mode))
+  '(emacs-lisp-mode ielm-mode lisp-mode inferior-lisp-mode lisp-interaction-mode)
   "All lispy major modes.")
 
 (require 'derived)
 
 (dolist (hook (mapcar #'derived-mode-hook-name my-lispy-modes))
   (add-hook hook 'my-lispy-modes-setup))
-
-(dolist (hook (mapcar #'derived-mode-hook-name my-elispy-modes))
-  (add-hook hook 'my-emacs-lisp-setup))
 
 (add-to-list 'auto-mode-alist '("\\.emacs-project\\'" . emacs-lisp-mode))
 (add-to-list 'auto-mode-alist '("archive-contents\\'" . emacs-lisp-mode))

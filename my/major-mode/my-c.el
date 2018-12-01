@@ -120,53 +120,6 @@
                            "../../../export")
   "My local include path.")
 
-;;自动给头文件添加ifndef
-;; (defun get-include-guard ()
-;;   "Return a string suitable for use in a C/C++ include guard"
-;;   (let* ((fname (buffer-file-name (current-buffer)))
-;;          (fbasename (replace-regexp-in-string ".*/" "" fname))
-;;          (inc-guard-base (replace-regexp-in-string "[.-]"
-;;                                                    "__"
-;;                                                    fbasename)))
-;;     (concat (upcase inc-guard-base) "__")))
-
-;; (add-hook 'find-file-not-found-hooks
-;;           '(lambda ()
-;;              (let ((file-name (buffer-file-name (current-buffer))))
-;;                (when (string= ".h" (substring file-name -2))
-;;                  (let ((include-guard (get-include-guard)))
-;;                    (insert "#ifndef " include-guard)
-;;                    (newline)
-;;                    (insert "#define " include-guard)
-;;                    (newline 4)
-;;                    (insert "#endif // " include-guard)
-;;                    (newline)
-;;                    (previous-line 3)
-;;                    (set-buffer-modified-p nil))))))
-
-
-;; to replace /usr/share/emacs/24.5/lisp/progmodes/hideif.el.gz
-;; (defun hif-mathify (val)
-;;   "Treat VAL as a number: if it's t or nil, use 1 or 0."
-;;   (cond ((eq val t) 1)
-;;         ((null val) 0)
-;;         ((and (stringp val)
-;;               (string-match "0[xX]\\([0-9a-fA-F]+\\.?[0-9a-fA-F]*\\)"
-;;                             val))
-;;          (string-to-number (match-string 1 val) 16))
-;;         ((and (stringp val)
-;;               (string-match "\\([0-9]+\\.?[0-9]*\\)"
-;;                             val))
-;;          (string-to-number (match-string 1 val) 10))
-;;         (t val)
-;;         ))
-
-;; (defun hif-divide (a b)
-;;   (if (not (equal 0 (hif-mathify b)))
-;;       (/ (hif-mathify a)
-;;          (Hif-mathify b))
-;;     0))
-
 ;;Add kernel style
 ;; (defun linux-c-mode ()
 ;;   "C mode with adjusted defaults for use with the Linux kernel."
@@ -178,6 +131,13 @@
 ;;   (setq c-basic-offset 8))
 ;; (setq auto-mode-alist (cons '("/usr/src/linux.*/.*\\.[ch]$" . linux-c-mode)
 ;;                             auto-mode-alist))
+;; (c-add-style "ffmpeg"
+;; 	     '("k&r"
+;; 	       (c-basic-offset . 4)
+;; 	       (indent-tabs-mode . nil)
+;; 	       (show-trailing-whitespace . t)
+;; 	       (c-offsets-alist
+;; 		(statement-cont . (c-lineup-assignments +)))))
 
 (use-package cmacexp
   :defines (c-macro-shrink-window-flag
@@ -216,8 +176,7 @@
     :off (hide-ifdef-mode -1)
     :documentation "Hide/Show ifdef"
     )
-  ;; linux header may be cause failed
-  ;; (add-hook 'c-mode-common-hook 'my/toggle-hide-ifdef-mode-on)
+
   :config
   ;; fix can't use = with string
   ;; (defun hif-mathify (val)
@@ -233,25 +192,16 @@
 (use-package disaster
   :ensure t
   :defer t
-  :init
+  :config
   (defadvice disaster (after make-disaster-view-mode activate)
     (when (get-buffer disaster-buffer-assembly)
       (with-current-buffer disaster-buffer-assembly
-	    (view-buffer-other-window disaster-buffer-assembly nil 'kill-buffer))))
-  )
-;; (c-add-style "ffmpeg"
-;; 	     '("k&r"
-;; 	       (c-basic-offset . 4)
-;; 	       (indent-tabs-mode . nil)
-;; 	       (show-trailing-whitespace . t)
-;; 	       (c-offsets-alist
-;; 		(statement-cont . (c-lineup-assignments +)))))
+	    (view-buffer-other-window disaster-buffer-assembly nil 'kill-buffer)))))
 
 (use-package semantic
   :defer t
   :commands (semantic-mode)
   :init
-  (setq semanticdb-default-save-directory (expand-file-name "semanticdb" my-cache-dir))
   (defconst my-project-roots '("~/git/ihi/client/c9service"
                                "/usr/src/linux")
     "My project roots to setq semanticdb-project-roots.")
@@ -269,6 +219,7 @@
   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-edits-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-show-unmatched-syntax-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-show-parser-state-mode)
+
   :config
   ;; for debug
   ;; (setq semantic-dump-parse t)
@@ -283,9 +234,9 @@
 	          semantic-idle-work-update-headers-flag
 	          )
     :init
-    (setq semantic-idle-scheduler-idle-time 1)
+    (setq semantic-idle-scheduler-idle-time nil)
     (setq semantic-idle-scheduler-max-buffer-size 10240000)
-    (setq semantic-idle-scheduler-work-idle-time 30)
+    (setq semantic-idle-scheduler-work-idle-time 5)
     (setq semantic-idle-work-update-headers-flag t)
     (setq semantic-idle-work-parse-neighboring-files-flag t)
 
@@ -296,9 +247,8 @@
   (semantic-add-system-include "/usr/local/include")
   ;; (require 'semantic/decorate/include)
   (require 'semantic/bovine/c)
-  ;;   ;; (require 'semantic/bovine/make)
-  ;;   ;; (require 'semantic/bovine/c-by)
-  (require 'semantic/wisent)
+  (dolist (x (list "/usr/lib/gcc/x86_64-pc-linux-gnu/8.2.1/include/stddef.h"))
+    (add-to-list 'semantic-lex-c-preprocessor-symbol-file x))
 
   (after-load 'cc-mode
     (defcustom-mode-local-semantic-dependency-system-include-path
@@ -327,179 +277,109 @@
     	    ad-do-it
     	  (message "Cursor not on symbol")
 	      (throw 'a nil)
-    	  )))
-    )
+    	  ))))
 
-  ;; (require 'semantic/lex-spp)
-  ;; (setq semantic-lex-maximum-depth 200)
-  ;; 设置头文件路径
 
-  ;; (use-package semantic/senator
-  ;; 	:init
-  ;; 	(setq senator-highlight-found t))
-
+  (use-package semantic/db-file
+    :config
+    (setq semanticdb-default-save-directory (expand-file-name "semanticdb" my-cache-dir)))
   ;; ;;;semantic Database
   (use-package semantic/db
-    :init
+    :config
     (setq semanticdb-search-system-databases t)
     (setq semanticdb-project-roots my-project-roots)
     )
 
   (use-package semantic/db-find
-    :init
+    :config
     (setq semanticdb-find-default-throttle
-	      '(local project unloaded system recursive)
-	      )
-    )
+	      '(local project unloaded system recursive)))
 
   (use-package semantic/db-global
-    :init
+    :config
     (semanticdb-enable-gnu-global-databases 'c-mode)
     (semanticdb-enable-gnu-global-databases 'c++-mode)
-    ))
-
-(defun my-c-mode-hooks ()
-  "My c common mode hooks."
-  (unless semantic-mode
-    (semantic-mode +1))
-
-  ;; (hide-ifdef-mode +1)
-  (auto-fill-mode +1)
-  (cscope-minor-mode t)
-
-  ;; (setq hide-ifdef-hiding t)
-  ;; (setq hide-ifdef-shadow t)
-  ;; (helm-cscope-mode t)
-
-  ;;更改注释的样式
-  ;; (setq comment-start '"/* ")
-  ;; (setq comment-end '" */")
-  ;; (c-set-style "qt-gnu")
-  ;; 空格代替tab
-  (setq-local indent-tabs-mode nil)
-  (c-set-style "cc-mode")
-  (setq-local tab-width 8)
-
-  ;; 设置头文件路径
-  (use-package flycheck
-    :config
-    (use-package semantic/dep)
-    (mapc (lambda (arg) (dolist (incs (append semantic-dependency-system-include-path my-include-path))
-			              (add-to-list arg incs)))
-	      '(flycheck-gcc-include-path flycheck-clang-include-path
-				                      flycheck-cppcheck-include-path))
-    ;; (if  (executable-find "clang")
-    ;; 	(progn (setq-local flycheck-checker 'c/c++-clang)
-    ;; 		   (dolist (item (append semantic-dependency-system-include-path my-include-path))
-    ;; 			 (add-to-list 'flycheck-clang-include-path item)))
-    ;;   (progn (setq-local flycheck-checker 'c/c++-gcc)
-    ;; 		 (dolist (item (append semantic-dependency-system-include-path my-include-path))
-    ;; 		   (add-to-list 'flycheck-gcc-include-path item))))
-    ;; (setq-default flycheck-clang-args '("-std=c++11"))
     )
 
-  ;; (setq-default company-clang-arguments '("-std=c++11"))
-  )
+  (define-key semantic-mode-map (kbd "C-c , R") 'semantic-symref-regexp)
+  (define-key semantic-mode-map (kbd "C-c , h") 'semantic-decoration-include-visit)
+  (define-key semantic-mode-map (kbd "C-c , M-d") 'semantic-decoration-include-describe)
+  (define-key semantic-mode-map (kbd "C-c , M-D") 'semantic-decoration-all-include-summary)
+  (define-key semantic-mode-map (kbd "C-c , M-i") 'semantic-decoration-unparsed-include-parse-include)
+  (define-key semantic-mode-map (kbd "C-c , M-I") 'semantic-decoration-unparsed-include-parse-all-includes)
+  (define-key semantic-mode-map (kbd "C-c , M-t") 'semantic-toggle-decoration-style)
 
-(defun my-c-mode-keys ()
-  "My c mode local key."
-  ;; 快速跳转
-  ;; (local-set-key (kbd "C-c j") 'my/jump-to-definition)
-  ;; (local-set-key (kbd "C-c C-j") 'my/jump-to-definition-other-window)
+  (define-key semantic-mode-map (kbd "C-c , a") 'semantic-add-system-include)
+  (define-key semantic-mode-map (kbd "C-c , s") 'semantic-c-add-preprocessor-symbol)
 
-  ;; 快速跳转定义与实现
-  ;; (local-set-key (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
-  (local-set-key (kbd "C-c C-g") 'semantic-analyze-proto-impl-toggle)
-  (local-set-key (kbd "C-c b") 'pop-tag-mark)
-  (local-set-key (kbd "C-c C-b") 'my/jump-back-to-origin)
-
-  ;; hide-ifdef
-  (local-set-key (kbd "C-c C-c p") 'previous-ifdef)
-  (local-set-key (kbd "C-c C-c n") 'next-ifdef)
-  (local-set-key (kbd "C-c C-c f") 'forward-ifdef)
-  (local-set-key (kbd "C-c C-c b") 'backward-ifdef)
-  (local-set-key (kbd "C-c C-c =") 'show-ifdef-block)
-  (local-set-key (kbd "C-c C-c -") 'hide-ifdef-block)
-  (local-set-key (kbd "C-c C-c h") 'hide-ifdefs)
-  (local-set-key (kbd "C-c C-c s") 'show-ifdefs)
-  (local-set-key (kbd "C-c C-c m") 'hide-ifdef-toggle-shadowing)
-  ;; 添加define
-  (local-set-key (kbd "C-c C-c D") 'hide-ifdef-define)
-  ;; 去掉define
-  (local-set-key (kbd "C-c C-c U") 'hide-ifdef-undef)
-
-
-  ;; 搜索函数被调用
-  (local-set-key (kbd "C-c C-c r") 'semantic-symref-symbol)
-  (local-set-key (kbd "C-c C-c R") 'semantic-symref-regexp)
-
-  ;; disaster
-  (local-set-key (kbd "C-c C-c d") 'disaster)
-
-  ;; 现实文档
-  (local-set-key (kbd "C-c C-d") 'semantic-ia-show-doc)
-  (local-set-key (kbd "C-c C-l") 'semantic-ia-show-summary)
-
-  ;; 分析头文件
-  (local-set-key (kbd "C-c M-i") 'semantic-decoration-unparsed-include-parse-include)
-  ;; 分析全部头文件
-  (local-set-key (kbd "C-c M-I") 'semantic-decoration-unparsed-include-parse-all-includes)
-  (local-set-key (kbd "C-c `") 'semantic-show-unmatched-syntax-next)
-
-  ;; 标记函数 C-M-h
-  (local-set-key (kbd "C-c C-c H") 'senator-mark-defun)
-
-  ;; 改变显示样式
-  (local-set-key (kbd "C-c C-c t") 'semantic-toggle-decoration-style)
-  ;; 添加头文件
-  (local-set-key (kbd "C-c C-c A") 'semantic-add-system-include)
-                                        ;
   ;; debug
-  (local-set-key (kbd "C-c C-c P") 'semantic-c-describe-environment)
-  (local-set-key (kbd "C-c C-c B") 'semantic-describe-buffer)
-  (local-set-key (kbd "C-c C-c T") 'semantic-describe-tag)
-  (local-set-key (kbd "C-c C-c S") 'semantic-c-add-preprocessor-symbol)
-
-  ;;头文件切换
-  ;; (local-set-key (kbd "C-c C-c a") 'ff-get-other-file)
-  (local-set-key (kbd "C-c C-a") 'ff-find-related-file)
-  ;; (local-set-key (kbd "C-c C-h") 'ff-find-related-file)
-  ;; (local-set-key (kbd "C-c C-a") 'auto-fill-mode)
-
-  (local-set-key "\C-c?" 'semantic-ia-complete-symbol)
-  (local-set-key "\C-c/" 'semantic-ia-complete-tip)
-  ;; (define-key semantic-mode-map (kbd "C-c h") 'semantic-decoration-include-visit)
-  ;; (define-key semantic-mode-map "." 'semantic-complete-self-insert)
-  ;; (define-key semantic-mode-map "->" 'semantic-complete-self-insert)
-
-  (local-set-key (kbd "C-c \\") 'c-backslash-region)
-  (local-set-key (kbd "C-c C-\\") 'c-backslash-region)
-
-  ;; cpp预处理的结果
-  (local-set-key (kbd "C-c e") 'c-macro-expand)
-  (local-set-key (kbd "C-c C-e") 'c-macro-expand)
-
-  ;; (local-set-key (kbd "C-c g") 'cscope-find-this-symbol)
-  ;; (local-set-key (kbd "C-c C-g") 'cscope-find-global-definition)
-
-  ;;补全
-  (local-set-key (kbd "M-/") 'hippie-expand)
-
-  ;;去掉ctl-c ctl-c的注释功能
-  ;; (local-set-key (kbd "C-c C-c") nil)
-
-  (local-set-key (kbd "M-j") 'join-line)
-  ;; (local-set-key (kbd "M-.") 'my/tags-search)
-  ;; (local-set-key (kbd "M-,") 'tags-loop-continue)
-  ;; C-M-j c-indent-new-comment-line
-
-
-  (local-set-key [(f9)] 'my/smart-compile)
-  (local-set-key (kbd "C-c C-m") 'my/smart-compile)
-
-  (local-set-key (kbd "C-c C-k") 'kill-region) ;replace c-toggle-comment-style
+  (define-key semantic-mode-map (kbd "C-c , d e") 'semantic-c-describe-environment)
+  (define-key semantic-mode-map (kbd "C-c , d b") 'semantic-describe-buffer)
+  (define-key semantic-mode-map (kbd "C-c , d t") 'semantic-describe-tag)
+  (define-key semantic-mode-map (kbd "C-c , d w") 'semantic-dump-parser-warnings)
+  (define-key semantic-mode-map (kbd "C-c , d s") 'semantic-lex-spp-describe)
   )
 
+
+(use-package cc-mode
+  :config
+  (defun my-cc-mode-hook ()
+    "My c common mode hooks."
+    (unless semantic-mode
+      (semantic-mode +1))
+
+    ;; (hide-ifdef-mode +1)
+    (auto-fill-mode +1)
+    (cscope-minor-mode t)
+
+    ;; (setq hide-ifdef-hiding t)
+    ;; (setq hide-ifdef-shadow t)
+
+    ;; (setq comment-start '"/* ")
+    ;; (setq comment-end '" */")
+    ;; (c-set-style "qt-gnu")
+    (setq-local indent-tabs-mode nil)
+    (c-set-style "cc-mode")
+
+    ;; set flycheck include paths
+    ;; (when (boundp 'flycheck-mode)
+    ;;   (after-load 'semantic/dep
+    ;;     (mapc (lambda (arg) (dolist (incs (append semantic-dependency-system-include-path my-include-path))
+	;; 		             (add-to-list arg incs)))
+	;;           '(flycheck-gcc-include-path
+    ;;             flycheck-clang-include-path
+	;; 			flycheck-cppcheck-include-path))))
+    ;; (setq-default company-clang-arguments '("-std=c++11"))
+    )
+
+  (defun my--cc-tab ()
+    (interactive)
+    (if (looking-at "#ifn?def")
+        (if (or (get-char-property (line-end-position) 'invisible)
+                (equal (get-char-property (line-end-position)  'face) 'hide-ifdef-shadow))
+            (show-ifdef-block)
+          (hide-ifdef-block))
+      (if (boundp 'company-mode)
+          (call-interactively 'company-indent-or-complete-common)
+        (call-interactively 'indent-for-tab-command))))
+
+  (define-key c-mode-base-map (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
+  (define-key c-mode-base-map (kbd "C-c D") 'disaster)
+
+  (define-key c-mode-base-map (kbd "C-d") 'c-hungry-delete-forward)
+  (define-key c-mode-base-map (kbd "C-c C-d") 'semantic-ia-show-doc)     ;c-hungry-delete-forward
+  (define-key c-mode-base-map (kbd "C-c C-l") 'semantic-ia-show-summary) ;c-toggle-elecric-state
+
+  (define-key c-mode-base-map (kbd "C-c C-a") 'ff-find-related-file)     ;c-toggle-auto-newline
+
+  (define-key c-mode-base-map (kbd "C-c C-m") 'my/smart-compile)
+  (define-key c-mode-base-map (kbd "C-c C-c") nil)                       ;comment-region
+  (define-key c-mode-base-map (kbd "C-c C-b") nil)                       ;c-submit-bug-report
+  (define-key c-mode-base-map (kbd "C-c C-k") 'kill-region)              ;c-toggle-comment-style
+  (define-key c-mode-base-map (kbd "TAB") 'my--cc-tab)
+
+  (add-hook 'c-mode-common-hook 'my-cc-mode-hook)
+  )
 
 ;; 添加Kernel的Include
 ;; (let ((include-dirs my-kernel-include-path))
@@ -517,9 +397,7 @@
 ;; (setq semantic-default-c-path
 ;; semantic-c-dependency-system-include-path)
 
-(dolist (hook '(c-mode-hook c++-mode-hook))
-  (add-hook hook 'my-c-mode-hooks)
-  (add-hook hook 'my-c-mode-keys))
+
 
 (provide 'my-c)
 ;;; my-c.el ends here

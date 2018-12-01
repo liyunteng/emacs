@@ -35,7 +35,7 @@
     (with-current-buffer "*Shell Command Output*"
       (view-mode 1))))
 
-;; 退出gdb和term shell eshell时自动关闭buffer
+;; close buffer when process exit
 (defun kill-buffer-when-shell-command-exit ()
   "Close current buffer when 'shell-command' exit."
   (let ((process (ignore-errors (get-buffer-process (current-buffer)))))
@@ -47,11 +47,11 @@
                                 (when (> (count-windows) 1)
                                   (delete-window))))))))
 (dolist (hook '(term-mode-hook
-                terminal-mode-hook
-                shell-mode-hook
                 eshell-mode-hook
-                inferior-python-mode-hook
                 comint-mode-hook
+                ;; comint-exec-hook
+                shell-mode-hook
+                inferior-python-mode-hook
                 ))
   (add-hook hook 'kill-buffer-when-shell-command-exit))
 
@@ -62,21 +62,6 @@
               (expand-file-name "term" my-cache-dir))
 
 (use-package comint
-  :init
-  (defun my-comint-mode-hook ()
-    (setq-local mouse-yank-at-point t)
-    (setq-local transient-mark-mode nil)
-    (setq-local global-hl-line-mode nil)
-    (setq-local beacon-mode nil)
-    (setq-local scroll-margin 0))
-
-  (defun my/comint-clear-buffer ()
-    "Clear comint buffer."
-    (interactive)
-    (let ((comint-buffer-maximum-size 0))
-      (comint-truncate-buffer)))
-
-  (add-hook 'comint-mode-hook 'my-comint-mode-hook)
   :config
   (setq comint-scroll-to-bottom-on-input nil
 	    comint-scroll-to-bottom-on-output nil
@@ -102,10 +87,18 @@
 	        (funcall 'man command))
 	       ;; Send other commands to the default handler.
 	       (t (comint-simple-send proc command)))))
-  )
+
+  (defun my-comint-mode-hook ()
+    (setq-local mouse-yank-at-point t)
+    (setq-local transient-mark-mode nil)
+    (setq-local global-hl-line-mode nil)
+    (setq-local beacon-mode nil)
+    (setq-local scroll-margin 0))
+  (add-hook 'comint-mode-hook 'my-comint-mode-hook))
 
 (use-package shell
   :commands (shell)
+  :bind (("C-x t s" . shell))
   :if (fboundp 'helm-comint-input-ring)
   :config
   (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring))
@@ -113,14 +106,14 @@
 (use-package multi-term
   :ensure t
   :commands (multi-term)
-  :bind
-  (("C-x x" . my/multi-term-dedicated-toggle-and-select)
-   ("C-x t m" . my/multi-term-dedicated-toggle-and-select)
-   ("C-x t t" . multi-term)
-   ("C-x t n" . multi-term-next)
-   ("C-x t p" . multi-term-prev))
+  :bind (("C-x e" . my/multi-term)
+         ("C-x x" . my/multi-term-dedicated-toggle-and-select)
+         ("C-x t x" . my/multi-term-dedicated-toggle-and-select)
+         ("C-x t t" . multi-term)
+         ("C-x t n" . multi-term-next)
+         ("C-x t p" . multi-term-prev))
 
-  :init
+  :config
   (defadvice ansi-term (before force-bash)
     "Always use bash."
     (interactive (list my-term-shell)))
@@ -150,8 +143,6 @@
 
   (add-hook 'term-mode-hook 'my-term-mode-hook)
 
-
-  :config
   (setq multi-term-program my-term-shell
 	    multi-term-scroll-to-bottom-on-output t
 	    multi-term-scroll-show-maximum-output nil
@@ -170,6 +161,16 @@
 	    (setq my-multi-term-dedicated-old-buf (current-buffer))
 	    (multi-term-dedicated-open)
 	    (multi-term-dedicated-select))))
+
+  (defun my/multi-term ()
+    "My term start and select."
+    (interactive)
+    (let (term-buffer)
+      (setq term-buffer (multi-term-get-buffer current-prefix-arg))
+      (setq multi-term-buffer-list (nconc multi-term-buffer-list (list term-buffer)))
+      (set-buffer term-buffer)
+      (multi-term-internal)
+      (switch-to-buffer-other-window term-buffer)))
 
   ;; (setq-default multi-term-program "/bin/bash")
   ;; (setq multi-term-dedicated-close-back-to-open-buffer-p t)
@@ -206,8 +207,28 @@
 
 (use-package eshell
   :defer t
-  :init
+  :bind (("C-x t e" . eshell))
+  :config
   (setq eshell-directory-name (expand-file-name "eshell" my-cache-dir))
+  (setq eshell-cmpl-cycle-completions nil
+	    ;; auto truncate after 20k lines
+	    eshell-buffer-maximum-lines 20000
+	    ;; history size
+	    eshell-history-size 350
+	    ;; no duplicates in history
+	    eshell-hist-ignoredups t
+	    ;; buffer shorthand -> echo foo > #'buffer
+	    eshell-buffer-shorthand t
+	    ;; my prompt is easy enough to see
+	    eshell-highlight-prompt nil
+	    ;; treat 'echo' like shell echo
+	    eshell-plain-echo-behavior t
+
+	    eshell-send-direct-to-subprocesses t
+	    eshell-scroll-to-bottom-on-input nil
+	    eshell-scroll-to-bottom-on-output nil
+	    )
+
   (defun my--protect-eshell-prompt ()
     "Protect Eshell's prompt like Comint's prompts.
 
@@ -249,27 +270,7 @@ is achieved by adding the relevant text properties."
     (setq-local global-hl-line-mode nil)
     )
 
-  (add-hook 'eshell-mode-hook 'my--init-eshell)
-  :config
-  (setq eshell-cmpl-cycle-completions nil
-	    ;; auto truncate after 20k lines
-	    eshell-buffer-maximum-lines 20000
-	    ;; history size
-	    eshell-history-size 350
-	    ;; no duplicates in history
-	    eshell-hist-ignoredups t
-	    ;; buffer shorthand -> echo foo > #'buffer
-	    eshell-buffer-shorthand t
-	    ;; my prompt is easy enough to see
-	    eshell-highlight-prompt nil
-	    ;; treat 'echo' like shell echo
-	    eshell-plain-echo-behavior t
-
-	    eshell-send-direct-to-subprocesses t
-	    eshell-scroll-to-bottom-on-input nil
-	    eshell-scroll-to-bottom-on-output nil
-	    )
-  )
+  (add-hook 'eshell-mode-hook 'my--init-eshell))
 
 (provide 'my-term)
 ;;; my-term.el ends here

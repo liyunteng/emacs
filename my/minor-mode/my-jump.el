@@ -27,7 +27,7 @@
 ;; jump
 (defvar my-default-jump-handlers '(xref-find-definitions)
   "List of jump handlers available in every mode.")
-(defvar-local my-jump-handlers '()
+(defvar-local my-jump-handlers '(xref-find-definitions)
   "List of jump handlers local to this buffer.")
 
 (defmacro my|define-jump-handlers (mode &rest handlers)
@@ -55,12 +55,7 @@ Example:
 		               my-default-jump-handlers))
 	     ;; (message "handlers-list: %s" ,handlers-list)
 	     )
-       (add-hook ',mode-hook ',func)
-       ;; (with-eval-after-load 'bind-map
-       ;;   (spacemacs/set-leader-keys-for-major-mode ',mode
-       ;;                                             "gg" 'spacemacs/jump-to-definition
-       ;;                                             "gG" 'spacemacs/jump-to-definition-other-window))
-       )))
+       (add-hook ',mode-hook ',func))))
 
 (defvar my-jump-ring-length 128)
 (defvar my-jump-mark-ring (make-ring my-jump-ring-length)
@@ -75,13 +70,13 @@ Example:
 	      )
       (dolist (-handler my-jump-handlers)
 	    (let ((handler (if (listp -handler) (car -handler) -handler)))
-	      (ignore-errors
-	        (call-interactively handler))
+	      (ignore-errors (call-interactively handler))
 	      (when (or
 		         (not (eq old-point (point)))
 		         (not (equal old-buffer (current-buffer))))
 	        (ring-insert my-jump-mark-ring marker)
-	        (throw 'done t)))))
+	        (throw 'done t))
+          )))
     (message "No jump handler was able to find this symbol.")
     ))
 
@@ -105,10 +100,6 @@ Example:
     (if (> (length (window-list)) 1)
 	    (delete-window))))
 
-
-;; (my|define-jump-handlers lisp-interaction-mode elisp-slime-nav-find-elisp-thing-at-point)
-;; (my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
-;; (my|define-jump-handlers elisp-slime-nav-mode elisp-slime-nav-find-elisp-thing-at-point)
 (my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
 (my|define-jump-handlers c-mode my/semantic-find-definition)
 (my|define-jump-handlers c++-mode my/semantic-find-definition)

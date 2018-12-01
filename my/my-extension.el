@@ -26,26 +26,6 @@
 
 
 ;; linum replaced by nlinum
-;; (use-package linum
-;;   :init
-;;   (global-linum-mode +1)
-;;   :init
-;;   (setq linum-delay t)
-;;   (setq linum-format 'dynamic)
-
-;;   (my|add-toggle linum-mode
-;;     :status linum-mode
-;;     :on (linum-mode +1)
-;;     :off (linum-mode -1)
-;;     :documentation "Show line number")
-
-;;   :config
-;;   (defadvice linum-schedule (around my-linum-schedule () activate)
-;;     "Updated line number every second."
-;;     (run-with-idle-timer 1 nil #'linum-update-current)
-;;     ad-do-it)
-;;   (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
-;;   )
 (use-package nlinum
   :ensure t
   :defer t
@@ -55,9 +35,10 @@
     :on (nlinum-mode +1)
     :off (nlinum-mode -1)
     :documentation "Show line number")
-  :init
-  (setq nlinum-highlight-current-line t)
   (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on))
+
+(use-package json-mode
+  :ensure t)
 
 (use-package fill-column-indicator
   :ensure t
@@ -148,10 +129,10 @@
   (aggressive-indent-mode -1))
 
 ;; delete space
-(use-package hungry-delete
-  :ensure t
-  :config
-  (global-hungry-delete-mode +1))
+;; (use-package hungry-delete
+;;   :ensure t
+;;   :config
+;;   (global-hungry-delete-mode +1))
 
 ;; expand-region
 (use-package expand-region
@@ -363,13 +344,14 @@
   :ensure t
   :bind (([remap move-beginning-of-line] . crux-move-beginning-of-line)
          ([remap open-line] . crux-smart-open-line)
-         ("C-c d" . crux-duplicate-and-comment-current-line-or-region)
-         ("C-c o" . crux-open-with)
-         ("C-c u" . crux-view-url)
-         ("C-c k" . crux-kill-other-buffers)
-         ("C-c t" . crux-visit-term-buffer)
-         ("C-c e" . crux-eval-and-replace)
-         ("M-J" . crux-top-join-line)))
+         ("C-x M-o" . crux-open-with)
+         ;; ("C-c u" . crux-view-url)
+         ("C-x M-k" . crux-kill-other-buffers)
+         ("M-J" . crux-top-join-line))
+  :init
+  (defadvice crux-open-with (after my-after-crux-open-with-ad activate)
+    (message "opend with external application."))
+  )
 
 ;; make useless word
 (use-package lorem-ipsum

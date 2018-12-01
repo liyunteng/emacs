@@ -31,29 +31,30 @@
   ;; :diminish company-mode		;; for see current backend
   :ensure t
   :bind
-  (:map company-mode-map
-	    ("C-M-/" . company-other-backend)
-	    ("C-M-?" . company-begin-backend)
-	    ("M-SPC" . company-other-backend)
-	    ("M-/" . hippie-expand)
-	    ;; ("TAB" . company-indent-or-complete-common)
-	    ("TAB" . 'indent-for-tab-command)
-	    :map company-active-map
-	    ("TAB" . company-complete-common)
-	    ("C-w" . nil)
-	    ("C-l" . company-show-location)
-	    ("C-n" . company-select-next)
-	    ("C-p" . company-select-previous)
-	    ("C-v" . company-next-page)
-	    ("C-d" . company-show-doc-buffer)
-	    ("M-v" . company-previous-page)
-	    :map company-search-map
-	    ("C-n" . company-select-next)
-	    ("C-p" . company-select-previous)
-	    )
+  (
+   ("TAB" . 'company-indent-or-complete-common)
+   :map company-mode-map
+   ("C-M-/" . company-other-backend)
+   ("C-M-?" . company-begin-backend)
+   ("M-SPC" . company-other-backend)
+   ("M-/" . hippie-expand)
+   ;; ("TAB" . company-indent-or-complete-common)
+   :map company-active-map
+   ("TAB" . company-complete-common)
+   ("C-w" . nil)
+   ("C-l" . company-show-location)
+   ("C-n" . company-select-next)
+   ("C-p" . company-select-previous)
+   ("C-v" . company-next-page)
+   ("C-d" . company-show-doc-buffer)
+   ("M-v" . company-previous-page)
+   :map company-search-map
+   ("C-n" . company-select-next)
+   ("C-p" . company-select-previous)
+   )
   :commands (global-company-mode company-mode)
   :init
-  (defalias 'completion-at-point 'company-complete-common)
+  ;; (defalias 'completion-at-point 'company-complete-common)
 
   (global-company-mode -1)
   (my|add-toggle company-mode
@@ -102,6 +103,7 @@
         company-abort-manual-when-too-short t
         company-selection-wrap-around nil
         )
+
 
 
   (when (eq my-theme 'zenburn)
