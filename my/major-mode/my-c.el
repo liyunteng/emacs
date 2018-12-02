@@ -330,7 +330,8 @@
 
     ;; (hide-ifdef-mode +1)
     (auto-fill-mode +1)
-    (cscope-minor-mode t)
+    (cscope-minor-mode +1)
+    (c-subword-mode +1)
 
     ;; (setq hide-ifdef-hiding t)
     ;; (setq hide-ifdef-shadow t)
@@ -376,6 +377,7 @@
   (define-key c-mode-base-map (kbd "C-c C-s") nil)                       ;c-show-syntactic-information
   (define-key c-mode-base-map (kbd "C-c C-c") nil)                       ;comment-region
   (define-key c-mode-base-map (kbd "C-c C-b") nil)                       ;c-submit-bug-report
+  (define-key c-mode-base-map (kbd "C-c C-w") nil)                       ;c-subword-mode
   (define-key c-mode-base-map (kbd "C-c C-k") 'kill-region)              ;c-toggle-comment-style
   (define-key c-mode-base-map (kbd "TAB") 'my--cc-tab)
 

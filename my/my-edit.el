@@ -1020,13 +1020,14 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
 (global-unset-key (kbd "C-x SPC"))
 (global-set-key (kbd "C-<return>") 'cua-rectangle-mark-mode)
 
-;;删除光标之前的单词(保存到kill-ring)
+;; 删除光标之前的单词(保存到kill-ring)
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-c C-w") 'my/backward-kill-sexp-or-region)
 ;;删除光标之前的字符(不保存到kill-ring)
 (global-set-key (kbd "C-q") 'backward-delete-char)
 ;;删除选中区域
 (global-set-key (kbd "C-c C-k") 'kill-region)
+(global-set-key (kbd "C-M-<backspace>") 'my/backward-kill-to-indentation)
 ;;M-j来连接不同行
 (global-set-key (kbd "M-j") 'join-line)
 
