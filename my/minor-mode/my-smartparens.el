@@ -123,6 +123,7 @@
   (define-key smartparens-mode-map (kbd "C-M-a") nil)
   (define-key smartparens-mode-map (kbd "C-M-e") nil)
   (define-key smartparens-mode-map (kbd "C-w") 'sp-backward-kill-word)
+  (define-key smartparens-mode-map (kbd "C-M-<backspace>") 'my/backward-kill-to-indentation)
   (define-key smartparens-mode-map (kbd "M-S") 'sp-split-sexp)
   (define-key smartparens-mode-map (kbd "M-D") 'sp-splice-sexp)
   ;; (define-key smartparens-mode-map [remap backward-delete-char] 'sp-backward-delete-char)
