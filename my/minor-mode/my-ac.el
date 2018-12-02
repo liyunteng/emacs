@@ -104,9 +104,8 @@
         company-selection-wrap-around nil
         )
 
-
-
-  (when (eq my-theme 'zenburn)
+  (when (and (> (display-color-cells) 8)
+             (custom-theme-enabled-p 'zenburn))
     (custom-theme-set-faces
      'zenburn
      `(company-tooltip-search
@@ -119,9 +118,7 @@
 	        :foreground "red" :weight bold))))
      `(company-template-field
        ((t (:background
-	        ,(color-darken-name (face-attribute 'default :background) 10)))))
-     ))
-
+	        ,(color-darken-name (face-attribute 'default :background) 10)))))))
   ;; Suspend page-break-lines-mode while company menu is active
   ;; (see https://github.com/company-mode/company-mode/issues/416)
   (when (boundp 'page-break-lines-mode)

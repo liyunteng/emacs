@@ -230,8 +230,5 @@
 (setq-default ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir))
 (setq-default smex-save-file (expand-file-name "smex-items" my-cache-dir))
 
-;; desktop
-(setq-default desktop-path (list my-cache-dir))
-(setq-default desktop-dirname my-cache-dir)
 (provide 'my-base)
 ;;; my-base.el ends here

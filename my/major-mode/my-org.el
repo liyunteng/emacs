@@ -44,32 +44,38 @@
   (use-package ox
     :config
     (setq org-export-coding-system 'utf-8))
+
   (use-package org-archive
     :config
     (setq org-archive-mark-done nil)
     (setq org-archive-location "%s_archive::* Archive"))
+
   (use-package org-capture)
   (use-package org-pomodoro
     :defer t
     :ensure t
     :config
     (setq org-pomodoro-keep-killed-pomodoro-time t))
-  ;; (use-package org-fstree
-  ;; 	:ensure t
-  ;; 	:defer t
-  ;; 	)
+
   (use-package org-cliplink
     :defer t
     :ensure t)
+
+  (use-package org-bullets
+    :ensure t
+    :init
+    (add-hook 'org-mode-hook 'org-bullets-mode))
+
   (use-package ob-ditaa
     :defer t
-    :config
+    :init
+    (setq org-ditaa-jar-path (expand-file-name "ditaa0_9.jar" my-cache-dir))
     ;; Lots of stuff from http://doc.norang.ca/org-mode.html
     (defun my-grab-ditaa (url jar-name)
       "Download URL and extract JAR-NAME as `org-ditaa-jar-path'."
       ;; TODO: handle errors
       (message "Grabbing %s for org." jar-name)
-      (let ((zip-temp (make-temp-name "emacs-ditaa")))
+      (let ((zip-temp (expand-file-name (make-temp-name "emacs-ditaa") temporary-file-directory)))
 	    (unwind-protect
 	        (progn
 	          (when (executable-find "unzip")
@@ -79,14 +85,21 @@
 				                       (shell-quote-argument org-ditaa-jar-path)))))
 	      (when (file-exists-p zip-temp)
 	        (delete-file zip-temp)))))
-
+    :config
     (unless (and (boundp 'org-ditaa-jar-path)
 		         (file-exists-p org-ditaa-jar-path))
       (let ((jar-name "ditaa0_9.jar")
 	        (url "http://jaist.dl.sourceforge.net/project/ditaa/ditaa/0.9/ditaa0_9.zip"))
-	    (setq org-ditaa-jar-path (expand-file-name jar-name my-cache-dir))
 	    (unless (file-exists-p org-ditaa-jar-path)
 	      (my-grab-ditaa url jar-name)))))
+
+  (after-load 'ob-plantuml
+    (let ((jar-name "plantuml.jar")
+          (url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
+      (setq org-plantuml-jar-path (expand-file-name jar-name my-cache-dir))
+      (unless (file-exists-p org-plantuml-jar-path)
+        (url-copy-file url org-plantuml-jar-path))))
+
 
   (setq org-agenda-files (list
 			              my-org-inbox-file
@@ -255,83 +268,6 @@
 ;;; Agenda views
   (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 3))
 
-  ;; ;; Show iCal calendars in the org agenda
-  ;; (when (and *is-a-mac* (require 'org-mac-iCal nil t))
-  ;;   (setq org-agenda-include-diary t
-  ;;         org-agenda-custom-commands
-  ;;         '(("I" "Import diary from iCal" agenda ""
-  ;;            ((org-agenda-mode-hook #'org-mac-iCal)))))
-
-  ;;   (add-hook 'org-agenda-cleanup-fancy-diary-hook
-  ;;             (lambda ()
-  ;;               (goto-char (point-min))
-  ;;               (save-excursion
-  ;;                 (while (re-search-forward "^[a-z]" nil t)
-  ;;                   (goto-char (match-beginning 0))
-  ;;                   (insert "0:00-24:00 ")))
-  ;;               (while (re-search-forward "^ [a-z]" nil t)
-  ;;                 (goto-char (match-beginning 0))
-  ;;                 (save-excursion
-  ;;                   (re-search-backward "^[0-9]+:[0-9]+-[0-9]+:[0-9]+ " nil t))
-  ;;                 (insert (match-string 0))))))
-
-  ;; (defun my/prettify-org-buffer ()
-  ;;     "Apply visual enchantments to the current buffer.
-  ;; The buffer's major mode should be `org-mode'."
-  ;;     (interactive)
-  ;;     (unless (derived-mode-p 'org-mode)
-  ;;       (user-error "org-mode should be enabled in the current buffer."))
-
-  ;;     ;; Make ~SPC ,~ work, reference:
-  ;;     ;; http://stackoverflow.com/questions/24169333/how-can-i-emphasize-or-verbatim-quote-a-comma-in-org-mode
-  ;;     (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\n")
-  ;;     (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
-  ;;     (setq-local org-emphasis-alist '(("*" bold)
-  ;; 				     ("/" italic)
-  ;; 				     ("_" underline)
-  ;; 				     ("=" org-verbatim verbatim)
-  ;; 				     ("~" org-kbd)
-  ;; 				     ("+"
-  ;; 				      (:strike-through t))))
-  ;;     (when (require 'space-doc nil t)
-  ;;       (space-doc-mode)))
-
-  (defun my/view-org-file (file &optional anchor-text expand-scope)
-    "Open org file and apply visual enchantments.
-FILE is the org file to be opened.
-If ANCHOR-TEXT  is `nil' then run `re-search-forward' with ^ (beginning-of-line).
-If ANCHOR-TEXT is a GitHub style anchor then find a corresponding header.
-If ANCHOR-TEXT isn't a GitHub style anchor then run `re-search-forward' with
-ANCHOR-TEXT.
-If EXPAND-SCOPE is `subtree' then run `outline-show-subtree' at the matched line.
-If EXPAND-SCOPE is `all' then run `outline-show-all' at the matched line."
-    (interactive "F")
-    (find-file file)
-    (my-prettify-org-buffer)
-    (goto-char (point-min))
-    (when anchor-text
-      ;; If `anchor-text' is GitHub style link.
-      (if (string-prefix-p "#" anchor-text)
-	      ;; If the toc-org package is loaded.
-	      (if (memq 'toc-org features)
-	          ;; For each heading. Search the heading that corresponds
-	          ;; to `anchor-text'.
-	          (while (and (re-search-forward "^[\\*]+\s\\(.*\\).*$" nil t)
-			              (not (string= (toc-org-hrefify-gh (match-string 1))
-					                    anchor-text))))
-	        ;; This is not a problem because without the space-doc package
-	        ;; those links will be opened in the browser.
-	        (message (format (concat "Can't follow the GitHub style anchor: '%s' "
-				                     "without the org layer.") anchor-text)))
-	    (re-search-forward anchor-text)))
-    (beginning-of-line)
-    (cond
-     ((eq expand-scope 'subtree)
-      (show-subtree))
-     ((eq expand-scope 'all)
-      (show-all))
-     (t nil)))
-
   (require 'org-faces)
   (set-face-attribute 'org-level-1 nil :height 1.6 :bold t)
   (set-face-attribute 'org-level-2 nil :height 1.4 :bold t)
@@ -384,20 +320,25 @@ If EXPAND-SCOPE is `all' then run `outline-show-all' at the matched line."
 
   (org-babel-do-load-languages
    'org-babel-load-languages
-   `((R . t)
+   `((C . t)
+     (shell .t)
+     (java . t)
+     (python . t)
+     (emacs-lisp . t)
+     (matlab .t)
+     (latex . t)
+     (R . t)
      (ditaa . t)
      (dot . t)
-     (emacs-lisp . t)
+     (lisp . t)
      (gnuplot . t)
      (haskell . nil)
      (latex . t)
      (ledger . t)
      (ocaml . nil)
      (octave . t)
-     (python . t)
      (ruby . t)
      (screen . nil)
-     (,(if (locate-library "ob-sh") 'sh 'shell) . t)
      (sql . nil)
      (sqlite . t)))
 
@@ -419,12 +360,6 @@ If EXPAND-SCOPE is `all' then run `outline-show-all' at the matched line."
   (define-key org-mode-map (kbd "M-<up>") 'org-metaup)
   (define-key org-mode-map (kbd "M-<down>") 'org-metadown)
   )
-
-
-(use-package org-bullets
-  :ensure t
-  :init
-  (add-hook 'org-mode-hook 'org-bullets-mode))
 
 (define-minor-mode prose-mode
   "Set up a buffer for prose editing.

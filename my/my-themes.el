@@ -38,7 +38,7 @@
 
 (use-package zenburn-theme
   :ensure t
-  :if (eq (display-color-cells) 8)
+  :if (<= (display-color-cells nil) 8)
   :init
   (defvar my-zenburn-override-colors-alist
     '(("zenburn-fg+1"     . "#FFFFFF")
@@ -77,14 +77,33 @@
       ("zenburn-blue-4"   . "#0000FF")
       ("zenburn-blue-5"   . "#0000FF")
       ("zenburn-magenta"  . "#FF00FF")))
-  (setq zenburn-override-colors-alist my-zenburn-override-colors-alist))
+  (setq zenburn-override-colors-alist my-zenburn-override-colors-alist)
+  :config
+  (custom-theme-set-faces
+   'zenburn
+   `(company-tooltip-search
+     ((t (:background "red"))))
+   `(company-tooltip-search-selection
+     ((t (:background "red" :weight bold))))
+   `(company-tooltip-annotation-selection
+     ((t (:foreground "#00FFFF" :weight bold))))
+   `(company-template-field
+     ((t (:background "#00FFFF")))))
+  (custom-theme-set-faces
+   'zenburn
+   `(helm-ff-dotted-directory
+     ((t (:foreground "#00FFFF" :background "#000000")))))
+  (message "####################Emacs in 8 color####################")
+  )
 
 (use-package color-theme-sanityinc-solarized
   :ensure t
   :defer t)
+
 (use-package color-theme-sanityinc-tomorrow
   :ensure t
   :defer t)
+
 (use-package eclipse-theme
   :ensure t)
 
@@ -93,9 +112,7 @@
   :type 'string
   :group 'my-config)
 
-(setq my-theme 'zenburn)
-(when (display-graphic-p)
-  (load-theme my-theme t))
+(load-theme my-theme t)
 
 (provide 'my-themes)
 ;;; my-themes.el ends here

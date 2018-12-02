@@ -109,7 +109,9 @@
          ("C-x r l" . list-bookmarks))
   :config
   (setq bookmark-save-flag t)
-  (setq bookmark-default-file (expand-file-name "bookmarks" my-cache-dir)))
+  (setq bookmark-default-file (expand-file-name "bookmarks" my-cache-dir))
+  (push '(".emacs.d" (filename . "~/.emacs.d") (front-context-string . "my"))
+        bookmark-alist))
 
 ;; abbrev config
 (when (file-exists-p abbrev-file-name)
