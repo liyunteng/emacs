@@ -74,8 +74,7 @@
 
   (defun my--smartparens-pair-newline-and-indent (id action context)
     (save-excursion
-      (newline)
-      (indent-according-to-mode))
+      (newline-and-indent))
     (indent-according-to-mode))
   (defun my/smart-closing-parenthesis ()
     (interactive)
@@ -104,20 +103,21 @@
     (sp-local-tag "=" "<%= " " %>")
     (sp-local-tag "#" "<%# " " %>"))
 
-  (sp-pair "{" "}"
-	       :unless '(sp-in-comment-p sp-in-string-p)
-	       :post-handlers
-	       '(:add (my--smartparens-pair-newline-and-indent "RET")))
-  (sp-pair "(" ")"
-	       :unless '(sp-in-comment-p sp-in-string-p)
-	       :post-handlers
-	       '(:add (my--smartparens-pair-newline-and-indent "RET")))
-  (sp-pair "[" "]"
-	       :unless '(sp-in-comment-p sp-in-string-p)
-	       :post-handlers
-	       '(:add (my--smartparens-pair-newline-and-indent "RET")))
+  (sp-local-pair '(minibuffer-inactive-mode) "'" nil :actions nil)
 
-  (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+  (sp-pair "{" "}"
+           :unless '(sp-in-comment-p sp-in-string-p)
+           :post-handlers
+           '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
+  (sp-pair "(" ")"
+           :unless '(sp-in-comment-p sp-in-string-p)
+           :post-handlers
+           '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
+  (sp-pair "[" "]"
+           :unless '(sp-in-comment-p sp-in-string-p)
+           :post-handlers
+           '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
+
   ;; (define-key smartparens-mode-map (kbd ")") 'my/smart-closing-parenthesis)
   ;; (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)
   (define-key smartparens-mode-map (kbd "C-M-a") nil)
