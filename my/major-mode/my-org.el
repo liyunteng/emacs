@@ -321,10 +321,10 @@
   (org-babel-do-load-languages
    'org-babel-load-languages
    `((C . t)
-     (shell .t)
      (java . t)
      (python . t)
      (emacs-lisp . t)
+     (,(if (locate-library "ob-sh") 'sh 'shell) . t)
      (matlab .t)
      (latex . t)
      (R . t)

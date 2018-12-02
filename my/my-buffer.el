@@ -114,7 +114,9 @@
 (global-set-key (kbd "M-g b") 'my/view-buffer-other-window--Backtrace)
 
 (global-set-key (kbd "C-x C-k") 'kill-buffer)
-(global-set-key (kbd "C-x k") 'kill-current-buffer)
+(if (fboundp 'kill-current-buffer)
+    (global-set-key (kbd "C-x k") 'kill-current-buffer)
+  (global-set-key (kbd "C-x k") 'kill-buffer-and-window))
 (global-set-key (kbd "C-x m") 'my/alternate-buffer)
 (global-set-key (kbd "C-x C-m") 'my/alternate-buffer-other-window)
 

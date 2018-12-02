@@ -655,21 +655,21 @@ Compare them on count first,and in case of tie sort them alphabetically."
   (interactive)
   (find-file-other-window my-init-file))
 
-(defun my/kill-back-to-indentation ()
+(defun my/backward-kill-to-indentation ()
   "Kill from point back to the first non-whitespace character on the line."
   (interactive)
   (let ((prev-pos (point)))
     (back-to-indentation)
     (kill-region (point) prev-pos)))
 
-(defun my/kill-back-word-or-region (&optional arg)
+(defun my/backward-kill-sexp-or-region (&optional arg)
   "Call `kill-region' when a region is active and
-`backward-kill-word' otherwise. ARG is passed to
-`backward-kill-word' if no region is active."
+`backward-kill-sexp' otherwise. ARG is passed to
+`backward-kill-sexp' if no region is active."
   (interactive "p")
   (if (region-active-p)
       (call-interactively #'kill-region)
-    (backward-kill-word arg)))
+    (backward-kill-sexp arg)))
 
 (defun my/rename-file (filename &optional new-filename)
   "Rename FILENAME to NEW-FILENAME.
@@ -1020,10 +1020,9 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
 (global-unset-key (kbd "C-x SPC"))
 (global-set-key (kbd "C-<return>") 'cua-rectangle-mark-mode)
 
-
 ;;删除光标之前的单词(保存到kill-ring)
-(global-set-key (kbd "C-w") 'my/kill-back-word-or-region)
-(global-set-key (kbd "C-c C-w") 'backward-kill-sexp)
+(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-c C-w") 'my/backward-kill-sexp-or-region)
 ;;删除光标之前的字符(不保存到kill-ring)
 (global-set-key (kbd "C-q") 'backward-delete-char)
 ;;删除选中区域
