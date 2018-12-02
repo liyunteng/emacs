@@ -101,6 +101,12 @@
          ;; `other-buffer' honors `buffer-predicate' so no need to filter
          (other-buffer current-buffer t)))))
 
+(unless (fboundp 'kill-current-buffer)
+  (defun kill-current-buffer ()
+    "Kill current buffer."
+    (interactive)
+    (kill-buffer (current-buffer))))
+
 (my|view-buffer "*Help*")
 (my|view-buffer "*Messages*")
 (my|view-buffer "*scratch*")
@@ -114,9 +120,7 @@
 (global-set-key (kbd "M-g b") 'my/view-buffer-other-window--Backtrace)
 
 (global-set-key (kbd "C-x C-k") 'kill-buffer)
-(if (fboundp 'kill-current-buffer)
-    (global-set-key (kbd "C-x k") 'kill-current-buffer)
-  (global-set-key (kbd "C-x k") 'kill-buffer-and-window))
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
 (global-set-key (kbd "C-x m") 'my/alternate-buffer)
 (global-set-key (kbd "C-x C-m") 'my/alternate-buffer-other-window)
 
