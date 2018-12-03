@@ -38,8 +38,42 @@
 
 (use-package zenburn-theme
   :ensure t
-  :if (<= (display-color-cells nil) 8)
-  :init
+  :config
+  (custom-theme-set-faces
+   'zenburn
+   `(company-tooltip-search
+     ((t (:background
+          ,(color-darken-name (face-attribute 'default :background) 60)
+          :foreground "red"))))
+   `(company-tooltip-search-selection
+     ((t (:background
+          ,(color-darken-name (face-attribute 'default :background) 60)
+          :foreground "red" :weight bold))))
+   `(company-template-field
+     ((t (:background
+          ,(color-darken-name (face-attribute 'default :background) 30))))))
+  )
+
+(use-package color-theme-sanityinc-solarized
+  :ensure t
+  :defer t)
+
+(use-package color-theme-sanityinc-tomorrow
+  :ensure t
+  :defer t)
+
+(use-package eclipse-theme
+  :ensure t)
+
+(defcustom my-theme 'zenburn
+  "My theme."
+  :type 'string
+  :group 'my-config)
+
+(defun my-load-tty-zenburn-theme ()
+  "Enable modified zenburn theme in tty mode."
+  (message "####################Emacs in 8 color####################")
+  (require 'zenburn-theme)
   (defvar my-zenburn-override-colors-alist
     '(("zenburn-fg+1"     . "#FFFFFF")
       ("zenburn-fg"       . "#FFFFFF")
@@ -78,7 +112,6 @@
       ("zenburn-blue-5"   . "#0000FF")
       ("zenburn-magenta"  . "#FF00FF")))
   (setq zenburn-override-colors-alist my-zenburn-override-colors-alist)
-  :config
   (custom-theme-set-faces
    'zenburn
    `(company-tooltip-search
@@ -93,26 +126,15 @@
    'zenburn
    `(helm-ff-dotted-directory
      ((t (:foreground "#00FFFF" :background "#000000")))))
-  (message "####################Emacs in 8 color####################")
-  )
+  (load-theme 'zenburn t))
 
-(use-package color-theme-sanityinc-solarized
-  :ensure t
-  :defer t)
 
-(use-package color-theme-sanityinc-tomorrow
-  :ensure t
-  :defer t)
+(if (and (not (daemonp))
+         (<= (display-color-cells) 8))
+    (my-load-tty-zenburn-theme)
+  (load-theme my-theme t))
 
-(use-package eclipse-theme
-  :ensure t)
 
-(defcustom my-theme 'zenburn
-  "My theme."
-  :type 'string
-  :group 'my-config)
-
-(load-theme my-theme t)
 
 (provide 'my-themes)
 ;;; my-themes.el ends here

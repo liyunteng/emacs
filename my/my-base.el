@@ -25,6 +25,15 @@
 ;;; Code:
 ;; locale
 
+(use-package exec-path-from-shell
+  :ensure t
+  :if (memq window-system '(mac ns x))
+  :config
+  (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE"))
+    (add-to-list 'exec-path-from-shell-variables var))
+  :init
+  (exec-path-from-shell-initialize))
+
 (defun my-utf8-locale-p (v)
   "Return whether locale string V relates to a UTF-8 locale."
   (and v (or (string-match "UTF-8" v)

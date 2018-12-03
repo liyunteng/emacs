@@ -24,15 +24,6 @@
 
 ;;; Code:
 
-(use-package exec-path-from-shell
-  :ensure t
-  :if (memq window-system '(mac ns x))
-  :config
-  (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE"))
-    (add-to-list 'exec-path-from-shell-variables var))
-  :init
-  (exec-path-from-shell-initialize))
-
 (defvar my-after-make-console-frame-hooks '()
   "Hooks to run after creating a new TTY frame.")
 (defvar my-after-make-window-system-frame-hook '()
@@ -227,6 +218,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
         		               (powerline-render center)
         		               (powerline-fill face1 (powerline-width rhs))
         		               (powerline-render rhs)))))))
+  :config
   (powerline-my-theme)
   )
 
