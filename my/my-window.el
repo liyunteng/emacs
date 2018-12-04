@@ -37,6 +37,7 @@
   :bind (("C-x o" . switch-window))
   :config
   (setq switch-window-shortcut-style 'alphabet)
+  (setq switch-window-minibuffer-shortcut ?z)
   (setq switch-window-timeout nil))
 
 (use-package window-numbering
