@@ -157,6 +157,8 @@
 (and (boundp 'battery-status-function)
      (display-battery-mode t))
 
+(setq history-delete-duplicates t)
+
 ;; Show column number in mode line
 (column-number-mode +1)
 (line-number-mode +1)

@@ -40,11 +40,7 @@
   (add-to-list 'recentf-exclude
 	           (expand-file-name package-user-dir))
   (add-to-list 'recentf-exclude
-	           "COMMIT_EDITMSG\\'")
-
-  ;; (add-hook 'after-init-hook 'recentf-mode)
-  ;; (add-hook 'after-init-hook 'recentf-load-list)
-  )
+	           "COMMIT_EDITMSG\\'"))
 
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
 (use-package desktop
@@ -58,6 +54,8 @@
 	    desktop-missing-file-warning nil
         desktop-load-locked-desktop t
 	    desktop-restore-in-current-display t
+        desktop-restore-frames t
+        desktop-restore-reuses-frames t
 	    desktop-save t
 	    ;; desktop-save 'ask-if-new
 	    )
@@ -65,9 +63,19 @@
   ;; don't save /tmp/*
   (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
 
-  ;; fix if no deskop-file desktop-read will close all window
-  (unless (or (not (desktop-full-file-name)))
-    (add-hook 'after-init-hook 'desktop-save-mode))
+  (if (daemonp)
+      ;; In daemon mode only first make frame, load desktop
+      (add-hook 'after-make-frame-functions
+                (lambda (frame)
+                  (with-selected-frame frame
+                    (unless desktop-save-mode
+                      ;; FIXME: turn on restore window-configuration
+                      ;; in daemon mode
+                      (setq desktop-restore-frames nil)
+                      (desktop-save-mode +1)
+                      (desktop-read)))))
+    (desktop-save-mode +1))
+
   :config
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
@@ -139,7 +147,8 @@
 
   (defadvice desktop-remove (around set-desktop-dirname activate)
     ad-do-it
-    (setq desktop-dirname my-cache-dir)))
+    (setq desktop-dirname my-cache-dir))
+  )
 
 ;; savehist keeps track of some history
 (use-package savehist
