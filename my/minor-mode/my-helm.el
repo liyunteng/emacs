@@ -116,8 +116,7 @@
     :init
     (setq projectile-switch-project-action 'helm-projectile
 	      projectile-completion-system 'helm)
-    (helm-projectile-on)
-    ;; (add-hook 'after-init-hook 'helm-projectile-on)
+    (add-hook 'after-init-hook 'helm-projectile-on)
     )
 
   (use-package helm-swoop

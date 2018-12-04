@@ -27,7 +27,7 @@
 (use-package recentf
   :init
   (setq recentf-save-file (expand-file-name "recentf" my-cache-dir))
-  (recentf-mode +1)
+  (add-hook 'after-init-hook 'recentf-mode)
   :config
   (setq
    recentf-max-saved-items 300
