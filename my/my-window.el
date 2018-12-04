@@ -42,14 +42,11 @@
 (use-package window-numbering
   :ensure t
   :init
+  (window-numbering-mode +1)
   :config
-  ;; insert a " "
-  ;; (defun window-numbering-get-number-string (&optional window)
-  ;;   (let ((s (concat (int-to-string (window-numbering-get-number window)) " ")))
-  ;;     (propertize s 'face 'window-numbering-face)))
   (set-face-attribute 'window-numbering-face nil
-  		              :foreground "orange")
-  (window-numbering-mode +1))
+  		              :foreground "orange"))
+
 
 ;; use shift + arrow keys to switch between visible buffers
 (use-package windmove
