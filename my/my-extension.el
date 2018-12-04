@@ -329,16 +329,18 @@
   :ensure t
   :defer t)
 
-(use-package vlf
-  :ensure t
-  :init
-  (defun ffap-vlf ()
-    "Find file at point with VLF."
-    (interactive)
-    (let ((file (ffap-file-at-point)))
-      (unless (file-exists-p file)
-        (error "File does not exist: %s" file))
-      (vlf file))))
+;; (use-package vlf
+;;   :ensure t
+;;   :init
+;;   (defun ffap-vlf ()
+;;     "Find file at point with VLF."
+;;     (interactive)
+;;     (let ((file (ffap-file-at-point)))
+;;       (unless (file-exists-p file)
+;;         (error "File does not exist: %s" file))
+;;       (vlf file)))
+;;   :config
+;;   (require 'vlf-setup))
 
 (use-package crux
   :ensure t

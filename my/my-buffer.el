@@ -103,9 +103,18 @@
 
 (unless (fboundp 'kill-current-buffer)
   (defun kill-current-buffer ()
-    "Kill current buffer."
+    "Kill the current buffer.
+When called in the minibuffer, get out of the minibuffer
+using `abort-recursive-edit'.
+
+This is like `kill-this-buffer', but it doesn't have to be invoked
+via the menu bar, and pays no attention to the menu-bar's frame."
     (interactive)
-    (kill-buffer (current-buffer))))
+    (let ((frame (selected-frame)))
+      (if (and (frame-live-p frame)
+               (not (window-minibuffer-p (frame-selected-window frame))))
+          (kill-buffer (current-buffer))
+        (abort-recursive-edit)))))
 
 (my|view-buffer "*Help*")
 (my|view-buffer "*Messages*")

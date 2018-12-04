@@ -44,7 +44,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
 (add-hook 'after-init-hook
           (lambda () (when my--initial-frame
-                       (run-after-make-frame-hooks my--initial-frame))))
+                  (run-after-make-frame-hooks my--initial-frame))))
 
 
 (defun my--console-frame-setup ()
@@ -90,17 +90,19 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
 
 ;; 使用系统字体
-(setq-default font-use-system-font t)
-
-;; 中文使用wqy-microhei,其他使用DejaVu Sans Mono
-(when (display-graphic-p)
-  (create-fontset-from-fontset-spec
-   "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my,
- chinese-gbk: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1,
- chinese-iso-8bit: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1,
- chinese-big5: -*-WenQuanYi Micro Hei-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1")
-  (setq default-frame-alist (append '((font . "fontset-my")) default-frame-alist))
-  (set-frame-font "fontset-my"))
+(setq font-use-system-font t)
+;; 中文使用WenQuanYi Micro Hei Mono, 其他使用DejaVu Sans Mono
+(create-fontset-from-fontset-spec
+ "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my")
+(set-fontset-font "fontset-my" 'han "WenQuanYi Micro Hei Mono")
+;; (create-fontset-from-fontset-spec
+;;  (concat "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my,"
+;;          "chinese-gbk: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
+;;          "chinese-iso-8bit: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
+;;          "chinese-big5: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
+;;          "chinese-cns11643: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1"
+;;          ))
+(add-to-list 'default-frame-alist '(font . "fontset-my"))
 
 
 ;; frame opacity
