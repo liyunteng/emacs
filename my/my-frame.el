@@ -184,25 +184,24 @@ Selectively runs either `my-after-make-console-frame-hooks' or
         		            (separator-right (intern (format "powerline-%s-%s"
         						                             (powerline-current-separator)
         						                             (cdr powerline-default-separator-dir))))
-        		            (lhs (list (powerline-raw "%*" face0 'l)
+        		            (lhs (list (powerline-raw mode-line-modified face0 'l)
                                        (when powerline-display-buffer-size
-                                         (powerline-buffer-size face0 'l))
+                                         (powerline-buffer-size face0 'l)
+                                         (powerline-raw " " face0 'l))
                                        (when powerline-display-mule-info
-                                         (powerline-raw mode-line-mule-info face0 'l))
+                                         (powerline-raw mode-line-mule-info face0 'r))
                                        (powerline-buffer-id `(mode-line-buffer-id ,face0) 'l)
-        			                   (powerline-raw " ")
+                                       (powerline-raw " " face0 'l)
         			                   (funcall separator-left face0 face1)
         			                   (powerline-narrow face1 'l)
         			                   (powerline-vc face1)))
         		            (rhs (list (powerline-raw global-mode-string face1 'r)
-        			                   (powerline-raw "%4l" face1 'r)
-        			                   (powerline-raw ":" face1)
-        			                   (powerline-raw "%3c" face1 'r)
+                                       (when (and (derived-mode-p 'prog-mode) which-function-mode)
+                                         (powerline-raw which-func-format face1 'r))
         			                   (funcall separator-right face1 face0)
-        			                   (powerline-raw " ")
-        			                   (powerline-raw "%6p" face0 'r)
-                                       (when (and (boundp 'which-func-mode) which-func-mode)
-                                         (powerline-raw which-func-format face0 'r))
+        			                   (powerline-raw " " face0 'r)
+                                       (powerline-raw "%l:%c" face0 'r)
+        			                   (powerline-raw "%4p" face0 'r)
         			                   (powerline-hud face2 face1)
         			                   (powerline-fill face0 0)))
         		            (center (list (powerline-raw " " face1)
@@ -240,7 +239,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (which-key-mode +1))
 
 ;; (setq ring-bell-function 'ignore
-;;       visible-bell nil)
+;;       visible-bell nil)p
 ;; (setq ring-bell-function
 ;; 		'(lambda ()
 ;; 		   (invert-face 'mode-line)

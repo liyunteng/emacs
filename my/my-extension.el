@@ -180,12 +180,10 @@
   :init
   (setq projectile-cache-file (expand-file-name  "projectile.cache" my-cache-dir))
   (setq projectile-known-projects-file (expand-file-name "projectile-bookmarks" my-cache-dir))
-
-  :config
+  (setq projectile-mode-line-prefix " PJ")
   (setq projectile-sort-order 'recentf
         projectile-indexing-method 'alien)
   (setq projectile-enable-caching t)
-  (setq projectile-mode-line-prefix " Project")
   (projectile-mode +1)
   )
 
