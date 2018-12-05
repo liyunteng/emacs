@@ -85,6 +85,15 @@
 ;; 支持emacs和外部程序的拷贝粘贴
 (setq select-enable-clipboard t)
 
+;; recenter
+(setq recenter-positions '(top middle bottom))
+
+;; tooltip
+(setq tooltip-delay 1.5)
+
+;; imenu
+(setq imenu-auto-rescan t)
+
 ;; 递归minibuffer
 (setq enable-recursive-minibuffers t)
 
@@ -187,15 +196,11 @@
 ;; fill-column 80
 ;; (setq-default fill-column 80)
 
-;; imenu
-(setq-default imenu-auto-rescan t)
 
 ;; Don't try to ping things that look like domain names
 (setq-default ffap-machine-p-known 'reject)
 
 (setq-default case-fold-search t)
-
-(setq-default tooltip-delay 1.5)
 
 ;; tab width
 (setq-default tab-width 4)
@@ -205,9 +210,6 @@
 
 ;; add final newline
 (setq-default require-final-newline t)
-
-;; recenter
-;; (setq-default recenter-positions '(top middle bottom))
 
 
 ;;========== backup =========

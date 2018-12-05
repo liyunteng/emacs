@@ -62,7 +62,10 @@
   :ensure t
   :defer t)
 
-(use-package eclipse-theme
+(use-package nzenburn-theme
+  :ensure t)
+
+(use-package monokai-theme
   :ensure t)
 
 (defcustom my-theme 'zenburn

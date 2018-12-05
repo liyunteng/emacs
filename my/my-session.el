@@ -92,7 +92,7 @@
 		          (helm-ff-history          . 100)
 		          (helm-file-name-history   . 100)
                   (helm-M-x-input-history   . 100)
-                  (helm-external-command-history . 30)
+                  (helm-external-command-history . 20)
 		          (helm-grep-history        . 30)
 		          (helm-occur-history       . 30)
 		          (ido-buffer-history       . 100)

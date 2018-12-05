@@ -354,6 +354,9 @@
     (message "opend with external application."))
   )
 
+(use-package youdao-dictionary
+  :ensure t)
+
 ;; make useless word
 (use-package lorem-ipsum
   :ensure

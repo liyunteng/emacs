@@ -46,7 +46,6 @@
 			                  (loop for entry in auto-mode-alist
 				                    unless (eq preferred-javascript-mode (cdr entry))
 				                    collect entry)))
-  :config
 
   (use-package xref-js2
     :ensure t)
@@ -69,12 +68,13 @@
 	    js2-mode-show-strict-warnings nil
 	    )
 
+  :config
   (js2-imenu-extras-setup)
 
   (defun my-disable-js2-checks-if-flycheck-active ()
     (unless (flycheck-get-checker-for-buffer)
-      (setq (make-local-variable 'js2-mode-show-parse-errors) t)
-      (setq (make-local-variable 'js2-mode-show-strict-warnings) t)))
+      (set (make-local-variable 'js2-mode-show-parse-errors) t)
+      (set (make-local-variable 'js2-mode-show-strict-warnings) t)))
 
   (add-hook 'js2-mode-hook 'my-disable-js2-checks-if-flycheck-active)
   (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2")))

@@ -32,17 +32,16 @@
   (use-package flyspell-correct
     :ensure t
     :init
+    (when (boundp 'helm-mode)
+      (use-package flyspell-correct-helm
+        :ensure t
+        :bind (:map flyspell-mode-map
+                    ("C-;" . flyspell-correct-wrapper))
+        ))
     (flyspell-correct-auto-mode t))
 
-  (when (boundp 'helm-mode)
-    (use-package flyspell-correct-helm
-      :ensure t
-      :bind (:map flyspell-mode-map
-                  ("C-;" . flyspell-correct-wrapper))
-      ))
-
   ;; ;; better performance
-  (setq flyspell-issue-message-flag nil)
+  (setq flyspell-issue-message-flag t)
   )
 
 
