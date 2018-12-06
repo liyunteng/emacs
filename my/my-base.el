@@ -119,7 +119,7 @@
       "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
 ;; Single space between sentences is more widespread than double
 (setq-default sentence-end-double-space nil)
-(setq-default sentence-end "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*")
+;; (setq-default sentence-end "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*")
 
 ;; Use system trash for file deletion
 ;; should work on Windows and Linux distros

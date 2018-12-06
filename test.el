@@ -114,3 +114,13 @@ v
 
 (mapconcat 'symbol-name '(The cat in the hat) " ")
 (mapconcat (lambda (x) (format "%d" x)) a " ")
+
+
+;; ==
+(defalias 'a (function
+              (lambda ()
+                "ABCD"
+                (message "abcd"))))
+(defun a ()
+  "ABCD"
+  (message "abcd"))

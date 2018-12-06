@@ -1,0 +1,610 @@
+# Emacs Lisp
+* Capter 1 List Processing
+** 1.1 Lisp list
+   #+BEGIN_SRC emacs-lisp
+     '(rose violet daisy buttercup)
+   #+END_SRC
+
+   #+RESULTS:
+   | rose | violet | daisy | buttercup |
+
+   #+BEGIN_SRC emacs-lisp
+     (+ 2 2)
+   #+END_SRC
+
+   #+RESULTS:
+   : 4
+
+   #+BEGIN_EXAMPLE
+   '(this list has (a list inside of it))
+   #+END_EXAMPLE
+
+*** 1.1.1 Lisp atom
+    symbolic expression = s-expression
+    - number: 37 511 1729
+    - symbol: foo forward-line
+    - string: "abc" "this is a test"
+
+*** 1.1.2 space in list
+    #+BEGIN_EXAMPLE
+    '(this list
+        looks like this) ==
+     '(this list looks like this)
+    #+END_EXAMPLE
+
+** 1.2 Run a program
+   every list is a program
+   #+BEGIN_SRC emacs-lisp
+   (+ 2 2)
+   #+END_SRC
+
+   #+RESULTS:
+   : 4
+
+   #+BEGIN_SRC emacs-lisp
+   '(+ 2 2)
+   #+END_SRC
+
+   #+RESULTS:
+   | + | 2 | 2 |
+
+** 1.3 Error message
+   #+BEGIN_EXAMPLE
+   (this is an unquoted list)
+   #+END_EXAMPLE
+
+** 1.4 Symbol name and Function define
+** 1.5 Lisp runtime
+** 1.6 Lisp evaluation
+   - side effect
+   - return value
+
+   First eval (+ 3 3), then eval (+ 2 6)
+   #+BEGIN_SRC emacs-lisp
+     (+ 2 (+ 3 3))
+   #+END_SRC
+
+   #+RESULTS:
+   : 8
+
+   <kbd C-x C-e> eval-last-sexp
+   sexp = symbol expression
+
+** 1.7 variable
+** 1.8 argument
+*** 1.8.1 argument's data type
+    #+BEGIN_SRC emacs-lisp
+    (concat "abc" "def")
+    #+END_SRC
+
+    #+RESULTS:
+    : abcdef
+
+    #+BEGIN_SRC emacs-lisp
+    (substring "The quick brown fox jumped." 16 19)
+    #+END_SRC
+
+    #+RESULTS:
+    : fox
+
+*** 1.8.2 argument as variable or list
+    #+BEGIN_SRC emacs-lisp
+    (+ 2 fill-column)
+    #+END_SRC
+
+    #+RESULTS:
+    : 72
+
+    #+BEGIN_SRC emacs-lisp
+      (concat "The " (format "%s" (+ 2 fill-column)) " red foxes.")
+    #+END_SRC
+
+    #+RESULTS:
+    : The 72 red foxes.
+
+*** 1.8.3 argument number
+    #+BEGIN_SRC emacs-lisp
+    (+)
+    #+END_SRC
+
+    #+RESULTS:
+    : 0
+
+    #+BEGIN_SRC emacs-lisp
+    (+ 3)
+    #+END_SRC
+
+    #+RESULTS:
+    : 3
+
+*** 1.8.4 argument wrong type
+    #+BEGIN_EXAMPLE
+    (+ 2 'hello)
+    #+END_EXAMPLE
+
+*** message fuction
+    #+BEGIN_SRC emacs-lisp
+    (message "This message appears in the echo area!")
+    #+END_SRC
+
+    #+RESULTS:
+    : This message appears in the echo area!
+
+    #+BEGIN_SRC emacs-lisp
+      (message "The name of this buffer is: %s" (buffer-name))
+    #+END_SRC
+
+    #+RESULTS:
+    : The name of this buffer is: emacs-lisp.org
+
+** 1.9 assign value
+
+*** set
+    #+BEGIN_SRC emacs-lisp
+    (set 'flowers '(rose violet daisy buttercup))
+    #+END_SRC
+
+    #+RESULTS:
+    | rose | violet | daisy | buttercup |
+
+*** setq
+    #+BEGIN_SRC emacs-lisp
+    (setq flower '(rose violet daisy buttercup))
+    #+END_SRC
+
+    #+RESULTS:
+    | rose | violet | daisy | buttercup |
+
+*** counter
+    #+BEGIN_SRC emacs-lisp
+    (setq counter 0)
+    (setq counter (+ counter 1))
+    counter
+    #+END_SRC
+
+    #+RESULTS:
+    : 1
+
+* Capter 2 Evaluation
+** 2.1 buffer name
+   #+BEGIN_SRC emacs-lisp
+     (progn (buffer-name)
+            (buffer-file-name))
+   #+END_SRC
+
+   #+RESULTS:
+   : /home/lyt/.emacs.d/org/emacs-lisp.org
+
+** 2.2 get buffer
+   #+BEGIN_SRC emacs-lisp
+   (current-buffer)
+   #+END_SRC
+
+   #+RESULTS:
+   : #<buffer emacs-lisp.org>
+
+** 2.3 switch buffer
+   #+BEGIN_SRC emacs-lisp
+   (switch-to-buffer (other-buffer))
+   #+END_SRC
+
+   #+RESULTS:
+   : #<buffer *ielm*>
+
+** 2.4 buffer size and point
+   #+BEGIN_SRC emacs-lisp
+   (buffer-size)
+   #+END_SRC
+
+   #+RESULTS:
+   : 3427
+
+   #+BEGIN_SRC emacs-lisp
+   (point)
+   #+END_SRC
+
+   #+RESULTS:
+   : 3491
+
+   #+BEGIN_SRC emacs-lisp
+   (point-max)
+   #+END_SRC
+
+   #+RESULTS:
+   : 3584
+
+   #+BEGIN_SRC emacs-lisp
+   (point-min)
+   #+END_SRC
+
+   #+RESULTS:
+   : 1
+
+* Capter 3 write fuctions
+** 3.1 defun
+   #+BEGIN_EXAMPLE
+   (defun function-name (arguments...)
+     "optional-documentation..."
+     (interactive argument-passing-info) ;optional
+     body...)
+   #+END_EXAMPLE
+
+   #+BEGIN_SRC emacs-lisp
+     (defun multiply-by-seven (number)
+       "Multiply NUMBER by seven."
+       (* 7 number))
+   #+END_SRC
+
+   #+RESULTS:
+   : multiply-by-seven
+
+** 3.2 install function define
+   #+BEGIN_SRC emacs-lisp
+   (multiply-by-seven 3)
+   #+END_SRC
+
+   #+RESULTS:
+   : 21
+
+** 3.3 make function interactive
+   #+BEGIN_SRC emacs-lisp
+     (defun multiply-by-seven (number)
+       "Multiply NUMBER by seven."
+       (interactive "p")
+       (message "The result is %d"
+                (* 7 number)))
+   #+END_SRC
+
+   #+RESULTS:
+   : multiply-by-seven
+
+** 3.4 arguments of interactive function
+   #+BEGIN_SRC emacs-lisp
+     (defun a (buffer start end)
+       "Echo BUFFER START END"
+       (interactive "BInput buffer: \nr")
+       (message "%s %d %d" buffer start end))
+   #+END_SRC
+
+   #+RESULTS:
+   : a
+
+** 3.5 install code
+   - .emacs
+   - .emacs.d
+   - site-init.el
+
+** 3.6 let expression
+*** 3.6.1 let form
+    #+BEGIN_EXAMPLE
+    (let varlist body ...)
+    #+END_EXAMPLE
+    #+BEGIN_EXAMPLE
+    (let ((variable value)
+          (variable value)
+          ...)
+          body...)
+    #+END_EXAMPLE
+
+*** 3.6.2 let example
+    #+BEGIN_SRC emacs-lisp
+      (let ((zebra 'strippes)
+            (tiger 'fierce))
+        (message "One kind of animal has %s and another is %s."
+                 zebra tiger))
+    #+END_SRC
+
+    #+RESULTS:
+    : One kind of animal has strippes and another is fierce.
+
+*** 3.6.3 let have no initial value
+    #+BEGIN_SRC emacs-lisp
+      (let ((birch 3)
+            pine
+            fir
+            (oak 'some))
+        (message "Here are %d variables with %s,%s and %s value."
+                 birch pine fir oak))
+    #+END_SRC
+
+    #+RESULTS:
+    : Here are 3 variables with nil,nil and some value.
+
+** 3.7 if expression
+   #+BEGIN_EXAMPLE
+   (if true-or-false-test
+        action-tocarry-out-if-test-is-true)
+   #+END_EXAMPLE
+
+   #+BEGIN_SRC emacs-lisp
+   (if (> 5 4)
+        (message "5 is greater than 4!"))
+   #+END_SRC
+
+   #+RESULTS:
+   : 5 is greater than 4!
+
+   #+BEGIN_SRC emacs-lisp
+     (defun type-of-animal (characteristic)
+       "Print message in echo are depending on CHARACTERISTIC.
+     If the CHARACTERISTIC is the symbol `fierce',
+     then warn of a tiger."
+       (if (equal characteristic 'fierce)
+           (message "It's a tiger!")))
+   #+END_SRC
+
+   #+RESULTS:
+   : type-of-animal
+   #+BEGIN_SRC emacs-lisp
+   (type-of-animal 'fierce)
+   #+END_SRC
+
+   #+RESULTS:
+   : It’s a tiger!
+   #+BEGIN_SRC emacs-lisp
+     (type-of-animal 'zebra)
+   #+END_SRC
+
+   #+RESULTS:
+
+** 3.8 if-then-else expression
+   #+BEGIN_EXAMPLE
+   (if true-of-false-test
+        action-to-carry-out-if-the-test-returns-ture
+       action-to-carry-out-if-the-test-returns-false)
+   #+END_EXAMPLE
+
+   #+BEGIN_SRC emacs-lisp
+     (defun type-of-animal (characteristic)
+       "Print message in echo are depending of CHARACTERISTIC.
+     If the CHARACTERISTIC is the symbol `fierce',
+     then warn of a tiger;
+     else say it's not fierce."
+       (if (equal characteristic 'fierce)
+           (message "It's a tigger!")
+         (message "It's not fierce!")))
+   #+END_SRC
+
+   #+RESULTS:
+   : type-of-animal
+   #+BEGIN_SRC emacs-lisp
+     (type-of-animal 'fierce)
+   #+END_SRC
+
+   #+RESULTS:
+   : It’s a tigger!
+
+   #+BEGIN_SRC emacs-lisp
+     (type-of-animal 'zebra)
+   #+END_SRC
+
+   #+RESULTS:
+   : It’s not fierce!
+
+** 3.9 True and False in Lisp
+   Fales:
+   - ()
+   - nil
+** 3.10 save-excursion function
+   #+BEGIN_EXAMPLE
+   (save-excursion
+      body ...)
+   #+END_EXAMPLE
+
+   #+BEGIN_SRC emacs-lisp
+     (save-excursion
+       (goto-char (point-min))
+       (message "%d" (point)))
+   #+END_SRC
+
+   #+RESULTS:
+   : 1
+
+* Capter 4 Functions with buffer
+** 4.1 find info
+** 4.2 simple beginning-of-buffer
+   #+BEGIN_SRC emacs-lisp
+     (defun simplified-beginning-of-buffer ()
+       "Move point to the beginning of the buffer."
+       (interactive)
+       (push-mark)
+       (goto-char (point-min)))
+   #+END_SRC
+
+   #+RESULTS:
+   : simplified-beginning-of-buffer
+
+** mark-whole-buffer
+   #+BEGIN_SRC emacs-lisp
+     (defun mark-whole-buffer ()
+       "Put point at beginning and mark  at end of buffer."
+       (interactive)
+       (push-mark (point))
+       (push-mark (point-max))
+       (goto-char (point-min)))
+   #+END_SRC
+
+   #+RESULTS:
+   : mark-whole-buffer
+
+** append-to-buffer
+* Capter 5 complex functions
+** 5.1 copy-to-buffer
+** 5.2 insert-buffer
+** 5.3 beginning-of-buffer
+* Capter 6 narrowing
+** 6.1 save-restriction
+* Capter 7 basic function
+** 7.1 car and cdr
+   #+BEGIN_SRC emacs-lisp
+   (car '(a b c))
+   #+END_SRC
+
+   #+RESULTS:
+   : a
+
+   #+BEGIN_SRC emacs-lisp
+   (cdr '(a b c))
+   #+END_SRC
+
+   #+RESULTS:
+   | b | c |
+
+** 7.2 cons
+   #+BEGIN_SRC emacs-lisp
+   (cons 'd '(a b c))
+   #+END_SRC
+
+   #+RESULTS:
+   | d | a | b | c |
+
+   #+BEGIN_SRC emacs-lisp
+   (length '(a b c))
+   #+END_SRC
+
+   #+RESULTS:
+   : 3
+
+** 7.3 nthcdr
+   #+BEGIN_SRC emacs-lisp
+   (nthcdr 2 '(a b c))
+   #+END_SRC
+
+   #+RESULTS:
+   | c |
+
+** 7.4 setcar
+   #+BEGIN_SRC  emacs-lisp
+     (progn
+       (setq a '(a b c))
+       (setcar a 'd)
+       a)
+   #+END_SRC
+
+   #+RESULTS:
+   | d | b | c |
+
+** 7.5 setcdr
+   #+BEGIN_SRC emacs-lisp
+     (progn
+       (setq a '(a b c))
+       (setcdr a '(d e))
+       a)
+   #+END_SRC
+
+   #+RESULTS:
+   | a | d | e |
+
+* Capter 8 copy and paste
+** zap-to-char
+** kill-region
+** delete-region
+** defvar
+** copy-region-as-kill
+* Capter 9 list implement
+* Capter 10 recover text
+** kill-ring
+** kill-ring-yank-pointer
+* Capter 11 recursion and for
+** while
+** recursion
+   #+BEGIN_SRC emacs-lisp
+     (defun triangle-using-cond (number)
+       (cond ((<= number 0) 0)
+             ((= number 1) 1)
+             ((> number 1)
+              (+ number (triangle-using-cond (1- number))))))
+   #+END_SRC
+
+   #+RESULTS:
+   : triangle-using-cond
+
+   #+BEGIN_SRC emacs-lisp
+   (triangle-using-cond 100)
+   #+END_SRC
+
+   #+RESULTS:
+   : 5050
+
+* Capter 12 Regex
+** 12.1 sentence-end
+** 12.2 re-search-forward
+** 12.3 forward-sentence
+** 12.4 forward-paragraph
+** 12.5 create TAGS
+* Capter 13 counter: repeat and regex
+** count-words-region
+* Capter 14 count words
+  #+BEGIN_SRC emacs-lisp
+    (defun count-words-in-defun ()
+      "Return the number of words and symbols in a defun."
+      (beginning-of-defun)
+      (let ((count 0)
+            (end (save-excursion (end-of-defun) (point))))
+        (while
+            (and (< (point) end)
+                 (re-search-forward
+                  "\\(\\w\\|\\s_\\)+[^ \t\n]*[ \t\n]*"
+                  end t))
+          (setq count (1+ count)))
+        count))
+  #+END_SRC
+
+  #+RESULTS:
+  : count-words-in-defun
+
+  #+BEGIN_SRC emacs-lisp
+    (defun count-words-defun ()
+      "Number of words and symbols in a function definition."
+      (interactive)
+      (message
+       "Counting words and symbols in function definition ...")
+      (let ((count (count-words-in-defun)))
+        (cond
+         ((zerop count)
+          (message
+           "The definition does NOT have any words or symbols."))
+         ((= 1 count)
+          (message
+           "The definition has 1 word or symbol."))
+         (t
+          (message
+           "The definition has %d words or symbol." count)))))
+  #+END_SRC
+
+  #+RESULTS:
+  : count-words-defun
+
+* Capter 15 gnuplot
+    #+tblname: data-table
+    | x | y  | z  |
+    |---+----+----|
+    | 0 |  0 |  0 |
+    | 2 |  3 |  1 |
+    | 3 |  4 |  2 |
+    | 5 |  5 |  5 |
+
+    #+BEGIN_SRC gnuplot :var point=data-table :file output.png
+      splot point
+    #+END_SRC
+
+
+    #+BEGIN_SRC gnuplot :var point=data-table :file output.png :title example
+      splot f(x) = sin(x*a), a=1.2, f(x), a=0.5, f(x), point
+    #+END_SRC
+
+    #+RESULTS:
+    [[file:output.png]]
+
+    #+BEGIN_SRC gnuplot :file output.png
+      f(x) = sin(x)
+      g(x) = cos(x)
+      h(x) = sqrt(x*a), a=1.2
+      plot f(x),g(x), h(x)
+    #+END_SRC
+
+    #+RESULTS:
+    [[file:output.png]]
+
+* Capter 16 config emacs
+* Capter 17 debug
