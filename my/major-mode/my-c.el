@@ -178,15 +178,46 @@
     )
 
   :config
+  (defun hif-canonicalize (regexp)
+    "Return a Lisp expression for its condition by scanning current buffer.
+Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
+    (let ((case-fold-search nil))
+      (save-excursion
+        (re-search-forward regexp)
+        (let* ((curr-regexp (match-string 0))
+               (defined (string-match hif-ifxdef-regexp curr-regexp))
+               (negate (and defined
+                            (string= (match-string 2 curr-regexp) "n")))
+               (hif-simple-token-only nil) ; Dynamic binding for `hif-tokenize'
+               (tokens (hif-tokenize (point)
+                                     (progn (hif-end-of-line) (point)))))
+          (if defined
+              (setq tokens (list 'hif-defined tokens)))
+          (if negate
+              (setq tokens (list 'hif-not tokens)))
+
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ;; fix can't work in __cplusplus >= 201103L ;;
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          (if (and (equal (car tokens) '__cplusplus)
+                   (= (length tokens) 4)
+                   (equal (last tokens) '(L)))
+              (setq tokens (butlast tokens)))
+          ;; (message "######TOKEN: %S" tokens)
+          (hif-parse-exp tokens)))))
+
+
+
+
   ;; fix can't use = with string
   ;; (defun hif-mathify (val)
   ;;   "Treat VAL as a number: if it's t or nil, use 1 or 0."
   ;;   (cond ((stringp val) (string-to-number val))
-  ;; 	  ((eq val t) 1)
-  ;; 	  ((null val) 0)
-  ;; 	  (t val)))
-  (setq hide-ifdef-shadow t
-	    hide-ifdef-initially nil)
+  ;; 	      ((eq val t) 1)
+  ;; 	      ((null val) 0)
+  ;; 	      (t val)))
+  ;; (setq hide-ifdef-shadow t
+  ;;       hide-ifdef-initially nil)
   )
 
 (use-package disaster
@@ -201,10 +232,11 @@
 (use-package semantic
   :defer t
   :commands (semantic-mode)
-  :init
+  :config
   (defconst my-project-roots '("~/git/ihi/client/c9service"
                                "/usr/src/linux")
     "My project roots to setq semanticdb-project-roots.")
+
   ;;global-semantic-decoration-mode
   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
@@ -220,7 +252,6 @@
   (add-to-list 'semantic-default-submodes 'global-semantic-show-unmatched-syntax-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-show-parser-state-mode)
 
-  :config
   ;; for debug
   ;; (setq semantic-dump-parse t)
   ;; (setq semantic-edits-verbose-flag t)
@@ -229,10 +260,9 @@
   ;; (setq semantic-update-mode-line t)
   (use-package semantic/idle
     :defines (semantic-idle-scheduler-idle-time
-	          semantic-idle-scheduler-max-buffer-size
-	          semantic-idle-scheduler-work-idle-time
-	          semantic-idle-work-update-headers-flag
-	          )
+              semantic-idle-scheduler-max-buffer-size
+              semantic-idle-scheduler-work-idle-time
+              semantic-idle-work-update-headers-flag)
     :init
     (setq semantic-idle-scheduler-idle-time 1)
     (setq semantic-idle-scheduler-max-buffer-size 0)
@@ -246,6 +276,7 @@
   (require 'semantic/dep)
   (semantic-add-system-include "/usr/local/include")
   ;; (require 'semantic/decorate/include)
+
   (require 'semantic/bovine/gcc)
   (after-load 'cc-mode
     (semantic-gcc-setup)
@@ -258,11 +289,13 @@
     (setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
     )
   (require 'semantic/bovine/c)
-  ;; (dolist (x (list "/usr/lib/gcc/x86_64-pc-linux-gnu/8.2.1/include/stddef.h"))
-  ;;   (add-to-list 'semantic-lex-c-preprocessor-symbol-file x))
-  ;; (after-load 'c++-mode
-  ;;   (semantic-c-add-preprocessor-symbol "__cplusplus" "201103L")
-  ;;   (semantic-c-reset-preprocessor-symbol-map))
+  (dolist (x (list "/usr/lib/gcc/x86_64-pc-linux-gnu/8.2.1/include/stddef.h"))
+    (add-to-list 'semantic-lex-c-preprocessor-symbol-file x))
+  (after-load 'c++-mode
+    (semantic-c-add-preprocessor-symbol "__cplusplus" "201103L")
+    (semantic-c-reset-preprocessor-symbol-map))
+  (use-package semantic/bovine/c
+    )
   (use-package semantic/ia
     :init
     (defun my/semantic-find-definition (arg)
@@ -270,8 +303,7 @@
       (when (fboundp 'xref-push-marker-stack)
 	    (xref-push-marker-stack (push-mark (point))))
       (semantic-ia-fast-jump (point))
-      (recenter-top-bottom)
-      )
+      (recenter-top-bottom))
 
     ;; fix cursor not on word
     (defadvice semantic-ia-show-doc (around fix-not-on-word  (apoint) activate)
@@ -279,9 +311,7 @@
 	    (if (semantic-analyze-current-context apoint)
     	    ad-do-it
     	  (message "Cursor not on symbol")
-	      (throw 'a nil)
-    	  ))))
-
+	      (throw 'a nil)))))
 
   (use-package semantic/db-file
     :config
@@ -296,7 +326,7 @@
   (use-package semantic/db-find
     :config
     (setq semanticdb-find-default-throttle
-	      '(local project unloaded system recursive)))
+          '(local project unloaded system recursive)))
 
   (use-package semantic/db-global
     :config
