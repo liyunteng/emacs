@@ -236,6 +236,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   :ensure t
   :diminish which-key-mode
   :init
+  (setq which-key-sort-order 'which-key-prefix-then-key-order-reverse)
   (which-key-mode +1))
 
 ;; (setq ring-bell-function 'ignore
@@ -279,4 +280,4 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 ;; (global-set-key (kbd "<f12>") 'menu-bar-mode)
 
 (provide 'my-frame)
-;;; my-frame.el ends here
+;;; my-frame.el ends here1

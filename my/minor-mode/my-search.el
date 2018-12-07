@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-
 ;;; grep 默认递归查找
 (use-package grep
   :commands (grep-mode
@@ -149,7 +148,7 @@ This is useful when followed by an immediate kill."
          ("M-s h p" . highlight-phrase)
          ("M-s h ." . highlight-symbol-at-point)
          ("M-s h u" . unhighlight-regexp)
-         ("M-s h b" . hi-louck-write-interactive-patterns)
+         ("M-s h b" . hi-lock-write-interactive-patterns)
          ))
 
 

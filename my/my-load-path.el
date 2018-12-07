@@ -58,9 +58,6 @@
 
 (defconst my-dir (expand-file-name "my" user-emacs-directory) "My base directory.")
 (defconst my-forks-dir (expand-file-name "forks" my-dir) "My forks package directory.")
-(defconst my-libs-dir (expand-file-name "libs" my-dir) "My library directory.")
-(make-obsolete-variable 'my-libs-dir 'my-forks-dir "25")
-
 (defconst my-init-file (expand-file-name "my-init.el" my-dir))
 
 (defun my-add-to-load-path (dir &optional append)
@@ -82,12 +79,8 @@ If APPEND add to end."
 		(add-to-list 'load-path name)
 		(my-add-subfolders-to-load-path name)))))
 
-(add-to-list 'load-path my-dir)
-(add-to-list 'load-path my-personal-dir)
+(my-add-to-load-path my-dir)
+(my-add-to-load-path-if-exists my-personal-dir)
 (my-add-subfolders-to-load-path my-dir)
-;; (my-add-subfolders-to-load-path my-forks-dir)
-
-
-
 (provide 'my-load-path)
 ;;; my-load-path.el ends here

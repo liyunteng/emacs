@@ -35,7 +35,8 @@
     :on (nlinum-mode +1)
     :off (nlinum-mode -1)
     :documentation "Show line number")
-  (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on))
+  ;; (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
+  )
 
 (use-package json-mode
   :ensure t)
@@ -58,8 +59,7 @@
   :config
   (setq fci-rule-width 2
 	    ;; fci-rule-color "#D0BF8F"
-	    )
-  (push '(fci-mode "") minor-mode-alist))
+	    ))
 
 ;; Highlight brackets according to their depth
 (use-package rainbow-delimiters
@@ -71,7 +71,8 @@
 
 (use-package uptimes
   :ensure t
-  :init
+  :defines (uptimes-database)
+  :preface
   (setq uptimes-database (expand-file-name ".uptime.el" my-cache-dir)))
 
 (use-package keyfreq
@@ -355,7 +356,8 @@
   )
 
 (use-package youdao-dictionary
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;; make useless word
 (use-package lorem-ipsum

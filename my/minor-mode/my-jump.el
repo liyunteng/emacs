@@ -25,35 +25,34 @@
 ;;; Code:
 
 ;; jump
-(defvar my-default-jump-handlers '(xref-find-definitions)
-  "List of jump handlers available in every mode.")
-(defvar-local my-jump-handlers '(xref-find-definitions)
-  "List of jump handlers local to this buffer.")
+(defvar my-jump-default-backends'(xref-find-definitions)
+  "List of jump default backends.")
+(defvar-local my-jump-backends'(xref-find-definitions)
+  "List of jump backends local to this buffer.")
 
-(defmacro my|define-jump-handlers (mode &rest handlers)
-  "Defines jump handlers for the given MODE.
-This defines a variable `my-jump-handlers-MODE' to which
-handlers can be added, and a function added to MODE-hook which
-sets `my-jump-handlers' in buffers of that mode.
+(defmacro my|define-jump-backends (mode &rest backends)
+  "Defines jump backends for the given MODE.
+This defines a variable `my-jump-backends-MODE' to which
+backends can be added, and a function added to MODE-hook which
+sets `my-jump-bakcends' in buffers of that mode.
 
 Example:
 
-\(my-define-jump-handlers c-mode\)
+\(my-define-jump-backends c-mode\)
 "
   (let ((mode-hook (intern (format "%S-hook" mode)))
-	    (func (intern (format "my--jump-init-handlers-%S" mode)))
-	    (handlers-list (intern (format "my--jump-handlers-%S" mode))))
+	    (func (intern (format "my--jump-init-backends-%S" mode)))
+	    (backends-list (intern (format "my--jump-backends-%S" mode))))
     `(progn
-       (defvar ,handlers-list ',handlers
-	     ,(format (concat "List of mode-specific jump handlers for %S. "
+       (defvar ,backends-list ',backends
+	     ,(format (concat "List of mode-specific jump backends for %S. "
 			              "These take priority over those in "
-			              "`my-default-jump-handlers'.")
+			              "`my-jump-default-backends'.")
 		          mode))
        (defun ,func ()
-	     (setq my-jump-handlers
-	           (append ,handlers-list
-		               my-default-jump-handlers))
-	     ;; (message "handlers-list: %s" ,handlers-list)
+	     (setq my-jump-backends
+	           (append ,backends-list
+		               my-jump-default-backends))
 	     )
        (add-hook ',mode-hook ',func))))
 
@@ -68,16 +67,16 @@ Example:
 	      (old-point (point))
 	      (marker (point-marker))
 	      )
-      (dolist (-handler my-jump-handlers)
-	    (let ((handler (if (listp -handler) (car -handler) -handler)))
-	      (ignore-errors (call-interactively handler))
+      (dolist (-backend my-jump-backends)
+	    (let ((backend (if (listp -backend) (car -backend) -backend)))
+	      (ignore-errors (call-interactively backend))
 	      (when (or
 		         (not (eq old-point (point)))
 		         (not (equal old-buffer (current-buffer))))
 	        (ring-insert my-jump-mark-ring marker)
 	        (throw 'done t))
           )))
-    (message "No jump handler was able to find this symbol.")
+    (message "No jump backend was able to find this symbol.")
     ))
 
 (defun my/jump-to-definition-other-window ()
@@ -100,15 +99,22 @@ Example:
     (if (> (length (window-list)) 1)
 	    (delete-window))))
 
-(my|define-jump-handlers emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
-(my|define-jump-handlers c-mode my/semantic-find-definition)
-(my|define-jump-handlers c++-mode my/semantic-find-definition)
-(my|define-jump-handlers go-mode godef-jump)
-(my|define-jump-handlers python-mode elpy-goto-definition)
+(my|define-jump-backends emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
+(my|define-jump-backends c-mode my/semantic-find-definition)
+(my|define-jump-backends c++-mode my/semantic-find-definition)
+(my|define-jump-backends go-mode godef-jump)
+(my|define-jump-backends python-mode elpy-goto-definition)
 
 (global-set-key (kbd "M-.") 'my/jump-to-definition)
 (global-set-key (kbd "C-M-.") 'my/jump-to-definition-other-window)
 (global-set-key (kbd "C-M-,") 'my/jump-back-to-origin)
 
+;; (use-package smart-jump
+;;   :ensure t
+;;   :bind (("M-." . smart-jump-go)
+;;          ("M-," . smart-jump-back)
+;;          ("M-?" . smart-jump-references))
+;;   :config
+;;   (smart-jump-setup-default-registers))
 (provide 'my-jump)
 ;;; my-jump.el ends here

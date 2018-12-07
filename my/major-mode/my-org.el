@@ -314,7 +314,7 @@
 
   (after-load 'org-agenda
     (add-to-list 'org-agenda-after-show-hook 'org-show-entry)
-    (add-hook 'org-agenda-mode-hook 'hl-line-mode)
+    ;; (add-hook 'org-agenda-mode-hook 'hl-line-mode)
     ;; (define-key org-agenda-mode-map (kbd "p") 'org-pomodoro)
     )
 

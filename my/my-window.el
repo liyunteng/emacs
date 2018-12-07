@@ -242,7 +242,7 @@ Dedicated (locked) windows are left untouched."
 (global-set-key (kbd "C-c C-s") 'my/window-rotate)
 (global-set-key (kbd "M-+") 'my/window-size-adjust)
 
-(defvar my-window-keymap
+(defvar my-window-command-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "s") 'my/window-rotate-forward)
     (define-key map (kbd "r") 'my/window-rotate-backward)
@@ -266,7 +266,9 @@ Dedicated (locked) windows are left untouched."
     (define-key map (kbd "n") 'my/window-toggle-current-file-dedication)
     map)
   "My window group keymap.")
-(define-key ctl-x-map "w" my-window-keymap)
+(defvar my-window-command-prefix)
+(fset 'my-window-command-prefix my-window-command-map)
+(define-key ctl-x-map "w" 'my-window-command-prefix)
 
 ;; replace (compose-mail)
 ;; (global-set-key (kbd "C-x m") 'my/window-toggle-show)

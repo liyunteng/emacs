@@ -208,15 +208,15 @@
   ;;global-semantic-decoration-mode
   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
-  ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
 
-  (add-to-list 'semantic-default-submodes 'global-semantic-highlight-edits-mode)
+  ;; (add-to-list 'semantic-default-submodes 'global-semantic-highlight-edits-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-show-unmatched-syntax-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-show-parser-state-mode)
 
@@ -234,9 +234,9 @@
 	          semantic-idle-work-update-headers-flag
 	          )
     :init
-    (setq semantic-idle-scheduler-idle-time nil)
-    (setq semantic-idle-scheduler-max-buffer-size 10240000)
-    (setq semantic-idle-scheduler-work-idle-time 5)
+    (setq semantic-idle-scheduler-idle-time 1)
+    (setq semantic-idle-scheduler-max-buffer-size 0)
+    (setq semantic-idle-scheduler-work-idle-time 60)
     (setq semantic-idle-work-update-headers-flag t)
     (setq semantic-idle-work-parse-neighboring-files-flag t)
 
@@ -246,20 +246,23 @@
   (require 'semantic/dep)
   (semantic-add-system-include "/usr/local/include")
   ;; (require 'semantic/decorate/include)
-  (require 'semantic/bovine/c)
-  (dolist (x (list "/usr/lib/gcc/x86_64-pc-linux-gnu/8.2.1/include/stddef.h"))
-    (add-to-list 'semantic-lex-c-preprocessor-symbol-file x))
-
+  (require 'semantic/bovine/gcc)
   (after-load 'cc-mode
-    (defcustom-mode-local-semantic-dependency-system-include-path
-      c-mode my-c-system-include (semantic-gcc-get-include-paths "c"))
-    (defcustom-mode-local-semantic-dependency-system-include-path
-      c++-mode my-c++-system-include (semantic-gcc-get-include-paths "c++"))
+    (semantic-gcc-setup)
+    ;; (defcustom-mode-local-semantic-dependency-system-include-path
+    ;;   c-mode my-c-system-include (semantic-gcc-get-include-paths "c"))
+    ;; (defcustom-mode-local-semantic-dependency-system-include-path
+    ;;   c++-mode my-c++-system-include (semantic-gcc-get-include-paths "c++"))
 
     (setq-mode-local c-mode semantic-dependency-include-path my-include-path)
     (setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
     )
-
+  (require 'semantic/bovine/c)
+  ;; (dolist (x (list "/usr/lib/gcc/x86_64-pc-linux-gnu/8.2.1/include/stddef.h"))
+  ;;   (add-to-list 'semantic-lex-c-preprocessor-symbol-file x))
+  ;; (after-load 'c++-mode
+  ;;   (semantic-c-add-preprocessor-symbol "__cplusplus" "201103L")
+  ;;   (semantic-c-reset-preprocessor-symbol-map))
   (use-package semantic/ia
     :init
     (defun my/semantic-find-definition (arg)

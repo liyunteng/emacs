@@ -100,11 +100,15 @@
 ;; resize mini-window to fit the text displayed in them
 (setq resize-mini-windows nil)
 
+;; don't let the cursor go into minibuffer prompt
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+
+;; delete duplicates minibuffer history
+(setq history-delete-duplicates t)
+
 ;; suggest key bindings
 (setq suggest-key-bindings t)
-
-;; Show a marker in the left fringe for lines not in the buffer
-(setq indicate-empty-lines t)
 
 ;; message max
 (setq message-log-max 20000)
@@ -112,13 +116,10 @@
 ;;设置删除记录
 (setq kill-ring-max 200)
 
-;; 行距
-(setq line-spacing 0.0)
-
 (setq adaptive-fill-regexp
       "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
 ;; Single space between sentences is more widespread than double
-(setq-default sentence-end-double-space nil)
+;; (setq-default sentence-end-double-space nil)
 ;; (setq-default sentence-end "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*")
 
 ;; Use system trash for file deletion
@@ -133,7 +134,6 @@
 ;; draw underline lower
 (setq x-underline-at-descent-line t)
 
-(setq truncate-lines nil)
 (setq truncate-partial-width-windows nil)
 (setq set-mark-command-repeat-pop t)
 
@@ -156,18 +156,8 @@
                   (concat " ("user-full-name ")"))
               " - Emacs ♥ you!\n\n"))
 
-;; 锁定minibuffer行高
-(setq resize-mini-windows nil)
-
-;; don't let the cursor go into minibuffer prompt
-(setq minibuffer-prompt-properties
-      '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
-
 (and (boundp 'battery-status-function)
      (display-battery-mode t))
-
-(setq history-delete-duplicates t)
-
 ;; Show column number in mode line
 (column-number-mode +1)
 (line-number-mode +1)
@@ -200,6 +190,7 @@
 ;; Don't try to ping things that look like domain names
 (setq-default ffap-machine-p-known 'reject)
 
+;; search case fold
 (setq-default case-fold-search t)
 
 ;; tab width
@@ -211,6 +202,14 @@
 ;; add final newline
 (setq-default require-final-newline t)
 
+;; Show a marker in the left fringe for lines
+(setq-default indicate-empty-lines t)
+
+;; 行距
+(setq-default line-spacing 0.0)
+
+;; don't truncate line
+(setq-default truncate-lines nil)
 
 ;;========== backup =========
 ;; 不产生备份文件

@@ -34,7 +34,7 @@
   :bind (([remap execute-extended-command] . helm-M-x)
          ([remap find-file] . helm-find-files)
          ([remap switch-to-buffer] . helm-mini)
-         ([remap list-registers] . helm-registers)
+         ([remap list-registers] . helm-register)
          ([remap list-bookmarks] . helm-bookmarks)
          ([remap browse-kill-ring] . helm-show-kill-ring)
          ([remap info] . helm-info)

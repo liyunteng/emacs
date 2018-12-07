@@ -63,10 +63,12 @@
   :defer t)
 
 (use-package nzenburn-theme
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package monokai-theme
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (defcustom my-theme 'zenburn
   "My theme."

@@ -26,11 +26,6 @@
 
 ;; (use-package linum
 ;;   :init
-;;   (global-linum-mode +1)
-;;   :init
-;;   (setq linum-delay t)
-;;   (setq linum-format 'dynamic)
-
 ;;   (my|add-toggle linum-mode
 ;;     :status linum-mode
 ;;     :on (linum-mode +1)
@@ -38,10 +33,12 @@
 ;;     :documentation "Show line number")
 
 ;;   :config
-;;   (defadvice linum-schedule (around my-linum-schedule () activate)
-;;     "Updated line number every second."
-;;     (run-with-idle-timer 1 nil #'linum-update-current)
-;;     ad-do-it)
+;;   ;; (defadvice linum-schedule (around my-linum-schedule () activate)
+;;   ;;   "Updated line number every second."
+;;   ;;   (run-with-idle-timer 1 nil #'linum-update-current)
+;;   ;;   ad-do-it)
+;;   (setq linum-delay nil)
+;;   (setq linum-format 'dynamic)
 ;;   (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
 ;;   )
 
@@ -57,6 +54,8 @@
            (hl-line-mode nil)
            (setq-local global-hl-line-mode nil))
     :documentation "Show trailing-whitespace")
+
+  (setq global-hl-line-sticky-flag t)
   ;; can't in :config
   (global-hl-line-mode +1))
 
@@ -114,12 +113,14 @@
         bookmark-alist))
 
 ;; abbrev config
-(when (file-exists-p abbrev-file-name)
-  (use-package abbrev
-    :diminish abbrev-mode
-    :config
-    (setq abbrev-file-name (expand-file-name "abbrev_defs" my-cache-dir))
-    (abbrev-mode +1)))
+(use-package abbrev
+  :diminish abbrev-mode
+  :defines (abbrev-file-name)
+  :preface
+  (setq abbrev-file-name (expand-file-name "abbrev_defs" my-cache-dir))
+  :if (file-exists-p abbrev-file-name)
+  :config
+  (abbrev-mode +1))
 
 ;; make a shell script executable automatically on save
 (use-package executable
@@ -137,12 +138,12 @@
 ;; Auto revert
 (use-package autorevert
   :diminish
+  :init
+  (add-hook 'after-init-hook 'global-auto-revert-mode)
   :config
   (setq global-auto-revert-non-file-buffers t
         auto-revert-verbose nil)
-  (add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode)
-  :init
-  (add-hook 'after-init-hook 'global-auto-revert-mode))
+  (add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode))
 
 ;; print current in which function in mode line
 (use-package which-func
@@ -163,20 +164,6 @@
     :off (setq-local show-trailing-whitespace nil)
     :documentation "Show trailing-whitespace")
   (add-hook 'prog-mode-hook #'my/toggle-show-trailing-whitespace-on)
-
-  (dolist (hook '(special-mode-hook
-                  Info-mode-hook
-                  eww-mode-hook
-                  term-mode-hook
-                  comint-mode-hook
-                  compilation-mode-hook
-                  twittering-mode-hook
-                  minibuffer-setup-hook
-                  calendar-mode-hook
-                  eshell-mode-hook
-                  shell-mode-hook
-                  term-mode-hook))
-    (add-hook hook #'my/toggle-show-trailing-whitespace-off))
 
   (my|add-toggle whitespace-mode
     :mode whitespace-mode
@@ -263,7 +250,7 @@ indent yanked text (with prefix arg don't indent)."
   :commands (hippie-expand)
   :init
   (setq hippie-expand-try-functions-list
-        '(
+        '(p
           ;; Try to expand word "dynamically", searching the current buffer.
           try-expand-dabbrev
           ;; Try to expand word "dynamically", searching all other buffers.
@@ -275,7 +262,7 @@ indent yanked text (with prefix arg don't indent)."
           ;; Try to complete text as a file name.
           try-complete-file-name
           ;; Try to expand word before point according to all abbrev tables.
-          try-expand-all-abbrevs
+          ;; try-expand-all-abbrevs
           ;; Try to complete the current line to an entire line in the buffer.
           try-expand-list
           ;; Try to complete the current line to an entire line in the buffer.
@@ -308,15 +295,17 @@ indent yanked text (with prefix arg don't indent)."
   :config
   (setq netstat-program-options '("-natup")
         ping-program-options '()))
-(use-package etags
+
+(use-package xref
   :commands (xref-find-definitions
              xref-find-definitions-other-window
              xref-find-definitions-other-frame
-             xref-find-apropos
-             tags-loop-continue
+             xref-find-apropos))
+
+(use-package etags
+  :commands (tags-loop-continue
              tags-search
-             pop-tag-mark
-             )
+             pop-tag-mark)
   :config
   ;;设置TAGS文件
   (when (file-exists-p "/usr/include/TAGS")
@@ -519,6 +508,7 @@ the right."
          ("C-M-;" . comment-kill)
          ("C-c M-;" . comment-box))
   :init
+  (setq comment-auto-fill-only-comments t)
   (defun my/comment-dwim-line (&optional arg)
     "Replacement for the \"comment-dwim\" command.
 If no region is selected and current line is not blank and we are not
@@ -543,7 +533,8 @@ at the end of the line."
 
 (use-package register
   :bind (("C-x r f" . frameset-to-register)
-         ("C-x r w" . list-registers)
+         ("C-x r w" . window-configuration-to-register)
+         ("C-x r v" . list-registers)
 
          ("C-x r ." . point-to-register)
          ("C-x r j" . jump-to-register)
@@ -552,8 +543,6 @@ at the end of the line."
          ("C-x r p" . prepend-to-register))
   :config
   (setq register-preview-delay 0)
-  (setq register-alist nil)
-
   (set-register ?z '(file . "~/git/"))
   ;; (set-register ?f '(window-configuration 10))
   ;; (add-to-list 'desktop-globals-to-save '(window-configuration))
@@ -565,6 +554,8 @@ at the end of the line."
 
 (use-package goto-addr
   :commands (goto-address-prog-mode goto-address-mode)
+  :bind (:map goto-address-highlight-keymap
+              ("C-c RET" . goto-address-at-point))
   :config
   (setq goto-address-url-face 'underline)
   )
@@ -572,12 +563,8 @@ at the end of the line."
 ;; prog-mode-hook
 (use-package prog-mode
   :init
-  (setq comment-auto-fill-only-comments t)
   (global-prettify-symbols-mode +1)
   :config
-  ;; (defun my-local-comment-auto-fill ()
-  ;;   "Turn on comment auto fill."
-  ;;   (set (make-local-variable 'comment-auto-fill-only-comments) t))
   (defun my-font-lock-comment-annotations ()
     "Highlight a bunch of well known comment annotations.
 
@@ -593,7 +580,6 @@ This functions should be added to the hooks of major modes for programming."
     (turn-on-auto-fill)
     (goto-address-prog-mode +1)
     (bug-reference-prog-mode +1)
-    ;; (my-local-comment-auto-fill)
     (unless (or (fboundp 'smartparens-mode)
                 (fboundp 'pairedit-mode))
       (electric-pair-mode +1))
@@ -961,8 +947,8 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
 
 ;; TODO: keymaps
 ;; ==================== FILE ====================
-(defvar my-file-keymap
-  (let ((map (make-sparse-keymap nil)))
+(defvar my-file-command-map
+  (let ((map (make-sparse-keymap)))
     (define-key map (kbd "f") 'find-file)
     (define-key map (kbd "C-f") 'find-file-other-window)
     (define-key map (kbd "n") 'find-alternate-file)
@@ -991,7 +977,12 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
     (define-key map (kbd "c r") 'my/dos2unix-remove-M)
     map)
   "My file group keymap.")
-(define-key ctl-x-map "f" my-file-keymap)
+(defvar my-file-command-prefix)
+(define-prefix-command 'my-file-command-prefix)
+(fset 'my-file-command-prefix my-file-command-map)
+;; (global-set-key (kbd "C-x f") 'my-file-command-prefix)
+(define-key ctl-x-map "f" 'my-file-command-prefix)
+
 
 ;; ==================== BUFFER ====================
 (global-set-key (kbd "C-c C-r") 'revert-buffer)
