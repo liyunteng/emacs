@@ -1,8 +1,7 @@
 savefile/
 elpa/
-my/cache/
 cache/
-my/custom.el
+irony/
 custom.el
 *.pyc
 *.elc
