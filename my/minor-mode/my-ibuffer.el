@@ -26,6 +26,28 @@
 
 (use-package ibuffer
   :bind (("C-X C-b" . ibuffer))
+  :init
+  (use-package ibuffer-vc
+    :ensure t
+    :init
+    (defun ibuffer-set-up-preferred-filters ()
+      (ibuffer-vc-set-filter-groups-by-vc-root)
+      (unless (eq ibuffer-sorting-mode 'filename/process)
+	    (ibuffer-do-sort-by-filename/process)))
+
+    (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters))
+
+  (use-package ibuffer-projectile
+    :ensure t
+    :config
+    (defun my/ibuffer-group-by-projects ()
+      (interactive)
+      (ibuffer-projectile-set-filter-groups)
+      (unless (eq ibuffer-sorting-mode 'alphabetic)
+	    (ibuffer-do-sort-by-alphabetic))
+      )
+    (define-key ibuffer-mode-map (kbd "/ p") 'my/ibuffer-group-by-projects))
+
   :config
   (use-package ibuf-ext
     :init
@@ -134,30 +156,7 @@
     ;;     		 ("TAGS" (name . "^TAGS\\(<[0-9]+>\\)?$"))
     ;;     		 ("dired" (mode . dired-mode))))))
     )
-
-  (use-package ibuffer-vc
-    :ensure t
-    :init
-    (defun ibuffer-set-up-preferred-filters ()
-      (ibuffer-vc-set-filter-groups-by-vc-root)
-      (unless (eq ibuffer-sorting-mode 'filename/process)
-	    (ibuffer-do-sort-by-filename/process)))
-
-    (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters))
-
-  (use-package ibuffer-projectile
-    :ensure t
-    :config
-    (defun my/ibuffer-group-by-projects ()
-      (interactive)
-      (ibuffer-projectile-set-filter-groups)
-      (unless (eq ibuffer-sorting-mode 'alphabetic)
-	    (ibuffer-do-sort-by-alphabetic))
-      )
-    (define-key ibuffer-mode-map (kbd "/ p") 'my/ibuffer-group-by-projects))
-
   (use-package ibuf-macs
-    :after ibuffer
     :config
     ;; Use human readable Size column instead of original one
     (define-ibuffer-column size-h
@@ -211,8 +210,7 @@
   (defun my-ibuffer-mode-hook ()
     ;; (ibuffer-switch-to-saved-filter-groups "a")
     (ibuffer-auto-mode t))
-  (add-hook 'ibuffer-mode-hook 'my-ibuffer-mode-hook)
-  )
+  (add-hook 'ibuffer-mode-hook 'my-ibuffer-mode-hook))
 
 (provide 'my-ibuffer)
 ;;; my-ibuffer.el ends here

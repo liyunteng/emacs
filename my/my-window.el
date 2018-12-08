@@ -32,6 +32,11 @@
 (setq fit-frame-to-buffer t)
 (setq-default display-buffer-reuse-frames t)
 
+;; use shift + arrow keys to switch between visible buffers
+(use-package windmove
+  :config
+  (windmove-default-keybindings))
+
 (use-package switch-window
   :ensure t
   :bind (("C-x o" . switch-window))
@@ -47,13 +52,6 @@
   :config
   (set-face-attribute 'window-numbering-face nil
   		              :foreground "orange"))
-
-
-;; use shift + arrow keys to switch between visible buffers
-(use-package windmove
-  :defer t
-  :config
-  (windmove-default-keybindings))
 
 ;; enable winner-mode to manage window configurations
 (use-package winner
@@ -73,8 +71,9 @@
                   "*cvs*"
                   "*Buffer List*"
                   "*Ibuffer*"
-                  "*esh command on file*"
-                  ))))
+                  "*esh command on file*"))))
+
+
 
 (defun my/window-toggle-show ()
   "Delete other windows in frame if any, or restore previous window config."
@@ -229,6 +228,7 @@ Dedicated (locked) windows are left untouched."
              (lambda () (interactive) (my/window-size-adjust (abs inc))))))
        map))))
 
+
 (global-set-key (kbd "<f1>") 'my/window-toggle-show)
 (global-set-key (kbd "C-x 0") 'delete-window)
 (global-set-key (kbd "C-x 1") 'my/window-toggle-show)

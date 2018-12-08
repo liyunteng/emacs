@@ -23,6 +23,115 @@
 ;;
 
 ;;; Code:
+;;
+;; locale
+(after-load 'mule
+  (defun my-utf8-locale-p (v)
+    "Return whether locale string V relates to a UTF-8 locale."
+    (and v (or (string-match "UTF-8" v)
+	           (string-match "utf8" v))))
+
+  (defun my-locale-is-utf8-p ()
+    "Return t iff the \"locale\" command or environment variables prefer UTF-8."
+    (or (my-utf8-locale-p (and (executable-find "locale") (shell-command-to-string "locale")))
+        (my-utf8-locale-p (getenv "LC_ALL"))
+        (my-utf8-locale-p (getenv "LC_CTYPE"))
+        (my-utf8-locale-p (getenv "LANG"))))
+
+  (when (or window-system (my-locale-is-utf8-p))
+    (set-language-environment 'utf-8)
+    (setq locale-coding-system 'utf-8)
+    (set-default-coding-systems 'utf-8)
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    (set-selection-coding-system (if (eq system-type 'windows-nt) 'utf-16-le 'utf-8))
+    (prefer-coding-system 'chinese-gb18030)
+    (prefer-coding-system 'chinese-gbk)
+    (prefer-coding-system 'utf-8)))
+
+;; yank at point
+(after-load 'mouse
+  (setq mouse-yank-at-point t))
+
+;; 支持emacs和外部程序的拷贝粘贴
+(after-load 'select
+  (setq select-enable-clipboard t))
+
+;; tooltip
+(after-load 'tooltip
+  (setq tooltip-delay 0.7))
+
+;; imenu
+(after-load 'imenu
+  (setq imenu-auto-rescan t)
+  (setq imenu-auto-rescan-maxout 60000)
+  (setq imenu-max-items 50))
+
+(after-load 'simple
+  ;; next-error to middle
+  (setq next-error-recenter '(4))
+  (setq delete-trailing-lines t)
+  ;; suggest key bindings
+  (setq suggest-key-bindings t)
+  (setq kill-ring-max 200)
+  (setq kill-do-not-save-duplicates t)
+  (setq kill-whole-line t)
+  (setq mark-ring-max 16)
+  (setq global-mark-ring-max 32)
+  ;; Save clipboard contents into kill-ring before replace them
+  (setq save-interprogram-paste-before-kill t)
+  (setq set-mark-command-repeat-pop t)
+  ;; Show column number in mode line
+  (column-number-mode +1)
+  (line-number-mode +1)
+  ;; show file size in mode line
+  (size-indication-mode +1)
+  ;; mark visible
+  (transient-mark-mode +1)
+  )
+
+(after-load 'help
+  ;; Keep focus while navigating help buffers
+  (setq help-window-select nil)
+  (setq help-enable-auto-load t))
+
+;; replace active region
+(after-load 'delsel
+  (delete-selection-mode +1))
+
+;; margin width
+(after-load 'fringe
+  (fringe-mode  '(8 . 0)))
+
+;; show image file
+(after-load 'image-file
+  (auto-image-file-mode +1)
+  ;; (when (executable-find "convert")
+  ;;   (setq imagemagick-render-type 1))
+  )
+
+;; Don't try to ping things that look like domain names
+(after-load 'ffap
+  (setq-default ffap-machine-p-known 'reject))
+
+;; show battery in mode line
+(if (boundp 'battery-status-function)
+    (display-battery-mode t))
+
+;; mouse avoid
+(if (display-mouse-p)
+    (mouse-avoidance-mode 'animate))
+
+(after-load 'diary
+  (setq diary-file (expand-file-name "diary" my-cache-dir)))
+
+(after-load 'ede
+  (setq ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir)))
+
+(after-load 'smex
+  (setq smex-save-file (expand-file-name "smex-items" my-cache-dir)))
+
+
 
 ;; (use-package linum
 ;;   :init
@@ -165,10 +274,7 @@
     :documentation "Show trailing-whitespace")
   (add-hook 'prog-mode-hook #'my/toggle-show-trailing-whitespace-on)
 
-  (my|add-toggle whitespace-mode
-    :mode whitespace-mode
-    :documentation "Show whitespace")
-
+  :config
   (setq whitespace-line-column fill-column)
   (setq whitespace-style
         '(face
@@ -182,16 +288,6 @@
           indentation:tab
           newline
           newline-mark))
-
-  (use-package my-whitespace-cleanup-mode
-    :init
-    (my|add-toggle whitespace-cleanup-mode
-      :status whitespace-cleanup-mode
-      :on (whitespace-cleanup-mode +1)
-      :off (whitespace-cleanup-mode -1)
-      :documentation "Cleanup whitesapce")
-    :config
-    (global-whitespace-cleanup-mode +1))
   ;; (set-face-attribute 'whitespace-space nil
   ;;                                      :background nil
   ;;                                      :foreground (face-attribute 'font-lock-warning-face
@@ -202,48 +298,9 @@
   ;;                                      :background nil)
   )
 
-;; auto indent when yanking
-(defvar my-indent-sensitive-modes
-  '(coffee-mode
-    elm-mode
-    haml-mode
-    haskell-mode
-    slim-mode
-    makefile-mode
-    makefile-bsdmake-mode
-    makefile-gmake-mode
-    makefile-imake-mode
-    python-mode
-    yaml-mode)
-  "Modes for which auto-indenting is suppressed.")
-
-(defvar my-yank-indent-threshold 30000)
-(defvar my-yank-indent-modes '(prog-mode text-mode))
-;; automatically indenting yanked text if in programming-modes
-(defun yank-advised-indent-function (beg end)
-  "Do indentation from BEG to END, as long as the region isn't too large."
-  (if (<= (- end beg) my-yank-indent-threshold)
-      (indent-region beg end nil)))
-
-(my|advise-commands "indent" (yank yank-pop) after
-                    "If current mode is derived of `my-yank-indent-modes',
-indent yanked text (with prefix arg don't indent)."
-                    (if (and (not (ad-get-arg 0))
-                             (not (member major-mode my-indent-sensitive-modes))
-                             (apply #'derived-mode-p my-yank-indent-modes))
-                        (let ((transient-mark-mode nil))
-                          (yank-advised-indent-function (region-beginning) (region-end)))))
-
-(defmacro with-region-or-buffer (func)
-  "When called with no active region, call FUNC on current buffer."
-  `(defadvice ,func (before with-region-or-buffer activate compile)
-     (interactive
-      (if mark-active
-          (list (region-beginning) (region-end))
-        (list (point-min) (point-max))))))
-(with-region-or-buffer align)
-(with-region-or-buffer indent-region)
-(with-region-or-buffer untabify)
+(use-package my-whitespace-cleanup-mode
+  :config
+  (global-whitespace-cleanup-mode +1))
 
 ;; hippie
 (use-package hippie-exp
@@ -273,72 +330,11 @@ indent yanked text (with prefix arg don't indent)."
           ;; Try to complete word as an Emacs Lisp symbol.
           try-complete-lisp-symbol)))
 
-;; proced
-(use-package proced
-  :bind ("C-x p" . proced)
-  :config
-  (setq proced-auto-update-flag t)
-  (setq proced-auto-update-interval 3)
-  ;; (setq proced-post-display-hook '(fit-window-to-buffer))
-  )
-
-;; 设置默认浏览器为firefox
-;; (setq browse-url-firefox-new-window-is-tab t)
-;; (setq browse-url-firefox-program "firefox")
-
-;;;netstat命令的默认参数
-(use-package net-utils
-  :commands (ifconfig iwconfig netstat-program-options arp route traceroute ping
-                      nslookup-host nslookup dns-lookup-host dig run-dig ftp
-                      finger  whois  network-connection-to-service
-                      network-connection)
-  :config
-  (setq netstat-program-options '("-natup")
-        ping-program-options '()))
-
-(use-package xref
-  :commands (xref-find-definitions
-             xref-find-definitions-other-window
-             xref-find-definitions-other-frame
-             xref-find-apropos))
-
-(use-package etags
-  :commands (tags-loop-continue
-             tags-search
-             pop-tag-mark)
-  :config
-  ;;设置TAGS文件
-  (when (file-exists-p "/usr/include/TAGS")
-    (add-to-list 'tags-table-list "/usr/include/TAGS"))
-  (when (file-exists-p "/usr/local/include/TAGS")
-    (add-to-list 'tags-table-list "/usr/local/include/TAGS"))
-
-  (setq tags-revert-without-query t
-        tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
-        tags-add-tables nil               ;don't ask user
-        ))
-
-
-;; calendar
-(use-package calendar
-  :commands (calendar)
-  :config
-  (setq
-   calendar-date-style (quote iso)
-   calendar-mark-holidays-flag t
-   calendar-chinese-all-holidays-flag t))
-
-;; When called with no active region, do not activate mark.
-(defadvice exchange-point-and-mark (before deactivate-mark activate compile)
-  "When called with no active region, do not activate mark."
-  (interactive
-   (list (not (region-active-p)))))
-
+;; compile
 (use-package compile
   :commands (compile my/smart-compile my/insert-compile-command)
   :init
   (require 'files-x)
-
   (defcustom my-samrt-compile-auto-insert-compile-command t
     "Auto insert compile-command to file."
     :type 'boolean
@@ -369,7 +365,6 @@ compile command will be `gcc/g++/clang/clang++ -Wall -o x x.cpp -g'
 compile-command, will auto insert new-compile-command to code file.
 
 5. make clean won't be insert."
-
     (interactive)
     ;; do save
     (setq-local compilation-directory default-directory)
@@ -379,8 +374,7 @@ compile-command, will auto insert new-compile-command to code file.
     (let ((command (eval compile-command))
           (candidate-make-file-name '("makefile" "Makefile" "GNUmakefile" "GNUMakefile"))
           (compiler (file-name-nondirectory (or (executable-find "clang")
-                                                (executable-find "gcc")
-                                                "gcc"))))
+                                                (executable-find "gcc") "gcc"))))
       (if (string-prefix-p "make" command)
           (unless (find t candidate-make-file-name :key
                         '(lambda (f) (file-readable-p f)))
@@ -405,12 +399,8 @@ compile-command, will auto insert new-compile-command to code file.
                                         " -g ")))
                   ((eq major-mode 'go-mode)
                    (setq command
-                         (concat "go run "
-                                 (buffer-file-name)
-                                 " ")))
-                  )))
+                         (concat "go run " (buffer-file-name) " "))))))
       ;; (setq-local compilation-directory default-directory)
-
       (let ((new-command (compilation-read-command command)))
         (unless (equal command new-command)
           (unless (or (equal new-command "make -k clean")
@@ -419,11 +409,9 @@ compile-command, will auto insert new-compile-command to code file.
             (when my-samrt-compile-auto-insert-compile-command
               (my/insert-compile-command))))
         (setq command new-command))
-      (compilation-start command)
-      ))
+      (compilation-start command)))
 
-  :config
-  (use-package ansi-color)
+  (require 'ansi-color)
   (setq compilation-ask-about-save nil  ; Just save before compiling
         compilation-always-kill t       ; Just kill old compile processes before
                                         ; starting the new one
@@ -487,8 +475,7 @@ the right."
   (my|create-align-repeat-x "bar" "|")
   (my|create-align-repeat-x "left-paren" "(")
   (my|create-align-repeat-x "right-paren" ")" t)
-  (my|create-align-repeat-x "backslash" "\\\\")
-  )
+  (my|create-align-repeat-x "backslash" "\\\\"))
 
 ;; comment
 (use-package newcomment
@@ -508,7 +495,6 @@ the right."
          ("C-M-;" . comment-kill)
          ("C-c M-;" . comment-box))
   :init
-  (setq comment-auto-fill-only-comments t)
   (defun my/comment-dwim-line (&optional arg)
     "Replacement for the \"comment-dwim\" command.
 If no region is selected and current line is not blank and we are not
@@ -527,10 +513,11 @@ at the end of the line."
       (comment-dwim arg))
     (indent-according-to-mode))
   :config
-  (setq comment-style 'extra-line)
+  (setq comment-auto-fill-only-comments t)
   ;; (setq comment-style 'multi-line)
-  )
+  (setq comment-style 'extra-line))
 
+;; register
 (use-package register
   :bind (("C-x r f" . frameset-to-register)
          ("C-x r w" . window-configuration-to-register)
@@ -548,17 +535,18 @@ at the end of the line."
   ;; (add-to-list 'desktop-globals-to-save '(window-configuration))
   )
 
+;; paren
 (use-package paren
   :init
   (show-paren-mode +1))
 
+;; goto addr
 (use-package goto-addr
   :commands (goto-address-prog-mode goto-address-mode)
   :bind (:map goto-address-highlight-keymap
               ("C-c RET" . goto-address-at-point))
   :config
-  (setq goto-address-url-face 'underline)
-  )
+  (setq goto-address-url-face 'underline))
 
 ;; prog-mode-hook
 (use-package prog-mode
@@ -587,6 +575,136 @@ This functions should be added to the hooks of major modes for programming."
     )
   (add-hook 'prog-mode-hook 'my-prog-mode-defaults))
 
+;; proced
+(use-package proced
+  :bind ("C-x p" . proced)
+  :config
+  (setq proced-auto-update-flag t)
+  (setq proced-auto-update-interval 3)
+  ;; (setq proced-post-display-hook '(fit-window-to-buffer))
+  )
+
+;; 设置默认浏览器为firefox
+;; (setq browse-url-firefox-new-window-is-tab t)
+;; (setq browse-url-firefox-program "firefox")
+
+;;;netstat命令的默认参数
+(use-package net-utils
+  :commands (ifconfig iwconfig netstat-program-options arp route traceroute ping
+                      nslookup-host nslookup dns-lookup-host dig run-dig ftp
+                      finger  whois  network-connection-to-service
+                      network-connection)
+  :config
+  (setq netstat-program-options '("-natup")
+        ping-program-options '()))
+
+(use-package xref
+  :commands (xref-find-definitions
+             xref-find-definitions-other-window
+             xref-find-definitions-other-frame
+             xref-find-apropos))
+
+(use-package etags
+  :commands (tags-loop-continue
+             tags-search
+             pop-tag-mark)
+  :config
+  ;;设置TAGS文件
+  (when (file-exists-p "/usr/include/TAGS")
+    (add-to-list 'tags-table-list "/usr/include/TAGS"))
+  (when (file-exists-p "/usr/local/include/TAGS")
+    (add-to-list 'tags-table-list "/usr/local/include/TAGS"))
+
+  (setq tags-revert-without-query t
+        tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
+        tags-add-tables nil               ;don't ask user
+        ))
+
+
+;; calendar
+(use-package calendar
+  :commands (calendar)
+  :config
+  (setq
+   calendar-date-style (quote iso)
+   calendar-mark-holidays-flag t
+   calendar-chinese-all-holidays-flag t))
+
+
+
+;; auto indent when yanking
+(defvar my-indent-sensitive-modes
+  '(coffee-mode
+    elm-mode
+    haml-mode
+    haskell-mode
+    slim-mode
+    makefile-mode
+    makefile-bsdmake-mode
+    makefile-gmake-mode
+    makefile-imake-mode
+    python-mode
+    yaml-mode)
+  "Modes for which auto-indenting is suppressed.")
+(defvar my-yank-indent-threshold 30000)
+(defvar my-yank-indent-modes '(prog-mode text-mode))
+;; automatically indenting yanked text if in programming-modes
+(defun yank-advised-indent-function (beg end)
+  "Do indentation from BEG to END, as long as the region isn't  tooltip-hid large."
+  (if (<= (- end beg) my-yank-indent-threshold)
+      (indent-region beg end nil)))
+(my|advise-commands "indent" (yank yank-pop) after
+                    "If current mode is derived of `my-yank-indent-modes',
+indent yanked text (with prefix arg don't indent)."
+                    (if (and (not (ad-get-arg 0))
+                             (not (member major-mode my-indent-sensitive-modes))
+                             (apply #'derived-mode-p my-yank-indent-modes))
+                        (let ((transient-mark-mode nil))
+                          (yank-advised-indent-function (region-beginning) (region-end)))))
+
+
+(defmacro with-region-or-buffer (func)
+  "When called with no active region, call FUNC on current buffer."
+  `(defadvice ,func (before with-region-or-buffer activate compile)
+     (interactive
+      (if mark-active
+          (list (region-beginning) (region-end))
+        (list (point-min) (point-max))))))
+(with-region-or-buffer align)
+(with-region-or-buffer indent-region)
+(with-region-or-buffer untabify)
+
+
+;; When called with no active region, do not activate mark.
+(defadvice exchange-point-and-mark (before deactivate-mark activate compile)
+  "When called with no active region, do not activate mark."
+  (interactive
+   (list (not (region-active-p)))))
+
+;; hidden mode line
+(defvar-local hidden-mode-line-mode nil)
+(defvar-local hide-mode-line nil)
+(define-minor-mode hidden-mode-line-mode
+  "Minor mode to hide the mode-line in the current buffer."
+  :init-value nil
+  :global t
+  :variable hidden-mode-line-mode
+  :group 'editing-basics
+  (if hidden-mode-line-mode
+      (setq hide-mode-line mode-line-format
+            mode-line-format nil)
+    (setq mode-line-format hide-mode-line
+          hide-mode-line nil))
+  (force-mode-line-update)
+  ;; Apparently force-mode-line-update is not always enough to
+  ;; redisplay the mode-line
+  (redraw-display)
+  (when (and (called-interactively-p 'interactive)
+             hidden-mode-line-mode)
+    (run-with-idle-timer
+     0 nil 'message
+     (concat "Hidden Mode Line Mode enabled.  "
+             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
 
 
 ;; disable feature
@@ -791,31 +909,6 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
                 (org-narrow-to-block))
                (t (org-narrow-to-subtree))))
         (t (narrow-to-defun))))
-(define-key ctl-x-map (kbd "n") #'my/narrow-or-widen-dwim)
-
-(defvar-local hidden-mode-line-mode nil)
-(defvar-local hide-mode-line nil)
-(define-minor-mode hidden-mode-line-mode
-  "Minor mode to hide the mode-line in the current buffer."
-  :init-value nil
-  :global t
-  :variable hidden-mode-line-mode
-  :group 'editing-basics
-  (if hidden-mode-line-mode
-      (setq hide-mode-line mode-line-format
-            mode-line-format nil)
-    (setq mode-line-format hide-mode-line
-          hide-mode-line nil))
-  (force-mode-line-update)
-  ;; Apparently force-mode-line-update is not always enough to
-  ;; redisplay the mode-line
-  (redraw-display)
-  (when (and (called-interactively-p 'interactive)
-             hidden-mode-line-mode)
-    (run-with-idle-timer
-     0 nil 'message
-     (concat "Hidden Mode Line Mode enabled.  "
-             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
 
 
 (use-package find-file
@@ -1030,6 +1123,9 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
 ;; ==================== MISC ====================
 ;; 列出正在运行的进程
 (global-set-key (kbd "C-x M-p") 'list-processes)
+
+;; narrow/widen
+(global-set-key (kbd "C-x n") #'my/narrow-or-widen-dwim)
 
 ;; s-q 来插入转义字符
 (global-set-key (kbd "s-q") 'quoted-insert)

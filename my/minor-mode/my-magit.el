@@ -34,40 +34,6 @@
 	     ("C-x v =" . magit-diff-buffer-file)
 	     :map magit-status-mode-map
 	     ("M-RET" . magit-diff-visit-file-other-window))
-  :config
-  (use-package git-blamed
-    :defer t
-    :ensure t)
-  (use-package gitconfig-mode
-    :defer t
-    :ensure t)
-  (use-package gitignore-mode
-    :defer t
-    :ensure t)
-  (use-package git-timemachine
-    :defer t
-    :ensure t)
-  ;; (use-package git-messenger
-  ;;   :defer t
-  ;;   :ensure t)
-  (use-package smeargle
-    :ensure t
-    :defer t)
-  ;; (use-package yagist
-  ;;   :disabled
-  ;;   :ensure t
-  ;;   :defer t)
-
-  (use-package git-commit
-    :ensure t
-    :init
-    (add-hook 'git-commit-mode-hook 'goto-address-mode))
-
-  ;; (use-package bug-reference-github
-  ;;   :ensure t
-  ;;   :defer t
-  ;;   :init
-  ;;   (add-hook 'prog-mode-hook 'bug-reference-prog-mode))
 
   :config
   ;; (setq magit-branch-read-upstream-first 'fallback)
@@ -82,6 +48,30 @@
       (add-to-list 'compilation-error-regexp-alist (car defn))))
   ;; (add-hook 'magit-popup-mode-hook 'my/toggle-show-trailing-whitespace-off)
   )
+
+(use-package gitconfig-mode
+  :ensure t)
+(use-package gitignore-mode
+  :ensure t)
+(use-package git-timemachine
+  :commands (git-timemachine git-timemachine-toggle git-timemachine-switch-branch)
+  :ensure t)
+;; (use-package git-messenger
+;;   :defer t
+;;   :ensure t)
+(use-package smeargle
+  :commands (smeargle smeargle-clear smeargle-commits)
+  :ensure t)
+;; (use-package yagist
+;;   :disabled
+;;   :ensure t
+;;   :defer t)
+
+;; (use-package bug-reference-github
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (add-hook 'prog-mode-hook 'bug-reference-prog-mode))
 
 ;; 激活magit-log，可在magit-log中操作magit
 ;; (global-set-key (kbd "C-x v g") 'magit-log)

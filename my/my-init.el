@@ -27,24 +27,25 @@
 
 (defconst my-modules '(
                        my-utils
-                       my-package
                        my-base
+                       my-package
+                       my-exec-path
                        my-frame
                        my-themes
 
                        my-edit
+                       my-search
                        my-extension
                        my-buffer
                        my-dired
                        my-ibuffer
-                       my-search
                        my-window
                        my-session
                        my-helm
                        ;; my-ido
                        ;; my-ivy
 
-                       my-jump
+                       ;; my-jump
                        my-smartparens
                        my-flyspell
                        my-flycheck
@@ -60,7 +61,7 @@
 
                        my-avy
                        my-auto-insert
-                       my-header
+                       ;; my-header
                        my-hideshow
                        my-auto-mode
 

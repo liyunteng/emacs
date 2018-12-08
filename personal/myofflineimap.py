@@ -14,11 +14,10 @@ from subprocess import check_output, call
 import os
 import base64
 
-
 def get_pass(account):
     pri = os.path.expanduser('~/.emacs.d/personal/pri.key')
     p = os.path.expanduser('~/.emacs.d/personal/passwd.gpg')
-    cmd = 'gpg --list-key liyunteng'
+    cmd = 'gpg --list-key liyunteng > /dev/null 2>&1'
     r = call(cmd.split())
     if r != 0:
         cmd = 'gpg --batch --quiet --import %s ' % pri
@@ -26,7 +25,9 @@ def get_pass(account):
         if r != 0:
             return ''
     cmd = 'gpg -dq %s' % p
-    all = check_output(cmd.split()).split('\n')
+    all = check_output(cmd.split())
+    if type(all) == bytes:
+        all = bytes.decode(all).split('\n')
     if len(all) <= 0:
         return ''
     for x in all:

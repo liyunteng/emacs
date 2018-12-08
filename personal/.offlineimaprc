@@ -1,6 +1,7 @@
 [general]
 pythonfile = ~/.emacs.d/personal/myofflineimap.py
-accounts = 163, StreamOcean
+# accounts = 163, StreamOcean
+accounts = 163
 maxsyncaccounts = 10
 
 [Account StreamOcean]

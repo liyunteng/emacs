@@ -36,85 +36,15 @@
          ("M-s f" . find-name-dired))
 
   :config
-  (use-package dired-x
-    :config
-    (setq dired-omit-verbose nil
-	      ;; dired忽略的上限
-	      dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*"
-	      )
-    (dolist (ex '(".cache" ".o" ".ui"))
-      (add-to-list 'dired-omit-extensions ex))
-    (add-hook 'dired-mode-hook 'dired-omit-mode))
-
-  (use-package dired-quick-sort
-    :ensure t
-    :bind (:map dired-mode-map
-                ("s" . hydra-dired-quick-sort/body)))
-
-  ;; (use-package dired+
-  ;;   :init
-  ;;   (setq diredp-hide-details-initially-flag nil
-  ;; 	  diredp-hide-details-propagate-flag nil
-  ;; 	  dired-hide-details-mode nil
-  ;; 	  global-dired-hide-details-mode nil)
-  ;;   :config
-  ;;   (diredp-toggle-find-file-reuse-dir +1))
-
-  (use-package dired-filetype-face
-    :ensure t
-    :config
-    (deffiletype-face "code" "#9FC59F" "code")
-    (deffiletype-face-regexp code
-      :type-for-docstring "code"
-      :extensions
-      '(
-	    "a"
-	    "ahk"
-	    "asm"
-	    "C"
-	    "c"
-	    "cc"
-	    "cpp"
-	    "cs"
-	    "css"
-	    "ddl"
-	    "el"
-	    "erl"
-	    "go"
-	    "h"
-	    "hrl"
-	    "JAVA"
-	    "java"
-	    "m"
-	    "mm"
-	    "lisp"
-	    "livecode"
-	    "lua"
-	    "p"
-	    "pas"
-	    "php"
-	    "pl"
-	    "py"
-	    "rb"
-	    "rev"
-	    "sch"
-	    "scheme"
-	    "scm"
-	    "sql"
-	    "st"))
-    (deffiletype-setup "code" "code"))
-
-  (setq
-   dired-dwim-target t
-   dired-recursive-deletes 'top
-   dired-recursive-copies 'top)
+  (setq dired-dwim-target t
+        dired-recursive-deletes 'top
+        dired-recursive-copies 'top)
   ;;传给ls的参数
   (if (or (eq system-type 'linux)
 	      (eq system-type 'gnu/linux))
       (setq dired-listing-switches "-alhqD")
     (setq dired-listing-switches "-alh"))
 
-  :config
   ;; goto parent dir
   (defvar-local my--subdir-parent nil)
   (defadvice dired-maybe-insert-subdir (around dirname (&optional switches no-error-if-not-dir-p) activate)
@@ -167,9 +97,36 @@ if no files marked, always operate on current line in dired-mode."
   ;; (define-key dired-mode-map (kbd "=") 'dired-compare-directories)
 
   ;; rename filename in dired-mode
-  (define-key dired-mode-map (kbd "C-c C-e") 'wdired-change-to-wdired-mode)
-  )
+  (define-key dired-mode-map (kbd "C-c C-e") 'wdired-change-to-wdired-mode))
 
+(use-package dired-x
+  :after dired
+  :config
+  (setq dired-omit-verbose nil
+	    ;; dired忽略的上限
+	    dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*")
+  (dolist (ex '(".cache" ".o" ".ui"))
+    (add-to-list 'dired-omit-extensions ex))
+  (add-hook 'dired-mode-hook 'dired-omit-mode))
+
+(use-package dired-quick-sort
+  :ensure t
+  :bind (:map dired-mode-map
+              ("s" . hydra-dired-quick-sort/body)))
+
+(use-package dired-filetype-face
+  :ensure t
+  :after dired
+  :config
+  (deffiletype-face "code" "#9FC59F" "code")
+  (deffiletype-face-regexp code
+    :type-for-docstring "code"
+    :extensions
+    '("a" "ahk" "asm" "C" "c" "cc" "cpp" "cs" "css"
+	  "ddl" "el" "erl" "go" "h" "hrl" "JAVA" "java" "m"
+	  "mm" "lisp" "livecode" "lua" "p" "pas" "php" "pl"
+	  "py" "rb" "rev" "sch" "scheme" "scm" "sql" "st"))
+  (deffiletype-setup "code" "code"))
 
 ;; (setq dired-ls-sorting-switches "SXU")
 

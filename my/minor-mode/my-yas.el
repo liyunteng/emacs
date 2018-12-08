@@ -28,41 +28,9 @@
   :commands (yas-global-mode yas-minor-mode yas-minor-mode-on)
   :ensure t
   :defer t
-  :bind (
-         ;; replace expand-abbrev
-         ("C-x '" . yas-expand)
-         )
-  :init
-  (my|add-toggle yas-minor-mode
-    :mode yas-minor-mode
-    :documentation "yas minor mode")
-
-
-  (use-package yasnippet-snippets
-    :ensure t
-    :defer t)
-
+  :bind (;; replace expand-abbrev
+         ("C-x '" . yas-describe-tables))
   :config
-  ;; (dolist (hook '(prog-mode-hook
-  ;;       	  latex-mode-hook
-  ;;       	  plain-text-mode
-  ;;       	  nxml-mode-hook
-  ;;       	  html-mode-hook
-  ;;       	  web-mode
-
-  ;;       	  autoconf-mode-hook
-  ;;       	  conf-unix-mode-hook
-  ;;       	  cmake-mode-hook
-  ;;       	  css-mode-hook
-  ;;       	  m4-mode-hook
-  ;;       	  ;; org-mode-hook
-  ;;       	  makefile-gmake-mode-hook
-  ;;       	  sql-mode-hook
-  ;;       	  snippet-mode-hook
-  ;;       	  udev-mode-hook
-  ;;       	  ))
-  ;;   (add-hook hook 'yas-minor-mode-on))
-
   ;; (use-package dropdown-list
   ;; 	:ensure t)
   ;; (setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))
@@ -72,10 +40,12 @@
   ;; (setq yas-prompt-functions '(yas-completing-prompt))
   (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
   (yas-reload-all)
-  (yas-global-mode +1)
-  ;c; (add-hook 'after-init-hook 'yas-reload-all)
-
+  ;; (add-hook 'after-init-hook 'yas-reload-all)
   )
+
+(use-package yasnippet-snippets
+  :ensure t
+  :defer t)
 
 (provide 'my-yas)
 ;;; my-yas.el ends here

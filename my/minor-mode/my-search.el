@@ -25,25 +25,18 @@
 ;;; Code:
 ;;; grep 默认递归查找
 (use-package grep
-  :commands (grep-mode
-             grep
-             grep-find
-             find-grep
-             lgrep
-             rgrep
-             zrgrep
-             rzgrep)
+  :commands (grep-mode grep grep-find
+             find-grep lgrep rgrep
+             zrgrep rzgrep)
   :bind (("M-s /" . find-grep)
          ("M-s g" . grep))
   :config
   (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r -e "
         grep-highlight-matches t
-        grep-scroll-output t
-        ))
+        grep-scroll-output t))
 
 (use-package isearch
-  :bind  (
-	      :map isearch-mode-map
+  :bind  (:map isearch-mode-map
 	      ("C-o" . isearch-occur)
 	      ("C-q" . isearch-del-char)
 	      ;; ("C-w" . isearch-delete-char)
@@ -60,8 +53,7 @@
 	      ("M-i" . isearch-toggle-case-fold)
 	      ("M-r" . isearch-toggle-regexp)
 
-	      ([(control return)] . my/isearch-exit-other-end)
-	      )
+	      ([(control return)] . my/isearch-exit-other-end))
 
   :config
   ;; backward kill word in isearch
@@ -104,8 +96,8 @@
 This is useful when followed by an immediate kill."
     (interactive)
     (isearch-exit)
-    (goto-char isearch-other-end))
-  )
+    (goto-char isearch-other-end)))
+
 ;; need install the_silver_searcher
 (when (executable-find "ag")
   (use-package ag
@@ -124,6 +116,8 @@ This is useful when followed by an immediate kill."
 	     ("M-s M-r" . anzu-query-replace-regexp))
   :diminish anzu-mode
   :init
+  (global-anzu-mode +1)
+  :config
   (defun my-anzu--update-mode-line (here total)
     (when anzu--state
       (let ((status (cl-case anzu--state
@@ -134,8 +128,7 @@ This is useful when followed by an immediate kill."
                       (replace (format "(%d/%d) " here total)))))
 	    status)))
 
-  (setq anzu-mode-line-update-function 'my-anzu--update-mode-line)
-  (global-anzu-mode +1))
+  (setq anzu-mode-line-update-function 'my-anzu--update-mode-line))
 
 
 ;; highlight
@@ -148,8 +141,7 @@ This is useful when followed by an immediate kill."
          ("M-s h p" . highlight-phrase)
          ("M-s h ." . highlight-symbol-at-point)
          ("M-s h u" . unhighlight-regexp)
-         ("M-s h b" . hi-lock-write-interactive-patterns)
-         ))
+         ("M-s h b" . hi-lock-write-interactive-patterns)))
 
 
 (provide 'my-search)

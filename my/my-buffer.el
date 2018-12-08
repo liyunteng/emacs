@@ -36,8 +36,6 @@
          (voname (intern (format "my/view-buffer-other-window--%s" name)))
          (sname (intern (format "my/switch-buffer--%s" name)))
          (soname (intern (format "my/switch-buffer-other-window--%s" name))))
-    `(mapc
-      )
     `(progn
        (defun ,vname ()
          ,(format "View %s buffer." bn)
@@ -63,8 +61,7 @@
          (let ((buffer (get-buffer ,buffer-name)))
            (if buffer
                (switch-to-buffer-other-window buffer)
-             (message "No %s buffer" ,name))))
-       )))
+             (message "No %s buffer" ,name)))))))
 
 
 (defun my/alternate-buffer (&optional window)

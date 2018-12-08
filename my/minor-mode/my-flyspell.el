@@ -26,24 +26,20 @@
 
 (use-package flyspell
   :defer t
-  :diminish "flyspell"
-  :ensure t
+  :defines (flyspell-issue-message-flag)
   :config
-  (use-package flyspell-correct
+  (setq flyspell-issue-message-flag t))
+
+(use-package flyspell-correct
+  :ensure t
+  :defer t)
+
+(when (boundp 'helm-mode)
+  (use-package flyspell-correct-helm
     :ensure t
-    :init
-    (when (boundp 'helm-mode)
-      (use-package flyspell-correct-helm
-        :ensure t
-        :bind (:map flyspell-mode-map
-                    ("C-;" . flyspell-correct-wrapper))
-        ))
-    (flyspell-correct-auto-mode t))
-
-  ;; ;; better performance
-  (setq flyspell-issue-message-flag t)
-  )
-
+    :defer t
+    :bind (:map flyspell-mode-map
+                ("C-;" . flyspell-correct-wrapper))))
 
 (provide 'my-flyspell)
 ;;; my-flyspell.el ends here

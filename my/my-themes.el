@@ -72,7 +72,7 @@
 
 (defcustom my-theme 'zenburn
   "My theme."
-  :type 'string
+  :type 'symbol
   :group 'my-config)
 
 (defun my-load-tty-zenburn-theme ()
@@ -138,8 +138,6 @@
          (<= (display-color-cells) 8))
     (my-load-tty-zenburn-theme)
   (load-theme my-theme t))
-
-
 
 (provide 'my-themes)
 ;;; my-themes.el ends here

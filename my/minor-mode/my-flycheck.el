@@ -23,41 +23,51 @@
 ;;
 
 ;;; Code:
+(defcustom my-flycheck-use-original-bitmaps nil
+  "Use flycheck bitmaps."
+  :type 'boolean
+  :group 'my-config)
+
 (use-package flycheck
   :ensure t
   :bind ((:map flycheck-mode-map
 	           ("C-c ! L" . my/flycheck-error-list-and-switch)
 	           ("C-c ! C-l" . my/flycheck-error-list-and-switch)))
   :init
+  (defun my/flycheck-error-list-and-switch ()
+    "Open and goto the error list buffer."
+    (interactive)
+    (unless (get-buffer-window (get-buffer flycheck-error-list-buffer))
+      (flycheck-list-errors)
+      (switch-to-buffer-other-window flycheck-error-list-buffer)))
+
+  (add-hook 'after-init-hook 'global-flycheck-mode)
+
+  :config
   (setq flycheck-mode-line-prefix "flycheck")
   ;; (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
 
-  (defcustom syntax-checking-use-original-bitmaps nil
-    "Use flycheck bitmaps."
-    :type 'boolean
-    :group 'my-config)
   (when (and (fboundp 'define-fringe-bitmap)
-             (not syntax-checking-use-original-bitmaps))
+             (not my-flycheck-use-original-bitmaps))
     (define-fringe-bitmap 'my-flycheck-fringe-indicator
-      (vector
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00011100
-       #b00111110
-       #b00111110
-       #b00111110
-       #b00011100
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000
-       #b00000000))
-    (let ((bitmap (if syntax-checking-use-original-bitmaps
+      (vector #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00011100
+              #b00111110
+              #b00111110
+              #b00111110
+              #b00011100
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000))
+    (let ((bitmap (if my-flycheck-use-original-bitmaps
         	          'flycheck-fringe-bitmap-double-arrow
         	        'my-flycheck-fringe-indicator)))
       (flycheck-define-error-level 'error
@@ -76,16 +86,6 @@
         :fringe-bitmap bitmap
         :fringe-face 'flycheck-fringe-info)))
 
-
-  (add-hook 'after-init-hook 'global-flycheck-mode)
-
-  (when (display-graphic-p)
-    (use-package flycheck-pos-tip
-      :ensure t
-      :config
-      (after-load 'flycheck
-        (flycheck-pos-tip-mode 1))))
-
   (when (boundp 'popwin:special-display-config)
     (push '("^\\*Flycheck.+\\*$"
             :regexp t
@@ -93,15 +93,14 @@
             :position bottom
             :stick t
             :noselect t)
-          popwin:special-display-config))
+          popwin:special-display-config)))
 
-  (defun my/flycheck-error-list-and-switch ()
-    "Open and goto the error list buffer."
-    (interactive)
-    (unless (get-buffer-window (get-buffer flycheck-error-list-buffer))
-      (flycheck-list-errors)
-      (switch-to-buffer-other-window flycheck-error-list-buffer)))
-  )
+(use-package flycheck-pos-tip
+  :ensure t
+  :if (display-graphic-p)
+  :after flycheck
+  :config
+  (flycheck-pos-tip-mode 1))
 
 (provide 'my-flycheck)
 ;;; my-flycheck.el ends here

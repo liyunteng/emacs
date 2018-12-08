@@ -147,8 +147,7 @@
 
   (defadvice desktop-remove (around set-desktop-dirname activate)
     ad-do-it
-    (setq desktop-dirname my-cache-dir))
-  )
+    (setq desktop-dirname my-cache-dir)))
 
 ;; savehist keeps track of some history
 (use-package savehist

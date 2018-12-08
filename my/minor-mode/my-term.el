@@ -192,6 +192,7 @@
   (add-to-list 'term-bind-key-alist '("C-c C-q" . term-send-raw))
   (add-to-list 'term-bind-key-alist '("C-c C-z" . term-send-raw))
   (add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-raw))
+  (add-to-list 'term-bind-key-alist '("TAB" . term-send-raw))
   (add-to-list 'term-bind-key-alist '("C-l" . term-send-raw))
   (add-to-list 'term-bind-key-alist '("C-c C-m" . my/term-mode-toggle-line-mode))
   (add-to-list 'term-bind-key-alist '("C-c C-p" . term-previous-prompt))

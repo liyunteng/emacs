@@ -28,9 +28,9 @@
 
 (use-package syslog-mode
   :ensure t
+  :mode ("\\(messages\\(\\.[0-9]\\)?\\|SYSLOG\\|dmesg\\|\\.log.*\\)\\'" . syslog-mode)
   :init
   (setq syslog-setup-on-load t)
-  :mode ("\\(messages\\(\\.[0-9]\\)?\\|SYSLOG\\|dmesg\\|\\.log.*\\)\\'" . syslog-mode)
   :config
   (defun my-enable-goto-address-mode ()
     "Enable goto address mode."

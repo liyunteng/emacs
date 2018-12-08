@@ -92,8 +92,7 @@ This can be useful if you have huge RCS logs in those comments."
                           (format " ... <%d>"
                                   (count-lines (overlay-start ov)
                                                (overlay-end ov)))
-                          'face 'font-lock-type-face)))))
-  )
+                          'face 'font-lock-type-face))))))
 
 (provide 'my-hideshow)
 ;;; my-hideshow.el ends here

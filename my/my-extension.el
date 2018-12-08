@@ -28,7 +28,7 @@
 ;; linum replaced by nlinum
 (use-package nlinum
   :ensure t
-  :defer t
+  :commands (nlinum-mode)
   :init
   (my|add-toggle linum-mode
     :status nlinum-mode
@@ -39,11 +39,12 @@
   )
 
 (use-package json-mode
-  :ensure t)
+  :ensure t
+  :commands (json-mode)
+  :defer t)
 
 (use-package fill-column-indicator
   :ensure t
-  :defer t
   :diminish fci-mode
   :commands (turn-on-fci-mode
 	         turn-off-fci-mode
@@ -84,7 +85,6 @@
   (keyfreq-mode +1)
   (keyfreq-autosave-mode +1))
 
-
 (use-package move-dup
   :ensure t
   :diminish move-dup-mode
@@ -115,8 +115,7 @@
     :documentation "Global highlight diff")
   (global-diff-hl-mode +1)
   :config
-  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-  )
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 ;; auto indent
 (use-package aggressive-indent
@@ -142,8 +141,7 @@
   :bind (("C-=" . er/expand-region))
   :config
   (setq expand-region-contract-fast-key ",")
-  (setq expand-region-smart-cursor nil)
-  )
+  (setq expand-region-smart-cursor nil))
 
 ;; easy-kill
 (use-package easy-kill
@@ -168,8 +166,7 @@
   (after-load 'page-break-lines
     (push 'browse-kill-ring-mode page-break-lines-modes))
   :config
-  (browse-kill-ring-default-keybindings)
-  )
+  (browse-kill-ring-default-keybindings))
 
 ;; projectile
 (use-package projectile
@@ -185,8 +182,7 @@
   (setq projectile-sort-order 'recentf
         projectile-indexing-method 'alien)
   (setq projectile-enable-caching t)
-  (projectile-mode +1)
-  )
+  (projectile-mode +1))
 
 ;; undo-tree
 (use-package undo-tree
@@ -242,8 +238,7 @@
   :ensure t
   :diminish editorconfig-mode
   :config
-  (editorconfig-mode +1)
-  )
+  (editorconfig-mode +1))
 
 ;;; indent-guide
 (use-package indent-guide
@@ -251,14 +246,9 @@
   :diminish indent-guide-mode
   :commands (indent-guide-mode)
   :init
-  (my|add-toggle indent-guide-mode
-    :mode indent-guide-mode
-    :documentation "Show indent"
-    )
   (add-hook 'python-mode-hook 'indent-guide-mode)
   :config
-  (setq indent-guide-delay 0.3)
-  )
+  (setq indent-guide-delay 0.3))
 
 ;; multiple-cursors
 (use-package multiple-cursors
@@ -271,13 +261,12 @@
          ("C-x M r" . set-rectangular-region-anchor)
          ("C-x M c" . mc/edit-ines)
          ("C-x M e" . mc/edit-ends-of-lines)
-         ("C-x M a" . mc/edit-beginnings-of-lines)
-         ))
+         ("C-x M a" . mc/edit-beginnings-of-lines)))
 
 ;; discover-my-major
 (use-package discover-my-major
-  :bind (("C-h RET" . discover-my-major))
-  :ensure t)
+  :ensure t
+  :bind (("C-h RET" . discover-my-major)))
 
 (use-package symbol-overlay
   :ensure t
@@ -308,7 +297,7 @@
   :ensure t
   :commands iedit-mode
   :bind (("C-;" . iedit-mode))
-  :init
+  :config
   (setq iedit-toggle-key-default nil)
   (add-hook 'iedit-mode-hook
             '(lambda ()
@@ -318,10 +307,9 @@
 ;; multi major mode
 (use-package mmm-mode
   :ensure t
-  :init
+  :config
   (setq mmm-global-mode 'buffers-with-submode-classes)
   (setq mmm-submode-decoration-level 2))
-
 
 ;; print unicode
 (use-package list-unicode-display
@@ -352,8 +340,7 @@
          ("M-J" . crux-top-join-line))
   :init
   (defadvice crux-open-with (after my-after-crux-open-with-ad activate)
-    (message "opend with external application."))
-  )
+    (message "opend with external application.")))
 
 (use-package youdao-dictionary
   :ensure t

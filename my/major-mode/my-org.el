@@ -51,20 +51,6 @@
     (setq org-archive-location "%s_archive::* Archive"))
 
   (use-package org-capture)
-  (use-package org-pomodoro
-    :defer t
-    :ensure t
-    :config
-    (setq org-pomodoro-keep-killed-pomodoro-time t))
-
-  (use-package org-cliplink
-    :defer t
-    :ensure t)
-
-  (use-package org-bullets
-    :ensure t
-    :init
-    (add-hook 'org-mode-hook 'org-bullets-mode))
 
   (use-package ob-ditaa
     :defer t
@@ -360,6 +346,22 @@
   (define-key org-mode-map (kbd "M-<up>") 'org-metaup)
   (define-key org-mode-map (kbd "M-<down>") 'org-metadown)
   )
+
+(use-package org-pomodoro
+  :ensure t
+  :after org
+  :config
+  (setq org-pomodoro-keep-killed-pomodoro-time t))
+
+(use-package org-cliplink
+  :ensure t
+  :after org)
+
+(use-package org-bullets
+  :ensure t
+  :after org
+  :init
+  (add-hook 'org-mode-hook 'org-bullets-mode))
 
 (define-minor-mode prose-mode
   "Set up a buffer for prose editing.

@@ -52,6 +52,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (xterm-mouse-mode 1)
   (mwheel-install))
 (add-hook 'my-after-make-console-frame-hooks 'my--console-frame-setup)
+
 
 
 (defun my/set-gui-frame ()
@@ -89,7 +90,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (my/set-gui-frame)
 
 
-;; 使用系统字体
+;; fonts
 (setq font-use-system-font t)
 ;; 中文使用WenQuanYi Micro Hei Mono, 其他使用DejaVu Sans Mono
 (create-fontset-from-fontset-spec
@@ -220,8 +221,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
         		               (powerline-fill face1 (powerline-width rhs))
         		               (powerline-render rhs)))))))
   :config
-  (powerline-my-theme)
-  )
+  (powerline-my-theme))
 
 (use-package beacon
   :ensure t
@@ -236,8 +236,9 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   :ensure t
   :diminish which-key-mode
   :init
-  (setq which-key-sort-order 'which-key-prefix-then-key-order-reverse)
-  (which-key-mode +1))
+  (which-key-mode +1)
+  :config
+  (setq which-key-sort-order 'which-key-prefix-then-key-order-reverse))
 
 ;; (setq ring-bell-function 'ignore
 ;;       visible-bell nil)p

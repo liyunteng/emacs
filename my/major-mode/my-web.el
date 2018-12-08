@@ -40,8 +40,7 @@
 
   :config
   (setq web-mode-enable-auto-pairing nil
-	    web-mode-indent-style 4)
-  )
+	    web-mode-indent-style 4))
 
 (provide 'my-web)
 ;;; my-web.el ends here

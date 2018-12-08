@@ -32,6 +32,10 @@
 	         smartparens-global-strict-mode)
 
   :init
+  (add-hook 'prog-mode-hook 'turn-on-smartparens-mode)
+  (show-smartparens-global-mode +1)
+
+  :config
   (setq sp-show-pair-delay 0.2
 	    sp-show-pair-from-inside t
 	    sp-cancel-autoskip-on-backward-movement t
@@ -43,18 +47,6 @@
 	    sp-hybrid-kill-entire-symbol nil
 	    blink-matching-paren nil)
 
-  (my|add-toggle smartparens
-    :mode smartparens-mode
-    :documentation "Enable smartparens.")
-
-  (my|add-toggle smartparens-strict-mode
-    :mode smartparens-strict-mode
-    :documentation "Enable smartparens strict.")
-
-  (add-hook 'prog-mode-hook 'my/toggle-smartparens-on)
-  (show-smartparens-global-mode +1)
-
-  :config
   (require 'smartparens-config)
   ;; (sp-use-paredit-bindings)
   (sp-use-smartparens-bindings)

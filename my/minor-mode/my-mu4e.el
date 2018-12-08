@@ -20,28 +20,32 @@
 
 ;;; Commentary:
 
+;; require:
+;; 1. offlineimap
+;; 2. mu
 ;;
+;; 使用方法：
+;; 1. 安装offlineimap, 拷贝personal/.offlineimaprc到~/
+;; 2. 安装mu
+;; 3. 拷贝personal/.authinfo.gpg 到~/
+;; 已经配置好了163邮箱的收发
+
 
 ;;; Code:
 
-;; require:
-;; 1. offlineimap
-;; 2. pip install imapclient
 ;;
+(use-package sendmail
+  :defer t
+  :config
+  (setq send-mail-function 'smtpmail-send-it)
+  ;; (setq send-mail-function 'mailclient-send-it)
+  )
+(use-package smtpmail
+  :defer t)
 
 (use-package message
   :defer t
   :config
-  (use-package sendmail
-    :defer t
-    :config
-    (setq send-mail-function 'smtpmail-send-it)
-    ;; (setq send-mail-function 'mailclient-send-it)
-    )
-
-  (use-package smtpmail
-    :defer t)
-
   (setq message-confirm-send t						;防止误发邮件, 发邮件前需要确认
 	    message-kill-buffer-on-exit t				;设置发送邮件后删除buffer
 	    message-from-style 'angles					;`From' 头的显示风格
@@ -62,12 +66,18 @@
   )
 
 (use-package mu4e
+  :if (and (executable-find "offlineimap")
+           (executable-find "mu"))
   :commands (mu4e mu4e-compose-new)
+  :bind (("C-x M-m" . mu4e-compose-new))
   :init
-  (global-set-key (kbd "C-x M-m") 'mu4e-compose-new)
   (defvar mu4e-account-alist nil
     "Account alist for custom multi-account compose.")
   :config
+  (use-package mu4e-compose
+    :defines (mu4e-sent-messages-behavior)
+    :config
+    (setq mu4e-sent-messages-behavior 'sent))
   (use-package mu4e-vars
     :defines (mu4e-maildir
 	          mu4e-trash-folder
@@ -80,18 +90,18 @@
 	          mu4e-maildir-shortcuts
 	          mu4e-bookmarks
 	          mu4e-compose-parent-message
-	          mu4e-completing-read-function)
-    :init
-    (setq
-     mu4e-maildir "~/Maildir"
-     mu4e-trash-folder "/[Trash]"
-     mu4e-refile-folder "/[Archive]"
-     mu4e-sent-folder "/[Sent]"
-     mu4e-drafts-folder "/[Drafts]"
-     mu4e-get-mail-command "offlineimap"
-     mu4e-update-interval nil
-     mu4e-view-show-images t
-     )
+	          mu4e-completing-read-function
+              mu4e-debug)
+    :config
+    (setq mu4e-debug t)
+    (setq mu4e-maildir "~/Maildir"
+          mu4e-trash-folder "/已删除"
+          mu4e-refile-folder "/归档"
+          mu4e-sent-folder "/已发送"
+          mu4e-drafts-folder "/草稿箱"
+          mu4e-get-mail-command "offlineimap"
+          mu4e-update-interval 12000
+          mu4e-view-show-images t)
 
     (setq mu4e-bookmarks
 	      `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
@@ -104,9 +114,7 @@
 			                (concat "maildir:" (car maildir)))
 			              mu4e-maildir-shortcuts) " OR ")
 	         "All inboxes" ?i)))
-
-    (setq mu4e-completing-read-function 'completing-read)
-    )
+    (setq mu4e-completing-read-function 'completing-read))
 
   (use-package mu4e-message
     :defines (mu4e-view-show-addresses
@@ -143,17 +151,6 @@
     :init
     (add-to-list 'mu4e-view-actions
 		         '("View in browser" . mu4e-action-view-in-browser) t))
-
-  (use-package mu4e-alert
-    :ensure t
-    :init
-    (mu4e-alert-enable-notifications)
-    (mu4e-alert-enable-mode-line-display))
-
-  (use-package mu4e-maildirs-extension
-    :ensure t
-    :init
-    (mu4e-maildirs-extension-load))
 
   ;; (defun mu4e//search-account-by-mail-address (mailto)
   ;; 	"Return the account given an email address in MAILTO."
@@ -202,6 +199,18 @@
 
   )
 
+(use-package mu4e-alert
+  :ensure t
+  :after mu4e
+  :init
+  (mu4e-alert-enable-notifications)
+  (mu4e-alert-enable-mode-line-display))
+
+(use-package mu4e-maildirs-extension
+  :ensure t
+  :after mu4e
+  :init
+  (mu4e-maildirs-extension-load))
 (provide 'my-mu4e)
 
 ;;; my-mu4e.el ends here

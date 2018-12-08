@@ -24,41 +24,41 @@
 
 ;;; Code:
 
-(use-package xcscope
-  :ensure t
-  :commands (cscope-minor-mode)
-  :config
-  (defvar my-cscope-origin-buffer nil)
-  (defadvice cscope-call (before my-save-cscope-origin-buffer activate)
-    (setq my-cscope-origin-buffer (current-buffer)))
-  (defun my/cscope-quit ()
-    "My cscope quit."
-    (interactive)
-    (cscope-quit)
-    (switch-to-buffer my-cscope-origin-buffer)
-    (delete-other-windows))
+;; (use-package xcscope
+;;   :ensure t
+;;   :commands (cscope-minor-mode)
+;;   :config
+;;   (defvar my-cscope-origin-buffer nil)
+;;   (defadvice cscope-call (before my-save-cscope-origin-buffer activate)
+;;     (setq my-cscope-origin-buffer (current-buffer)))
+;;   (defun my/cscope-quit ()
+;;     "My cscope quit."
+;;     (interactive)
+;;     (cscope-quit)
+;;     (switch-to-buffer my-cscope-origin-buffer)
+;;     (delete-other-windows))
 
-  (setq cscope-truncate-lines nil)
-  (setq cscope-use-relative-paths nil)
-  (setq cscope-index-recursively t)
-  (setq cscope-name-line-width -45)
-  (setq cscope-display-cscope-buffer t)
-  (setq cscope-close-window-after-select nil)
-  (cscope-setup)
-  :bind
-  (:map cscope-minor-mode-keymap
-	    ("C-c s G" . cscope-find-global-definition)
-	    :map cscope-list-entry-keymap
-	    ("C-p" . cscope-history-backward-file)
-	    ("C-n" . cscope-history-forward-file)
-	    ("C-M-p" . cscope-history-backward-result)
-	    ("C-M-n" . cscope-history-forward-result)
-	    ("C-k" . cscope-history-kill-file)
-	    ("C-M-k" . cscope-history-kill-result)
-	    ("d" . cscope-find-global-definition-no-prompting)
-	    ("G" . cscope-find-global-definition)
-	    ("q" . my/cscope-quit)
-	    ))
+;;   (setq cscope-truncate-lines nil)
+;;   (setq cscope-use-relative-paths nil)
+;;   (setq cscope-index-recursively t)
+;;   (setq cscope-name-line-width -45)
+;;   (setq cscope-display-cscope-buffer t)
+;;   (setq cscope-close-window-after-select nil)
+;;   (cscope-setup)
+;;   :bind
+;;   (:map cscope-minor-mode-keymap
+;; 	    ("C-c s G" . cscope-find-global-definition)
+;; 	    :map cscope-list-entry-keymap
+;; 	    ("C-p" . cscope-history-backward-file)
+;; 	    ("C-n" . cscope-history-forward-file)
+;; 	    ("C-M-p" . cscope-history-backward-result)
+;; 	    ("C-M-n" . cscope-history-forward-result)
+;; 	    ("C-k" . cscope-history-kill-file)
+;; 	    ("C-M-k" . cscope-history-kill-result)
+;; 	    ("d" . cscope-find-global-definition-no-prompting)
+;; 	    ("G" . cscope-find-global-definition)
+;; 	    ("q" . my/cscope-quit)
+;; 	    ))
 
 ;; (use-package helm-cscope
 ;; :if (fboundp 'helm-mode)
@@ -174,8 +174,7 @@
     :on (progn (hide-ifdef-mode +1)
 	           (hide-ifdefs t))
     :off (hide-ifdef-mode -1)
-    :documentation "Hide/Show ifdef"
-    )
+    :documentation "Hide/Show ifdef")
 
   :config
   (defun hif-canonicalize (regexp)
@@ -355,16 +354,18 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
 
 
 (use-package cc-mode
+  :defer t
+  :commands (cc-mode c-mode c++-mode)
   :config
   (defun my-cc-mode-hook ()
     "My c common mode hooks."
     (unless semantic-mode
       (semantic-mode +1))
 
-    ;; (hide-ifdef-mode +1)
     (auto-fill-mode +1)
-    (cscope-minor-mode +1)
-    (c-subword-mode +1)
+    (subword-mode +1)
+    ;; (hide-ifdef-mode +1)
+    ;; (cscope-minor-mode +1)
 
     ;; (setq hide-ifdef-hiding t)
     ;; (setq hide-ifdef-shadow t)

@@ -23,7 +23,7 @@
 ;;
 
 ;;; Code:
-
+(require 'cl-macs)
 (defvar my-debug nil)
 (defvar my-init-times nil
   "A list of (FEATURE TYPE LOAD-START-TIME LOAD-DURATION).
@@ -110,7 +110,7 @@ arguments is that we want to process these arguments as soon as possible."
 (defun my-init-times-tabulated-list-entries ()
   (cl-loop for (feature type start-time millis) in my-init-times
 		   with order = 0
-		   do (incf order)
+		   do (1+ order)
 		   collect (list order
 						 (vector
 						  (format "%.3f" (my-time-subtract-millis start-time before-init-time))

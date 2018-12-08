@@ -28,36 +28,30 @@
 (setq user-full-name "liyunteng"
       user-mail-address "li_yunteng@163.com")
 
-(when (equal (getenv "ORGANIZATION") "StreamOcean")
-  (defconst streamocean-license-content "")
-  (defconst streamocean-license (cons "StreamOcean" streamocean-license-content))
-  (setq user-mail-address "liyunteng@streamocean.com")
+(eval-after-load 'smtpmail
+  (progn
+    (setq smtpmail-smtp-server "smtp.163.com"
+          smtpmail-stream-type 'plain
+          smtpmail-smtp-service 25		;ssl 994/465
+          smtpmail-smtp-user "li_yunteng"
 
-  (eval-after-load 'autoinsert
-    (setq auto-insert-license streamocean-license))
+          ;; smtpmail-smtp-server "smtp.qiye.163.com"
+          ;; smtpmail-stream-type 'starttls
+          ;; smtpmail-smtp-service 25		;ssl 994/465
+          ;; smtpmail-smtp-user "liyunteng@streamocean.com"
 
-  (eval-after-load 'smtpmail
-    (setq
-     ;; smtpmail-smtp-server "smtp.163.com"
-     ;; smtpmail-stream-type 'ssl
-     ;; smtpmail-smtp-service 25		;ssl 994/465
-     ;; smtpmail-smtp-user "li_yunteng"
+          ;; smtpmail-local-domain "localhost"
+          ;; smtpmail-sendto-domain "smtp.qiye.163.com"
+          ;; smtpmail-debug-info t
+          )
+    t))
 
-     smtpmail-smtp-server "smtp.qiye.163.com"
-     smtpmail-stream-type 'starttls
-     smtpmail-smtp-service 25		;ssl 994/465
-     smtpmail-smtp-user "liyunteng@streamocean.com"
-
-     ;; smtpmail-local-domain "localhost"
-     ;; smtpmail-sendto-domain "smtp.qiye.163.com"
-     ;; smtpmail-debug-info t
-     ))
-
-  (eval-after-load 'mu4e
-    (setq mu4e-maildir-shortcuts
-	      '(("/streamocean/INBOX" . ?t)
-	        ("/163/INBOX" . ?c))))
-  )
+(eval-after-load 'mu4e-vars
+  (progn
+    (setq mu4e-maildir-shortcuts '(("/163/INBOX" . ?i)
+                                   ("/163/已发送" . ?s)
+                                   ("/163/已删除" . ?d)))
+    t))
 
 ;; gnus
 ;; imap

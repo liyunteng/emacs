@@ -28,11 +28,9 @@
 (setq completion-cycle-threshold nil)
 
 (use-package company
-  ;; :diminish company-mode		;; for see current backend
   :ensure t
   :bind
-  (
-   ("TAB" . 'company-indent-or-complete-common)
+  (("TAB" . 'company-indent-or-complete-common)
    :map company-mode-map
    ("C-M-/" . company-other-backend)
    ("C-M-?" . company-begin-backend)
@@ -50,31 +48,14 @@
    ("M-v" . company-previous-page)
    :map company-search-map
    ("C-n" . company-select-next)
-   ("C-p" . company-select-previous)
-   )
+   ("C-p" . company-select-previous))
   :commands (global-company-mode company-mode)
   :init
   ;; (defalias 'completion-at-point 'company-complete-common)
 
   (global-company-mode -1)
-  (my|add-toggle company-mode
-    :mode company-mode
-    :documentation "Company mode")
 
   :config
-  (when (display-graphic-p)
-    (use-package company-quickhelp
-      :ensure t
-      :bind
-      (:map company-active-map
-	        ("C-h"  . company-quickhelp-mode))
-      :init
-      ;; maybe crash
-      ;; (setq company-quickhelp-delay 1)
-      (setq company-quickhelp-max-lines 30)
-      (company-quickhelp-mode 1)
-      ))
-
   ;; fix company-candidates-length is 0 will start company
   (defun company-manual-begin ()
     (interactive)
@@ -101,8 +82,7 @@
         company-tooltip-align-annotations t
         company-tooltip-flip-when-above t
         company-abort-manual-when-too-short t
-        company-selection-wrap-around nil
-        )
+        company-selection-wrap-around nil)
 
   ;; Suspend page-break-lines-mode while company menu is active
   ;; (see https://github.com/company-mode/company-mode/issues/416)
@@ -119,10 +99,21 @@
 
     (add-hook 'company-completion-started-hook 'my--page-break-lines-disable)
     (add-hook 'company-completion-finished-hook 'my--page-break-lines-maybe-reenable)
-    (add-hook 'company-completion-cancelled-hook 'my--page-break-lines-maybe-reenable))
+    (add-hook 'company-completion-cancelled-hook 'my--page-break-lines-maybe-reenable)))
 
-  )
+(use-package company-quickhelp
+  :ensure t
+  :bind
+  (:map company-active-map
+	    ("C-h"  . company-quickhelp-mode))
+  :if (display-graphic-p)
+  :init
+  ;; maybe crash
+  ;; (setq company-quickhelp-delay 1)
+  (setq company-quickhelp-max-lines 30)
+  (company-quickhelp-mode 1))
 
+
 ;; copy from spacemacs
 (defvar my-default-company-backends
   '(
@@ -225,15 +216,15 @@ MODE parameter must match the parameter used in the call to
 (use-package company-web
   :ensure t
   :defer t
-  :commands (company-web))
+  :commands (company-web-html company-web-jade company-web-slim))
 (my|defvar-company-backends web-mode)
-(my|enable-company web-mode '(company-web))
+(my|enable-company web-mode '(company-web-html company-web-jade company-web-slim))
 
 (my|defvar-company-backends emacs-lisp-mode)
-(my|enable-company emacs-lisp-mode '((company-capf company-elisp)))
+(my|enable-company emacs-lisp-mode '((company-capf)))
 
 (my|defvar-company-backends lisp-interaction-mode)
-(my|enable-company lisp-interaction-mode '((company-capf company-elisp)))
+(my|enable-company lisp-interaction-mode '((company-capf)))
 
 (my|defvar-company-backends java-mode)
 (my|enable-company java-mode '(company-eclim))
@@ -259,7 +250,7 @@ MODE parameter must match the parameter used in the call to
 
 (my|defvar-company-backends inferior-python-mode)
 ;; (my|enable-company inferior-python-mode '(company-capf elpy-company-backend))
-(my|enable-company inferior-python-mode '(company-capf))
+(my|enable-company inferior-python-mode '(elpy-company-backend company-capf))
 
 (provide 'my-ac)
 ;;; my-ac.el ends here

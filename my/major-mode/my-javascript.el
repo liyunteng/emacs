@@ -47,18 +47,6 @@
 				                    unless (eq preferred-javascript-mode (cdr entry))
 				                    collect entry)))
 
-  (use-package xref-js2
-    :ensure t)
-
-  (use-package js-comint
-    :ensure t)
-
-  (use-package skewer-mode
-    :ensure t
-    :config
-    (add-hook 'skewer-mode-hook
-	          (lambda () (inferior-js-keys-mode -1))))
-
   (setq js-indent-level preferred-javascript-indent-level)
 
   ;; Change some defaults: customize them to override
@@ -120,5 +108,19 @@
     (add-hook hook 'inferior-js-keys-mode))
   )
 
+(use-package xref-js2
+  :ensure t
+  :after js2-mode)
+
+(use-package js-comint
+  :ensure t
+  :after js2-mode)
+
+(use-package skewer-mode
+  :ensure t
+  :after js2-mode
+  :config
+  (add-hook 'skewer-mode-hook
+	        (lambda () (inferior-js-keys-mode -1))))
 (provide 'my-javascript)
 ;;; my-javascript.el ends here

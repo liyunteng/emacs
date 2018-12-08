@@ -23,45 +23,8 @@
 ;;
 
 ;;; Code:
-;; locale
+;; (thingatpt help-fns radix-tree help-mode easymenu cl-loaddefs cl-lib elec-pair time-date mule-util tooltip eldoc electric uniquify ediff-hook vc-hooks lisp-float-type mwheel term/x-win x-win term/common-win x-dnd tool-bar dnd fontset image regexp-opt fringe tabulated-list replace newcomment text-mode elisp-mode lisp-mode prog-mode register page menu-bar rfn-eshadow isearch timer select scroll-bar mouse jit-lock font-lock syntax facemenu font-core term/tty-colors frame cl-generic cham georgian utf-8-lang misc-lang vietnamese tibetan thai tai-viet lao korean japanese eucjp-ms cp51932 hebrew greek romanian slovak czech european ethiopic indian cyrillic chinese composite charscript charprop case-table epa-hook jka-cmpr-hook help simple abbrev obarray minibuffer cl-preloaded nadvice loaddefs button faces cus-face macroexp files text-properties overlay sha1 md5 base64 format env code-pages mule custom widget hashtable-print-readable backquote dbusbind inotify lcms2 dynamic-setting system-font-setting font-render-setting move-toolbar gtk x-toolkit x multi-tty make-network-process emacs)
 
-(use-package exec-path-from-shell
-  :ensure t
-  :if (memq window-system '(mac ns x))
-  :config
-  (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE"))
-    (add-to-list 'exec-path-from-shell-variables var))
-  :init
-  (exec-path-from-shell-initialize))
-
-(defun my-utf8-locale-p (v)
-  "Return whether locale string V relates to a UTF-8 locale."
-  (and v (or (string-match "UTF-8" v)
-	         (string-match "utf8" v))))
-
-(defun my-locale-is-utf8-p ()
-  "Return t iff the \"locale\" command or environment variables prefer UTF-8."
-  (or (my-utf8-locale-p (and (executable-find "locale") (shell-command-to-string "locale")))
-      (my-utf8-locale-p (getenv "LC_ALL"))
-      (my-utf8-locale-p (getenv "LC_CTYPE"))
-      (my-utf8-locale-p (getenv "LANG"))))
-
-(when (or window-system (my-locale-is-utf8-p))
-  (set-language-environment 'utf-8)
-  (setq locale-coding-system 'utf-8)
-  (set-default-coding-systems 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-selection-coding-system (if (eq system-type 'windows-nt) 'utf-16-le 'utf-8))
-  (prefer-coding-system 'chinese-gb18030)
-  (prefer-coding-system 'chinese-gbk)
-  (prefer-coding-system 'utf-8)
-  )
-
-
-
-;; disable ad redefinition warning
-(setq ad-redefinition-action 'accept)
 
 ;; Always load newest byte code
 (setq load-prefer-newer t)
@@ -72,27 +35,6 @@
   (setq gc-cons-threshold init-gc-cons-threshold)
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
-
-;; warn when opening files bigger than 10MB
-(setq large-file-warning-threshold 10000000)
-
-;; When emacs asks for "yes" or "no", let "y" or "n" suffice
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;;
-(setq mouse-yank-at-point t)
-
-;; 支持emacs和外部程序的拷贝粘贴
-(setq select-enable-clipboard t)
-
-;; recenter
-(setq recenter-positions '(top middle bottom))
-
-;; tooltip
-(setq tooltip-delay 1.5)
-
-;; imenu
-(setq imenu-auto-rescan t)
 
 ;; 递归minibuffer
 (setq enable-recursive-minibuffers t)
@@ -107,20 +49,8 @@
 ;; delete duplicates minibuffer history
 (setq history-delete-duplicates t)
 
-;; suggest key bindings
-(setq suggest-key-bindings t)
-
 ;; message max
 (setq message-log-max 20000)
-
-;;设置删除记录
-(setq kill-ring-max 200)
-
-(setq adaptive-fill-regexp
-      "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
-;; Single space between sentences is more widespread than double
-;; (setq-default sentence-end-double-space nil)
-;; (setq-default sentence-end "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*")
 
 ;; Use system trash for file deletion
 ;; should work on Windows and Linux distros
@@ -128,67 +58,21 @@
 (when (system-is-mswindows)
   (setq delete-by-moving-to-trash t))
 
-;; Save clipboard contents into kill-ring before replace them
-(setq save-interprogram-paste-before-kill t)
-
 ;; draw underline lower
 (setq x-underline-at-descent-line t)
 
+;; dont't trancate
 (setq truncate-partial-width-windows nil)
-(setq set-mark-command-repeat-pop t)
-
-;; Keep focus while navigating help buffers
-(setq help-window-select 'nil)
+;; don't truncate line
+(setq-default truncate-lines nil)
 
 ;; smooth scrolling
 (setq scroll-margin 2
       scroll-conservatively 100000
       scroll-preserve-screen-position t)
 
-;; initial mode
-;; (setq-default initial-major-mode
-;;               'lisp-interaction-mode)
-;; initial scarch message
-(setq initial-scratch-message
-      (concat ";; Happy Hacking, "
-              user-login-name
-              (if user-full-name
-                  (concat " ("user-full-name ")"))
-              " - Emacs ♥ you!\n\n"))
-
-(and (boundp 'battery-status-function)
-     (display-battery-mode t))
-;; Show column number in mode line
-(column-number-mode +1)
-(line-number-mode +1)
-;; show file size in mode line
-(size-indication-mode +1)
-;; show which function in mode line
-(which-function-mode +1)
-
-;; mark visible
-(transient-mark-mode +1)
-
-;; replace active region
-(delete-selection-mode +1)
-
-;; 光标靠近鼠标指针时，鼠标指针自动让开
-(mouse-avoidance-mode 'animate)
-
-;; margin width
-(fringe-mode  '(8 . 0))
-
-;; show image file
-(auto-image-file-mode t)
-;; (when (executable-find "convert")
-;;   (setq imagemagick-render-type 1))
-
 ;; fill-column 80
 ;; (setq-default fill-column 80)
-
-
-;; Don't try to ping things that look like domain names
-(setq-default ffap-machine-p-known 'reject)
 
 ;; search case fold
 (setq-default case-fold-search t)
@@ -199,19 +83,50 @@
 ;; don't use tab
 (setq-default indent-tabs-mode nil)
 
-;; add final newline
-(setq-default require-final-newline t)
-
 ;; Show a marker in the left fringe for lines
 (setq-default indicate-empty-lines t)
 
 ;; 行距
 (setq-default line-spacing 0.0)
 
-;; don't truncate line
-(setq-default truncate-lines nil)
 
-;;========== backup =========
+
+;; disable ad redefinition warning
+(setq ad-redefinition-action 'accept)
+
+;; When emacs asks for "yes" or "no", let "y" or "n" suffice
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; recenter
+(setq recenter-positions '(top middle bottom))
+
+(setq adaptive-fill-regexp
+      "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
+
+;; initial mode
+;; (setq-default initial-major-mode
+;;               'lisp-interaction-mode)
+;; initial scarch message
+(setq initial-scratch-message
+      (concat ";; Happy Hacking, " user-login-name
+              (if user-full-name (concat " ("user-full-name ")"))
+              " - Emacs ♥ you!\n\n"))
+;; conflic with desktop
+;; (setq initial-buffer-choice t)
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-echo-area-message t)
+(setq inhibit-startup-buffer-menu nil)
+
+
+;; warn when opening files bigger than 10MB
+(setq large-file-warning-threshold 10000000)
+;; add final newline
+(setq-default require-final-newline t)
+(setq revert-without-query '(".*"))
+(setq kill-emacs-query-functions nil)
+(setq confirm-kill-emacs nil)
+(setq confirm-kill-processes t)
+
 ;; 不产生备份文件
 (setq make-backup-files nil)
 (setq backup-directory-alist `((".*" . ,(expand-file-name "Backup/" my-cache-dir))))
@@ -225,7 +140,6 @@
         create-lockfiles nil
 	    backup-by-copying t))
 
-
 ;; replaced by super-save
 (setq auto-save-default t)
 (setq auto-save-list-file-prefix
@@ -235,12 +149,6 @@
             (t
 	         (concat (expand-file-name "auto-save/" my-cache-dir) ".saves-"))))
 
-
-;; 将保存的文件移动到.emacs.d/目录中
-(setq-default diary-file (expand-file-name "diary" my-cache-dir))
-
-(setq-default ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir))
-(setq-default smex-save-file (expand-file-name "smex-items" my-cache-dir))
 
 (provide 'my-base)
 ;;; my-base.el ends here
