@@ -199,11 +199,60 @@
   (setq
    ediff-window-setup-function 'ediff-setup-windows-plain
    ediff-split-window-function 'split-window-horizontally
-   ediff-merge-split-window-function 'split-window-horizontally)
+   ediff-merge-split-window-function 'split-window-horizontally
+   ediff-diff-options "-w --text")
   (require 'outline)
   (add-hook 'ediff-prepare-buffer-hook #'show-all)
-  (add-hook 'ediff-quit-hook #'winner-undo)
-  )
+
+  ;; copy from magit, restore windowconfiguration after ediff exit.
+  (defvar my--ediff-previous-winconf nil)
+  ;; (defadvice ediff (around my-ediff-remanber-windowconfig (fa fb &optional h) activate)
+  ;;   (setq my--ediff-previous-winconf (current-window-configuration))
+  ;;   ad-do-it)
+  (defun my-ediff-remember-windowconfig ()
+    (setq my--ediff-previous-winconf (current-window-configuration)))
+  (defun ediff-kill-buffer-carefully (buf)
+    "Kill buffer BUF if it exists."
+    (if (ediff-buffer-live-p buf)
+        (kill-buffer (get-buffer buf))))
+  (defun my-ediff-cleanup-auxiliary-buffers ()
+    (let* ((ctl-buf ediff-control-buffer)
+           (ctl-win (ediff-get-visible-buffer-window ctl-buf))
+           (ctl-frm ediff-control-frame)
+           (main-frame (cond ((window-live-p ediff-window-A)
+                              (window-frame ediff-window-A))
+                             ((window-live-p ediff-window-B)
+                              (window-frame ediff-window-B)))))
+      (ediff-kill-buffer-carefully ediff-diff-buffer)
+      (ediff-kill-buffer-carefully ediff-custom-diff-buffer)
+      (ediff-kill-buffer-carefully ediff-fine-diff-buffer)
+      (ediff-kill-buffer-carefully ediff-tmp-buffer)
+      (ediff-kill-buffer-carefully ediff-error-buffer)
+      (ediff-kill-buffer-carefully ediff-msg-buffer)
+      (ediff-kill-buffer-carefully ediff-debug-buffer)
+      (ediff-kill-buffer-carefully ediff-buffer-A)
+      (ediff-kill-buffer-carefully ediff-buffer-B)
+      (ediff-kill-buffer-carefully ediff-buffer-C)
+      (ediff-kill-buffer-carefully ediff-ancestor-buffer)
+      (when (boundp 'ediff-patch-diagnostics)
+        (ediff-kill-buffer-carefully ediff-patch-diagnostics))
+      (cond ((and (ediff-window-display-p)
+                  (frame-live-p ctl-frm))
+             (delete-frame ctl-frm))
+            ((window-live-p ctl-win)
+             (delete-window ctl-win)))
+      (unless (ediff-multiframe-setup-p)
+        (ediff-kill-bottom-toolbar))
+      (ediff-kill-buffer-carefully ctl-buf)
+      (when (frame-live-p main-frame)
+        (select-frame main-frame))))
+  (defun my-ediff-restore-previous-winconf ()
+    (when my--ediff-previous-winconf
+      (set-window-configuration my--ediff-previous-winconf)
+      (setq my--ediff-previous-winconf nil)))
+  (setq ediff-before-setup-hook '(my-ediff-remember-windowconfig))
+  (setq ediff-quit-hook  '(my-ediff-cleanup-auxiliary-buffers
+                           my-ediff-restore-previous-winconf)))
 
 ;; clean up obsolete buffers automatically
 (use-package midnight
