@@ -205,12 +205,12 @@
   (add-hook 'ediff-prepare-buffer-hook #'show-all)
 
   ;; copy from magit, restore windowconfiguration after ediff exit.
-  (defvar my--ediff-previous-winconf nil)
-  ;; (defadvice ediff (around my-ediff-remanber-windowconfig (fa fb &optional h) activate)
-  ;;   (setq my--ediff-previous-winconf (current-window-configuration))
-  ;;   ad-do-it)
+  (defvar my--ediff-previous-winconf nil "(windowconfiguration buffer point)")
   (defun my-ediff-remember-windowconfig ()
-    (setq my--ediff-previous-winconf (current-window-configuration)))
+    (unless (memq major-mode '(magit-popup-mode magit-status-mode))
+      (setq my--ediff-previous-winconf (cons (current-window-configuration)
+                                             (cons(current-buffer)
+                                                  (point))))))
   (defun ediff-kill-buffer-carefully (buf)
     "Kill buffer BUF if it exists."
     (if (ediff-buffer-live-p buf)
@@ -230,9 +230,15 @@
       (ediff-kill-buffer-carefully ediff-error-buffer)
       (ediff-kill-buffer-carefully ediff-msg-buffer)
       (ediff-kill-buffer-carefully ediff-debug-buffer)
-      (ediff-kill-buffer-carefully ediff-buffer-A)
-      (ediff-kill-buffer-carefully ediff-buffer-B)
-      (ediff-kill-buffer-carefully ediff-buffer-C)
+      (unless (equal ediff-buffer-A
+                     (car (cdr my--ediff-previous-winconf)))
+        (ediff-kill-buffer-carefully ediff-buffer-A))
+      (unless (equal ediff-buffer-B
+                     (car (cdr my--ediff-previous-winconf)))
+        (ediff-kill-buffer-carefully ediff-buffer-B))
+      (unless (equal ediff-buffer-C
+                     (car (cdr my--ediff-previous-winconf)))
+        (ediff-kill-buffer-carefully ediff-buffer-C))
       (ediff-kill-buffer-carefully ediff-ancestor-buffer)
       (when (boundp 'ediff-patch-diagnostics)
         (ediff-kill-buffer-carefully ediff-patch-diagnostics))
@@ -248,8 +254,11 @@
         (select-frame main-frame))))
   (defun my-ediff-restore-previous-winconf ()
     (when my--ediff-previous-winconf
-      (set-window-configuration my--ediff-previous-winconf)
+      (set-window-configuration (car my--ediff-previous-winconf))
+      (switch-to-buffer (car (cdr my--ediff-previous-winconf)))
+      (goto-char (cdr (cdr my--ediff-previous-winconf)))
       (setq my--ediff-previous-winconf nil)))
+
   (setq ediff-before-setup-hook '(my-ediff-remember-windowconfig))
   (setq ediff-quit-hook  '(my-ediff-cleanup-auxiliary-buffers
                            my-ediff-restore-previous-winconf)))
