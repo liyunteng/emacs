@@ -305,11 +305,11 @@
                (define-key iedit-occurrence-keymap (kbd "M-p") 'iedit-prev-occurrence))))
 
 ;; multi major mode
-(use-package mmm-mode
-  :ensure t
-  :config
-  (setq mmm-global-mode 'buffers-with-submode-classes)
-  (setq mmm-submode-decoration-level 2))
+;; (use-package mmm-mode
+;;   :ensure t
+;;   :config
+;;   (setq mmm-global-mode 'buffers-with-submode-classes)
+;;   (setq mmm-submode-decoration-level 2))
 
 ;; print unicode
 (use-package list-unicode-display

@@ -17,12 +17,14 @@ import base64
 def get_pass(account):
     pri = os.path.expanduser('~/.emacs.d/personal/pri.key')
     p = os.path.expanduser('~/.emacs.d/personal/passwd.gpg')
-    cmd = 'gpg --list-key liyunteng > /dev/null 2>&1'
-    r = call(cmd.split())
+    cmd = 'gpg --list-key liyunteng'
+    r = call(cmd.split(), stdout=open('/dev/null', 'w'))
     if r != 0:
+        print('importing gpg keyring...')
         cmd = 'gpg --batch --quiet --import %s ' % pri
-        r = call(cmd.split())
+        r = call(cmd.split(), stdout=open('/dev/null', 'w'))
         if r != 0:
+            print('import gpg keyring failed!')
             return ''
     cmd = 'gpg -dq %s' % p
     all = check_output(cmd.split())
@@ -65,8 +67,8 @@ def imaputf7encode(s):
 
 
 def get_flodername(name):
-    if name.startswith('&'):
+    if name.find('&') != -1:
         return imaputf7decode(name).encode('utf-8')
     else:
         return imaputf7encode(name)
-    # return imap_utf7.decode(name).encode('utf-8')
+    # return imaputf7decode(name).encode('utf-8')

@@ -28,30 +28,31 @@
 (setq user-full-name "liyunteng"
       user-mail-address "li_yunteng@163.com")
 
-(eval-after-load 'smtpmail
-  (progn
-    (setq smtpmail-smtp-server "smtp.163.com"
-          smtpmail-stream-type 'plain
-          smtpmail-smtp-service 25		;ssl 994/465
-          smtpmail-smtp-user "li_yunteng"
-
-          ;; smtpmail-smtp-server "smtp.qiye.163.com"
-          ;; smtpmail-stream-type 'starttls
-          ;; smtpmail-smtp-service 25		;ssl 994/465
-          ;; smtpmail-smtp-user "liyunteng@streamocean.com"
-
-          ;; smtpmail-local-domain "localhost"
-          ;; smtpmail-sendto-domain "smtp.qiye.163.com"
-          ;; smtpmail-debug-info t
-          )
-    t))
-
-(eval-after-load 'mu4e-vars
+(eval-after-load 'mu4e
   (progn
     (setq mu4e-maildir-shortcuts '(("/163/INBOX" . ?i)
                                    ("/163/已发送" . ?s)
                                    ("/163/已删除" . ?d)))
+    ;; for multi account
+    (setq mu4e-account-alist
+          '(("163"
+             (user-mail-address "li_yunteng@163.com")
+             (smtpmail-smtp-user "li_yunteng")
+             (smtpmail-smtp-server "smtp.163.com")
+             (smtpmail-stream-type ssl)
+             (smtpmail-smtp-service 465)) ;tls
+            ;; ("Gmail"
+            ;;  (user-mail-address "liyunteng@gmail.com")
+            ;;  (smtpmail-smtp-user "liyunteng@gmail.com")
+            ;;  (smtpmail-smtp-server "smtp.gmail.com")
+            ;;  (smtpmail-stream-type starttls)
+            ;;  (smtpmail-smtp-service 587) ;starttls
+            ;;  ;; (smtpmail-stream-type ssl)
+            ;;  ;; (smtpmail-smtp-service 465) ;ssl
+            ;;  )
+            ))
     t))
+
 
 ;; gnus
 ;; imap

@@ -72,7 +72,6 @@
                        my-python
                        my-org
                        my-web
-                       my-sh
                        my-syslog
                        my-javascript
 

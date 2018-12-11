@@ -1,0 +1,36 @@
+#+TITLE: MU4E Configuration
+
+* offlineimap
+
+** Install offlineimap
+   #+BEGIN_SRC shell
+   sudo pacman -S offlineimap
+   #+END_SRC
+** Copy ~/.emacs.d/personal/.offlineimaprc to ~/
+   #+BEGIN_SRC shell
+   rsync -av ~/.emacs.d/personal/.offlineimaprc ~/
+   #+END_SRC
+** Run offlineimap
+   #+BEGIN_SRC shell
+   offlineimap
+   #+END_SRC
+
+* Mu
+
+** Install mu
+   #+BEGIN_SRC shell
+   sudo pacman -S mu
+   #+END_SRC
+
+** import key
+   #+BEGIN_SRC shell
+   gpg -i ~/.emacs.d/personal/pri.key
+   #+END_SRC
+** Copy ~/.emacs.d/personal/.authinfo.gpg to ~/
+   #+BEGIN_SRC shell
+   rsync -av ~/.emacs.d/personal/.authinfo.gpg ~/
+   #+END_SRC
+* Emacs
+  #+BEGIN_SRC emacs-lisp :tangle yes
+  M-x mu4e
+  #+END_SRC

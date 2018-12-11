@@ -25,30 +25,10 @@
 ;;; Code:
 
 (use-package tramp
+  :defer t
   :defines (tramp-default-user-alist)
   :bind ("C-x M-f" . find-file-root)
   :init
-  (setq tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
-  (setq tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))
-
-  (setq tramp-verbose 0)
-  ;; (setq-default tramp-default-method "ssh")
-  (setq tramp-default-method "rcp")
-  (setq tramp-default-user "root")
-  (setq tramp-default-host "127.0.0.1")
-
-  (setq tramp-chunksize 8196)
-  (setq password-cache t)
-  (setq password-cache-expiry 36000)
-  (setq tramp-connection-timeout 10)
-
-;;; 解决tramp登陆失败，导致emacs假死的问题
-  ;; (setq tramp-ssh-controlmaster-options nil)
-  (setq tramp-use-ssh-controlmaster-options nil)
-
-  ;;(add-to-list 'tramp-remote-process-environment
-  ;;(format "DISPALY=%s" (getenv "DISPLAY")))
-
 
   ;;使用sudo 编辑文件
   (defvar find-file-root-prefix (if (featurep 'xemacs) "/[sudo/root@localhost]" "/sudo:root@localhost:" )
@@ -64,8 +44,8 @@
     "*Open a file as the root user.
 Prepends `find-file-root-prefix' to the selected file name so that it
 maybe accessed via the corresponding tramp method."
-
     (interactive)
+    (require 'tramp)
     (let* ( ;; We bind the variable `file-name-history' locally so we can
 	       ;; use a separate history list for "root" files.
 	       (file-name-history find-file-root-history)
@@ -101,6 +81,28 @@ This function is suitable to add to `find-file-root-hook'."
       (setq header-line-format
 	        (propertize  warning 'face 'find-file-root-header-face))))
   (add-hook 'find-file-root-hook 'find-file-root-header-warning)
+
+  :config
+  (setq tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
+  (setq tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))
+
+  (setq tramp-verbose 0)
+  ;; (setq-default tramp-default-method "ssh")
+  (setq tramp-default-method "rcp")
+  (setq tramp-default-user "root")
+  (setq tramp-default-host "127.0.0.1")
+
+  (setq tramp-chunksize 8196)
+  (setq password-cache t)
+  (setq password-cache-expiry 36000)
+  (setq tramp-connection-timeout 10)
+
+;;; 解决tramp登陆失败，导致emacs假死的问题
+  ;; (setq tramp-ssh-controlmaster-options nil)
+  (setq tramp-use-ssh-controlmaster-options nil)
+
+  ;;(add-to-list 'tramp-remote-process-environment
+  ;;(format "DISPALY=%s" (getenv "DISPLAY")))
 
   ;; (let ((my-tramp-methods nil)
   ;;       (my-tramp-ssh-method

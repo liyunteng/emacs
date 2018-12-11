@@ -347,6 +347,10 @@
   (define-key org-mode-map (kbd "M-<down>") 'org-metadown)
   )
 
+(use-package htmlize
+  :ensure t
+  :after org)
+
 (use-package org-pomodoro
   :ensure t
   :after org

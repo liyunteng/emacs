@@ -24,6 +24,7 @@
 
 ;;; Code:
 
+;; TODO: compat with lsp
 (setq tab-always-indent 'complete)
 (setq completion-cycle-threshold nil)
 

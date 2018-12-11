@@ -1,36 +1,51 @@
 [general]
 pythonfile = ~/.emacs.d/personal/myofflineimap.py
-# accounts = 163, StreamOcean
 accounts = 163
 maxsyncaccounts = 10
 
-[Account StreamOcean]
-localrepository = so-local
-remoterepository = so-remote
+[Account Gmail]
+localrepository = gmail-local
+remoterepository = gmail-remote
+# Minutes between syncs
+# autorefresh = 0.5
+# Quick-syncs do not update if the only changes were to IMAP flags.
+# autorefresh=0.5 toghether with quick=10 yields
+# 10 quick refreshes between each full refresh, with 0.5 minutes between
+# every refresh, regardless of type.
+# quick = 10
 
 [Account 163]
 localrepository = 163-local
 remoterepository = 163-remote
 
-[Repository so-local]
-type = Maildir
-localfolders = ~/Maildir/streamocean
+[Repository gmail-local]
+type = GmailMaildir
+localfolders = ~/Maildir/Gmail
 nametrans = lambda flodername: get_flodername(flodername)
+maxage = 60
 
 [Repository 163-local]
 type = Maildir
 localfolders = ~/Maildir/163
 nametrans = lambda flodername: get_flodername(flodername)
 
-[Repository so-remote]
-type = IMAP
-remotehost = imap.qiye.163.com
-remoteuser = liyunteng@streamocean.com
-remotepasseval = get_pass('StreamOcean')
-ssl = no
-maxconnections = 1
+[Repository gmail-remote]
+# type = IMAP
+type = Gmail
+remotehost = imap.gmail.com
+remoteuser = liyunteng@gmail.com
+remotepasseval = get_pass('Gmail')
+# keepalive = 60
+# holdconnectionopen = yes
+ssl = yes
+starttls = yes
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+ssl_version = tls1_2
+auth_mechanisms = LOGIN
+maxconnections = 2
 realdelete = no
 nametrans = lambda flodername: get_flodername(flodername)
+maxage = 60
 
 [Repository 163-remote]
 type = IMAP

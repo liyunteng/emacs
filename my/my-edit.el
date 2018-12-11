@@ -122,6 +122,12 @@
 (if (display-mouse-p)
     (mouse-avoidance-mode 'animate))
 
+(after-load 'url-cache
+  (setq url-cache-directory (expand-file-name "url" my-cache-dir)))
+
+(after-load 'nsm
+  (setq nsm-settings-file (expand-file-name "network-security.data" my-cache-dir)))
+
 (after-load 'diary
   (setq diary-file (expand-file-name "diary" my-cache-dir)))
 
@@ -130,6 +136,9 @@
 
 (after-load 'smex
   (setq smex-save-file (expand-file-name "smex-items" my-cache-dir)))
+
+(after-load 'org-id
+  (setq org-id-locations-file (expand-file-name ".org-id-locations" my-cache-dir)))
 
 
 
