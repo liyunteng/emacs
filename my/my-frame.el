@@ -79,9 +79,13 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
   ;; title format
   (setq frame-title-format
-        '( "%F - " (:eval (if (buffer-file-name)
-                              (abbreviate-file-name (buffer-file-name))
-                            "%b"))))
+        '((:eval (if (frame-parameter nil 'client)
+                     (process-name (frame-parameter nil 'client))
+                   "%F"))
+          "  -  " (:eval (if (buffer-file-name)
+                             ;; (file-truename (buffer-file-name))
+                             (abbreviate-file-name (buffer-file-name))
+                           "%b"))))
 
 
   (let ((no-border '(internal-border-width . 0)))
