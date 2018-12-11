@@ -126,8 +126,7 @@ arguments is that we want to process these arguments as soon as possible."
     (my-init-times-mode)
     (tabulated-list-revert)
 	(auto-revert-mode +1)
-    (display-buffer (current-buffer))
-	))
+    (display-buffer (current-buffer))))
 
 (and my-debug
      (add-hook 'after-init-hook 'my/show-init-times))

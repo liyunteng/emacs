@@ -124,7 +124,7 @@
 (setq large-file-warning-threshold 10000000)
 ;; add final newline
 (setq-default require-final-newline t)
-(setq revert-without-query '(".*"))
+;; (setq revert-without-query '(".*"))
 (setq kill-emacs-query-functions nil)
 (setq confirm-kill-emacs nil)
 (setq confirm-kill-processes t)
@@ -132,7 +132,6 @@
 ;; 不产生备份文件
 (setq make-backup-files nil)
 (setq backup-directory-alist `((".*" . ,(expand-file-name "Backup/" my-cache-dir))))
-;;所有的备份文件转移到Backup目录下
 (when make-backup-files
   (setq save-silently t
 	    version-control nil

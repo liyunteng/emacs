@@ -345,7 +345,14 @@
 
 (use-package youdao-dictionary
   :ensure t
-  :defer t)
+  :defer t
+  :bind (("s-." . youdao-dictionary-search-at-point)
+         ("s-," . youdao-dictionary-play-voice-at-point)
+         ("s-M-," . youdao-dictionary-play-voice-from-input)
+         ("s-M-." . youdao-dictionary-search-from-input)
+         :map youdao-dictionary-mode-map
+         ("v" . youdao-dictionary-play-voice-at-point)
+         ("V" . youdao-dictionary-play-voice-from-input)))
 
 ;; make useless word
 (use-package lorem-ipsum
