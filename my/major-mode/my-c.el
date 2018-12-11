@@ -156,7 +156,7 @@
     (add-to-list 'cc-search-directories var))
   (dolist (var my-src-path)
     (add-to-list 'cc-search-directories var))
-  (dolist (var '(("\\c\\'" (".h" ".hpp" ".hxx"))
+  (dolist (var '(("\\.c\\'" (".h" ".hpp" ".hxx"))
                  ("\\.h\\'" (".c" ".cpp" ".cxx"))
                  ("\\.hpp\\'" (".cpp" ".cxx" ".c"))
                  ("\\.hxx\\'" (".cpp" ".cxx" ".c"))))

@@ -25,9 +25,9 @@
 ;;; Code:
 
 ;; jump
-(defvar my-jump-default-backends'(xref-find-definitions)
+(defvar my-jump-default-backends'(xref-find-definitions ffap)
   "List of jump default backends.")
-(defvar-local my-jump-backends'(xref-find-definitions)
+(defvar-local my-jump-backends my-jump-default-backends
   "List of jump backends local to this buffer.")
 
 (defmacro my|define-jump-backends (mode &rest backends)

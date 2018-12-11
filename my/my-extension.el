@@ -170,11 +170,11 @@
 
 ;; projectile
 (use-package projectile
+  :ensure t
   :bind-keymap ("C-c p" . projectile-command-map)
   :bind (:map projectile-command-map
               ("A a" . projectile-add-known-project)
               ("A d" . projectile-remove-known-project))
-  :ensure t
   :init
   (setq projectile-cache-file (expand-file-name  "projectile.cache" my-cache-dir))
   (setq projectile-known-projects-file (expand-file-name "projectile-bookmarks" my-cache-dir))
@@ -182,7 +182,8 @@
   (setq projectile-sort-order 'recentf
         projectile-indexing-method 'alien)
   (setq projectile-enable-caching t)
-  (projectile-mode +1))
+  ;; (setq projectile-switch-project-action 'projectile-dired)
+  (add-hook 'after-init-hook 'projectile-mode))
 
 ;; undo-tree
 (use-package undo-tree
