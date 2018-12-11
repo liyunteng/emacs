@@ -194,8 +194,8 @@ The initialization function is hooked to `MODE-hook'."
 	     (set (make-local-variable 'company-backends)
 	          ,backend-list))
 
-       (add-hook ',mode-hook 'company-mode t)
        (add-hook ',mode-hook ',func t)
+       (add-hook ',mode-hook 'company-mode t)
        )))
 
 (defmacro my|disable-company (mode)
@@ -209,8 +209,7 @@ MODE parameter must match the parameter used in the call to
        (remove-hook ',mode-hook 'company-mode)
        )))
 
-(my|enable-company c-mode-common)
-;; (my|enable-company c-mode-common '(company-semantic company-clang))
+(my|enable-company c-mode-common '(company-semantic company-clang))
 (my|enable-company cmake-mode '(company-cmake))
 (my|enable-company css-mode '(company-css))
 (my|enable-company nxml-mode '(company-nxml))

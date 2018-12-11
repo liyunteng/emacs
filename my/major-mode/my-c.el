@@ -386,6 +386,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
 	;; 			flycheck-cppcheck-include-path))))
     ;; (setq-default company-clang-arguments '("-std=c++11"))
     )
+  (add-hook 'c-mode-common-hook 'my-cc-mode-hook)
 
   (defun my--cc-tab ()
     (interactive)
@@ -415,7 +416,6 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (define-key c-mode-base-map (kbd "C-c C-k") 'kill-region)              ;c-toggle-comment-style
   (define-key c-mode-base-map (kbd "TAB") 'my--cc-tab)
 
-  (add-hook 'c-mode-common-hook 'my-cc-mode-hook)
   )
 
 ;; 添加Kernel的Include
