@@ -31,7 +31,7 @@
 (use-package company
   :ensure t
   :bind
-  (("TAB" . 'company-indent-or-complete-common)
+  (("TAB" . company-indent-or-complete-common)
    :map company-mode-map
    ("C-M-/" . company-other-backend)
    ("C-M-?" . company-begin-backend)
@@ -50,7 +50,7 @@
    :map company-search-map
    ("C-n" . company-select-next)
    ("C-p" . company-select-previous))
-  :commands (global-company-mode company-mode)
+  :commands (global-company-mode company-mode company-auto-begin)
   :init
   ;; (defalias 'completion-at-point 'company-complete-common)
 
@@ -75,11 +75,11 @@
         company-search-filtering t
         company-auto-complete t
         company-idle-delay 1
-        company-tooltip-idle-delay 0.5
-        company-transformers '(company-sort-by-backend-importance
-                               company-sort-by-occurrence
+        company-transformers '(company-sort-by-occurrence
+                               company-sort-by-backend-importance
                                company-sort-prefer-same-case-prefix)
         company-tooltip-limit 10
+        company-tooltip-idle-delay 0.5
         company-tooltip-align-annotations t
         company-tooltip-flip-when-above t
         company-abort-manual-when-too-short t
@@ -87,15 +87,17 @@
 
   ;; Suspend page-break-lines-mode while company menu is active
   ;; (see https://github.com/company-mode/company-mode/issues/416)
-  (when (boundp 'page-break-lines-mode)
-    (defvar my---page-break-lines-on-p nil)
-    (make-variable-buffer-local 'my--page-break-lines-on-p)
+  (when (fboundp 'page-break-lines-mode)
+    (defvar my--page-break-lines-on-p nil)
+    (make-local-variable 'my--page-break-lines-on-p)
 
     (defun my--page-break-lines-disable (&rest ignore)
+      (null ignore)
       (when (setq my--page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
         (page-break-lines-mode -1)))
 
     (defun my--page-break-lines-maybe-reenable (&rest ignore)
+      (null ignore)
       (when my--page-break-lines-on-p (page-break-lines-mode 1)))
 
     (add-hook 'company-completion-started-hook 'my--page-break-lines-disable)
@@ -115,39 +117,67 @@
   (setq company-quickhelp-max-lines 30)
   (company-quickhelp-mode 1))
 
+
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :init
+;;   (setq lsp-response-timeout 2)
+;;   (setq lsp-message-project-root-warning nil))
+
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :init
+;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+;; (use-package company-lsp
+;;   :ensure t
+;;   :init
+;;   (push 'company-lsp company-backends))
+
+;; ;; need clangd
+;; (when (executable-find "clangd")
+;;   (lsp-define-stdio-client lsp-clangd-c
+;;                            "c"
+;;                            (lsp-make-traverser ".projectile")
+;;                            (list "clangd")
+;;                            :ignore-regexps
+;;                            '("^Error -[0-9]+: .+$"))
+;;   (lsp-define-stdio-client lsp-clangd-c++
+;;                            "cpp"
+;;                            (lsp-make-traverser ".projectile")
+;;                            (list "clangd")
+;;                            :ignore-regexps
+;;                            '("^Error -[0-9]+: .+$"))
+;;   (add-hook 'c-mode-hook 'lsp-clangd-c-enable)
+;;   (add-hook 'c++-mode-hook 'lsp-clangd-c++-enable))
+
+;; ;; need go-langserver
+;; (use-package lsp-go
+;;   :ensure t
+;;   :if (executable-find "go-langserver")
+;;   :init
+;;   (add-hook 'go-mode-hook 'lsp-go-enable))
+
+;; ;; need python-language-server
+;; (when (executable-find "pyls")
+;;   (lsp-define-stdio-client lsp-python
+;;                            "python"
+;;                            (lsp-make-traverser ".projectile")
+;;                            (list "pyls")
+;;                            :ignore-regexps
+;;                            '("^Error -[0-9]+: .+$"))
+;;   (add-hook 'python-mode-hook 'lsp-python-enable))
+
 
 ;; copy from spacemacs
-(defvar my-default-company-backends
-  '(
+(defvar my-company-default-backends
+  '(company-capf
     company-yasnippet
-    ;; (company-yasnippet)
     (company-dabbrev-code company-gtags company-etags company-keywords)
-    company-files company-dabbrev)
-  "The list of default company backends used by spacemacs.
-This variable is used to configure mode-specific company backends in spacemacs.
-Backends in this list will always be active in these modes, as well as any
-backends added by individual spacemacs layers.")
-(defvar company-enable-snippets-in-popup t)
+    company-files company-oddmuse company-dabbrev)
+  "The list of default company backends used.")
 
-(defmacro my|defvar-company-backends (mode)
-  "Define a MODE specific company backend variable with default backends.
-The variable name format is company-backends-MODE."
-  `(defvar ,(intern (format "company-backends-%S" mode))
-     ',my-default-company-backends
-     ,(format "Company backend list for %S" mode)))
-
-
-(defun my--show-snippets-in-company (backend)
-  (if (or (not company-enable-snippets-in-popup)
-	      (and (listp backend) (member 'company-yasnippet backend)))
-      backend
-    (append
-     (if (consp backend) backend (list backend))
-     '(:with company-yasnippet)
-     )
-    ))
-
-(defmacro my|enable-company (mode backends)
+(defmacro my|enable-company (mode &optional backends)
   "Enable company for the given MODE.
 MODE must match the symbol passed in `my|defvar-company-backends'.
 The initialization function is hooked to `MODE-hook'."
@@ -155,18 +185,18 @@ The initialization function is hooked to `MODE-hook'."
 	    (func (intern (format "my--init-company-%S" mode)))
 	    (backend-list (intern (format "company-backends-%S" mode))))
     `(progn
+       (defvar ,backend-list
+         (append ,backends my-company-default-backends)
+         ,(format "Company backend list for %S" mode))
+
        (defun ,func ()
 	     ,(format "Initialize company for %S" mode)
-	     ;; add yasnippet to every backend
-	     ;; (when company-enable-snippets-in-popup
-	     ;;   (setq ,backend-list (mapcar 'my--show-snippets-in-company
-	     ;;   							   ,backend-list))
-	     ;;   )
-	     (set (make-variable-buffer-local 'company-backends)
+	     (set (make-local-variable 'company-backends)
 	          ,backend-list))
-       (setq ,backend-list (append ,backends ,backend-list))
+
+       (add-hook ',mode-hook 'company-mode t)
        (add-hook ',mode-hook ',func t)
-       (add-hook ',mode-hook 'company-mode t))))
+       )))
 
 (defmacro my|disable-company (mode)
   "Disable company for the given MODE.
@@ -176,22 +206,25 @@ MODE parameter must match the parameter used in the call to
 	    (func (intern (format "my--init-company-%S" mode))))
     `(progn
        (remove-hook ',mode-hook ',func)
-       (remove-hook ',mode-hook 'company-mode))))
+       (remove-hook ',mode-hook 'company-mode)
+       )))
 
-(my|defvar-company-backends c-mode-common)
-(if  (executable-find "clang")
-    (my|enable-company c-mode-common '(company-semantic company-clang))
-  (my|enable-company c-mode-common '(company-semantic)))
-;; (my|enable-company c++-mode '(company-semantic company-clang))
-
-(my|defvar-company-backends cmake-mode)
+(my|enable-company c-mode-common)
+;; (my|enable-company c-mode-common '(company-semantic company-clang))
 (my|enable-company cmake-mode '(company-cmake))
+(my|enable-company css-mode '(company-css))
+(my|enable-company nxml-mode '(company-nxml))
+(my|enable-company emacs-lisp-mode)
+(my|enable-company lisp-interaction-mode)
+(my|enable-company inferior-emacs-lisp-mode)
+(my|enable-company java-mode '(company-eclim))
+(my|enable-company python-mode '(elpy-company-backend))
+(my|enable-company inferior-python-mode '(elpy-company-backend))
 
 (use-package company-go
   :ensure t
   :defer t
   :commands (company-go))
-(my|defvar-company-backends go-mode)
 (my|enable-company go-mode '(company-go))
 
 (use-package company-shell
@@ -199,45 +232,20 @@ MODE parameter must match the parameter used in the call to
   :defer t
   :commands (company-shell
 	         company-shell-env))
-(my|defvar-company-backends sh-mode)
 (my|enable-company sh-mode '(company-shell company-shell-env))
 
 (use-package company-php
   :ensure t
   :defer t
   :commands (company-php))
-(my|defvar-company-backends php-mode)
 (my|enable-company php-mode '(company-php))
-
-(my|defvar-company-backends css-mode)
-(my|enable-company css-mode '(company-css))
-
-(my|defvar-company-backends nxml-mode)
-(my|enable-company nxml-mode '(company-nxml))
 
 (use-package company-web
   :ensure t
   :defer t
   :commands (company-web-html company-web-jade company-web-slim))
-(my|defvar-company-backends web-mode)
 (my|enable-company web-mode '(company-web-html company-web-jade company-web-slim))
 
-(my|defvar-company-backends emacs-lisp-mode)
-(my|enable-company emacs-lisp-mode '((company-capf)))
-
-(my|defvar-company-backends lisp-interaction-mode)
-(my|enable-company lisp-interaction-mode '((company-capf)))
-
-(my|defvar-company-backends java-mode)
-(my|enable-company java-mode '(company-eclim))
-
-(my|defvar-company-backends objc-mode)
-(my|defvar-company-backends idl-mode)
-(my|defvar-company-backends pike-mode)
-(my|defvar-company-backends awk-mode)
-(my|defvar-company-backends markdown-mode)
-(my|defvar-company-backends LaTex-mode)
-(my|defvar-company-backends js2-mode)
 
 (my|disable-company term-mode)
 (my|disable-company shell-mode)
@@ -246,13 +254,6 @@ MODE parameter must match the parameter used in the call to
 (my|disable-company org-agenda-mode)
 (my|disable-company calendar-mode)
 
-(my|defvar-company-backends python-mode)
-;; (my|enable-company python-mode '(company-capf elpy-company-backend))
-(my|enable-company python-mode '(elpy-company-backend company-capf))
-
-(my|defvar-company-backends inferior-python-mode)
-;; (my|enable-company inferior-python-mode '(company-capf elpy-company-backend))
-(my|enable-company inferior-python-mode '(elpy-company-backend company-capf))
 
 (provide 'my-ac)
 ;;; my-ac.el ends here

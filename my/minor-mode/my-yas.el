@@ -30,6 +30,9 @@
   :defer t
   :bind (;; replace expand-abbrev
          ("C-x '" . yas-describe-tables))
+  :init
+  (add-hook 'prog-mode 'yas-minor-mode-on)
+
   :config
   ;; (use-package dropdown-list
   ;; 	:ensure t)
@@ -40,7 +43,6 @@
   ;; (setq yas-prompt-functions '(yas-completing-prompt))
   (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
   (yas-reload-all)
-  ;; (add-hook 'after-init-hook 'yas-reload-all)
   )
 
 (use-package yasnippet-snippets

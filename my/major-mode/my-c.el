@@ -242,7 +242,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
+  ;; (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
