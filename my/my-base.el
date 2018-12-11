@@ -107,10 +107,12 @@
 ;; (setq-default initial-major-mode
 ;;               'lisp-interaction-mode)
 ;; initial scarch message
-(setq initial-scratch-message
-      (concat ";; Happy Hacking, " user-login-name
-              (if user-full-name (concat " ("user-full-name ")"))
-              " - Emacs ♥ you!\n\n"))
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq initial-scratch-message
+                  (concat ";; Happy Hacking, " user-login-name
+                          (if user-full-name (concat " ("user-full-name ")"))
+                          " - Emacs ♥ you!\n\n"))))
 ;; conflic with desktop
 ;; (setq initial-buffer-choice t)
 (setq inhibit-startup-screen t)

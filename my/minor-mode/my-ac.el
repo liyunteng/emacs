@@ -107,6 +107,7 @@
   :bind
   (:map company-active-map
 	    ("C-h"  . company-quickhelp-mode))
+  :after company
   :if (display-graphic-p)
   :init
   ;; maybe crash

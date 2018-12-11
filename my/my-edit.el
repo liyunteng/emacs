@@ -484,6 +484,7 @@ compile-command, will auto insert new-compile-command to code file.
         (setq command new-command))
       (compilation-start command)))
 
+  :config
   (require 'ansi-color)
   (setq compilation-ask-about-save nil  ; Just save before compiling
         compilation-always-kill t       ; Just kill old compile processes before
@@ -491,7 +492,6 @@ compile-command, will auto insert new-compile-command to code file.
         compilation-scroll-output 'first-error ; Automatically scroll to first
                                         ; error
         )
-
   ;; Compilation from Emacs
   (defun my/colorize-compilation-buffer ()
     "Colorize a compilation mode buffer."
