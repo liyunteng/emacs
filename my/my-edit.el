@@ -380,8 +380,7 @@
   :commands (hippie-expand)
   :init
   (setq hippie-expand-try-functions-list
-        '(p
-          ;; Try to expand word "dynamically", searching the current buffer.
+        '(;; Try to expand word "dynamically", searching the current buffer.
           try-expand-dabbrev
           ;; Try to expand word "dynamically", searching all other buffers.
           try-expand-dabbrev-all-buffers

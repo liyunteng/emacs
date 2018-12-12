@@ -29,132 +29,175 @@
 
 (use-package helm
   :ensure t
-  :diminish helm-mode
-  :commands (helm-mode)
-  :bind (([remap execute-extended-command] . helm-M-x)
-         ([remap find-file] . helm-find-files)
-         ([remap switch-to-buffer] . helm-mini)
-         ([remap list-registers] . helm-register)
-         ([remap list-bookmarks] . helm-bookmarks)
-         ([remap browse-kill-ring] . helm-show-kill-ring)
-         ([remap info] . helm-info)
-         ([remap find-name-dired] . helm-find)
-         ([remap find-tag] . helm-etags-select)
-         ("C-c C-j" . helm-semantic-or-imenu)
-         ("M-U" . helm-resume))
-  :init
-  (defun my/helm-faces ()
-    "Describe face."
-    (interactive)
-    (require 'helm-elisp)
-    (let ((default (or (face-at-point) (thing-at-point 'symbol))))
-      (helm :sources (helm-def-source--emacs-faces
-		              (format "%s" (or default "default")))
-	        :buffer "*helm faces*")))
-
-  (helm-mode +1)
+  :bind (("M-U" . helm-resume))
 
   :config
-  (require 'helm-config)
-  (require 'helm-grep)
+  (use-package helm-config
+    :init
+    (setq helm-command-prefix-key "C-c h")
 
-  (setq helm-kill-ring-separator "\f")
-  (setq helm-split-window-inside-p t
-        helm-mode-fuzzy-match t
-        helm-M-x-fuzzy-match t
-        helm-buffers-fuzzy-matching nil
-        helm-recentf-fuzzy-match nil
-        helm-imenu-fuzzy-match nil
-        helm-semantic-fuzzy-match nil
-        helm-ff-fuzzy-matching nil
-        ;; helm-apropos-fuzzy-match t
-        ;; helm-lisp-fuzzy-completion t
+    (defun my/helm-faces ()
+      "Describe face."
+      (interactive)
+      (require 'helm-elisp)
+      (let ((default (or (face-at-point) (thing-at-point 'symbol))))
+        (helm :sources (helm-def-source--emacs-faces
+		                (format "%s" (or default "default")))
+	          :buffer "*helm faces*")))
 
-        helm-move-to-line-cycle-in-source nil
-        helm-ff-search-library-in-sexp t
-        helm-ff-file-compressed-list t
-        helm-ff-file-name-history-use-recentf t
-        helm-scroll-amount 8
-        helm-echo-input-in-header-line nil
-        helm-display-header-line nil
-        helm-always-two-windows t
-        helm-org-headings-fontify t
+    (defun my/resume-last-search-buffer ()
+      "open last helm-ag or hgrep buffer."
+      (interactive)
+      (cond ((get-buffer "*helm ag results*")
+	         (switch-to-buffer-other-window "*helm ag results*"))
+	        ((get-buffer "*helm-ag*")
+	         (helm-resume "*helm-ag*"))
+	        ((get-buffer "*hgrep*")
+	         (switch-to-buffer-other-window "*hgrep*"))
+	        (t
+	         (message "No previous search buffer found"))))
 
-        helm-buffer-skip-remote-checking t
-        helm-bookmark-show-location t
-        helm-mode-reverse-history t
-        helm-M-x-reverse-history nil)
-  (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+    :config
+    (define-key helm-command-prefix (kbd "R") 'helm-regexp)
+    (define-key helm-command-prefix (kbd "r") 'helm-recentf)
+    (define-key helm-command-prefix (kbd "o") 'helm-occur)
+    (define-key helm-command-prefix (kbd "C-l") 'helm-locate-library)
+    (define-key helm-command-prefix (kbd "I") 'helm-semantic-or-imenu)
+    (define-key helm-command-prefix (kbd "i") 'helm-imenu-in-all-buffers)
+    (define-key helm-command-prefix (kbd "C-c w") 'helm-wikipedia-suggest)
+    (define-key helm-command-prefix (kbd "SPC") 'helm-all-mark-rings)
+    (define-key helm-command-prefix (kbd "m") 'helm-man-woman)
+    (define-key helm-command-prefix (kbd "x") 'helm-run-external-command)
+    (define-key helm-command-prefix (kbd "X") 'my/helm-faces)
+    (define-key helm-command-prefix (kbd "A") 'helm-manage-advice)
+    (define-key helm-command-prefix (kbd "T") 'helm-timers)
+    (define-key helm-command-prefix (kbd "u") 'my/resume-last-search-buffer))
+
+  (use-package helm-adaptive
+    :init
+    (helm-adaptive-mode +1)
+    :config
+    (setq helm-adaptive-history-file (expand-file-name "helm-adaptive-history" my-cache-dir)))
+
+  (use-package helm-bookmark
+    :bind (([remap list-bookmarks] . helm-filtered-bookmarks)
+           ([remap bookmark-jump] . helm-filtered-bookmarks))
+    :config
+    (setq helm-bookmark-show-location t)
+    (define-key helm-bookmark-map (kbd "C-d") 'delete-char)
+    (define-key helm-bookmark-map (kbd "C-]") 'helm-bookmark-toggle-filename)
+    (define-key helm-bookmark-map (kbd "C-c d") 'helm-bookmark-run-delete)
+    (define-key helm-bookmark-map (kbd "C-c e") 'helm-bookmark-run-edit)
+    (define-key helm-bookmark-map (kbd "C-x C-d") 'helm-bookmark-run-browse-project)
+    (define-key helm-bookmark-map (kbd "C-c o") 'helm-bookmark-run-jump-other-window)
+    (define-key helm-bookmark-map (kbd "C-c c-o") 'helm-bookmark-run-jump-other-frame))
+
+  (use-package helm-buffers
+    :bind (([remap switch-to-buffer] . helm-mini))
+    :config
+    (setq helm-buffers-fuzzy-matching t)
+    (setq helm-buffer-details-flag t)
+    (setq helm-buffer-skip-remote-checking t)
+    (define-key helm-buffer-map (kbd "M-s g") 'helm-buffer-run-zgrep)
+    (define-key helm-buffer-map (kbd "M-s r") 'helm-buffer-run-query-replace)
+    (define-key helm-buffer-map (kbd "M-s M-r") 'helm-buffer-run-query-replace-regexp)
+    (define-key helm-buffer-map (kbd "C-s") 'helm-buffers-run-multi-occur)
+    (define-key helm-buffer-map (kbd "C-c =") 'helm-buffer-run-ediff)
+    (define-key helm-buffer-map (kbd "C-=") 'helm-buffer-diff-persistent)
+    (define-key helm-buffer-map (kbd "M-R") 'helm-buffer-run-rename-buffer)
+    (define-key helm-buffer-map (kbd "C-c C-r") 'helm-buffer-revert-persistent))
+
+  (use-package helm-command
+    :bind (([remap execute-extended-command] . helm-M-x))
+    :config
+    (setq helm-M-x-always-save-history t)
+    (setq helm-M-x-reverse-history nil)
+    (setq helm-M-x-fuzzy-match t))
+
+  (use-package helm-files
+    :bind (([remap find-file] . helm-find-files))
+    :config
+    (setq helm-tramp-verbose t)
+    (setq helm-ff-fuzzy-matching t)
+    (setq helm-ff-no-preselect nil)
+    (setq helm-ff-search-library-in-sexp t)
+    (setq helm-ff-file-name-history-use-recentf t)
+    (define-key helm-find-files-map (kbd "M-s s") 'helm-ff-run-zgrep)
+    (define-key helm-find-files-map (kbd "M-s a") 'helm-ff-run-grep-ag)
+    (define-key helm-find-files-map (kbd "M-s g") 'helm-ff-run-git-grep)
+    (define-key helm-find-files-map (kbd "M-s /") 'helm-ff-run-find-sh-command)
+    (define-key helm-find-files-map (kbd "C-x M-o") 'helm-ff-run-open-file-with-default-tool))
+
+  (use-package helm-for-files
+    :commands (helm-for-files helm-multi-files helm-recentf)
+    :config
+    (setq helm-recentf-fuzzy-match nil))
+
+  (use-package helm-ring
+    :bind (([remap browse-kill-ring] . helm-show-kill-ring)
+           ([remap list-registers] . helm-register)
+           :map helm-kill-ring-map
+           ("C-n" . helm-next-line)
+           ("C-p" . helm-previous-line)
+           ("C-d" . helm-kill-ring-delete)
+           ("C-]" . helm-kill-ring-toggle-truncated)
+           ("C-k" . helm-kill-ring-kill-selection))
+    :config
+    (setq helm-kill-ring-separator "\f"))
+
+  (use-package helm-locate
+    :bind (("M-s l" . helm-locate)))
+
+  (use-package helm-find
+    :bind (([remap find-name-dired] . helm-find)))
+
+  (use-package helm-imenu
+    :commands (helm-imenu helm-imenu-in-all-buffers)
+    :config
+    (setq helm-imenu-fuzzy-match nil)
+    (setq helm-imenu-delimiter "  "))
+
+  (use-package helm-semantic
+    :bind (("C-c C-j" . helm-semantic-or-imenu))
+    :config
+    (setq helm-semantic-fuzzy-match t))
+
+  (use-package helm-mode
+    :diminish helm-mode
+    :init
+    (helm-mode +1)
+    :config
+    (setq helm-mode-fuzzy-match t)
+    (setq helm-mode-reverse-history t))
+
+  (use-package helm-info
+    :bind (([remap info] . helm-info)))
+
+  (use-package helm-tags
+    :bind (([remap find-tag] . helm-etags-select)))
 
   (when (executable-find "curl")
     (after-load 'helm-net
       (setq helm-net-prefer-curl t)))
 
-  (defun my--helm-cleanup ()
-    "Cleanup some helm related states when quitting."
-    ;; deqactivate any running transient map (transient-state)
-    (setq overriding-terminal-local-map nil))
-  (add-hook 'helm-cleanup-hook 'my--helm-cleanup)
-
-  (defun my/resume-last-search-buffer ()
-    "open last helm-ag or hgrep buffer."
-    (interactive)
-    (cond ((get-buffer "*helm ag results*")
-	       (switch-to-buffer-other-window "*helm ag results*"))
-	      ((get-buffer "*helm-ag*")
-	       (helm-resume "*helm-ag*"))
-	      ((get-buffer "*hgrep*")
-	       (switch-to-buffer-other-window "*hgrep*"))
-	      (t
-	       (message "No previous search buffer found"))))
-
-  (defun my--helm-hide-minibuffer-maybe ()
-    (when (with-helm-buffer helm-echo-input-in-header-line)
-      (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-	    (overlay-put ov 'window (selected-window))
-	    (overlay-put ov 'face
-		             (let ((bg-color (face-background 'default nil)))
-		               `(:background ,bg-color :foreground ,bg-color)))
-	    (setq-local cursor-type nil))))
-  (add-hook 'helm-minibuffer-set-up-hook 'my--helm-hide-minibuffer-maybe)
-
-  (when (executable-find "locate")
-    (helm-locate-set-command)
-    (setq helm-locate-fuzzy-match (string-match "locate" helm-locate-command)))
-
-  (after-load 'helm-bookmarks
-    (defun my-helm-bookmark-keybindings ()
-      (define-key helm-bookmark-map (kbd "C-d") 'helm-bookmark-run-delete)
-      (define-key helm-bookmark-map (kbd "C-e") 'helm-bookmark-run-edit)
-      (define-key helm-bookmark-map (kbd "C-f") 'helm-bookmark-toggle-filename)
-      ;; (define-key helm-bookmark-map (kbd "C-o") 'helm-bookmark-run-jump-other-window)
-      )
-    (add-hook 'helm-mode-hook 'my-helm-bookmark-keybindings))
-
-  (global-set-key (kbd "C-c h") 'helm-command-prefix)
-  (define-key helm-command-prefix (kbd "r") 'helm-recentf)
-  (define-key helm-command-prefix (kbd "o") 'helm-occur)
-  (define-key helm-command-prefix (kbd "C-l") 'helm-locateI-library)
-  (define-key helm-command-prefix (kbd "I") 'helm-semantic-or-imenu)
-  (define-key helm-command-prefix (kbd "i") 'helm-imenu)
-  (define-key helm-command-prefix (kbd "C-c w") 'helm-wikipedia-suggest)
-  (define-key helm-command-prefix (kbd "SPC") 'helm-all-mark-rings)
-  (define-key helm-command-prefix (kbd "x") 'my/helm-faces)
-  (define-key helm-command-prefix (kbd "m") 'helm-man-woman)
-  (define-key helm-command-prefix (kbd "u") 'my/resume-last-search-buffer)
-
-  (define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)
+  (setq helm-split-window-inside-p t
+        helm-move-to-line-cycle-in-source nil
+        helm-scroll-amount 8
+        helm-echo-input-in-header-line nil
+        helm-display-header-line nil
+        helm-always-two-windows t
+        helm-candidate-number-limit 200)
 
   (define-key helm-map (kbd "C-z") 'helm-toggle-suspend-update)
   (define-key helm-map (kbd "C-w") 'backward-kill-word)
   (define-key helm-map (kbd "C-y") 'helm-yank-text-at-point)
   (define-key helm-map (kbd "C-M-y") 'yank)
   ;; disable helm-select-action
-  (define-key helm-map (kbd "C-i") nil)
+  (define-key helm-map (kbd "C-i") (lambda () (interactive) t))
   (define-key helm-map (kbd "M-x") 'helm-select-action)
 
   ;;; Save current position to mark ring
-  (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
+  ;; (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
 
   ;; (substitute-key-definition 'find-tag 'helm-etags-select global-map)
   )
