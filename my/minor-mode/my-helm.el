@@ -146,7 +146,7 @@
     (setq helm-kill-ring-separator "\f"))
 
   (use-package helm-locate
-    :bind (("M-s l" . helm-locate)))
+    :bind (("M-s l" . helm-localte)))
 
   (use-package helm-find
     :bind (([remap find-name-dired] . helm-find)))

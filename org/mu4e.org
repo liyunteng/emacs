@@ -1,4 +1,5 @@
 #+TITLE: MU4E Configuration
+#+STARTUP: fold
 
 * offlineimap
 

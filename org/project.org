@@ -1,1 +1,4 @@
+#+TITLE: PROJECTS
+#+STARTUP: content
+
 * PORJECTS

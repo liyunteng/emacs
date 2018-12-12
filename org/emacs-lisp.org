@@ -1,4 +1,6 @@
-# Emacs Lisp
+#+TITLE: Emacs Lisp
+#+STARTUP: fold
+
 * Capter 1 List Processing
 ** 1.1 Lisp list
    #+BEGIN_SRC emacs-lisp
