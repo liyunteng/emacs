@@ -90,7 +90,12 @@
   (elpy-enable)
   (when (executable-find "ipython")
     (progn (setq python-shell-interpreter "ipython"
-    	         python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i")))
+    	         python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i"))
+    (setq python-shell-completion-native-disabled-interpreters nil)
+    ;; for python shell completion
+    ;; (remove-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on-maybe-with-msg)
+    ;; (add-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on)
+    )
   )
 
 (use-package elpy
@@ -166,6 +171,7 @@
 
   (my-install-python-virtualenv)
   (pyvenv-workon my-python-virtualenv-workon-name))
+
 
 (provide 'my-python)
 
