@@ -70,17 +70,16 @@
       (unless company-candidates
 	    (setq company--manual-action nil))))
 
-  (setq company-show-numbers t
-        ;; company-lighter-base "ac"
+  (setq company-auto-complete t
         company-minimum-prefix-length 2
-        company-search-filtering t
-        company-auto-complete t
         company-idle-delay 1
+        ;; company-show-numbers t
         company-transformers '(company-sort-by-occurrence
                                company-sort-by-backend-importance
                                company-sort-prefer-same-case-prefix)
-        company-tooltip-limit 10
-        company-tooltip-idle-delay 0.5
+
+        company-tooltip-limit 20
+        company-tooltip-idle-delay 0
         company-tooltip-align-annotations t
         company-tooltip-flip-when-above t
         company-abort-manual-when-too-short t
@@ -107,17 +106,17 @@
 
 (use-package company-quickhelp
   :ensure t
+  :after company
+  :if (display-graphic-p)
   :bind
   (:map company-active-map
 	    ("C-h"  . company-quickhelp-mode))
-  :after company
-  :if (display-graphic-p)
   :init
-  ;; maybe crash
-  ;; (setq company-quickhelp-delay 1)
-  (setq company-quickhelp-max-lines 30)
-  (company-quickhelp-mode 1))
-
+  (company-quickhelp-mode 1)
+  :config
+  ;; (setq company-quickhelp-use-propertized-text t)
+  (setq company-quickhelp-delay 0.5)
+  (setq company-quickhelp-max-lines 30))
 
 ;; (use-package lsp-mode
 ;;   :ensure t
