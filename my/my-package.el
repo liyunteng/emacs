@@ -32,8 +32,8 @@
                          ("gnu" . "http://mirrors.163.com/elpa/gnu/")
                          ("org" . "http://mirrors.163.com/elpa/org/")
 			             ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")))
-(setq package-pinned-packages
-      '((switch-window . "melpa-stable")))
+;; (setq package-pinned-packages
+;;       '((switch-window . "melpa-stable")))
 
 
 (setq package-user-dir my-packages-dir)
