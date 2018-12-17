@@ -46,6 +46,7 @@
 	    sp-autoskip-closing-pair 'always-end
 	    sp-hybrid-kill-entire-symbol nil
 	    blink-matching-paren nil)
+  (setq sp-escape-quotes-after-insert nil)
 
   (require 'smartparens-config)
   ;; (sp-use-paredit-bindings)
