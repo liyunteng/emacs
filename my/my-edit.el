@@ -125,6 +125,9 @@
 (after-load 'url-cache
   (setq url-cache-directory (expand-file-name "url" my-cache-dir)))
 
+(after-load 'url-cookie
+  (setq url-cookie-file (expand-file-name "url/cookies" my-cache-dir)))
+
 (after-load 'nsm
   (setq nsm-settings-file (expand-file-name "network-security.data" my-cache-dir)))
 

@@ -122,6 +122,7 @@
 
 ;; warn when opening files bigger than 10MB
 (setq large-file-warning-threshold 10000000)
+(setq local-enable-local-variables t)
 ;; add final newline
 (setq-default require-final-newline t)
 ;; (setq revert-without-query '(".*"))
