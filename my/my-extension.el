@@ -337,7 +337,6 @@
          ("C-x M-;" . crux-duplicate-and-comment-current-line-or-region)
          ("C-x M-o" . crux-open-with)
          ;; ("C-c u" . crux-view-url)
-         ("C-x M-k" . crux-kill-other-buffers)
          ("M-J" . crux-top-join-line))
   :init
   (defadvice crux-open-with (after my-after-crux-open-with-ad activate)

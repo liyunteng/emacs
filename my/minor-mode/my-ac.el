@@ -118,9 +118,10 @@
   (setq company-quickhelp-delay 0.5)
   (setq company-quickhelp-max-lines 30))
 
+
 ;; (use-package lsp-mode
 ;;   :ensure t
-;;   :init
+;;   :config
 ;;   (setq lsp-response-timeout 2)
 ;;   (setq lsp-message-project-root-warning nil))
 
@@ -215,6 +216,7 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company nxml-mode '(company-nxml))
 (my|enable-company emacs-lisp-mode)
 (my|enable-company lisp-interaction-mode)
+(my|enable-company ielm-mode)
 (my|enable-company inferior-emacs-lisp-mode)
 (my|enable-company java-mode '(company-eclim))
 (my|enable-company python-mode '(elpy-company-backend))

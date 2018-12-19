@@ -46,8 +46,15 @@
 (use-package desktop
   :commands (desktop-full-file-name
 	         desktop-save)
+  :bind (("C-x M-k" . my/desktop-clear))
   :defines (desktop-save)
   :init
+  (defun my/desktop-clear ()
+    "Desktop clear and Desktop remove."
+    (interactive)
+    (desktop-clear)
+    (desktop-remove))
+
   (setq desktop-path (list my-cache-dir)
 	    desktop-dirname my-cache-dir
 	    desktop-auto-save-timeout 600
@@ -113,13 +120,6 @@
 		          (shell-command-history    . 50)
 		          tags-file-name
 		          tags-table-list)))
-
-
-  (defun my/desktop-clear ()
-    "Desktop clear and Desktop remove."
-    (interactive)
-    (desktop-clear)
-    (desktop-remove))
 
   (defvar before-desktop-read-time nil)
   (defvar after-desktop-read-time nil)
