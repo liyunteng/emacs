@@ -66,6 +66,7 @@
 	    desktop-save t
 	    ;; desktop-save 'ask-if-new
 	    )
+  (add-to-list 'desktop-minor-mode-table '(global-auto-revert-mode nil))
 
   ;; don't save /tmp/*
   (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
@@ -126,24 +127,24 @@
   (defadvice desktop-read (around time-restore activate)
     (let ((start-time (current-time)))
       (prog1
-	      (setq before-desktop-read-time start-time)
-	    ad-do-it
-	    (setq after-desktop-read-time (current-time) )
-	    )))
+          (setq before-desktop-read-time start-time)
+        ad-do-it
+        (setq after-desktop-read-time (current-time) )
+        )))
 
   (defadvice desktop-create-buffer (around time-create activate)
     (let ((start-time (current-time))
-	      (filename (ad-get-arg 1))
-	      (buffername (ad-get-arg 2))
-	      (mj (ad-get-arg 3)))
+          (filename (ad-get-arg 1))
+          (buffername (ad-get-arg 2))
+          (mj (ad-get-arg 3)))
       (prog1
-	      ad-do-it
-	    (message "Desktop: %.2fms to restore %s [%s]"
-		         (my-time-subtract-millis (current-time) start-time)
-		         (if filename
-		             (abbreviate-file-name filename)
-		           buffername)
-		         mj))))
+          ad-do-it
+        (message "Desktop: %.2fms to restore %s [%S]"
+    	         (my-time-subtract-millis (current-time) start-time)
+    	         (if filename
+    	             (abbreviate-file-name filename)
+    	           buffername)
+    	         mj))))
 
   (defadvice desktop-remove (around set-desktop-dirname activate)
     ad-do-it
