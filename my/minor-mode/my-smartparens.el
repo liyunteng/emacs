@@ -46,6 +46,7 @@
 	    sp-autoskip-closing-pair 'always-end
 	    sp-hybrid-kill-entire-symbol nil
 	    blink-matching-paren nil)
+  (setq sp-escape-quotes-after-insert nil)
 
   (require 'smartparens-config)
   ;; (sp-use-paredit-bindings)
@@ -95,7 +96,8 @@
     (sp-local-tag "=" "<%= " " %>")
     (sp-local-tag "#" "<%# " " %>"))
 
-  (sp-local-pair '(minibuffer-inactive-mode) "'" nil :actions nil)
+  (sp-with-modes '(minibuffer-inactive-mode eldoc-in-minibuffer-mode)
+    (sp-local-pair "'" nil :actions nil))
 
   (sp-pair "{" "}"
            :unless '(sp-in-comment-p sp-in-string-p)
@@ -109,6 +111,16 @@
            :unless '(sp-in-comment-p sp-in-string-p)
            :post-handlers
            '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
+
+
+
+
+  ;; (:open "'" :close "'" :actions
+  ;;        (insert wrap autoskip navigate escape)
+  ;;        :unless
+  ;;        (sp-in-string-quotes-p sp-point-after-word-p)
+  ;;        :post-handlers
+  ;;        (sp-escape-wrapped-region sp-escape-quotes-after-insert))
 
   ;; (define-key smartparens-mode-map (kbd ")") 'my/smart-closing-parenthesis)
   ;; (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)

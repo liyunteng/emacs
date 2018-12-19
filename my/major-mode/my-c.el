@@ -359,8 +359,8 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   :config
   (defun my-cc-mode-hook ()
     "My c common mode hooks."
-    (unless semantic-mode
-      (semantic-mode +1))
+
+    (semantic-mode +1)
 
     (auto-fill-mode +1)
     (subword-mode +1)

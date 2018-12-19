@@ -158,7 +158,7 @@
 (use-package saveplace
   :init
   (setq save-place-file (expand-file-name "saveplace" my-cache-dir))
-  (save-place-mode +1))
+  (add-hook 'after-init-hook 'save-place-mode))
 
 ;; (use-package session
 ;;   :ensure t

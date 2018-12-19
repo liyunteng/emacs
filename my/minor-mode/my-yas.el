@@ -31,7 +31,7 @@
   :bind (;; replace expand-abbrev
          ("C-x '" . yas-describe-tables))
   :init
-  (add-hook 'prog-mode 'yas-minor-mode-on)
+  (add-hook 'prog-mode-hook 'yas-minor-mode-on)
 
   :config
   ;; (use-package dropdown-list
