@@ -66,10 +66,6 @@
 	    desktop-save t
 	    ;; desktop-save 'ask-if-new
 	    )
-  (add-to-list 'desktop-minor-mode-table '(global-auto-revert-mode nil))
-
-  ;; don't save /tmp/*
-  (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
 
   (if (daemonp)
       ;; In daemon mode only first make frame, load desktop
@@ -85,6 +81,10 @@
     (desktop-save-mode +1))
 
   :config
+  ;; don't save /tmp/*
+  (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
+  (add-to-list 'desktop-minor-mode-table '(global-auto-revert-mode nil))
+
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
   (setq desktop-globals-to-save
