@@ -84,6 +84,7 @@
   ;; don't save /tmp/*
   (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
   (add-to-list 'desktop-minor-mode-table '(global-auto-revert-mode nil))
+  (add-to-list 'desktop-minor-mode-table '(yas-minor-mode yas-minor-mode))
 
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
