@@ -589,8 +589,9 @@ at the end of the line."
     (indent-according-to-mode))
   :config
   (setq comment-auto-fill-only-comments t)
-  ;; (setq comment-style 'multi-line)
-  (setq comment-style 'extra-line))
+  (setq comment-style 'multi-line)
+  ;; (setq comment-style 'extra-line) ;;
+  )
 
 ;; register
 (use-package register

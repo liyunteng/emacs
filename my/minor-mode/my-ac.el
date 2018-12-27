@@ -31,9 +31,8 @@
 (use-package company
   :ensure t
   :bind
-  (
+  (("TAB" . company-indent-or-complete-common)
    :map company-mode-map
-   ("TAB" . company-indent-or-complete-common)
    ("C-M-/" . company-other-backend)
    ("C-M-?" . company-begin-backend)
    ("M-SPC" . company-other-backend)

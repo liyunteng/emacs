@@ -87,7 +87,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
        "Last-Updated: <>\n"
        (when (cdr auto-insert-license)
          (concat "\n"(cdr auto-insert-license) "\n"))
-       (comment-region auto-insert--begin (point)))
+       (let ((comment-style-origin comment-style))
+         (setq comment-style 'extra-line)
+         (comment-region auto-insert--begin (point))
+         (setq comment-style comment-style-origin)
+         nil))
      (if postfix postfix)
      ))
 

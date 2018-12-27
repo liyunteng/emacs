@@ -120,24 +120,6 @@
                            "../../../export")
   "My local include path.")
 
-;;Add kernel style
-;; (defun linux-c-mode ()
-;;   "C mode with adjusted defaults for use with the Linux kernel."
-;;   (interactive)
-;;   (c-mode)
-;;   (c-set-style "K&R")
-;;   (setq tab-width 8)
-;;   (setq indent-tabs-mode nil)
-;;   (setq c-basic-offset 8))
-;; (setq auto-mode-alist (cons '("/usr/src/linux.*/.*\\.[ch]$" . linux-c-mode)
-;;                             auto-mode-alist))
-;; (c-add-style "ffmpeg"
-;; 	     '("k&r"
-;; 	       (c-basic-offset . 4)
-;; 	       (indent-tabs-mode . nil)
-;; 	       (show-trailing-whitespace . t)
-;; 	       (c-offsets-alist
-;; 		(statement-cont . (c-lineup-assignments +)))))
 
 (use-package cmacexp
   :defines (c-macro-shrink-window-flag
@@ -177,6 +159,34 @@
     :documentation "Hide/Show ifdef")
 
   :config
+  (setq hide-ifdef-shadow t)
+  (defun my/toggle-ifdefs ()
+    (interactive)
+    (if hide-ifdef-hiding
+        (show-ifdefs)
+      (hide-ifdefs)))
+
+  (define-key hide-ifdef-mode-map (kbd "C-c i n") 'next-ifdef)
+  (define-key hide-ifdef-mode-map (kbd "C-c i p") 'previous-ifdef)
+  (define-key hide-ifdef-mode-map (kbd "C-c i u") 'up-ifdef)
+  (define-key hide-ifdef-mode-map (kbd "C-c i d") 'down-ifdef)
+  (define-key hide-ifdef-mode-map (kbd "C-c i f") 'forward-ifdef)
+  (define-key hide-ifdef-mode-map (kbd "C-c i b") 'backward-ifdef)
+  (define-key hide-ifdef-mode-map (kbd "C-c i s") 'show-ifdef-block)
+  (define-key hide-ifdef-mode-map (kbd "C-c i h") 'hide-ifdef-block)
+  (define-key hide-ifdef-mode-map (kbd "C-c i S") 'show-ifdefs)
+  (define-key hide-ifdef-mode-map (kbd "C-c i H") 'hide-ifdefs)
+  (define-key hide-ifdef-mode-map (kbd "C-c i D") 'hide-ifdef-define)
+  (define-key hide-ifdef-mode-map (kbd "C-c i U") 'hide-ifdef-undef)
+  (define-key hide-ifdef-mode-map (kbd "C-c i t i") 'hide-ifdef-toggle-read-only)
+  (define-key hide-ifdef-mode-map (kbd "C-c i t o") 'hide-ifdef-toggle-outside-read-only)
+  (define-key hide-ifdef-mode-map (kbd "C-c i t s") 'hide-ifdef-toggle-shadowing)
+  (define-key hide-ifdef-mode-map (kbd "C-c i C") 'hif-clear-all-ifdef-defined)
+  (define-key hide-ifdef-mode-map (kbd "C-c i a d") 'hide-ifdef-set-define-alist)
+  (define-key hide-ifdef-mode-map (kbd "C-c i a u") 'hide-ifdef-use-define-alist)
+  (define-key hide-ifdef-mode-map (kbd "C-c i i") 'my/toggle-ifdefs)
+
+
   (defun hif-canonicalize (regexp)
     "Return a Lisp expression for its condition by scanning current buffer.
 Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
@@ -287,14 +297,15 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
     (setq-mode-local c-mode semantic-dependency-include-path my-include-path)
     (setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
     )
+
   (require 'semantic/bovine/c)
   (dolist (x (list "/usr/lib/gcc/x86_64-pc-linux-gnu/8.2.1/include/stddef.h"))
     (add-to-list 'semantic-lex-c-preprocessor-symbol-file x))
-  (after-load 'c++-mode
-    (semantic-c-add-preprocessor-symbol "__cplusplus" "201103L")
-    (semantic-c-reset-preprocessor-symbol-map))
-  (use-package semantic/bovine/c
-    )
+  ;; (after-load 'c++-mode
+  ;;   (semantic-c-add-preprocessor-symbol "__cplusplus" "201103L")
+  ;;   (semantic-c-reset-preprocessor-symbol-map))
+
+  (use-package semantic/bovine/c)
   (use-package semantic/ia
     :init
     (defun my/semantic-find-definition (arg)
@@ -319,8 +330,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (use-package semantic/db
     :config
     (setq semanticdb-search-system-databases t)
-    (setq semanticdb-project-roots my-project-roots)
-    )
+    (setq semanticdb-project-roots my-project-roots))
 
   (use-package semantic/db-find
     :config
@@ -330,8 +340,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (use-package semantic/db-global
     :config
     (semanticdb-enable-gnu-global-databases 'c-mode)
-    (semanticdb-enable-gnu-global-databases 'c++-mode)
-    )
+    (semanticdb-enable-gnu-global-databases 'c++-mode))
 
   (define-key semantic-mode-map (kbd "C-c , R") 'semantic-symref-regexp)
   (define-key semantic-mode-map (kbd "C-c , h") 'semantic-decoration-include-visit)
@@ -357,24 +366,28 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   :defer t
   :commands (cc-mode c-mode c++-mode)
   :config
+
+  (c-add-style "linux-4"
+  	           '("linux"
+  	             (c-basic-offset . 4)
+  	             (indent-tabs-mode . nil)))
+
+
   (defun my-cc-mode-hook ()
     "My c common mode hooks."
 
-    (semantic-mode +1)
+    (unless semantic-mode
+      (semantic-mode +1))
 
     (auto-fill-mode +1)
     (subword-mode +1)
-    ;; (hide-ifdef-mode +1)
+
+    (hide-ifdef-mode +1)
     ;; (cscope-minor-mode +1)
 
-    ;; (setq hide-ifdef-hiding t)
-    ;; (setq hide-ifdef-shadow t)
-
+    (c-set-style "linux-4")
     ;; (setq comment-start '"/* ")
     ;; (setq comment-end '" */")
-    ;; (c-set-style "qt-gnu")
-    (setq-local indent-tabs-mode nil)
-    (c-set-style "cc-mode")
 
     ;; set flycheck include paths
     ;; (when (boundp 'flycheck-mode)
@@ -388,16 +401,16 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
     )
   (add-hook 'c-mode-common-hook 'my-cc-mode-hook)
 
-  (defun my--cc-tab ()
-    (interactive)
-    (if (looking-at "#ifn?def")
-        (if (or (get-char-property (line-end-position) 'invisible)
-                (equal (get-char-property (line-end-position)  'face) 'hide-ifdef-shadow))
-            (show-ifdef-block)
-          (hide-ifdef-block))
-      (if (boundp 'company-mode)
-          (call-interactively 'company-indent-or-complete-common)
-        (call-interactively 'indent-for-tab-command))))
+  ;; (defun my--cc-tab ()
+  ;;   (interactive)
+  ;;   (if (looking-at "#if\\(n?def\\)?")
+  ;;       (if (or (get-char-property (line-end-position) 'invisible)
+  ;;               (equal (get-char-property (line-end-position)  'face) 'hide-ifdef-shadow))
+  ;;           (show-ifdef-block)
+  ;;         (hide-ifdef-block))
+  ;;     (if (boundp 'company-mode)
+  ;;         (call-interactively 'company-indent-or-complete-common)
+  ;;       (call-interactively 'indent-for-tab-command))))
 
   (define-key c-mode-base-map (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
   (define-key c-mode-base-map (kbd "C-c D") 'disaster)
@@ -414,8 +427,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (define-key c-mode-base-map (kbd "C-c C-b") nil)                       ;c-submit-bug-report
   (define-key c-mode-base-map (kbd "C-c C-w") nil)                       ;c-subword-mode
   (define-key c-mode-base-map (kbd "C-c C-k") 'kill-region)              ;c-toggle-comment-style
-  (define-key c-mode-base-map (kbd "TAB") 'my--cc-tab)
-
+  ;; (define-key c-mode-base-map (kbd "TAB") 'my--cc-tab)
   )
 
 ;; 添加Kernel的Include

@@ -55,18 +55,6 @@
     (desktop-clear)
     (desktop-remove))
 
-  (setq desktop-path (list my-cache-dir)
-	    desktop-dirname my-cache-dir
-	    desktop-auto-save-timeout 600
-	    desktop-missing-file-warning nil
-        desktop-load-locked-desktop t
-	    desktop-restore-in-current-display t
-        desktop-restore-frames t
-        desktop-restore-reuses-frames t
-	    desktop-save t
-	    ;; desktop-save 'ask-if-new
-	    )
-
   (if (daemonp)
       ;; In daemon mode only first make frame, load desktop
       (add-hook 'after-make-frame-functions
@@ -81,10 +69,22 @@
     (desktop-save-mode +1))
 
   :config
+  (setq desktop-path (list my-cache-dir)
+	    ;; desktop-dirname my-cache-dir
+	    desktop-auto-save-timeout 600
+	    desktop-missing-file-warning nil
+        desktop-load-locked-desktop t
+	    desktop-restore-in-current-display t
+        desktop-restore-frames t
+        desktop-restore-reuses-frames t
+	    desktop-save t
+	    ;; desktop-save 'ask-if-new
+	    )
   ;; don't save /tmp/*
   (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
-  (add-to-list 'desktop-minor-mode-table '(global-auto-revert-mode nil))
-  (add-to-list 'desktop-minor-mode-table '(yas-minor-mode yas-minor-mode))
+  ;; (add-to-list 'desktop-minor-mode-table '(global-auto-revert-mode nil))
+  ;; (add-to-list 'desktop-minor-mode-table '(yas-minor-mode nil))
+
 
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
