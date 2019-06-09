@@ -328,7 +328,7 @@
   :config
   (setq global-auto-revert-non-file-buffers t
         auto-revert-verbose nil)
-  (add-to-list 'global-auto-revert-ignore-modes 'Buffer-menu-mode))
+  (add-to-list 'global-auto-revert-ignore-modes 'my-init-times-mode))
 
 ;; print current in which function in mode line
 (use-package which-func
@@ -640,7 +640,8 @@ This functions should be added to the hooks of major modes for programming."
     )
   (defun my-prog-mode-defaults ()
     "Default coding hook, useful with any programming language."
-    (setq indent-tabs-mode nil)
+    (unless (my-derived-mode-p major-mode 'makefile-mode)
+      (setq indent-tabs-mode nil))
     (turn-on-auto-fill)
     (goto-address-prog-mode +1)
     (bug-reference-prog-mode +1)
@@ -673,29 +674,6 @@ This functions should be added to the hooks of major modes for programming."
   :config
   (setq netstat-program-options '("-natup")
         ping-program-options '()))
-
-(use-package xref
-  :commands (xref-find-definitions
-             xref-find-definitions-other-window
-             xref-find-definitions-other-frame
-             xref-find-apropos))
-
-(use-package etags
-  :commands (tags-loop-continue
-             tags-search
-             pop-tag-mark)
-  :config
-  ;;设置TAGS文件
-  (when (file-exists-p "/usr/include/TAGS")
-    (add-to-list 'tags-table-list "/usr/include/TAGS"))
-  (when (file-exists-p "/usr/local/include/TAGS")
-    (add-to-list 'tags-table-list "/usr/local/include/TAGS"))
-
-  (setq tags-revert-without-query t
-        tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
-        tags-add-tables nil               ;don't ask user
-        ))
-
 
 ;; calendar
 (use-package calendar

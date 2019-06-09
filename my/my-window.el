@@ -259,8 +259,8 @@ Dedicated (locked) windows are left untouched."
     (define-key map (kbd "d") 'delete-window)
     (define-key map (kbd "t") 'my/window-toggle-show)
     (define-key map (kbd "2") 'my/window-split-vertically-then-switch)
-    (define-key map (kbd "|") 'my/window-split-vertically-instead)
     (define-key map (kbd "3") 'my/window-split-horizontally-then-switch)
+    (define-key map (kbd "|") 'my/window-split-vertically-instead)
     (define-key map (kbd "_") 'my/window-split-horizontally-instead)
 
     (define-key map (kbd "n") 'my/window-toggle-current-file-dedication)

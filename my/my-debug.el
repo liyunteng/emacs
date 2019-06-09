@@ -121,6 +121,16 @@ arguments is that we want to process these arguments as soon as possible."
 						  (format "[%8s]" type)
 						  feature))))
 
+(defun my/show-init-time ()
+  "Show init time."
+  (interactive)
+  (if desktop-save-mode
+      (message "Emacs startup time: %.2fms Desktop restore time: %.2fms"
+	           (my-time-subtract-millis after-init-time before-init-time)
+	           (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
+    (message "Emacs startup time: %.2fms"
+	         (my-time-subtract-millis after-init-time before-init-time))))
+
 (defun my/show-init-times ()
   "Show a tabular view of how long various libraries took to load."
   (interactive)

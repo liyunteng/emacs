@@ -82,8 +82,10 @@
 	    )
   ;; don't save /tmp/*
   (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
-  ;; (add-to-list 'desktop-minor-mode-table '(global-auto-revert-mode nil))
   ;; (add-to-list 'desktop-minor-mode-table '(yas-minor-mode nil))
+  ;; fixme global-auto-revert-mode can't work
+  (defun global-auto-revert-desktop-restore (arg))
+  (add-to-list 'desktop-minor-mode-handlers '(global-auto-revert-mode . global-auto-revert-desktop-restore))
 
 
   ;; save a bunch of variables to the desktop file

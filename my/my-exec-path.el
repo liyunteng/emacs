@@ -32,5 +32,6 @@
   :init
   (exec-path-from-shell-initialize))
 
+
 (provide 'my-exec-path)
 ;;; my-exec-path.el ends here

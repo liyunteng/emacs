@@ -44,7 +44,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
 (add-hook 'after-init-hook
           (lambda () (when my--initial-frame
-                  (run-after-make-frame-hooks my--initial-frame))))
+                       (run-after-make-frame-hooks my--initial-frame))))
 
 
 (defun my--console-frame-setup ()

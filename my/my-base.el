@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-;; (thingatpt help-fns radix-tree help-mode easymenu cl-loaddefs cl-lib elec-pair time-date mule-util tooltip eldoc electric uniquify ediff-hook vc-hooks lisp-float-type mwheel term/x-win x-win term/common-win x-dnd tool-bar dnd fontset image regexp-opt fringe tabulated-list replace newcomment text-mode elisp-mode lisp-mode prog-mode register page menu-bar rfn-eshadow isearch timer select scroll-bar mouse jit-lock font-lock syntax facemenu font-core term/tty-colors frame cl-generic cham georgian utf-8-lang misc-lang vietnamese tibetan thai tai-viet lao korean japanese eucjp-ms cp51932 hebrew greek romanian slovak czech european ethiopic indian cyrillic chinese composite charscript charprop case-table epa-hook jka-cmpr-hook help simple abbrev obarray minibuffer cl-preloaded nadvice loaddefs button faces cus-face macroexp files text-properties overlay sha1 md5 base64 format env code-pages mule custom widget hashtable-print-readable backquote dbusbind inotify lcms2 dynamic-setting system-font-setting font-render-setting move-toolbar gtk x-toolkit x multi-tty make-network-process emacs)
 
 
 ;; Always load newest byte code
@@ -80,8 +79,8 @@
 ;; tab width
 (setq-default tab-width 4)
 
-;; don't use tab
-(setq-default indent-tabs-mode nil)
+;; dont't use tab
+(setq-default indent-tabs-mode t)
 
 ;; Show a marker in the left fringe for lines
 (setq-default indicate-empty-lines t)

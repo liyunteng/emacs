@@ -25,8 +25,7 @@
 ;;; Code:
 (require 'my-load-path)
 
-(defconst my-modules '(
-                       my-utils
+(defconst my-modules '(my-utils
                        my-base
                        my-package
                        my-exec-path
@@ -90,17 +89,6 @@
   (if (require m)
       (message "Loading %s" m)
     (error "Requiring %s failed" m)))
-
-(defun my/show-init-time ()
-  "Show init time."
-  (interactive)
-  (if desktop-save-mode
-      (message "Emacs startup time: %.2fms Desktop restore time: %.2fms"
-	           (my-time-subtract-millis after-init-time before-init-time)
-	           (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
-    (message "Emacs startup time: %.2fms"
-	         (my-time-subtract-millis after-init-time before-init-time))))
-
 
 (defun my-init ()
   "Load my modules."

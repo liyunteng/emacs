@@ -190,7 +190,7 @@
   :ensure t
   :diminish undo-tree-mode
   :init
-  (setq undo-tree-auto-save-history t)
+  (setq undo-tree-auto-save-history nil)
   (setq undo-tree-history-directory-alist `((".*" . ,(expand-file-name "undo-tree/" my-cache-dir))))
   (global-undo-tree-mode +1)
 

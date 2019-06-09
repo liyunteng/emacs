@@ -26,8 +26,8 @@
 ;;; grep 默认递归查找
 (use-package grep
   :commands (grep-mode grep grep-find
-             find-grep lgrep rgrep
-             zrgrep rzgrep)
+                       find-grep lgrep rgrep
+                       zrgrep rzgrep)
   :bind (("M-s /" . find-grep)
          ("M-s g" . grep))
   :config
@@ -37,23 +37,23 @@
 
 (use-package isearch
   :bind  (:map isearch-mode-map
-	      ("C-o" . isearch-occur)
-	      ("C-q" . isearch-del-char)
-	      ;; ("C-w" . isearch-delete-char)
-	      ("C-w" . my/isearch-backward-kill-word)
+	           ("C-o" . isearch-occur)
+	           ("C-q" . isearch-del-char)
+	           ;; ("C-w" . isearch-delete-char)
+	           ("C-w" . my/isearch-backward-kill-word)
 
-	      ("C-y" . isearch-yank-word-or-char)
-	      ("M-l" . isearch-yank-line)
-	      ("M-w" . isearch-yank-kill)
-	      ("C-M-w" . my/isearch-yank-symbol)
-	      ("C-M-y" . isearch-yank-pop)
+	           ("C-y" . isearch-yank-word-or-char)
+	           ("M-l" . isearch-yank-line)
+	           ("M-w" . isearch-yank-kill)
+	           ("C-M-w" . my/isearch-yank-symbol)
+	           ("C-M-y" . isearch-yank-pop)
 
-	      ("C-e" . isearch-edit-string)
+	           ("C-e" . isearch-edit-string)
 
-	      ("M-i" . isearch-toggle-case-fold)
-	      ("M-r" . isearch-toggle-regexp)
+	           ("M-i" . isearch-toggle-case-fold)
+	           ("M-r" . isearch-toggle-regexp)
 
-	      ([(control return)] . my/isearch-exit-other-end))
+	           ([(control return)] . my/isearch-exit-other-end))
 
   :config
   ;; backward kill word in isearch

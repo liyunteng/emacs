@@ -24,6 +24,27 @@
 
 ;;; Code:
 
+(use-package xref
+  :commands (xref-find-definitions
+             xref-find-definitions-other-window
+             xref-find-definitions-other-frame
+             xref-find-apropos))
+
+(use-package etags
+  :commands (tags-loop-continue
+             tags-search
+             pop-tag-mark)
+  :config
+  ;;设置TAGS文件
+  (when (file-exists-p "/usr/include/TAGS")
+    (add-to-list 'tags-table-list "/usr/include/TAGS"))
+  (when (file-exists-p "/usr/local/include/TAGS")
+    (add-to-list 'tags-table-list "/usr/local/include/TAGS"))
+
+  (setq tags-revert-without-query t
+        tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
+        tags-add-tables nil               ;don't ask user
+        ))
 ;; jump
 (defvar my-jump-default-backends'(xref-find-definitions ffap)
   "List of jump default backends.")
@@ -44,17 +65,17 @@ Example:
 	    (func (intern (format "my--jump-init-backends-%S" mode)))
 	    (backends-list (intern (format "my--jump-backends-%S" mode))))
     `(progn
-       (defvar ,backends-list ',backends
+       (defvar ,backends-list (append ',backends my-jump-default-backends)
 	     ,(format (concat "List of mode-specific jump backends for %S. "
 			              "These take priority over those in "
 			              "`my-jump-default-backends'.")
 		          mode))
-       (defun ,func ()
-	     (setq my-jump-backends
-	           (append ,backends-list
-		               my-jump-default-backends))
-	     )
-       (add-hook ',mode-hook ',func))))
+       ;; (defun ,func ()
+	   ;;   (setq my-jump-backends
+	   ;;         (append ,backends-list
+	   ;;                 my-jump-default-backends)))
+       ;; (add-hook ',mode-hook ',func)
+       )))
 
 (defvar my-jump-ring-length 128)
 (defvar my-jump-mark-ring (make-ring my-jump-ring-length)
