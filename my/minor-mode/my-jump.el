@@ -70,11 +70,9 @@ Example:
 			              "These take priority over those in "
 			              "`my-jump-default-backends'.")
 		          mode))
-       ;; (defun ,func ()
-	   ;;   (setq my-jump-backends
-	   ;;         (append ,backends-list
-	   ;;                 my-jump-default-backends)))
-       ;; (add-hook ',mode-hook ',func)
+       (defun ,func ()
+	     (setq my-jump-backends ,backends-list))
+       (add-hook ',mode-hook ',func)
        )))
 
 (defvar my-jump-ring-length 128)

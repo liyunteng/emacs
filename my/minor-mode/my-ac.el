@@ -71,7 +71,7 @@
 
   (setq company-auto-complete t
         company-minimum-prefix-length 2
-        company-idle-delay 1
+        company-idle-delay 2
         ;; company-show-numbers t
         company-transformers '(company-sort-by-occurrence
                                company-sort-by-backend-importance

@@ -144,6 +144,14 @@
                  ("\\.hxx\\'" (".cpp" ".cxx" ".c"))))
     (add-to-list 'cc-other-file-alist var)))
 
+(use-package ffap
+  :commands (ffap)
+  :config
+  (dolist (var my-include-path)
+    (add-to-list 'ffap-c-path var))
+  (dolist (var my-include-path)
+    (add-to-list 'ffap-c++-path var)))
+
 (use-package hideif
   :diminish hide-ifdef-mode ;;hide-ifdef-hiding
   :commands (hide-ifdef-mode
@@ -282,21 +290,17 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
     ;; (add-hook 'semantic-init-hooks 'semantic-idle-completions-mode)
     )
 
+
+
+  ;; (require 'semantic/decorate/include)
+  (require 'semantic/bovine/gcc)
   (require 'semantic/dep)
   (semantic-add-system-include "/usr/local/include")
-  ;; (require 'semantic/decorate/include)
-
-  (require 'semantic/bovine/gcc)
-  (after-load 'cc-mode
-    (semantic-gcc-setup)
-    ;; (defcustom-mode-local-semantic-dependency-system-include-path
-    ;;   c-mode my-c-system-include (semantic-gcc-get-include-paths "c"))
-    ;; (defcustom-mode-local-semantic-dependency-system-include-path
-    ;;   c++-mode my-c++-system-include (semantic-gcc-get-include-paths "c++"))
-
-    (setq-mode-local c-mode semantic-dependency-include-path my-include-path)
-    (setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
-    )
+  (semantic-gcc-setup)
+  ;; (defcustom-mode-local-semantic-dependency-system-include-path
+  ;;   c-mode my-c-system-include (semantic-gcc-get-include-paths "c"))
+  ;; (defcustom-mode-local-semantic-dependency-system-include-path
+  ;;   c++-mode my-c++-system-include (semantic-gcc-get-include-paths "c++"))
 
   (require 'semantic/bovine/c)
   (dolist (x (list "/usr/lib/gcc/x86_64-pc-linux-gnu/8.2.1/include/stddef.h"))
@@ -377,7 +381,10 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
     "My c common mode hooks."
 
     (unless semantic-mode
-      (semantic-mode +1))
+      (progn
+        (semantic-mode +1)
+        (setq-mode-local c-mode semantic-dependency-include-path my-include-path)
+        (setq-mode-local c++-mode semantic-dependency-include-path my-include-path)))
 
     (auto-fill-mode +1)
     (subword-mode +1)
