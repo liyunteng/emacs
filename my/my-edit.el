@@ -123,25 +123,30 @@
     (mouse-avoidance-mode 'animate))
 
 (after-load 'url-cache
-  (setq url-cache-directory (expand-file-name "url" my-cache-dir)))
+  (setq-default url-cache-directory (expand-file-name "url" my-cache-dir)))
 
 (after-load 'url-cookie
-  (setq url-cookie-file (expand-file-name "url/cookies" my-cache-dir)))
+  (setq-default url-cookie-file (expand-file-name "url/cookies" my-cache-dir)))
 
 (after-load 'nsm
-  (setq nsm-settings-file (expand-file-name "network-security.data" my-cache-dir)))
+  (setq-default nsm-settings-file (expand-file-name "network-security.data" my-cache-dir)))
 
 (after-load 'diary
-  (setq diary-file (expand-file-name "diary" my-cache-dir)))
+  (setq-default diary-file (expand-file-name "diary" my-cache-dir)))
 
 (after-load 'ede
-  (setq ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir)))
+  (setq-default ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir)))
 
 (after-load 'smex
-  (setq smex-save-file (expand-file-name "smex-items" my-cache-dir)))
+  (setq-default smex-save-file (expand-file-name "smex-items" my-cache-dir)))
 
 (after-load 'org-id
-  (setq org-id-locations-file (expand-file-name ".org-id-locations" my-cache-dir)))
+  (setq-default org-id-locations-file (expand-file-name ".org-id-locations" my-cache-dir)))
+
+(after-load 'transient
+  (setq-default transient-history-file (expand-file-name "transient/history.el" my-cache-dir))
+  (setq-default transient-levels-file (expand-file-name "transient/levels.el" my-cache-dir))
+  (setq-default transient-values-file (expand-file-name "transient/values.el" my-cache-dir)))
 
 
 

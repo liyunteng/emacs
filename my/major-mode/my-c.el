@@ -142,7 +142,16 @@
                  ("\\.h\\'" (".c" ".cpp" ".cxx"))
                  ("\\.hpp\\'" (".cpp" ".cxx" ".c"))
                  ("\\.hxx\\'" (".cpp" ".cxx" ".c"))))
-    (add-to-list 'cc-other-file-alist var)))
+    (add-to-list 'cc-other-file-alist var))
+
+  (defun my/ff-find-other-file (&optional in-other-window ignore-include)
+    (interactive "P")
+    (when (fboundp 'xref-push-marker-stack)
+	  (xref-push-marker-stack (push-mark (point))))
+    (ff-find-other-file in-other-window ignore-include)
+    (recenter-top-bottom))
+
+  )
 
 (use-package ffap
   :commands (ffap)
@@ -396,6 +405,12 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
     ;; (setq comment-start '"/* ")
     ;; (setq comment-end '" */")
 
+    (after-load 'flycheck
+      (if (equal (flycheck-get-checker-for-buffer) 'c/c++-clang)
+          (setq flycheck-clang-include-path my-include-path)
+        (if (equal (flycheck-get-checker-for-buffer) 'c/c++-gcc)
+            (setq flycheck-gcc-include-path my-include-path))))
+
     ;; set flycheck include paths
     ;; (when (boundp 'flycheck-mode)
     ;;   (after-load 'semantic/dep
@@ -426,7 +441,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (define-key c-mode-base-map (kbd "C-c C-d") 'semantic-ia-show-doc)     ;c-hungry-delete-forward
   (define-key c-mode-base-map (kbd "C-c C-l") 'semantic-ia-show-summary) ;c-toggle-elecric-state
 
-  (define-key c-mode-base-map (kbd "C-c C-a") 'ff-find-related-file)     ;c-toggle-auto-newline
+  (define-key c-mode-base-map (kbd "C-c C-a") 'my/ff-find-other-file)     ;c-toggle-auto-newline
 
   (define-key c-mode-base-map (kbd "C-c C-m") 'my/smart-compile)
   (define-key c-mode-base-map (kbd "C-c C-s") nil)                       ;c-show-syntactic-information
