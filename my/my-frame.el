@@ -176,6 +176,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
     (interactive)
     (setq-default mode-line-format
         	      '("%e"
+                    (:eval (window-number-string))
         	        (:eval
         	         (let* ((active (powerline-selected-window-active))
                             (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))

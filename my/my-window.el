@@ -45,13 +45,11 @@
   (setq switch-window-minibuffer-shortcut ?z)
   (setq switch-window-timeout nil))
 
-(use-package window-numbering
+(use-package window-number
   :ensure t
+  :commands (window-number-meta-mode)
   :init
-  (window-numbering-mode +1)
-  :config
-  (set-face-attribute 'window-numbering-face nil
-  		              :foreground "orange"))
+  (window-number-meta-mode +1))
 
 ;; enable winner-mode to manage window configurations
 (use-package winner

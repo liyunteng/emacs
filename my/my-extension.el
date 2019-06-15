@@ -275,7 +275,7 @@
   :bind (:map symbol-overlay-mode-map
               ("M-n" . symbol-overlay-jump-next)
               ("M-p" . symbol-overlay-jump-prev)
-              ("M-i" . my/symbol-overlay-put))
+              ("s-i" . my/symbol-overlay-put))
   :init
   (defun my/symbol-overlay-put ()
     "Replace `symbol-overlay-put' with `tab-do-tab-stop' when no symbol."
