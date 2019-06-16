@@ -38,18 +38,70 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.")
 
-(defconst gpl-license (cons "GPL" gpl-license-content))
-(defconst null-license (cons nil nil))
-(defcustom auto-insert-license gpl-license
-  "Auto insert used license."
-  :type 'symbol
+(defstruct my-auto-insert-header
+  "my auto insert header struct."
+  (short-description t :type bool)
+  (license nil :type string)
+  (copyright nil :type string)
+  (author (concat (user-full-name) " <" user-mail-address ">" ) :type string)
+  (time t :type bool)
+  (update-time t :type bool)
+  (license-content nil :type string))
+
+(defvar streamocean-header (make-my-auto-insert-header
+                            :author (concat (user-full-name) " <liyunteng@streamocean.com>")
+                            :copyright (concat (format-time-string "%Y")
+                                               " StreamOcean, Inc."
+                                               "\n"
+                                               "All rights reserved.")
+                            :update-time nil)
+  "streamocean auto-insert header.")
+
+(defvar gpl-header (make-my-auto-insert-header
+                    :license "GPL-2.0"
+                    :copyright nil
+                    :license-content gpl-license-content
+                    :update-time nil)
+  "gpl auto-insert header.")
+
+(defvar null-header (make-my-auto-insert-header
+                     :short-description nil
+                     :license nil
+                     :copyright nil
+                     :license-content nil
+                     :author nil
+                     :update-time nil
+                     :time nil)
+  "null auto-insert header.")
+
+(defvar my-header (make-my-auto-insert-header
+                   :license nil
+                   ;; :copyright (concat (format-time-string "%Y") " "(user-full-name) " " user-mail-address)
+                   :update-time nil)
+  "my auto-insert header")
+
+(defcustom my-auto-insert-header-alist '(null-header
+                                         my-header
+                                         streamocean-header
+                                         gpl-header)
+  "My auto insert headers."
+  :type 'list
   :group 'my-config)
-(setq auto-insert-license null-license)
+
+(defcustom auto-insert-header null-header
+  "Auto insert used license."
+  :type 'my-auto-insert-header
+  :group 'my-config)
+;; (setq auto-insert-header streamocean-header)
+(setq auto-insert-header streamocean-header)
+
 
 (use-package autoinsert
   :commands (auto-insert auto-insert-mode)
   :init
   (auto-insert-mode t)
+
+  ;; don't auto-insert to custom.el
   (defadvice auto-insert (around check-custom-file-auto-insert activate)
     (when custom-file
       (if (not (equal (buffer-file-name)
@@ -63,9 +115,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
 	    (time-stamp)))
     (setq time-stamp-line-limit 15)
     (setq time-stamp-start "Last-Updated:[ \t]+\\\\?[\"<]+")
-    (setq time-stamp-format "%04Y/%02m/%02d %02H:%02M:%02S %U")
-    (add-hook 'write-file-functions #'my/update-time-stamp)
-    )
+    ;; (setq time-stamp-format "%04Y/%02m/%02d %02H:%02M:%02S %U")
+    (setq time-stamp-format "%04Y/%02m/%02d %02H:%02M:%02S")
+    (add-hook 'write-file-functions #'my/update-time-stamp))
 
   ;; (setq auto-insert t)
   (setq auto-insert-query nil)
@@ -77,21 +129,34 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
      '((goto-char (point-min)) "")
      (if prefix prefix)
      '('(setq-local auto-insert--begin (point))
-       ;; "Filename: " (file-name-nondirectory (buffer-file-name)) "\n"
        ;; "Description: " (read-string "Description: ") "\n\n"
-       "Description: " (file-name-base (buffer-file-name)) "\n\n"
-       ;; "Author: " user-full-name (if (search-backward "&" (line-beginning-position) t) (replace-match (capitalize (user-login-name)) t t)) " <" user-mail-address ">\n"
-       (when (car auto-insert-license)
-         (concat "License: " (car auto-insert-license) "\n"))
-       "Copyright (C) " (format-time-string "%Y") " " (getenv "ORGANIZATION") | (concat user-full-name) "\n"
-       "Last-Updated: <>\n"
-       (when (cdr auto-insert-license)
-         (concat "\n"(cdr auto-insert-license) "\n"))
-       (let ((comment-style-origin comment-style))
-         (setq comment-style 'extra-line)
-         (comment-region auto-insert--begin (point))
-         (setq comment-style comment-style-origin)
-         nil))
+       (when (my-auto-insert-header-short-description auto-insert-header)
+         (concat (file-name-nondirectory (buffer-file-name)) " - " (file-name-base (buffer-file-name)) "\n\n"))
+
+       (when  (my-auto-insert-header-author auto-insert-header)
+         (concat "Author : " (my-auto-insert-header-author auto-insert-header) "\n"))
+
+       (when (my-auto-insert-header-time auto-insert-header)
+         (concat "Date   : " (format-time-string "%Y/%m/%d") "\n"))
+
+       (when (my-auto-insert-header-license auto-insert-header)
+         (concat "License: " (my-auto-insert-header-license auto-insert-header) "\n"))
+
+       (when (my-auto-insert-header-copyright auto-insert-header)
+         (concat "\nCopyright (C) " (my-auto-insert-header-copyright auto-insert-header) "\n"))
+
+       (when (my-auto-insert-header-update-time auto-insert-header)
+         (concat "Last-Updated: <>\n"))
+
+       (when (my-auto-insert-header-license-content auto-insert-header)
+         (concat "\n" (my-auto-insert-header-license-content auto-insert-header) "\n"))
+
+       (if (not (equal (point) (point-min)))
+           (let ((comment-style-origin comment-style))
+             (setq comment-style 'extra-line)
+             (comment-region auto-insert--begin (point))
+             (setq comment-style comment-style-origin)
+             nil)))
      (if postfix postfix)
      ))
 
@@ -99,40 +164,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   (define-auto-insert 'python-mode
     (my-header '("#!/usr/bin/env python\n" "# -*- coding: utf-8 -*-\n\n")))
   (define-auto-insert 'go-mode (my-header))
-  (define-auto-insert '("\\.\\([Hh]\\|hh\\|hpp\\|hxx\\|h\\+\\+\\)\\'" . "C / C++ header")
-    ;; (if (version<= emacs-version "25.1.0")
-    ;; 	(my-header nil
-    ;; 		   '((let ((header (upcase (concat (file-name-nondirectory
-    ;; 						    (file-name-sans-extension buffer-file-name))
-    ;; 						   "_"
-    ;; 						   (file-name-extension buffer-file-name)
-    ;; 						   "_"))))
-    ;; 		       (concat "#ifndef " header "\n"
-    ;; 			       "#define " header "\n\n")
-    ;; 		       )
-    ;; 		     _"\n\n#endif"))
-    ;;   (my-header))
-    (my-header))
-  (define-auto-insert '("\\.\\([Cc]\\|cc\\|cpp\\|cxx\\|c\\+\\+\\)\\'" . "C / C++ program")
-    ;; (if (version<= emacs-version "25.1.0")
-    ;; 	(my-header nil
-    ;; 		   '("#include \""
-    ;; 		     (let ((stem (file-name-sans-extension buffer-file-name)))
-    ;; 		       (cond ((file-exists-p (concat stem ".h"))
-    ;; 			      (file-name-nondirectory (concat stem ".h")))
-    ;; 			     ((file-exists-p (concat stem ".hh"))
-    ;; 			      (file-name-nondirectory (concat stem ".hh")))
-    ;; 			     ((file-exists-p (concat stem ".hpp"))
-    ;; 			      (file-name-nondirectory (concat stem ".hpp")))
-    ;; 			     ((file-exists-p (concat stem ".hxx"))
-    ;; 			      (file-name-nondirectory (concat stem ".hxx")))
-    ;; 			     ((file-exists-p (concat stem ".h++"))
-    ;; 			      (file-name-nondirectory (concat stem ".h++")))
-    ;; 			     ))
-    ;; 		     & ?\" | -10 "\n"))
-    ;;   (my-header))
-    (my-header))
-  )
+  (define-auto-insert '("\\.\\([Hh]\\|hh\\|hpp\\|hxx\\|h\\+\\+\\)\\'" . "C / C++ header") (my-header))
+  (define-auto-insert '("\\.\\([Cc]\\|cc\\|cpp\\|cxx\\|c\\+\\+\\)\\'" . "C / C++ program") (my-header))
+
+  (defun my/auto-insert-header ()
+    (interactive)
+    (setq auto-insert-header
+          (symbol-value
+           (intern (completing-read "which header: "
+                                    (mapcar 'symbol-name my-auto-insert-header-alist)))))
+    (auto-insert)))
 
 
 (provide 'my-auto-insert)

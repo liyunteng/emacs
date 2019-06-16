@@ -93,12 +93,12 @@
 (defun my-init ()
   "Load my modules."
 
-  ;;(mapc 'my-load my-modules)
-  (mapc 'my-require my-modules)
-
   (when (and my-personal-info-file
              (file-exists-p my-personal-info-file))
     (my-load my-personal-info-file))
+
+  ;;(mapc 'my-load my-modules)
+  (mapc 'my-require my-modules)
 
   (when (and custom-file (file-exists-p custom-file))
     (my-load custom-file))
