@@ -294,13 +294,14 @@
   :config
   (setq bookmark-save-flag t)
   (setq bookmark-default-file (expand-file-name "bookmarks" my-cache-dir))
-  (push '(".emacs.d" (filename . "~/.emacs.d") (front-context-string . "my"))
-        bookmark-alist)
+  ;; (push '(".emacs.d" (filename . "~/.emacs.d") (front-context-string . "my"))
+  ;;       bookmark-alist)
 
   ;; filter duplicates bookmark history
-  (defadvice bookmark-completing-read (around filter-duplicates activate)
-    (setq bookmark-history (remove-duplicates bookmark-history :test 'equal))
-    ad-do-it))
+  ;; (defadvice bookmark-completing-read (around filter-duplicates activate)
+  ;;   (setq bookmark-history (remove-duplicates bookmark-history :test 'equal))
+  ;;   ad-do-it)
+  )
 
 ;; abbrev config
 (use-package abbrev
