@@ -266,17 +266,16 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   ;;global-semantic-decoration-mode
   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+  ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
-  ;; (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
   ;; (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
-
-  ;; (add-to-list 'semantic-default-submodes 'global-semantic-highlight-edits-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-show-unmatched-syntax-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-show-parser-state-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-highlight-edits-mode)
+  ;; (add-to-list 'semantic-default-submodes 'global-semantic-show-unmatched-syntax-mode)
+  ;; (add-to-list 'semantic-default-submodes 'global-semantic-show-parser-state-mode)
 
   ;; for debug
   ;; (setq semantic-dump-parse t)
@@ -312,6 +311,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   ;;   c++-mode my-c++-system-include (semantic-gcc-get-include-paths "c++"))
 
   (require 'semantic/bovine/c)
+  (require 'semantic/bovine/make)
   (dolist (x (list "/usr/lib/gcc/x86_64-pc-linux-gnu/8.2.1/include/stddef.h"))
     (add-to-list 'semantic-lex-c-preprocessor-symbol-file x))
   ;; (after-load 'c++-mode
@@ -455,7 +455,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
 ;; 添加Kernel的Include
 ;; (let ((include-dirs my-kernel-include-path))
 ;;   (mapc (lambda (dir)
-;;           (semantic-add-system-include dir 'c-mode)
+;;           (osemantic-add-system-include dir 'c-mode)
 ;;           (semantic-add-system-include dir 'c++-mode))
 ;;         include-dirs))
 

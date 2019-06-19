@@ -45,8 +45,10 @@
         tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
         tags-add-tables nil               ;don't ask user
         ))
+
+(use-package dumb-jump)
 ;; jump
-(defvar my-jump-default-backends'(xref-find-definitions ffap)
+(defvar my-jump-default-backends'(dumb-jump-go xref-find-definitions ffap)
   "List of jump default backends.")
 (defvar-local my-jump-backends my-jump-default-backends
   "List of jump backends local to this buffer.")
@@ -121,6 +123,7 @@ Example:
 (my|define-jump-backends emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
 (my|define-jump-backends c-mode my/semantic-find-definition)
 (my|define-jump-backends c++-mode my/semantic-find-definition)
+(my|define-jump-backends makefile-mode my/semantic-find-definition)
 (my|define-jump-backends go-mode godef-jump)
 (my|define-jump-backends python-mode elpy-goto-definition)
 
