@@ -970,6 +970,32 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
                (t (org-narrow-to-subtree))))
         (t (narrow-to-defun))))
 
+
+;; 添加百度搜索
+(defun my-search (query-url prompt)
+  "Open the search url constructed with the QUERY-URL.
+PROMPT sets the `read-string prompt."
+  (browse-url
+   (concat query-url
+           (url-hexify-string
+            (if mark-active
+                (buffer-substring (region-beginning) (region-end))
+              (read-string prompt))))))
+
+(defmacro my|install-search-engine (search-engine-name search-engine-url search-engine-prompt)
+  "Given some information regarding a search engine, install the interactive command to search through them"
+  `(defun ,(intern (format "my/%s" search-engine-name)) ()
+     ,(format "Search %s with a query or region if any." search-engine-name)
+     (interactive)
+     (my-search ,search-engine-url ,search-engine-prompt)))
+(my|install-search-engine "baidu" "https://www.baidu.com/s?ie=UTF-8&w=" "Baidu: ")
+;; (my|install-search-engine "google"     "http://www.google.com/search?q="              "Google: ")
+;; (my|install-search-engine "youtube"    "http://www.youtube.com/results?search_query=" "Search YouTube: ")
+;; (my|install-search-engine "github"     "https://github.com/search?q="                 "Search GitHub: ")
+;; (my|install-search-engine "duckduckgo" "https://duckduckgo.com/?t=lm&q="              "Search DuckDuckGo: ")
+
+
+
 
 (use-package find-file
   :defer t
