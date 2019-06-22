@@ -69,7 +69,7 @@
       (unless company-candidates
 	    (setq company--manual-action nil))))
 
-  (setq company-auto-complete nil
+  (setq company-auto-complete t
         company-minimum-prefix-length 2
         company-idle-delay 2
         ;; company-show-numbers t

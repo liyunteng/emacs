@@ -355,6 +355,17 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
     (semanticdb-enable-gnu-global-databases 'c-mode)
     (semanticdb-enable-gnu-global-databases 'c++-mode))
 
+
+  (defun my-semantic-remove-completion ()
+    (remove-hook 'completion-at-point-functions
+                 'semantic-analyze-nolongprefix-completion-at-point-function)
+    (remove-hook 'completion-at-point-functions
+                 'semantic-analyze-notc-completion-at-point-function)
+    (remove-hook 'completion-at-point-functions
+                 'semantic-analyze-completion-at-point-function))
+  (add-hook 'semantic-mode-hook
+            'my-semantic-remove-completion)
+
   (define-key semantic-mode-map (kbd "C-c , R") 'semantic-symref-regexp)
   (define-key semantic-mode-map (kbd "C-c , h") 'semantic-decoration-include-visit)
   (define-key semantic-mode-map (kbd "C-c , M-d") 'semantic-decoration-include-describe)

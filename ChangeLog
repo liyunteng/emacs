@@ -1,3 +1,7 @@
+2019-06-22  liyunteng  <li_yunteng@163.com>
+
+	* my/my-extension.el (youdao-dictionary):
+
 2018-11-20  liyunteng  <li_yunteng@163.com>
 
 	* my/modules/minor-mode/my-magit.el (magit): bind "C-x v =" to magit-diff-buffer-file
