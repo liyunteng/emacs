@@ -123,7 +123,6 @@ Example:
 (my|define-jump-backends emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
 (my|define-jump-backends c-mode my/semantic-find-definition)
 (my|define-jump-backends c++-mode my/semantic-find-definition)
-(my|define-jump-backends makefile-mode my/semantic-find-definition)
 (my|define-jump-backends go-mode godef-jump)
 (my|define-jump-backends python-mode elpy-goto-definition)
 
