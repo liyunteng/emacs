@@ -46,7 +46,10 @@
         tags-add-tables nil               ;don't ask user
         ))
 
-(use-package dumb-jump)
+(use-package dumb-jump
+  :ensure t
+  :init
+  (dumb-jump-mode +1))
 ;; jump
 (defvar my-jump-default-backends'(dumb-jump-go xref-find-definitions ffap)
   "List of jump default backends.")
