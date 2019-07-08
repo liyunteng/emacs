@@ -25,31 +25,51 @@
 ;;; Code:
 
 (use-package ivy
-  :ensure t)
-(use-package flx
-  :ensure t)
-(use-package counsel
-  :ensure t)
+  :ensure t
+  :init
+  (use-package flx :ensure t)
+  (use-package swiper
+    :ensure t
+    :bind
+    (("M-s u" . swiper-from-isearch)
+     ("M-s S" . swiper-all-thing-at-point)
+     ("M-s s" . swiper-thing-at-point)
+     ("M-s m" . swiper)))
+  (use-package counsel
+    :ensure t
+    :config
+    (setq counsel-mode-override-describe-bindings t))
+
+  :config
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-ignore-buffers '("\\*"))
+  (when (fboundp 'projectile-mode)
+    (setq projectile-completion-system 'ivy))
+
+  (dolist (var '(ivy--regex-plus ivy--regex-fuzzy regexp-quote))
+    (add-to-list 'ivy-re-builders-alist var))
+
+  (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
+  (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
+  (define-key ivy-minibuffer-map (kbd "C-g") #'minibuffer-keyboard-quit)
+  (define-key ivy-minibuffer-map (kbd "C-y") #'ivy-yank-word)
+  (define-key ivy-minibuffer-map (kbd "C-c C-a") #'ivy-toggle-ignore)
+  (define-key ivy-minibuffer-map (kbd "M-i") #'ivy-toggle-case-fold)
+
+  (defun my/enable-ivy-flx-matching ()
+    "Make `ivy' matching work more like IDO."
+    (interactive)
+    (setq-default ivy-re-builders-alist
+                  '((t . ivy--regex-fuzzy))))
+
+  )
+
+
+
 
 (diminish 'ivy-mode)
-
 (diminish 'counsel-mode)
-(setq-default ivy-use-virtual-buffers t
-              ivy-count-format ""
-              projectile-completion-system 'ivy
-              ivy-initial-inputs-alist
-              '((counsel-M-x . "^")
-                (man . "^")
-                (woman . "^")))
 
-(defun my/enable-ivy-flx-matching ()
-  "Make `ivy' matching work more like IDO."
-  (interactive)
-  (setq-default ivy-re-builders-alist
-                '((t . ivy--regex-fuzzy))))
-
-
-(setq-default counsel-mode-override-describe-bindings t)
 (add-hook 'after-init-hook
           (lambda ()
             (when (bound-and-true-p ido-ubiquitous-mode)
@@ -57,22 +77,6 @@
               (ido-mode -1))
             (ivy-mode 1)
             (counsel-mode)))
-
-;;(when (maybe-require-package 'swiper)
-;;  (after-load 'ivy
-;;    (define-key ivy-mode-map (kbd "C-s") 'swiper)))
-
-(dolist (var '(ivy--regex-plus ivy--regex-fuzzy regexp-quote))
-  (add-to-list 'ivy-re-builders-alist var))
-;; (setq-default ivy-initial-inputs-alist '((man . "^") (woman . "^")))
-;; (setq-default ivy-use-virtual-buffers nil)
-(setq-default ivy-ignore-buffers '("\\*"))
-(define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
-(define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
-(define-key ivy-minibuffer-map (kbd "C-g") #'minibuffer-keyboard-quit)
-(define-key ivy-minibuffer-map (kbd "C-y") #'ivy-yank-word)
-(define-key ivy-minibuffer-map (kbd "C-c C-a") #'ivy-toggle-ignore)
-(define-key ivy-minibuffer-map (kbd "M-i") #'ivy-toggle-case-fold)
 
 (provide 'my-ivy)
 ;;; my-ivy.el ends here

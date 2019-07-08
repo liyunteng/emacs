@@ -40,9 +40,9 @@
                        my-ibuffer
                        my-window
                        my-session
-                       my-helm
+                       ;; my-helm
                        ;; my-ido
-                       ;; my-ivy
+                       my-ivy
 
                        my-jump
                        my-smartparens
