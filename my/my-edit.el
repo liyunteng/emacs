@@ -135,6 +135,7 @@
 (setq-default transient-values-file (expand-file-name "transient/values.el" my-cache-dir))
 
 (setq-default desktop-path (list my-cache-dir))
+(setq-default desktop-dirname my-cache-dir)
 (setq-default desktop-base-file-name "emacs.desktop")
 
 
