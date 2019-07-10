@@ -26,12 +26,28 @@
 
 (require 'cl)
 (require 'package)
-
-(setq package-archives '(("melpa" . "http://mirrors.163.com/elpa/melpa/")
-                         ("melpa-stable" . "http://mirrors.163.com/elpa/melpa-stable/")
-                         ("gnu" . "http://mirrors.163.com/elpa/gnu/")
-                         ("org" . "http://mirrors.163.com/elpa/org/")
-			             ("marmalade" . "http://mirrors.163.com/elpa/marmalade/")))
+(defconst 163-mirrors
+  '(("gnu" . "http://mirrors.163.com/elpa/gnu/")
+    ("melpa" . "http://mirrors.163.com/elpa/melpa/")
+    ("melpa-stable" . "http://mirrors.163.com/elpa/melpa-stable/")
+    ("org" . "http://mirrors.163.com/elpa/org/")
+    ("marmalade" . "http://mirrors.163.com/elpa/marmalade/"))
+  "163 mirror")
+(defconst tsinghua-mirrors
+  '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+    ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+    ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
+    ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
+    ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/"))
+  "tsinghua mirror")
+(defconst elpa-china-mirrors
+  '(("gnu" . "http://elpa.emacs-china.org/gnu/")
+    ("melpa" . "http://elpa.emacs-china.org/melpa/")
+    ("melpa-stable" . "http://elpa.emacs-china.org/melpa-stable/")
+    ("org" . "http://elpa.emacs-china.org/org/")
+    ("marmalade" . "http://elpa.emacs-china.org/marmalade/"))
+  "elpa.emacs-china.org mirror")
+(setq package-archives tsinghua-mirrors)
 ;; (setq package-pinned-packages
 ;;       '((switch-window . "melpa-stable")))
 
