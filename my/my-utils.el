@@ -86,7 +86,7 @@
 (defun my/dos2unix ()
   "Convert the current buffer to UNIX file format."
   (interactive)
-  (set-buffer-file-coding-system 'undecided-unix nil))
+  (set-buffer-file-coding-system 'utf-8-with-signature-unix nil))
 
 (defun my/unix2dos ()
   "Convert the current buffer to DOS file format."

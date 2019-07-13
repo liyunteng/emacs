@@ -37,6 +37,18 @@
      ("M-s m" . swiper)))
   (use-package counsel
     :ensure t
+    :bind
+    (("C-c C-j" . counsel-imenu)
+     ("C-c h r" . counsel-recentf)
+     ("C-c h i" . counsel-semantic-or-imenu)
+     ("C-c h f" . counsel-faces)
+     ("C-c h F" . counsel-describe-face)
+     ("C-c h c" . counsel-colors-emacs)
+     ("C-c h w" . counsel-colors-web)
+     ("C-c h x" . counsel-linux-app)
+     ("C-c h b" . counsel-switch-buffer)
+     ("C-c h C-b" . counsel-switch-buffer-other-window)
+     ("C-c h m" . counsel-minor))
     :config
     (setq counsel-mode-override-describe-bindings t))
 
