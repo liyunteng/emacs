@@ -48,7 +48,8 @@
      ("C-c h x" . counsel-linux-app)
      ("C-c h b" . counsel-switch-buffer)
      ("C-c h C-b" . counsel-switch-buffer-other-window)
-     ("C-c h m" . counsel-minor))
+     ("C-c h m" . woman)
+     ("C-c h M" . counsel-minor))
     :config
     (setq counsel-mode-override-describe-bindings t))
 
