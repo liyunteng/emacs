@@ -56,7 +56,7 @@
   (add-hook hook 'kill-buffer-when-shell-command-exit))
 
 
-(defvar my-term-shell "/bin/bash")
+(defvar my-term-shell (or (executable-find "zsh") (executable-find "bash")))
 (setq-default explicit-shell-file-name my-term-shell)
 (setq-default term-input-ring-file-name
               (expand-file-name "term" my-cache-dir))
@@ -114,6 +114,8 @@
          ("C-x t p" . multi-term-prev))
 
   :config
+
+  (setq multi-term-program (or (executable-find "zsh") (executable-find "bash")))
   (defadvice ansi-term (before force-bash)
     "Always use bash."
     (interactive (list my-term-shell)))
