@@ -76,21 +76,25 @@
   (insert (format-time-string "%Y/%m/%d %H:%M:%S" (current-time))))
 ;; (insert (format-time-string "%H:%M:%S" (current-time))))
 
-(defun my/dos2unix-remove-M()
+(defun my/dos2unix-remove-M(&optinal file)
   "Remove ^M in files."
   (interactive)
+  (if file (find-file file))
   (goto-char (point-min))
   (while (search-forward (string ?\C-m) nil t)
     (replace-match "")))
 
-(defun my/dos2unix ()
+(defun my/dos2unix (&optional file)
   "Convert the current buffer to UNIX file format."
   (interactive)
-  (set-buffer-file-coding-system 'utf-8-with-signature-unix nil))
+  (if file (find-file file))
+  (set-buffer-file-coding-system 'utf-8-unix nil)
+  (save-buffer))
 
-(defun my/unix2dos ()
+(defun my/unix2dos (&optional file)
   "Convert the current buffer to DOS file format."
   (interactive)
+  (if file (find-file file))
   (set-buffer-file-coding-system 'undecided-dos nil))
 
 (defun my-derived-mode-p (mode &rest modes)
@@ -125,11 +129,23 @@ ARGS if MSG is format-string ARGS contain message."
 (defun my--indent-directory (dir regex)
   "Indent Directory."
   (interactive "D")
-  (if(and (file-exists-p dir))
+  (if (and (file-exists-p dir))
       (dolist (file (directory-files-recursively dir regex))
         (message "indenting %s" file)
         (my/indent-file file)
         (message "indented %s\n" file))
+    (user-error "Invalid directory %s" dir)))
+(defun my/dos2unix-directory (dir regex)
+  "Convert dos file to utf-8-unix.
+Example:
+(my/dos2unix-directory \"/home/lyt/core/client/libiHi\" \".*\\.\\(c\\|h\\|cpp\\|hpp\\)\")
+"
+  (interactive "D")
+  (if (and (file-exists-p dir))
+      (dolist (file (directory-files-recursively dir regex))
+        (message "dos2unix %s" file)
+        (my/dos2unix file)
+        (kill-current-buffer))
     (user-error "Invalid directory %s" dir)))
 
 (defun my/indent-my-emacs-lisp ()
