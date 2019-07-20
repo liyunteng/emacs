@@ -28,7 +28,7 @@
 (defconst my-modules '(my-utils
                        my-base
                        my-package
-                       my-exec-path
+                       ;; my-exec-path
                        my-frame
                        my-themes
 
