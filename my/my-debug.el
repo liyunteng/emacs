@@ -23,7 +23,7 @@
 ;;
 
 ;;; Code:
-(setq debug-on-error t)
+(setq debug-on-error nil)
 ;; (setq max-lisp-eval-depth 400)
 ;; (setq max-specpdl-size 400)
 (require 'cl-macs)
