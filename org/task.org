@@ -2,8 +2,10 @@
 #+STARTUP: content
 
 * TASKS
-** NEXT test
- [2018-12-12 Wed 22:26]
+** TODO change cp fsm from call callbacks then change state to change state then call callbacks
+ [2019-07-22 Mon 01:16]
+** TODO loopback master slave use common file
+ [2019-07-22 Mon 01:17]
 * TODO Check Weekly [0/3]
   SCHEDULED: <2018-11-22 Thu +1w>
   :PROPERTIES:

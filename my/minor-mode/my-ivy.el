@@ -35,6 +35,12 @@
      ("M-s S" . swiper-all-thing-at-point)
      ("M-s s" . swiper-thing-at-point)
      ("M-s m" . swiper)))
+
+  (use-package smex
+    :ensure t
+    :config
+    (smex-initialize))
+
   (use-package counsel
     :ensure t
     :bind
@@ -51,7 +57,11 @@
      ("C-c h m" . woman)
      ("C-c h M" . counsel-minor))
     :config
-    (setq counsel-mode-override-describe-bindings t))
+    (setq counsel-mode-override-describe-bindings t)
+    (setq counsel-find-file-at-point t)
+    (setq counsel-preselect-current-file t)
+    ;; (add-to-list 'counsel-find-file-extern-extensions "ts")
+    )
 
   :config
   (setq ivy-use-virtual-buffers t)
