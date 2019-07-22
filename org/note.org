@@ -21,3 +21,6 @@
 ** this is a test note2                                                   :NOTE:
  [2018-12-12 Wed 19:48]
  [[file:~/.emacs.d/my/major-mode/my-org.el::"*%20%25?%20:INBOX:\n%25U\n"))))]]
+** emacs can't use chinese input                                                :NOTE:
+ [2019-07-22 Mon 01:18]
+ [[file:~/git/core/client/libiHi/libihi/ihi_uac_wrapper.cpp][file:~/git/core/client/libiHi/libihi/ihi_uac_wrapper.cpp]]
