@@ -96,10 +96,16 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
 ;; fonts
 (setq font-use-system-font t)
-;; 中文使用WenQuanYi Micro Hei Mono, 其他使用DejaVu Sans Mono
-(create-fontset-from-fontset-spec
- "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my")
+;; 默认使用 DejaVu Sans Mono字体
+(if (and (equal (x-display-pixel-width) 5760)
+         (equal (x-display-pixel-height) 2160))
+    (create-fontset-from-fontset-spec
+     "-*-DejaVu Sans Mono-normal-normal-normal-*-30-*-*-*-m-0-fontset-my")
+  (create-fontset-from-fontset-spec
+   "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my"))
+;; 中文使用wqy micro hei mono
 (set-fontset-font "fontset-my" 'han "WenQuanYi Micro Hei Mono")
+
 ;; (create-fontset-from-fontset-spec
 ;;  (concat "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my,"
 ;;          "chinese-gbk: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
