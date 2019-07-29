@@ -1175,6 +1175,14 @@ PROMPT sets the `read-string prompt."
 (global-set-key (kbd "C-SPC") 'set-mark-command)
 (global-set-key (kbd "C-.") 'mark-sexp)
 (global-set-key (kbd "C-,") 'mark-word)
+(defun my/mark-beginning-of-buffer ()
+  (interactive)
+  (set-mark (point-min)))
+(defun my/mark-end-of-buffer ()
+  (interactive)
+  (set-mark (point-max)))
+(global-set-key (kbd "C-M-<") 'my/mark-beginning-of-buffer)
+(global-set-key (kbd "C-M->") 'my/mark-end-of-buffer)
 ;; pop mark
 (global-set-key (kbd "C-x C-.") 'pop-global-mark)
 ;; equal C-u C-SPC

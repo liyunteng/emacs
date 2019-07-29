@@ -2,25 +2,27 @@
 #+STARTUP: fold
 
 * NOTES
-** Address                                                               :NOTE:
-   :PROPERTIES:
-   :VISIBILITY: all
-   :END:
+** SOTP 测试接口                                                                :NOTE:
+   *** checkUser
+   curl -v "http://ihi-sotp.streamocean.com/SOTP/index.php/interface/user/checkUser" -d '{"user_acct": "linsq", "pwd": "linsq"}' -H "Content-Type: application/json"
+   *** user
+   **** with devId check
+   curl -v "http://ihi-sotp.streamocean.com/SOTP/index.php/Interface/content/content/dev/VHD1511050002/user/dt1"
+   **** withou devId check
+   curl -v "http://ihi-sotp.streamocean.com/SOTP/index.php/Interface/infor/infor/user/dt1"
 
-      | Location |                   Ip | User | Passwd           |
-      |----------+----------------------+------+------------------|
-      | bejing   |          47.94.17.50 | root | Yudong*2017      |
-      | shanghai |       139.196.101.57 | root | YuDong*2017      |
-      | jinan    | 124.126.126.194(202) | root | Elmeast!@#-SO    |
-      | hongkong |         128.1.170.74 | root | 4gOgb1Lbm*mN$9cz |
-      | dongjing |          47.74.15.82 | root | 12位             |
+ [2019-07-29 Mon 13:53]
+** 环境                                                                         :NOTE:
+   一、公司两台阿里云登录信息
+   IP：39.106.102.189 密码：5tream)ceaN
+   IP：106.14.8.145 密码：90-=op[]KL;'
 
-** this is a test note1                                                   :NOTE:
- [2018-12-12 Wed 19:47]
- [[file:~/.emacs.d/my/major-mode/my-org.el::"*%20%25?%20:INBOX:\n%25U\n"))))]]
-** this is a test note2                                                   :NOTE:
- [2018-12-12 Wed 19:48]
- [[file:~/.emacs.d/my/major-mode/my-org.el::"*%20%25?%20:INBOX:\n%25U\n"))))]]
-** emacs can't use chinese input                                                :NOTE:
- [2019-07-22 Mon 01:18]
- [[file:~/git/core/client/libiHi/libihi/ihi_uac_wrapper.cpp][file:~/git/core/client/libiHi/libihi/ihi_uac_wrapper.cpp]]
+   二、三元桥服务器登录信息
+   1、先登录到39.106.102.189
+   2、ssh m
+
+   三、云视华通云登录信息
+   1、先登录到39.106.102.189
+   2、ssh ht157 、ssh ht116、ssh ht112
+
+ [2019-07-29 Mon 15:25]

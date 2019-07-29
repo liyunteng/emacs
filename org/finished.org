@@ -189,3 +189,6 @@
 #+BEGIN_SRC
 http://106.75.55.63/advapi/v1/monitor?rq=1&ad=f3fb000b05f11d4162044815db68a0cc&zone=fa9edb6280%207a5548e4e4e6c7bae7faed&dm=a&i=123d225fa4bc2d46c3&ip=10.23.24.12&CP=cntv&SP=njt&ex=%ex%
 #+END_SRC
+** emacs can't use chinese input                                                :NOTE:
+ [2019-07-22 Mon 01:18]
+ [[file:~/git/core/client/libiHi/libihi/ihi_uac_wrapper.cpp][file:~/git/core/client/libiHi/libihi/ihi_uac_wrapper.cpp]]

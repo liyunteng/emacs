@@ -76,6 +76,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
 
 (defvar my-header (make-my-auto-insert-header
                    :license nil
+                   :author nil
                    ;; :copyright (concat (format-time-string "%Y") " "(user-full-name) " " user-mail-address)
                    :update-time nil)
   "my auto-insert header")
@@ -88,12 +89,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   :type 'list
   :group 'my-config)
 
-(defcustom auto-insert-header null-header
+(defcustom auto-insert-header 'null-header
   "Auto insert used license."
-  :type 'my-auto-insert-header
+  ;; :type 'my-auto-insert-header
+  :type 'symbol
   :group 'my-config)
 ;; (setq auto-insert-header streamocean-header)
-(setq auto-insert-header streamocean-header)
+(setq auto-insert-header 'streamocean-header)
 
 
 (use-package autoinsert
@@ -104,8 +106,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   ;; don't auto-insert to custom.el
   (defadvice auto-insert (around check-custom-file-auto-insert activate)
     (when custom-file
-      (if (not (equal (buffer-file-name)
-		              custom-file))
+      (if (not (equal (buffer-file-name) custom-file))
 	      ad-do-it)))
   :config
   (use-package time-stamp
@@ -126,30 +127,31 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   (defun my-header (&optional prefix postfix)
     "My header with PREFIX and POSTFIX."
     (append
-     '((goto-char (point-min)) "")
+     '('(goto-char (point-min)))
      (if prefix prefix)
      '('(setq-local auto-insert--begin (point))
+       '(setq-local auto-insert-header-value (symbol-value auto-insert-header))
        ;; "Description: " (read-string "Description: ") "\n\n"
-       (when (my-auto-insert-header-short-description auto-insert-header)
+       (when (my-auto-insert-header-short-description auto-insert-header-value)
          (concat (file-name-nondirectory (buffer-file-name)) " - " (file-name-base (buffer-file-name)) "\n\n"))
 
-       (when  (my-auto-insert-header-author auto-insert-header)
-         (concat "Author : " (my-auto-insert-header-author auto-insert-header) "\n"))
+       (when  (my-auto-insert-header-author auto-insert-header-value)
+         (concat "Author : " (my-auto-insert-header-author auto-insert-header-value) "\n"))
 
-       (when (my-auto-insert-header-time auto-insert-header)
+       (when (my-auto-insert-header-time auto-insert-header-value)
          (concat "Date   : " (format-time-string "%Y/%m/%d") "\n"))
 
-       (when (my-auto-insert-header-license auto-insert-header)
-         (concat "License: " (my-auto-insert-header-license auto-insert-header) "\n"))
+       (when (my-auto-insert-header-license auto-insert-header-value)
+         (concat "License: " (my-auto-insert-header-license auto-insert-header-value) "\n"))
 
-       (when (my-auto-insert-header-copyright auto-insert-header)
-         (concat "\nCopyright (C) " (my-auto-insert-header-copyright auto-insert-header) "\n"))
+       (when (my-auto-insert-header-copyright auto-insert-header-value)
+         (concat "\nCopyright (C) " (my-auto-insert-header-copyright auto-insert-header-value) "\n"))
 
-       (when (my-auto-insert-header-update-time auto-insert-header)
+       (when (my-auto-insert-header-update-time auto-insert-header-value)
          (concat "Last-Updated: <>\n"))
 
-       (when (my-auto-insert-header-license-content auto-insert-header)
-         (concat "\n" (my-auto-insert-header-license-content auto-insert-header) "\n"))
+       (when (my-auto-insert-header-license-content auto-insert-header-value)
+         (concat "\n" (my-auto-insert-header-license-content auto-insert-header-value) "\n"))
 
        (if (not (equal (point) (point-min)))
            (let ((comment-style-origin comment-style))
@@ -167,13 +169,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   (define-auto-insert '("\\.\\([Hh]\\|hh\\|hpp\\|hxx\\|h\\+\\+\\)\\'" . "C / C++ header") (my-header))
   (define-auto-insert '("\\.\\([Cc]\\|cc\\|cpp\\|cxx\\|c\\+\\+\\)\\'" . "C / C++ program") (my-header))
 
-  (defun my/auto-insert-header ()
+  (defun my/auto-insert-select-header (&optional h)
     (interactive)
-    (setq auto-insert-header
-          (symbol-value
-           (intern (completing-read "which header: "
-                                    (mapcar 'symbol-name my-auto-insert-header-alist)))))
-    (auto-insert)))
+    (let ((p (completing-read "which header: "
+                              my-auto-insert-header-alist)))
+      (setq auto-insert-header (intern p)))
+    (funcall-interactively #'auto-insert))
+  )
 
 
 (provide 'my-auto-insert)
