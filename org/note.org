@@ -25,4 +25,12 @@
    1、先登录到39.106.102.189
    2、ssh ht157 、ssh ht116、ssh ht112
 
+** 内部环境
+   |      address | user | password | description       |
+   | 172.16.1.231 | root |    12345 | sdk build machine |
+   |  172.16.1.21 | root |          | vdn build machine |
+   |              |      |          |                   |
+
+   | 172.16.1.116 | root | admin@r3c1010.com | rsk's machine |
+   |              |      |                   |               |
  [2019-07-29 Mon 15:25]
