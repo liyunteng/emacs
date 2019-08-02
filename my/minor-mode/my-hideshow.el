@@ -24,10 +24,9 @@
 
 ;;; Code:
 
-
-(use-package hide-comnt
+(use-package nocomments-mode
   :ensure t
-  :bind ("C-c m ;" . hide/show-comments-toggle))
+  :bind ("C-c m ;" . nocomments-mode))
 
 (use-package hideshow
   :ensure t
