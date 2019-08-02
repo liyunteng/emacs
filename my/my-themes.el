@@ -37,22 +37,7 @@
 (require 'color)
 
 (use-package zenburn-theme
-  :ensure t
-  :config
-  (custom-theme-set-faces
-   'zenburn
-   `(company-tooltip-search
-     ((t (:background
-          ,(color-darken-name (face-attribute 'default :background) 60)
-          :foreground "red"))))
-   `(company-tooltip-search-selection
-     ((t (:background
-          ,(color-darken-name (face-attribute 'default :background) 60)
-          :foreground "red" :weight bold))))
-   `(company-template-field
-     ((t (:background
-          ,(color-darken-name (face-attribute 'default :background) 30))))))
-  )
+  :ensure t)
 
 (use-package color-theme-sanityinc-solarized
   :ensure t
@@ -74,6 +59,43 @@
   "My theme."
   :type 'symbol
   :group 'my-config)
+
+(defun my-load-zenburn-theme ()
+  (require 'zenburn-theme)
+  (load-theme 'zenburn t)
+  (custom-theme-set-faces
+   'zenburn
+   ;; change comment color
+   ;; `(font-lock-comment-face ((t (:foreground "#75715E"))))
+   `(font-lock-comment-face ((t (:foreground "grey50"))))
+   `(font-lock-comment-delimiter-face ((t (:foreground "grey50"))))
+   ;; change string color
+   `(font-lock-string-face ((t (:foreground "#7F9F7F"))))
+   `(font-lock-constant-face ((t (:foreground "#BFEBBF" :weight light))))
+   ;; change function name color
+   `(font-lock-function-name-face ((t (:foreground "#93E0E3" :weight bold))))
+   `(company-tooltip-search
+     ((t (:background
+          ,(color-darken-name (face-attribute 'default :background) 60)
+          :foreground "red"))))
+   `(company-tooltip-search-selection
+     ((t (:background
+          ,(color-darken-name (face-attribute 'default :background) 60)
+          :foreground "red" :weight bold))))
+   `(company-template-field
+     ((t (:background
+          ,(color-darken-name (face-attribute 'default :background) 30)))))))
+
+;; (set-face-attribute 'dired-directory nil
+;;                     :foreground "#93E0E3"
+;;                     :weight 'bold
+;;                     :inherit 'unspecified
+;;                     :slant 'italic
+;;                     :box 'unspecified
+;;                     :overline nil
+;;                     :underline nil
+;;                     :strike-through nil
+;;                     )
 
 (defun my-load-tty-zenburn-theme ()
   "Enable modified zenburn theme in tty mode."
@@ -117,6 +139,7 @@
       ("zenburn-blue-5"   . "#0000FF")
       ("zenburn-magenta"  . "#FF00FF")))
   (setq zenburn-override-colors-alist my-zenburn-override-colors-alist)
+  (load-theme 'zenburn t)
   (custom-theme-set-faces
    'zenburn
    `(company-tooltip-search
@@ -126,18 +149,17 @@
    `(company-tooltip-annotation-selection
      ((t (:foreground "#00FFFF" :weight bold))))
    `(company-template-field
-     ((t (:background "#00FFFF")))))
-  (custom-theme-set-faces
-   'zenburn
+     ((t (:background "#00FFFF"))))
    `(helm-ff-dotted-directory
-     ((t (:foreground "#00FFFF" :background "#000000")))))
-  (load-theme 'zenburn t))
+     ((t (:foreground "#00FFFF" :background "#000000"))))))
 
 
 (if (and (not (daemonp))
          (<= (display-color-cells) 8))
     (my-load-tty-zenburn-theme)
-  (load-theme my-theme t))
+  (if (equal my-theme 'zenburn)
+      (my-load-zenburn-theme)
+    (load-theme my-theme t)))
 
 (provide 'my-themes)
 ;;; my-themes.el ends here
