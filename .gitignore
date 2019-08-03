@@ -1,6 +1,7 @@
 savefile/
 elpa/
 cache/
+var/
 irony/
 custom.el
 *.pyc

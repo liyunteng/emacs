@@ -47,26 +47,73 @@
       (add-to-list 'compilation-error-regexp-alist-alist defn)
       (add-to-list 'compilation-error-regexp-alist (car defn))))
   ;; (add-hook 'magit-popup-mode-hook 'my/toggle-show-trailing-whitespace-off)
-  )
+
+  ;; Ignore recent commit
+  (setq magit-status-sections-hook
+        '(magit-insert-status-headers
+          magit-insert-merge-log
+          magit-insert-rebase-sequence
+          magit-insert-am-sequence
+          magit-insert-sequencer-sequence
+          magit-insert-bisect-output
+          magit-insert-bisect-rest
+          magit-insert-bisect-log
+          magit-insert-untracked-files
+          magit-insert-unstaged-changes
+          magit-insert-staged-changes
+          magit-insert-stashes
+          magit-insert-unpulled-from-upstream
+          magit-insert-unpulled-from-pushremote
+          magit-insert-unpushed-to-upstream
+          magit-insert-unpushed-to-pushremote))
+
+  ;; Opening repo externally
+  (defun parse-url (url)
+    "convert a git remote location as a HTTP URL"
+    (if (string-match "^http" url)
+        url
+      (replace-regexp-in-string "\\(.*\\)@\\(.*\\):\\(.*\\)\\(\\.git?\\)"
+                                "https://\\2/\\3"
+                                url)))
+  (defun magit-open-repo ()
+    "open remote repo URL"
+    (interactive)
+    (let ((url (magit-get "remote" "origin" "url")))
+      (progn
+        (browse-url (parse-url url))
+        (message "opening repo %s" url)))))
 
 (use-package gitconfig-mode
   :ensure t)
 (use-package gitignore-mode
   :ensure t)
+(use-package git-commit
+  :ensure t)
+(use-package gitattributes-mode
+  :ensure t)
 (use-package git-timemachine
   :commands (git-timemachine git-timemachine-toggle git-timemachine-switch-branch)
   :ensure t)
-;; (use-package git-messenger
-;;   :defer t
-;;   :ensure t)
 (use-package smeargle
   :commands (smeargle smeargle-clear smeargle-commits)
   :ensure t)
-;; (use-package yagist
-;;   :disabled
-;;   :ensure t
-;;   :defer t)
 
+(use-package github-explorer
+  :ensure t)
+(use-package magithub
+  :after magit
+  :ensure t
+  :config
+  (magithub-feature-autoinject t))
+
+(use-package gh
+  :ensure t)
+(use-package gh-md
+  :ensure t)
+(use-package gist
+  :ensure t)
+(use-package yagist
+  :ensure t)
 ;; (use-package bug-reference-github
 ;;   :ensure t
 ;;   :defer t
