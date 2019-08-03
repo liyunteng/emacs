@@ -248,8 +248,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
         		               (powerline-render rhs)))))))
   :config
   (powerline-my-theme)
-  (if (daemonp)
-      (add-hook 'after-make-frame-functions #'powerline-reset))
+  ;; (if (daemonp)
+  ;;     (add-hook 'after-make-frame-functions #'powerline-reset))
   )
 
 (use-package beacon
