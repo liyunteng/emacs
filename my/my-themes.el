@@ -60,8 +60,9 @@
   :type 'symbol
   :group 'my-config)
 
-(defun my-load-zenburn-theme ()
+(defun my-load-stand-zenburn-theme ()
   (require 'zenburn-theme)
+  (setq zenburn-override-colors-alist nil)
   (load-theme 'zenburn t)
   (custom-theme-set-faces
    'zenburn
@@ -153,13 +154,18 @@
    `(helm-ff-dotted-directory
      ((t (:foreground "#00FFFF" :background "#000000"))))))
 
-
-(if (and (not (daemonp))
-         (<= (display-color-cells) 8))
-    (my-load-tty-zenburn-theme)
+(defun my/load-theme (&optional frame)
+  (interactive)
+  (when frame (select-frame frame))
   (if (equal my-theme 'zenburn)
-      (my-load-zenburn-theme)
-    (load-theme my-theme t)))
+      (if (<= (display-color-cells) 8)
+          (my-load-tty-zenburn-theme)
+        (my-load-stand-zenburn-theme))
+    (load-them my-theme t)))
+
+(if (daemonp)
+    (add-hook 'after-make-frame-functions #'my/load-theme)
+  (my/load-theme))
 
 (provide 'my-themes)
 ;;; my-themes.el ends here

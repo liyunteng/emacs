@@ -88,7 +88,7 @@ if no files marked, always operate on current line in dired-mode."
   (define-key dired-mode-map [mouse-2] 'dired-find-file)
   (define-key dired-mode-map (kbd "M-<return>") 'dired-do-find-marked-files)
   (define-key dired-mode-map (kbd "C-M-<return>") 'diredp-do-find-marked-files-recursive)
-  (define-key dired-mode-map (kbd "e") 'my/dired-view-file-owther-window)
+  (define-key dired-mode-map (kbd "e") 'my/dired-view-file-other-window)
   (define-key dired-mode-map (kbd "c") 'dired-kill-subdir)
   (define-key dired-mode-map (kbd "TAB") 'dired-hide-all)
   (define-key dired-mode-map (kbd "C-M-f") 'find-grep-dired)

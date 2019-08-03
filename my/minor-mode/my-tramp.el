@@ -34,6 +34,9 @@
   (setq password-cache t)
   (setq password-cache-expiry 36000)
 
+  (require 'tramp-sh)
+  (setq tramp-histfile-override (expand-file-name "tramp/tramp-history" my-cache-dir))
+
   ;;使用sudo 编辑文件
   (defvar find-file-root-prefix (if (featurep 'xemacs) "/[sudo/root@localhost]" "/sudo:root@localhost:" )
     "*The filename prefix used to open a file with `find-file-root'.")

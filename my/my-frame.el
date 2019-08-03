@@ -96,27 +96,39 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
 ;; fonts
 (setq font-use-system-font t)
-;; 默认使用 DejaVu Sans Mono字体
-(when (and (not (daemonp)) (window-system))
-  (if (and
-       (equal (x-display-pixel-width) 5760)
-       (equal (x-display-pixel-height) 2160))
-      (create-fontset-from-fontset-spec
-       "-*-DejaVu Sans Mono-normal-normal-normal-*-30-*-*-*-m-0-fontset-my")
-    (create-fontset-from-fontset-spec
-     "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my")
-    )
-  ;; 中文使用wqy micro hei mono
-  (set-fontset-font "fontset-my" 'han "WenQuanYi Micro Hei Mono")
+(defun my-load-fonts (&optional frame)
+  (when frame (select-frame frame))
+  ;; ;; 默认使用 DejaVu Sans Mono字体
+  ;; (if (and (equal (x-display-pixel-width) 5760)
+  ;;          (equal (x-display-pixel-height) 2160))
+  ;;     (create-fontset-from-fontset-spec
+  ;;      "-*-Monospace-*-*-*-*-30-*-*-*-m-0-fontset-my")
+  ;;   (create-fontset-from-fontset-spec
+  ;;    "-*-Monospace-*-*-*-*-15-*-*-*-m-0-fontset-my")
+  ;;   ;; (create-fontset-from-fontset-spec
+  ;;   ;;  "-*-DejaVu Sans Mono-*-*-*-*-30-*-*-*-m-0-fontset-my")
+  ;;   ;; (create-fontset-from-fontset-spec
+  ;;   ;;  "-*-DejaVu Sans Mono-*-*-*-*-15-*-*-*-m-0-fontset-my")
+  ;;   )
+  ;; ;; ;; 中文使用wqy micro hei mono
+  ;; ;; (set-fontset-font "fontset-my" 'han "WenQuanYi Micro Hei Mono")
+  ;; ;; (set-fontset-font "fontset-my" 'han "WenQuanYi Zen Hei Mono")
+  ;; ;; (set-fontset-font "fontset-my" 'han "Source Han Sans CN")
+  ;; ;; (set-fontset-font "fontset-my" 'han "AR PL UKai CN")
+  ;; (add-to-list 'default-frame-alist '(font . "fontset-my"))
 
-  ;; (create-fontset-from-fontset-spec
-  ;;  (concat "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my,"
-  ;;          "chinese-gbk: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
-  ;;          "chinese-iso-8bit: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
-  ;;          "chinese-big5: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
-  ;;          "chinese-cns11643: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1"
-  ;;          ))
-  (add-to-list 'default-frame-alist '(font . "fontset-my")))
+  (set-fontset-font "fontset-default" 'unicode "Monospace")
+  (set-fontset-font "fontset-default" 'han "WenQuanYi Micro Hei Mono")
+
+  (if (and (window-system)
+           (equal (x-display-pixel-width) 5760)
+           (equal (x-display-pixel-height) 2160))
+      (set-face-font 'default "Monospace-11")
+    (set-face-font 'default "Mononspace-6")))
+
+(if (daemonp)
+    (add-hook 'after-make-frame-functions #'my-load-fonts)
+  (my-load-fonts))
 
 
 ;; frame opacity
@@ -235,7 +247,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
         		               (powerline-fill face1 (powerline-width rhs))
         		               (powerline-render rhs)))))))
   :config
-  (powerline-my-theme))
+  (powerline-my-theme)
+  (add-hook 'after-make-frame-functions #'powerline-reset))
 
 (use-package beacon
   :ensure t
