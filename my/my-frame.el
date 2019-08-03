@@ -248,7 +248,9 @@ Selectively runs either `my-after-make-console-frame-hooks' or
         		               (powerline-render rhs)))))))
   :config
   (powerline-my-theme)
-  (add-hook 'after-make-frame-functions #'powerline-reset))
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions #'powerline-reset))
+  )
 
 (use-package beacon
   :ensure t
@@ -291,16 +293,16 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   :config
   (setq speedbar-show-unknown-files t)
   (setq speedbar-tag-hierarchy-method
-	    '(speedbar-prefix-group-tag-hierarchy))
+        '(speedbar-prefix-group-tag-hierarchy))
 
   (speedbar-add-supported-extension ".go")
   (add-hook 'speedbar-mode-hook
-	        (lambda ()
-	          (auto-raise-mode t)
-	          (setq dframe-update-speed 1)
-	          ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
-	          ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
-	          )))
+            (lambda ()
+              (auto-raise-mode t)
+              (setq dframe-update-speed 1)
+              ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
+              ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
+              )))
 
 (global-set-key (kbd "<f11>") 'toggle-frame-fullscreen)
 (global-set-key (kbd "M-<f11>") 'toggle-frame-maximized)

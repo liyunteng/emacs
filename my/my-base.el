@@ -103,15 +103,24 @@
       "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
 
 ;; initial mode
-;; (setq-default initial-major-mode
-;;               'lisp-interaction-mode)
+(setq-default initial-major-mode 'lisp-interaction-mode)
+;; (setq-default initial-major-mode 'org-mode)
 ;; initial scarch message
-(add-hook 'after-init-hook
-          (lambda ()
-            (setq initial-scratch-message
-                  (concat ";; Happy Hacking, " user-login-name
-                          (if user-full-name (concat " ("user-full-name ")"))
-                          " - Emacs ♥ you!\n\n"))))
+(defun my--set-initial-scratch-message ()
+  "My set initial scratch message."
+  (let ((m (concat "Happy Hacking, " user-login-name
+                   (if user-full-name (concat " ("user-full-name ")"))
+                   " - Emacs ♥ you!\n\n")))
+    (setq initial-scratch-message
+          (case initial-major-mode
+            (lisp-interaction-mode
+             (concat  ";; " m))
+            (org-mode
+             (concat  "# " m))
+            (otherwise
+             (concat  "" m))))))
+(add-hook 'after-init-hook #'my--set-initial-scratch-message)
+
 ;; conflic with desktop
 ;; (setq initial-buffer-choice t)
 (setq inhibit-startup-screen t)
@@ -149,7 +158,7 @@
 	         (concat (expand-file-name "auto-save/" my-cache-dir) "_saves-") )
             (t
 	         (concat (expand-file-name "auto-save/" my-cache-dir) ".saves-"))))
-
+(setq auto-save-file-name-transforms `((".*" ,(concat (expand-file-name "auto-save/" my-cache-dir)) t)))
 
 (provide 'my-base)
 ;;; my-base.el ends here

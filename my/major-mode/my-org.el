@@ -213,6 +213,9 @@
   (define-key org-mode-map (kbd "C-M-<up>") 'org-up-element)
   (define-key org-mode-map (kbd "C-c C-.") 'org-time-stamp-inactive))
 
+(use-package htmlize
+  :defer t
+  :ensure t)
 
 (use-package org-capture
   :defer t

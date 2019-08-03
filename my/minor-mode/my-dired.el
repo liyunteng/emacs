@@ -110,6 +110,20 @@ if no files marked, always operate on current line in dired-mode."
     (add-to-list 'dired-omit-extensions ex))
   (add-hook 'dired-mode-hook 'dired-omit-mode))
 
+(use-package dired-git-info
+  :after dired
+  :ensure t
+  :bind
+  (:map dired-mode-map
+        (")" . dired-git-info-mode)))
+
+(use-package dired-rsync
+  :after dired
+  :ensure t
+  :bind
+  (:map dired-mode-map
+        ("r" . dired-rsync)))
+
 (use-package dired-quick-sort
   :ensure t
   :bind (:map dired-mode-map
@@ -143,5 +157,43 @@ if no files marked, always operate on current line in dired-mode."
 ;;         ("\\.pdf\\'" "evince &")
 ;;         ("\\.chm\\'" "xchm &")))
 
+
+(use-package treemacs
+  :ensure t
+  :bind (:map global-map
+              ([f8]        . treemacs))
+  :config
+  (setq treemacs-follow-after-init          t
+        treemacs-width                      35
+        treemacs-indentation                2
+        treemacs-git-integration            t
+        treemacs-collapse-dirs              3
+        treemacs-silent-refresh             nil
+        treemacs-change-root-without-asking nil
+        treemacs-sorting                    'alphabetic-desc
+        treemacs-show-hidden-files          t
+        treemacs-never-persist              nil
+        treemacs-is-never-other-window      nil
+        treemacs-goto-tag-strategy          'refetch-index)
+  (setq treemacs-persist-file (expand-file-name "treemacs/treemacs-persist" my-cache-dir)
+        treemacs-last-error-persist-file (expand-file-name "treemacs/treemacs-persist-at-last-error" my-cache-dir))
+
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t))
+
+(use-package treemacs-projectile
+  :ensure t
+  :after treemacs projectile
+  :config
+  (setq treemacs-header-function #'treemacs-projectile-create-header))
+
+(use-package treemacs-magit
+  :after treemacs magit
+  :ensure t)
+
+(use-package treemacs-icons-dired
+  :after treemacs dired
+  :ensure t
+  :config (treemacs-icons-dired-mode))
 (provide 'my-dired)
 ;;; my-dired.el ends here

@@ -91,6 +91,7 @@ This function is suitable to add to `find-file-root-hook'."
 
   :config
   (setq tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
+  (setq tramp-backup-directory-alist `((".*" ,(expand-file-name "tramp" my-cache-dir))))
 
   (setq tramp-verbose 3)
   (setq tramp-default-method "ssh")

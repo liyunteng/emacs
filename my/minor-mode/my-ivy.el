@@ -83,9 +83,7 @@
     "Make `ivy' matching work more like IDO."
     (interactive)
     (setq-default ivy-re-builders-alist
-                  '((t . ivy--regex-fuzzy))))
-
-  )
+                  '((t . ivy--regex-fuzzy)))))
 
 
 
