@@ -38,12 +38,13 @@
   :config
   (setq dired-dwim-target t
         dired-recursive-deletes 'top
-        dired-recursive-copies 'top)
-  ;;传给ls的参数
-  (if (or (eq system-type 'linux)
-	      (eq system-type 'gnu/linux))
-      (setq dired-listing-switches "-alhqD")
-    (setq dired-listing-switches "-alh"))
+        dired-recursive-copies 'top
+        dired-listing-switches "--group-directories-first -alhq")
+
+  ;; (if (or (eq system-type 'linux)
+  ;;         (eq system-type 'gnu/linux))
+  ;;     (setq dired-listing-switches "--group-directories-first -alhqD")
+  ;;   (setq dired-listing-switches "--group-directories-first -alh"))
 
   ;; goto parent dir
   (defvar-local my--subdir-parent nil)
@@ -81,10 +82,8 @@ if no files marked, always operate on current line in dired-mode."
     (dired-do-shell-command command arg file-list)
     (message command))
 
-
   (define-key dired-mode-map (kbd "M-s a") nil)
   (define-key dired-mode-map (kbd "M-s f") 'find-name-dired)
-
   (define-key dired-mode-map [mouse-2] 'dired-find-file)
   (define-key dired-mode-map (kbd "M-<return>") 'dired-do-find-marked-files)
   (define-key dired-mode-map (kbd "C-M-<return>") 'diredp-do-find-marked-files-recursive)
@@ -96,9 +95,30 @@ if no files marked, always operate on current line in dired-mode."
   (when (fboundp 'crux-open-with)
     (define-key dired-mode-map (kbd "M-o") 'crux-open-with))
   ;; (define-key dired-mode-map (kbd "=") 'dired-compare-directories)
-
   ;; rename filename in dired-mode
   (define-key dired-mode-map (kbd "C-c C-e") 'wdired-change-to-wdired-mode))
+
+(use-package dired-filter
+  :ensure t
+  :init
+  (add-hook 'dired-mode-hook 'dired-filter-group-mode)
+
+  :config
+  (set-face-attribute 'dired-filter-group-header  nil
+                      :inherit 'isearch)
+  (setq dired-filter-group-saved-groups
+        '(("default"
+           ("Directories" (directory))
+           ("PDF"
+            (extension . "pdf"))
+           ("LaTeX"
+            (extension "tex" "bib"))
+           ("Org"
+            (extension . "org"))
+           ("Archives"
+            (extension "zip" "rar" "gz" "bz2" "tar"))
+           ("Multimedia"
+            (extension "ogg" "flv" "mpg" "avi" "mp4" "mp3" "mkv" "webm"))))))
 
 (use-package dired-x
   :after dired
@@ -113,16 +133,16 @@ if no files marked, always operate on current line in dired-mode."
 (use-package dired-git-info
   :after dired
   :ensure t
-  :bind
-  (:map dired-mode-map
-        (")" . dired-git-info-mode)))
+  :bind (:map dired-mode-map
+              (")" . dired-git-info-mode))
+  :config
+  (setq dgi-commit-message-format "%h\t%an\t %cr\t %s"))
 
 (use-package dired-rsync
   :after dired
   :ensure t
-  :bind
-  (:map dired-mode-map
-        ("r" . dired-rsync)))
+  :bind (:map dired-mode-map
+              ("r" . dired-rsync)))
 
 (use-package dired-quick-sort
   :ensure t
@@ -130,8 +150,8 @@ if no files marked, always operate on current line in dired-mode."
               ("s" . hydra-dired-quick-sort/body)))
 
 (use-package dired-filetype-face
-  :ensure t
   :after dired
+  :ensure t
   :config
   (deffiletype-face "code" "#9FC59F" "code")
   (deffiletype-face-regexp code
@@ -166,26 +186,23 @@ if no files marked, always operate on current line in dired-mode."
   (setq treemacs-follow-after-init          t
         treemacs-width                      35
         treemacs-indentation                2
-        treemacs-git-integration            t
         treemacs-collapse-dirs              3
         treemacs-silent-refresh             nil
-        treemacs-change-root-without-asking nil
         treemacs-sorting                    'alphabetic-desc
         treemacs-show-hidden-files          t
-        treemacs-never-persist              nil
         treemacs-is-never-other-window      nil
         treemacs-goto-tag-strategy          'refetch-index)
-  (setq treemacs-persist-file (expand-file-name "treemacs/treemacs-persist" my-cache-dir)
-        treemacs-last-error-persist-file (expand-file-name "treemacs/treemacs-persist-at-last-error" my-cache-dir))
+  (setq treemacs-persist-file
+        (expand-file-name "treemacs/treemacs-persist" my-cache-dir)
+        treemacs-last-error-persist-file
+        (expand-file-name "treemacs/treemacs-persist-at-last-error" my-cache-dir))
 
   (treemacs-follow-mode t)
   (treemacs-filewatch-mode t))
 
 (use-package treemacs-projectile
   :ensure t
-  :after treemacs projectile
-  :config
-  (setq treemacs-header-function #'treemacs-projectile-create-header))
+  :after treemacs projectile)
 
 (use-package treemacs-magit
   :after treemacs magit
@@ -194,6 +211,7 @@ if no files marked, always operate on current line in dired-mode."
 (use-package treemacs-icons-dired
   :after treemacs dired
   :ensure t
-  :config (treemacs-icons-dired-mode))
+  :config (treemacs-icons-dired-mode -1))
 (provide 'my-dired)
+
 ;;; my-dired.el ends here
