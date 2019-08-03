@@ -75,7 +75,7 @@
 	    desktop-missing-file-warning nil
         desktop-load-locked-desktop t
 	    desktop-restore-in-current-display t
-        desktop-restore-frames t
+        desktop-restore-frames nil
         desktop-restore-reuses-frames t
 	    desktop-save t
 	    ;; desktop-save 'ask-if-new
@@ -91,35 +91,48 @@
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
   (setq desktop-globals-to-save
-	    (append '((comint-input-ring        . 50)
-		          (compile-history          . 30)
+	    (append '((desktop-saved-frameset   . nil)  ;don't save frameset
+                  (buffer-name-history      . 30)
+                  (command-history          . 30)
+                  (compile-history          . 10)
+                  (extended-command-history . 30)
+                  (comint-input-ring        . 30)
+                  (dired-regexp-history     . 10)
+                  (face-name-history        . 20)
+                  (file-name-history        . 50)
                   desktop-missing-file-warning
-		          (dired-regexp-history     . 20)
-		          (extended-command-history . 30)
-		          (face-name-history        . 20)
-		          (file-name-history        . 100)
-		          (grep-find-history        . 30)
-		          (grep-history             . 30)
-		          (helm-ff-history          . 100)
-		          (helm-file-name-history   . 100)
-                  (helm-M-x-input-history   . 100)
-                  (helm-external-command-history . 20)
+                  (grep-files-history       . 10)
+		          (grep-find-history        . 10)
+		          (grep-history             . 10)
+                  (grep-regexp-history      . 10)
+		          (helm-ff-history          . 30)
+		          (helm-file-name-history   . 30)
+                  (helm-M-x-input-history   . 30)
+                  (helm-external-command-history . 30)
 		          (helm-grep-history        . 30)
 		          (helm-occur-history       . 30)
-		          (ido-buffer-history       . 100)
-		          (ido-last-directory-list  . 100)
-		          (ido-work-directory-list  . 100)
-		          (ido-work-file-list       . 100)
-		          (ivy-history              . 100)
+                  (ido-file-history         . 30)
+		          (ido-buffer-history       . 30)
+		          (ido-last-directory-list  . 30)
+		          (ido-work-directory-list  . 30)
+		          (ido-work-file-list       . 30)
+		          (ivy-history              . 30)
+                  (counsel-M-x-history      . 30)
+                  (counsel-compile-history       . 10)
+                  (counsel-describe-symbol-history . 10)
+                  (counsel-grep-history           . 10)
+                  (counsel-locate-history    . 10 )
+                  (counsel-set-variable-history . 10)
+                  (swiper-history           . 30)
+                  (minibuffer-history       . 50)
 		          (magit-read-rev-history   . 50)
-		          (minibuffer-history       . 50)
 		          (org-clock-history        . 50)
 		          (org-refile-history       . 50)
 		          (org-tags-history         . 50)
-		          (query-replace-history    . 60)
-		          (read-expression-history  . 60)
-		          (regexp-history           . 60)
-		          (regexp-search-ring       . 20)
+		          (query-replace-history    . 10)
+		          (read-expression-history  . 10)
+		          (regexp-history           . 10)
+		          (regexp-search-ring       . 10)
 		          (search-ring              . 20)
 		          (shell-command-history    . 50)
 		          tags-file-name
@@ -154,15 +167,10 @@
     (setq desktop-dirname my-cache-dir)))
 
 ;; savehist keeps track of some history
-(use-package savehist
-  :init
-  (setq savehist-file (expand-file-name "savehist" my-cache-dir))
-  (add-hook 'after-init-hook 'savehist-mode))
-
-(use-package saveplace
-  :init
-  (setq save-place-file (expand-file-name "saveplace" my-cache-dir))
-  (add-hook 'after-init-hook 'save-place-mode))
+;; (use-package savehist
+;;   :init
+;;   (setq savehist-file (expand-file-name "savehist" my-cache-dir))
+;;   (add-hook 'after-init-hook 'savehist-mode))
 
 ;; (use-package session
 ;;   :ensure t
@@ -171,6 +179,11 @@
 ;;   (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
 ;;   (setq session-save-file-coding-system 'utf-8)
 ;;   (add-hook 'after-init-hook 'session-initialize))
+
+(use-package saveplace
+  :init
+  (setq save-place-file (expand-file-name "saveplace" my-cache-dir))
+  (add-hook 'after-init-hook 'save-place-mode))
 
 (use-package super-save
   :ensure t

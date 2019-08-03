@@ -97,23 +97,26 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 ;; fonts
 (setq font-use-system-font t)
 ;; 默认使用 DejaVu Sans Mono字体
-(if (and (equal (x-display-pixel-width) 5760)
-         (equal (x-display-pixel-height) 2160))
+(when (and (not (daemonp)) (window-system))
+  (if (and
+       (equal (x-display-pixel-width) 5760)
+       (equal (x-display-pixel-height) 2160))
+      (create-fontset-from-fontset-spec
+       "-*-DejaVu Sans Mono-normal-normal-normal-*-30-*-*-*-m-0-fontset-my")
     (create-fontset-from-fontset-spec
-     "-*-DejaVu Sans Mono-normal-normal-normal-*-30-*-*-*-m-0-fontset-my")
-  (create-fontset-from-fontset-spec
-   "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my"))
-;; 中文使用wqy micro hei mono
-(set-fontset-font "fontset-my" 'han "WenQuanYi Micro Hei Mono")
+     "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my")
+    )
+  ;; 中文使用wqy micro hei mono
+  (set-fontset-font "fontset-my" 'han "WenQuanYi Micro Hei Mono")
 
-;; (create-fontset-from-fontset-spec
-;;  (concat "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my,"
-;;          "chinese-gbk: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
-;;          "chinese-iso-8bit: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
-;;          "chinese-big5: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
-;;          "chinese-cns11643: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1"
-;;          ))
-(add-to-list 'default-frame-alist '(font . "fontset-my"))
+  ;; (create-fontset-from-fontset-spec
+  ;;  (concat "-*-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-fontset-my,"
+  ;;          "chinese-gbk: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
+  ;;          "chinese-iso-8bit: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
+  ;;          "chinese-big5: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1,"
+  ;;          "chinese-cns11643: -*-WenQuanYi Micro Hei Mono-normal-normal-normal-*-*-*-*-*-iso10646-1"
+  ;;          ))
+  (add-to-list 'default-frame-alist '(font . "fontset-my")))
 
 
 ;; frame opacity

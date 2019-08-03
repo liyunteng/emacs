@@ -76,6 +76,7 @@
     ("\\.thrift\\'" thrift thrift-mode)
     ("\\.yml\\'" yaml-mode yaml-mode)
     ("\\.yaml\\'" yaml-mode yaml-mode)
+    ("\\.service\\'\\|\\.target\\'" systemd systemd-mode)
     ("Dockerfile\\'" dockerfile-mode dockerfile-mode)))
 
 (defmacro my|auto-install (extension package mode)
@@ -109,15 +110,14 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
 
 
 
-
+(add-to-list 'auto-mode-alist '("^/etc/.*\\'" . conf-mode))
 (add-to-list 'auto-mode-alist '("\\.offlineimaprc\\'" . conf-mode))
-
 (add-to-list 'auto-mode-alist '("\\.bash_profile\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.bash_history\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.sh\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.bash\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.bashrc.local\\'" . sh-mode))
-(add-to-list 'auto-mode-alist '("\\.zsh\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.zshrc\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
 
 (provide 'my-sh)

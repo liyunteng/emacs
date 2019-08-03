@@ -32,14 +32,14 @@
   :ensure t
   :commands (hs-minor-mode)
   :bind (:map hs-minor-mode-map
-	          ("C-c m h" . hs-hide-block)
-	          ("C-c m s" . hs-show-block)
-	          ("C-c m H" . hs-hide-all)
-	          ("C-c m S" . hs-show-all)
-	          ("C-c m l" . hs-hide-level)
+	          ;; ("C-c m h" . hs-hide-block)
+	          ;; ("C-c m s" . hs-show-block)
+	          ;; ("C-c m H" . hs-hide-all)
+	          ;; ("C-c m S" . hs-show-all)
+	          ;; ("C-c m l" . hs-hide-level)
 	          ("C-c m m" . hs-toggle-hiding)
 	          ("C-c m M" . my/hs-toggle-hiding-all)
-	          ("C-c m i" . my/hs-toggle-initial-comment-block)
+	          ("C-c m l" . my/hs-toggle-initial-comment-block)
 	          ([shfit mouse-1] . hs-mouse-toggle-hiding))
 
   :init

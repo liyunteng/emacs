@@ -74,14 +74,14 @@
   :ensure t
   :defines (uptimes-database)
   :preface
-  (setq uptimes-database (expand-file-name ".uptime.el" my-cache-dir)))
+  (setq uptimes-database (expand-file-name "uptime" my-cache-dir)))
 
 (use-package keyfreq
   :ensure t
   :diminish keyfreq-mode
   :init
-  (setq keyfreq-file (expand-file-name ".keyfreq" my-cache-dir))
-  (setq keyfreq-file-lock (expand-file-name ".keyfreq.lock" my-cache-dir))
+  (setq keyfreq-file (expand-file-name "keyfreq" my-cache-dir))
+  (setq keyfreq-file-lock (expand-file-name "keyfreq.lock" my-cache-dir))
   (keyfreq-mode +1)
   (keyfreq-autosave-mode +1))
 

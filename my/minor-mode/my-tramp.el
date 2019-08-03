@@ -29,6 +29,10 @@
   :defines (tramp-default-user-alist)
   :bind ("C-x M-f" . find-file-root)
   :init
+  (require 'tramp-cache)
+  (setq tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))
+  (setq password-cache t)
+  (setq password-cache-expiry 36000)
 
   ;;使用sudo 编辑文件
   (defvar find-file-root-prefix (if (featurep 'xemacs) "/[sudo/root@localhost]" "/sudo:root@localhost:" )
@@ -84,22 +88,18 @@ This function is suitable to add to `find-file-root-hook'."
 
   :config
   (setq tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
-  (setq tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))
 
-  (setq tramp-verbose 0)
-  ;; (setq-default tramp-default-method "ssh")
-  (setq tramp-default-method "rcp")
+  (setq tramp-verbose 3)
+  (setq tramp-default-method "ssh")
+  ;; (setq tramp-default-method "rcp")
   (setq tramp-default-user "root")
   (setq tramp-default-host "127.0.0.1")
-
   (setq tramp-chunksize 8196)
-  (setq password-cache t)
-  (setq password-cache-expiry 36000)
   (setq tramp-connection-timeout 10)
 
 ;;; 解决tramp登陆失败，导致emacs假死的问题
   ;; (setq tramp-ssh-controlmaster-options nil)
-  (setq tramp-use-ssh-controlmaster-options nil)
+  ;; (setq tramp-use-ssh-controlmaster-options nil)
 
   ;;(add-to-list 'tramp-remote-process-environment
   ;;(format "DISPALY=%s" (getenv "DISPLAY")))

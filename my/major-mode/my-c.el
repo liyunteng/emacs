@@ -195,13 +195,14 @@
   (define-key hide-ifdef-mode-map (kbd "C-c i H") 'hide-ifdefs)
   (define-key hide-ifdef-mode-map (kbd "C-c i D") 'hide-ifdef-define)
   (define-key hide-ifdef-mode-map (kbd "C-c i U") 'hide-ifdef-undef)
-  (define-key hide-ifdef-mode-map (kbd "C-c i t i") 'hide-ifdef-toggle-read-only)
-  (define-key hide-ifdef-mode-map (kbd "C-c i t o") 'hide-ifdef-toggle-outside-read-only)
-  (define-key hide-ifdef-mode-map (kbd "C-c i t s") 'hide-ifdef-toggle-shadowing)
+  ;; (define-key hide-ifdef-mode-map (kbd "C-c i t i") 'hide-ifdef-toggle-read-only)
+  ;; (define-key hide-ifdef-mode-map (kbd "C-c i t o") 'hide-ifdef-toggle-outside-read-only)
+  ;; (define-key hide-ifdef-mode-map (kbd "C-c i t s") 'hide-ifdef-toggle-shadowing)
   (define-key hide-ifdef-mode-map (kbd "C-c i C") 'hif-clear-all-ifdef-defined)
   (define-key hide-ifdef-mode-map (kbd "C-c i a d") 'hide-ifdef-set-define-alist)
   (define-key hide-ifdef-mode-map (kbd "C-c i a u") 'hide-ifdef-use-define-alist)
-  (define-key hide-ifdef-mode-map (kbd "C-c i i") 'my/toggle-ifdefs)
+  (define-key hide-ifdef-mode-map (kbd "C-c i m") 'my/toggle-ifdefs)
+  (define-key hide-ifdef-mode-map (kbd "C-c m i") 'my/toggle-ifdefs)
 
 
   (defun hif-canonicalize (regexp)
@@ -231,9 +232,6 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
               (setq tokens (butlast tokens)))
           ;; (message "######TOKEN: %S" tokens)
           (hif-parse-exp tokens)))))
-
-
-
 
   ;; fix can't use = with string
   ;; (defun hif-mathify (val)
