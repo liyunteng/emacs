@@ -54,9 +54,10 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (add-hook 'my-after-make-console-frame-hooks 'my--console-frame-setup)
 
 
-(defun my/set-gui-frame ()
+(defun my/set-gui-frame (&optional frame)
   "Supperess GUI features."
   (interactive)
+  (when frame (select-frame frame))
   (set-frame-width (selected-frame) 80)
   (set-frame-height (selected-frame) 35)
   ;; removes the GUI elements
@@ -92,7 +93,9 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (let ((no-border '(internal-border-width . 0)))
     (add-to-list 'default-frame-alist no-border)
     (add-to-list 'initial-frame-alist no-border)))
-(my/set-gui-frame)
+(if (daemonp)
+    (add-hook 'after-make-frame-functions #'my/set-gui-frame)
+  (my/set-gui-frame))
 
 
 ;; fonts

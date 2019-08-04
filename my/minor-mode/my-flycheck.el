@@ -34,19 +34,10 @@
 	           ("C-c ! L" . my/flycheck-error-list-and-switch)
 	           ("C-c ! C-l" . my/flycheck-error-list-and-switch)))
   :init
-  (defun my/flycheck-error-list-and-switch ()
-    "Open and goto the error list buffer."
-    (interactive)
-    (unless (get-buffer-window (get-buffer flycheck-error-list-buffer))
-      (flycheck-list-errors)
-      (switch-to-buffer-other-window flycheck-error-list-buffer)))
-
   (add-hook 'after-init-hook 'global-flycheck-mode)
 
   :config
   (setq flycheck-mode-line-prefix "flycheck")
-  ;; (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
-
   (when (and (fboundp 'define-fringe-bitmap)
              (not my-flycheck-use-original-bitmaps))
     (define-fringe-bitmap 'my-flycheck-fringe-indicator
@@ -86,21 +77,36 @@
         :fringe-bitmap bitmap
         :fringe-face 'flycheck-fringe-info)))
 
-  (when (boundp 'popwin:special-display-config)
-    (push '("^\\*Flycheck.+\\*$"
-            :regexp t
-            :dedicated t
-            :position bottom
-            :stick t
-            :noselect t)
-          popwin:special-display-config)))
+  (defun my/flycheck-error-list-and-switch ()
+    "Open and goto the error list buffer."
+    (interactive)
+    (unless (get-buffer-window (get-buffer flycheck-error-list-buffer))
+      (flycheck-list-errors))
+    (switch-to-buffer-other-window flycheck-error-list-buffer))
+
+  (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
+  )
+
+(after-load 'popwin
+  ;; (popwin-mode t)
+  (push '("*Flycheck error messages*"
+          ;; :regexp t
+          :dedicated t
+          :position bottom
+          :stick t
+          :noselect t)
+        popwin:special-display-config))
 
 (use-package flycheck-pos-tip
   :ensure t
-  :if (display-graphic-p)
-  :after flycheck
-  :config
-  (flycheck-pos-tip-mode 1))
+  :init
+  (defun my-enable-flycheck-pos-tip-mode (&optional frame)
+    (when frame (select-frame frame))
+    (flycheck-pos-tip-mode +1))
+
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions #'my-enable-flycheck-pos-tip-mode)
+    (flycheck-pos-tip-mode +1)))
 
 (provide 'my-flycheck)
 ;;; my-flycheck.el ends here
