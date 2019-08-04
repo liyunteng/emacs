@@ -317,8 +317,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
               ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
               )))
 
-(global-set-key (kbd "<f11>") 'toggle-frame-fullscreen)
-(global-set-key (kbd "M-<f11>") 'toggle-frame-maximized)
+(global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)
+(global-set-key (kbd "<f11>") 'toggle-frame-maximized)
 (global-set-key (kbd "<f12>") 'toggle-menu-bar-mode-from-frame)
 ;; (global-set-key (kbd "<f12>") 'menu-bar-mode)
 
