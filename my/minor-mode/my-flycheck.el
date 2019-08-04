@@ -37,7 +37,7 @@
   (add-hook 'after-init-hook 'global-flycheck-mode)
 
   :config
-  (setq flycheck-mode-line-prefix "flycheck")
+  (setq flycheck-mode-line-prefix "fc")
   (when (and (fboundp 'define-fringe-bitmap)
              (not my-flycheck-use-original-bitmaps))
     (define-fringe-bitmap 'my-flycheck-fringe-indicator

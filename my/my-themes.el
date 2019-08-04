@@ -154,7 +154,7 @@
    `(helm-ff-dotted-directory
      ((t (:foreground "#00FFFF" :background "#000000"))))))
 
-(defun my/load-theme (&optional frame)
+(defun my/frame-load-theme (&optional frame)
   (interactive)
   (when frame (select-frame frame))
   (if (equal my-theme 'zenburn)
@@ -164,8 +164,8 @@
     (load-them my-theme t)))
 
 (if (daemonp)
-    (add-hook 'after-make-frame-functions #'my/load-theme)
-  (my/load-theme))
+    (add-hook 'after-make-frame-functions #'my/frame-load-theme)
+  (my/frame-load-theme))
 
 (provide 'my-themes)
 ;;; my-themes.el ends here

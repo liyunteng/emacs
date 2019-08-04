@@ -765,6 +765,8 @@ indent yanked text (with prefix arg don't indent)."
 ;; (put 'dired-find-alternate-file 'disabled nil)
 
 (diminish 'subword-mode)
+(diminish 'auto-fill-mode)
+(diminish 'hs-minor-mode)
 
 
 (defun my/count-words-analysis (start end)

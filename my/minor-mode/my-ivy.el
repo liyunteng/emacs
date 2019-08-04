@@ -43,6 +43,7 @@
 
   (use-package counsel
     :ensure t
+    :diminish counsel-mode
     :bind
     (("C-c C-j" . counsel-imenu)
      ("C-c h r" . counsel-recentf)

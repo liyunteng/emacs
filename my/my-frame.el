@@ -54,7 +54,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (add-hook 'my-after-make-console-frame-hooks 'my--console-frame-setup)
 
 
-(defun my/set-gui-frame (&optional frame)
+(defun my/frame-set-gui (&optional frame)
   "Supperess GUI features."
   (interactive)
   (when frame (select-frame frame))
@@ -94,13 +94,14 @@ Selectively runs either `my-after-make-console-frame-hooks' or
     (add-to-list 'default-frame-alist no-border)
     (add-to-list 'initial-frame-alist no-border)))
 (if (daemonp)
-    (add-hook 'after-make-frame-functions #'my/set-gui-frame)
-  (my/set-gui-frame))
+    (add-hook 'after-make-frame-functions #'my/frame-set-gui)
+  (my/frame-set-gui))
 
 
 ;; fonts
 (setq font-use-system-font t)
-(defun my-load-fonts (&optional frame)
+(defun my/frame-load-fonts (&optional frame)
+  (interactive)
   (when frame (select-frame frame))
   ;; ;; 默认使用 DejaVu Sans Mono字体
   ;; (if (and (equal (x-display-pixel-width) 5760)
@@ -131,8 +132,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
     (set-face-font 'default "Mononspace-6")))
 
 (if (daemonp)
-    (add-hook 'after-make-frame-functions #'my-load-fonts)
-  (my-load-fonts))
+    (add-hook 'after-make-frame-functions #'my/frame-load-fonts)
+  (my/frame-load-fonts))
 
 
 ;; frame opacity
@@ -196,65 +197,73 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (use-package powerline
   :ensure t
   :init
-  (defun powerline-my-theme ()
+  (defun my/frame-powerline-theme (&optional frame)
     "Setup a mode-line with major and minor modes centered."
     (interactive)
-    (setq mode-line-format
-          '("%e"
-            (:eval (window-number-string))
-            (:eval
-             (let* ((active (powerline-selected-window-active))
-                    (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
-                    (mode-line (if active 'mode-line 'mode-line-inactive))
-                    (face0 (if active 'powerline-active0 'powerline-inactive0))
-                    (face1 (if active 'powerline-active1 'powerline-inactive1))
-                    (face2 (if active 'powerline-active2 'powerline-inactive2))
-                    (separator-left (intern (format "powerline-%s-%s"
-                                                    (powerline-current-separator)
-                                                    (car powerline-default-separator-dir))))
-                    (separator-right (intern (format "powerline-%s-%s"
-                                                     (powerline-current-separator)
-                                                     (cdr powerline-default-separator-dir))))
-                    (lhs (list (powerline-raw mode-line-modified face0 'l)
-                               (when powerline-display-buffer-size
-                                 (powerline-buffer-size face0 'l)
-                                 (powerline-raw " " face0 'l))
-                               (when powerline-display-mule-info
-                                 (powerline-raw mode-line-mule-info face0 'r))
-                               (powerline-buffer-id `(mode-line-buffer-id ,face0) 'l)
-                               (powerline-raw " " face0 'l)
-                               (funcall separator-left face0 face1)
-                               (powerline-narrow face1 'l)
-                               (powerline-vc face1)))
-                    (rhs (list (powerline-raw global-mode-string face1 'r)
-                               (when (and (derived-mode-p 'prog-mode) which-function-mode)
-                                 (powerline-raw which-func-format face1 'r))
-                               (funcall separator-right face1 face0)
-                               (powerline-raw " " face0 'r)
-                               (powerline-raw "%l:%c" face0 'r)
-                               (powerline-raw "%4p" face0 'r)
-                               (powerline-hud face2 face1)
-                               (powerline-fill face0 0)))
-                    (center (list (powerline-raw " " face1)
-                                  (funcall separator-left face1 face2)
-                                  (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
-                                    (powerline-raw erc-modified-channels-object face2 'l))
-                                  (powerline-major-mode face2 'l)
-                                  (powerline-process face2)
-                                  (powerline-raw " :" face2)
-                                  (powerline-minor-modes face2 'l)
-                                  (powerline-raw " " face2)
-                                  (funcall separator-right face2 face1))))
-               (concat (powerline-render lhs)
-                       (powerline-fill-center face1 (/ (powerline-width center) 2.0))
-                       (powerline-render center)
-                       (powerline-fill face1 (powerline-width rhs))
-                       (powerline-render rhs)))))))
-  :config
-  (powerline-my-theme)
-  ;; (if (daemonp)
-  ;;     (add-hook 'after-make-frame-functions #'powerline-reset))
-  )
+    (when frame (select-frame frame))
+    (setq-default mode-line-format
+                  '("e" (:eval (window-number-string))
+                    (:eval
+                     (let* ((active (powerline-selected-window-active))
+                            (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
+                            (mode-line (if active 'mode-line 'mode-line-inactive))
+                            (face0 (if active 'powerline-active0 'powerline-inactive0))
+                            (face1 (if active 'powerline-active1 'powerline-inactive1))
+                            (face2 (if active 'powerline-active2 'powerline-inactive2))
+                            (separator-left (intern (format "powerline-%s-%s"
+                                                            (powerline-current-separator)
+                                                            (car powerline-default-separator-dir))))
+                            (separator-right (intern (format "powerline-%s-%s"
+                                                             (powerline-current-separator)
+                                                             (cdr powerline-default-separator-dir))))
+                            (lhs (list
+                                  (powerline-raw mode-line-modified face0 'l)
+                                  (when powerline-display-buffer-size
+                                    (powerline-buffer-size face0 'l)
+                                    (powerline-raw " " face0 'l))
+                                  (when powerline-display-mule-info
+                                    (powerline-raw mode-line-mule-info face0 'r))
+                                  ;; (concat (pcase (coding-system-eol-type buffer-file-coding-system)
+                                  ;;           (0 " LF")
+                                  ;;           (1 " CRLF")
+                                  ;;           (2 " CR"))
+                                  ;;         (let ((sys (coding-system-plist buffer-file-coding-system)))
+                                  ;;           (cond ((memq (plist-get sys :category)
+                                  ;;                        '(coding-category-undecided coding-category-utf-8))
+                                  ;;                  " UTF-8 ")
+                                  ;;                 (t (upcase (symbol-name (plist-get sys :name)))))))
+                                  (powerline-buffer-id `(mode-line-buffer-id ,face0) 'l)
+                                  (powerline-raw " " face0 'l)
+                                  (funcall separator-left face0 face1)
+                                  (powerline-narrow face1 'l)
+                                  (powerline-vc face1)))
+                            (rhs (list (powerline-raw global-mode-string face1 'r)
+                                       (when (and (derived-mode-p 'prog-mode) which-function-mode)
+                                         (powerline-raw which-func-format face1 'r))
+                                       (funcall separator-right face1 face0)
+                                       (powerline-raw " " face0 'r)
+                                       (powerline-raw "%l:%c" face0 'r)
+                                       (powerline-raw "%4p" face0 'r)
+                                       (powerline-hud face2 face1)
+                                       (powerline-fill face0 0)))
+                            (center (list (powerline-raw " " face1)
+                                          (funcall separator-left face1 face2)
+                                          (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
+                                            (powerline-raw erc-modified-channels-object face2 'l))
+                                          (powerline-major-mode face2 'l)
+                                          (powerline-process face2)
+                                          (powerline-raw " :" face2)
+                                          (powerline-minor-modes face2 'l)
+                                          (powerline-raw " " face2)
+                                          (funcall separator-right face2 face1))))
+                       (concat (powerline-render lhs)
+                               (powerline-fill-center face1 (/ (powerline-width center) 2.0))
+                               (powerline-render center)
+                               (powerline-fill face1 (powerline-width rhs))
+                               (powerline-render rhs)))))))
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions #'my/frame-powerline-theme)
+    (my/frame-powerline-theme)))
 
 (use-package beacon
   :ensure t
