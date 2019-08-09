@@ -124,12 +124,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
   (set-fontset-font "fontset-default" 'unicode "Monospace")
   (set-fontset-font "fontset-default" 'han "WenQuanYi Micro Hei Mono")
-
-  (if (and (window-system)
-           (equal (x-display-pixel-width) 5760)
-           (equal (x-display-pixel-height) 2160))
-      (set-face-font 'default "Monospace-11")
-    (set-face-font 'default "Mononspace-6")))
+  (set-face-font 'default "Monospace-10")
+  )
 
 (if (daemonp)
     (add-hook 'after-make-frame-functions #'my/frame-load-fonts)
