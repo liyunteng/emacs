@@ -29,7 +29,9 @@
                        find-grep lgrep rgrep
                        zrgrep rzgrep)
   :bind (("M-s /" . find-grep)
-         ("M-s g" . grep))
+         ("M-s g" . grep)
+         ("M-s e" . rgrep)
+         ("M-s l" . lgrep))
   :config
   (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r -e "
         grep-highlight-matches t
