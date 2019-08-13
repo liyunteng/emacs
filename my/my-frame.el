@@ -58,8 +58,9 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   "Supperess GUI features."
   (interactive)
   (when frame (select-frame frame))
-  (set-frame-width (selected-frame) 80)
-  (set-frame-height (selected-frame) 35)
+  (when (window-system)
+    (set-frame-width (selected-frame) 80)
+    (set-frame-height (selected-frame) 35))
   ;; removes the GUI elements
   (tool-bar-mode -1)
   (scroll-bar-mode -1)

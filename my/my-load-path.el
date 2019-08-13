@@ -38,6 +38,11 @@
   :type 'directory
   :group 'my-config)
 
+(defcustom my-org-dir (expand-file-name "org" user-emacs-directory)
+  "My org directory."
+  :type 'directory
+  :group 'my-config)
+
 (defcustom my-personal-info-file (expand-file-name "person-info.el" my-personal-dir)
   "My personal-info file."
   :type 'file

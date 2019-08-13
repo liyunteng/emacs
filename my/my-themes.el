@@ -151,9 +151,31 @@
      ((t (:foreground "#00FFFF" :weight bold))))
    `(company-template-field
      ((t (:background "#00FFFF"))))
-   `(helm-ff-dotted-directory
-     ((t (:foreground "#00FFFF" :background "#000000"))))))
 
+   `(helm-ff-dotted-directory
+     ((t (:foreground "#00FFFF" :background "#000000"))))
+
+   `(diff-added
+     ((t (:foreground "#0000FF" :background "#00FFFF"))))
+   `(diff-removed
+     ((t (:foreground "#FF0000" :background "#FFFF00"))))
+   `(diff-refine-added
+     ((t (:foreground "#0000FF" :background "#00FF00" :inherit diff-added))))
+   `(diff-refine-removed
+     ((t (:foreground "#FF0000" :background "#FF00FF":inherit diff-removed))))
+   `(diff-refine-changed
+     ((t (:inherit diff-changed))))
+   `(diff-hl-delete
+     ((t (:foreground "#FF0000" :background "#0000FF" :inherit diff-removed))))
+   `(diff-hl-insert
+     ((t (:foreground "#FF00FF" :weight bold :inherit diff-added))))
+
+   `(semantic-decoration-on-unknown-includes
+     ((t (:background "#FF0000" :weight bold ))))
+   `(semantic-decoration-on-unparsed-includes
+     ((t (:background "#FFFF00" :weight bold))))
+   )
+  )
 (defun my/frame-load-theme (&optional frame)
   (interactive)
   (when frame (select-frame frame))

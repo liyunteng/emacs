@@ -17,19 +17,20 @@
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 ;;; Commentary:
 
 ;;
 
 ;;; Code:
+
 ;;
+
 ;; locale
 (after-load 'mule
   (defun my-utf8-locale-p (v)
     "Return whether locale string V relates to a UTF-8 locale."
     (and v (or (string-match "UTF-8" v)
-	           (string-match "utf8" v))))
+               (string-match "utf8" v))))
 
   (defun my-locale-is-utf8-p ()
     "Return t iff the \"locale\" command or environment variables prefer UTF-8."
@@ -606,6 +607,7 @@ at the end of the line."
   :config
   (setq register-preview-delay 0)
   (set-register ?z '(file . "~/git/"))
+  (set-register ?o (cons 'file my-org-dir))
   ;; (set-register ?f '(window-configuration 10))
   ;; (add-to-list 'desktop-globals-to-save '(window-configuration))
   )

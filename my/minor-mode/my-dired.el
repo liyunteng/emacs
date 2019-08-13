@@ -178,40 +178,42 @@ if no files marked, always operate on current line in dired-mode."
 ;;         ("\\.chm\\'" "xchm &")))
 
 
-(use-package treemacs
-  :ensure t
-  :bind (:map global-map
-              ([f8]        . treemacs))
-  :config
-  (setq treemacs-follow-after-init          t
-        treemacs-width                      35
-        treemacs-indentation                2
-        treemacs-collapse-dirs              3
-        treemacs-silent-refresh             nil
-        treemacs-sorting                    'alphabetic-desc
-        treemacs-show-hidden-files          t
-        treemacs-is-never-other-window      nil
-        treemacs-goto-tag-strategy          'refetch-index)
-  (setq treemacs-persist-file
-        (expand-file-name "treemacs/treemacs-persist" my-cache-dir)
-        treemacs-last-error-persist-file
-        (expand-file-name "treemacs/treemacs-persist-at-last-error" my-cache-dir))
+(unless (version< emacs-version "26")
+  (use-package treemacs
+    :ensure t
+    :bind (:map global-map
+                ([f8]        . treemacs))
+    :config
+    (setq treemacs-follow-after-init          t
+          treemacs-width                      35
+          treemacs-indentation                2
+          treemacs-collapse-dirs              3
+          treemacs-silent-refresh             nil
+          treemacs-sorting                    'alphabetic-desc
+          treemacs-show-hidden-files          t
+          treemacs-is-never-other-window      nil
+          treemacs-goto-tag-strategy          'refetch-index)
+    (setq treemacs-persist-file
+          (expand-file-name "treemacs/treemacs-persist" my-cache-dir)
+          treemacs-last-error-persist-file
+          (expand-file-name "treemacs/treemacs-persist-at-last-error" my-cache-dir))
 
-  (treemacs-follow-mode t)
-  (treemacs-filewatch-mode t))
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t))
 
-(use-package treemacs-projectile
-  :ensure t
-  :after treemacs projectile)
+  (use-package treemacs-projectile
+    :ensure t
+    :after treemacs projectile)
 
-(use-package treemacs-magit
-  :after treemacs magit
-  :ensure t)
+  (use-package treemacs-magit
+    :after treemacs magit
+    :ensure t)
 
-(use-package treemacs-icons-dired
-  :after treemacs dired
-  :ensure t
-  :config (treemacs-icons-dired-mode -1))
+  (use-package treemacs-icons-dired
+    :after treemacs dired
+    :ensure t
+    :config (treemacs-icons-dired-mode -1)))
+
 (provide 'my-dired)
 
 ;;; my-dired.el ends here
