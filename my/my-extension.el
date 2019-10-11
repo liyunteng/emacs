@@ -360,6 +360,9 @@
   :init
   (lorem-ipsum-use-default-bindings))
 
+(use-package csharp-mode
+  :ensure t)
+
 ;; GTAGS
 ;; (use-package ggtags
 ;;   :ensure t
