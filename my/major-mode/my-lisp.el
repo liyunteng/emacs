@@ -80,7 +80,7 @@
 				                debugger-mode-hook))
 (use-package rainbow-mode
   :diminish rainbow-mode
-  :ensure t
+  ;; :ensure t
   :commands (rainbow-mode
 	         rainbow-turn-on)
   :init

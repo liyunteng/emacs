@@ -35,7 +35,7 @@
         ;; ("C-c C-J" . elpy-goto-definition-other-window)
         ("C-c C-q" . my/elpy-shell-kill)
         ("C-c C-Q" . my/elpy-shell-kill-all)
-        ;; ("C-c C-k" . kill-region)
+        ("C-c C-k" . kill-region)
         )
   :init
   (defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
@@ -46,7 +46,8 @@
   (when (file-exists-p my-python-virtualenv-dir)
     (setenv "WORKON_HOME" my-python-virtualenv-dir))
 
-  (defvar my-python-elpy-dependency '("jedi" "importmagic" "yapf")) ;autopep8
+  (setq elpy-rpc-virtualenv-path my-python-virtualenv-workon-dir)
+  (defvar my-python-elpy-dependency '("jedi" "flake8" "autopep8" "yapf" "repo"))
 
   (when (executable-find "ipython")
     (progn (setq python-shell-interpreter "ipython"
@@ -71,6 +72,16 @@
     		           elpy-module-pyvenv
     		           elpy-module-yasnippet
     		           elpy-module-django))
+  (defun my--python-install-libs (libs)
+    (let ((install-cmd (or (executable-find "pip")
+                           (executable-find "easy_install"))))
+      (if install-cmd
+          (mapc (lambda (n)
+                  (message "%s installing %s ..." install-cmd n)
+                  (shell-command (format "%s install %s" install-cmd n) nil))
+                libs)
+        (message "pip/easy_install not found, please install pip/easy_install"))))
+
   (defun my-install-python-virtualenv ()
     "My install python virtualenv."
     (if (or (not (file-exists-p my-python-virtualenv-dir))
@@ -84,19 +95,13 @@
 
     	      (setenv "WORKON_HOME" my-python-virtualenv-dir)
     	      (pyvenv-workon my-python-virtualenv-workon-name)
-    	      (let ((install-cmd (or (executable-find "pip")
-    			                     (executable-find "easy_install"))))
-    	        (if install-cmd
-    	            (mapc (lambda (n)
-    		                (message "%s installing %s ..." install-cmd n)
-    		                (shell-command (format "%s install %s" install-cmd n) nil))
-    		              my-python-elpy-dependency)
-    	          (message "pip/easy_install not found, please install pip/easy_install")))
+              (my--python-install-libs my-python-elpy-dependency)
     	      (elpy-rpc-restart)
     	      (message "Done"))))))
 
   (my-install-python-virtualenv)
-  (pyvenv-workon my-python-virtualenv-workon-name))
+  (pyvenv-workon my-python-virtualenv-workon-name)
+  )
 
 (use-package python
   :commands (python-mode run-python)
@@ -169,7 +174,9 @@
     ;; for python shell completion
     ;; (remove-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on-maybe-with-msg)
     ;; (add-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on)
-    ))
+    )
+  (remove-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on-maybe-with-msg)
+  )
 
 
 

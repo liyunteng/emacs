@@ -27,7 +27,7 @@
 
 ;; linum replaced by nlinum
 (use-package nlinum
-  :ensure t
+  ;; :ensure t
   :commands (nlinum-mode)
   :init
   (my|add-toggle linum-mode
@@ -192,7 +192,7 @@
   :init
   (setq undo-tree-auto-save-history nil)
   (setq undo-tree-history-directory-alist `((".*" . ,(expand-file-name "undo-tree/" my-cache-dir))))
-  (global-undo-tree-mode +1)
+  (add-hook 'after-init-hook 'global-undo-tree-mode)
 
   ;; fix undo-tree maybe cause menu-bar can't work
   ;; (remove-hook 'menu-bar-update-hook 'undo-tree-update-menu-bar)

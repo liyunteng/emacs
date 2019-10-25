@@ -47,7 +47,7 @@
     ("org" . "http://elpa.emacs-china.org/org/")
     ("marmalade" . "http://elpa.emacs-china.org/marmalade/"))
   "elpa.emacs-china.org mirror")
-(setq package-archives tsinghua-mirrors)
+(setq package-archives 163-mirrors)
 ;; (setq package-pinned-packages
 ;;       '((switch-window . "melpa-stable")))
 

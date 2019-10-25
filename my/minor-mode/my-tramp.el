@@ -29,6 +29,9 @@
   :defines (tramp-default-user-alist)
   :bind ("C-x M-f" . find-file-root)
   :init
+  (unless (file-exists-p (expand-file-name "tramp" my-cache-dir))
+    (make-directory (expand-file-name "tramp" my-cache-dir)))
+
   (require 'tramp-cache)
   (setq tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))
   (setq password-cache t)
@@ -36,6 +39,7 @@
 
   (require 'tramp-sh)
   (setq tramp-histfile-override (expand-file-name "tramp/tramp-history" my-cache-dir))
+
 
   ;;使用sudo 编辑文件
   (defvar find-file-root-prefix (if (featurep 'xemacs) "/[sudo/root@localhost]" "/sudo:root@localhost:" )

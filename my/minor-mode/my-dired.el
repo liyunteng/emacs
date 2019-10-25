@@ -132,7 +132,7 @@ if no files marked, always operate on current line in dired-mode."
 
 (use-package dired-git-info
   :after dired
-  :ensure t
+  ;; :ensure t
   :bind (:map dired-mode-map
               (")" . dired-git-info-mode))
   :config
