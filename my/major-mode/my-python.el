@@ -47,7 +47,8 @@
     (setenv "WORKON_HOME" my-python-virtualenv-dir))
 
   (setq elpy-rpc-virtualenv-path my-python-virtualenv-workon-dir)
-  (defvar my-python-elpy-dependency '("jedi" "flake8" "autopep8" "yapf" "repo"))
+  ;; (elpy-rpc--get-package-list)
+  (defvar my-python-elpy-dependency '("jedi" "flake8" "autopep8" "yapf" "rope"))
 
   (when (executable-find "ipython")
     (progn (setq python-shell-interpreter "ipython"
