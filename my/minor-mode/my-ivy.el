@@ -55,7 +55,7 @@
      ("C-c h x" . counsel-linux-app)
      ("C-c h b" . counsel-switch-buffer)
      ("C-c h C-b" . counsel-switch-buffer-other-window)
-     ("C-c h m" . woman)
+     ("C-c h m" . my/woman)
      ("C-c h M" . counsel-minor))
     :config
     (setq counsel-mode-override-describe-bindings t)
@@ -84,7 +84,15 @@
     "Make `ivy' matching work more like IDO."
     (interactive)
     (setq-default ivy-re-builders-alist
-                  '((t . ivy--regex-fuzzy)))))
+                  '((t . ivy--regex-fuzzy))))
+
+  (defun my/woman (&optional topic re-cache)
+    "Call woman in side window."
+    (interactive)
+    (let* ((b (current-buffer)))
+      (woman topic re-cache)
+      (display-buffer b 'display-buffer-in-side-window)))
+  )
 
 
 

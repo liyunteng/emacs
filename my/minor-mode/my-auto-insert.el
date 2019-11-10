@@ -56,6 +56,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
                                                "All rights reserved.")
                             :update-time nil)
   "streamocean auto-insert header.")
+(defvar mega-header (make-my-auto-insert-header
+                     :author (concat (user-full-name) " <liyunteng@megarobo.tech>")
+                     :copyright (concat (format-time-string "%Y")
+                                        " Megarobo, Inc."
+                                        "\n"
+                                        "All rights reserved.")))
 
 (defvar gpl-header (make-my-auto-insert-header
                     :license "GPL-2.0"
@@ -84,6 +90,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
 (defcustom my-auto-insert-header-alist '(null-header
                                          my-header
                                          streamocean-header
+                                         mega-header
                                          gpl-header)
   "My auto insert headers."
   :type 'list
@@ -95,7 +102,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   :type 'symbol
   :group 'my-config)
 ;; (setq auto-insert-header streamocean-header)
-(setq auto-insert-header 'streamocean-header)
+;; (setq auto-insert-header 'mega-header)
+(setq auto-insert-header 'my-header)
 
 
 (use-package autoinsert

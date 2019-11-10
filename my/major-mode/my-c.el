@@ -458,7 +458,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (define-key c-mode-base-map (kbd "C-c C-b") nil)                       ;c-submit-bug-report
   (define-key c-mode-base-map (kbd "C-c C-w") nil)                       ;c-subword-mode
   (define-key c-mode-base-map (kbd "C-c C-k") 'kill-region)              ;c-toggle-comment-style
-  ;; (define-key c-mode-base-map (kbd "TAB") 'my--cc-tab)
+  (define-key c-mode-base-map (kbd "TAB") nil)
   )
 
 ;; 添加Kernel的Include
