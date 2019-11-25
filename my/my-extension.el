@@ -128,6 +128,8 @@
     :documentation "Always keep code indent.")
   (aggressive-indent-mode -1))
 
+(use-package clang-format :ensure t)
+
 ;; delete space
 ;; (use-package hungry-delete
 ;;   :ensure t
