@@ -316,6 +316,12 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   ;;   (semantic-c-add-preprocessor-symbol "__cplusplus" "201103L")
   ;;   (semantic-c-reset-preprocessor-symbol-map))
 
+  ;; 添加Kernel的Include
+  (let ((include-dirs my-kernel-include-path))
+    (mapc (lambda (dir)
+            (semantic-add-system-include dir 'c-mode)
+            (semantic-add-system-include dir 'c++-mode)) include-dirs))
+
   (use-package semantic/bovine/c)
   (use-package semantic/ia
     :init
@@ -460,13 +466,6 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (define-key c-mode-base-map (kbd "C-c C-k") 'kill-region)              ;c-toggle-comment-style
   (define-key c-mode-base-map (kbd "TAB") nil)
   )
-
-;; 添加Kernel的Include
-;; (let ((include-dirs my-kernel-include-path))
-;;   (mapc (lambda (dir)
-;;           (osemantic-add-system-include dir 'c-mode)
-;;           (semantic-add-system-include dir 'c++-mode))
-;;         include-dirs))
 
 ;; (let ((include-dirs my-include-path))
 ;;   (mapc (lambda (dir)
