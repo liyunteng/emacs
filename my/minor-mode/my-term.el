@@ -99,16 +99,17 @@
 (use-package shell
   :commands (shell)
   :bind (("C-x t s" . shell))
-  :if (fboundp 'helm-comint-input-ring)
   :config
-  (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring))
+  (if (fboundp 'helm-comint-input-ring)
+      (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)))
 
 (use-package multi-term
   :ensure t
   :commands (multi-term)
-  :bind (("C-x e" . my/multi-term)
-         ("C-x x" . my/multi-term-dedicated-toggle-and-select)
+  :bind (
+         ;; ("C-x e" . my/multi-term)
          ("C-x t x" . my/multi-term-dedicated-toggle-and-select)
+         ("C-x t l" . my/multi-term)
          ("C-x t t" . multi-term)
          ("C-x t n" . multi-term-next)
          ("C-x t p" . multi-term-prev))
@@ -129,9 +130,9 @@
   (defun my/term-mode-toggle-line-mode ()
     (interactive)
     (if (eq major-mode 'term-mode)
-	    (if (term-in-char-mode)
-	        (term-line-mode)
-	      (term-char-mode))
+        (if (term-in-char-mode)
+            (term-line-mode)
+          (term-char-mode))
       (message "not term-mode")))
 
   (defun my-term-mode-hook ()
@@ -146,23 +147,23 @@
   (add-hook 'term-mode-hook 'my-term-mode-hook)
 
   (setq multi-term-program my-term-shell
-	    multi-term-scroll-to-bottom-on-output t
-	    multi-term-scroll-show-maximum-output nil
-	    multi-term-switch-after-close nil
-	    )
+        multi-term-scroll-to-bottom-on-output t
+        multi-term-scroll-show-maximum-output nil
+        multi-term-switch-after-close nil
+        )
 
   (defvar my-multi-term-dedicated-old-buf nil)
   (defun my/multi-term-dedicated-toggle-and-select ()
     "My term dedicated toggle and select."
     (interactive)
     (if (multi-term-dedicated-exist-p)
-	    (progn
-	      (multi-term-dedicated-close)
-	      (switch-to-buffer my-multi-term-dedicated-old-buf))
+        (progn
+          (multi-term-dedicated-close)
+          (switch-to-buffer my-multi-term-dedicated-old-buf))
       (progn
-	    (setq my-multi-term-dedicated-old-buf (current-buffer))
-	    (multi-term-dedicated-open)
-	    (multi-term-dedicated-select))))
+        (setq my-multi-term-dedicated-old-buf (current-buffer))
+        (multi-term-dedicated-open)
+        (multi-term-dedicated-select))))
 
   (defun my/multi-term ()
     "My term start and select."
