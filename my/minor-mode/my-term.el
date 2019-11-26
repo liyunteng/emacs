@@ -45,7 +45,9 @@
                               (when (string-match "\\(finished\\|exited\\)" change)
                                 (kill-buffer (process-buffer proc))
                                 (when (> (count-windows) 1)
-                                  (delete-window))))))))
+                                  (delete-window))
+                                ))))))
+
 (dolist (hook '(term-mode-hook
                 eshell-mode-hook
                 comint-mode-hook
@@ -108,6 +110,8 @@
   :commands (multi-term)
   :bind (
          ;; ("C-x e" . my/multi-term)
+         ("C-x t m" . term)
+         ("C-x t a" . ansi-term)
          ("C-x t x" . my/multi-term-dedicated-toggle-and-select)
          ("C-x t l" . my/multi-term)
          ("C-x t t" . multi-term)
@@ -115,7 +119,6 @@
          ("C-x t p" . multi-term-prev))
 
   :config
-
   (setq multi-term-program (or (executable-find "zsh") (executable-find "bash")))
   (defadvice ansi-term (before force-bash)
     "Always use bash."
@@ -164,6 +167,18 @@
         (setq my-multi-term-dedicated-old-buf (current-buffer))
         (multi-term-dedicated-open)
         (multi-term-dedicated-select))))
+
+  (defun multi-term-internal ()
+    "Override multi-term-internal."
+    (remove-hook 'term-mode-hook 'multi-term-keystroke-setup)
+    (add-hook 'term-mode-hook 'multi-term-keystroke-setup)
+    ;; Load term mode
+    (term-mode)
+    (term-char-mode)
+    ;; Handle `output' variable.
+    (setq term-scroll-show-maximum-output multi-term-scroll-show-maximum-output
+          term-scroll-to-bottom-on-output multi-term-scroll-to-bottom-on-output)
+    (add-hook 'kill-buffer-hook 'multi-term-kill-buffer-hook))
 
   (defun my/multi-term ()
     "My term start and select."
