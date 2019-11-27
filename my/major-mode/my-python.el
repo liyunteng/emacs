@@ -107,6 +107,8 @@
 (use-package python
   :commands (python-mode run-python)
   :defer t
+  :bind
+  (("C-x t P" . run-python))
   :init
   (setq-default python-indent-guess-indent-offset-verbose nil)
   (setq-default python-indent-offset 4)
