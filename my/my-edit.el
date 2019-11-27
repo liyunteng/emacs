@@ -518,9 +518,12 @@ the right."
     (let* ((ws-regexp (if (string-empty-p regexp)
                           "\\(\\s-+\\)"
                         "\\(\\s-*\\)"))
-           (complete-regexp (if after
-                                (concat regexp ws-regexp)
-                              (concat ws-regexp regexp)))
+           (complete-regexp
+            ;; (if after
+            ;;     (concat regexp ws-regexp)
+            ;;   (concat ws-regexp regexp))
+            (concat regexp "\\(\\s-+\\)")
+            )
            (group (if justify-right -1 1)))
       (message "%S" complete-regexp)
       (align-regexp start end complete-regexp group 1 t)))
