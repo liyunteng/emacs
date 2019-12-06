@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: header
-# key: he
+# key: header
 # --
 /*
 *=====================================================================
@@ -10,7 +10,7 @@
 *        Verison:  ${2:1.0}
 *       Revision:  ${3:none}
 *       Compiler:  ${4:gcc}
-*   Last-Updated: <2019/06/11 22:01:36 liyunteng>
+*   Last-Updated: <2019/12/06 23:30:24>
 *
 *         Author:  `user-full-name` (`user-full-name`) `user-mail-address`
 *        Company:  `(getenv "ORGANIZATION")`

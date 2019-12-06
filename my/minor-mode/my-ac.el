@@ -31,13 +31,12 @@
 (use-package company
   :ensure t
   :bind
-  (("TAB" . company-indent-or-complete-common)
+  (("TAB" . my/company-indent-or-complete-common)
    :map company-mode-map
    ("C-M-/" . company-other-backend)
    ("C-M-?" . company-begin-backend)
    ("M-SPC" . company-other-backend)
    ("M-/" . hippie-expand)
-   ;; ("TAB" . company-indent-or-complete-common)
    :map company-active-map
    ("TAB" . company-complete-common)
    ("C-w" . nil)
@@ -73,7 +72,65 @@
         (when (and (eq old-point (point))
                    (eq old-tick (buffer-chars-modified-tick)))
           (company-complete-common))))
-     ))
+
+     ;; add jump out pairs
+     ((and (not company-candidates)
+           (not company-common)
+           (-contains-p (list "\"" "'" ";" "|" "}" "]" ")" ">")
+                        (make-string 1 (char-after))))
+      (forward-char))))
+
+  (defun company--begin-new ()
+    (let (prefix c)
+      (cl-dolist (backend (if company-backend
+                              ;; prefer manual override
+                              (list company-backend)
+                            company-backends))
+        (setq prefix
+              (if (or (symbolp backend)
+                      (functionp backend))
+                  (when (company--maybe-init-backend backend)
+                    (let ((company-backend backend))
+                      (company-call-backend 'prefix)))
+                (company--multi-backend-adapter backend 'prefix)))
+        (when prefix
+          (when (company--good-prefix-p prefix)
+            (let ((ignore-case (company-call-backend 'ignore-case)))
+              (setq company-prefix (company--prefix-str prefix)
+                    company-backend backend
+                    c (company-calculate-candidates company-prefix ignore-case))
+              (cond
+               ((and (company--unique-match-p c company-prefix ignore-case)
+                     (if company--manual-action
+                         ;; If `company-manual-begin' was called, the user
+                         ;; really wants something to happen.  Otherwise...
+                         (progn (ignore (message "Sole completion"))
+                                ;; ##### return for jump out pair
+                                (cl-return nil))
+                       t))
+                ;; ...abort and run the hooks, e.g. to clear the cache.
+                (company-cancel 'unique))
+               ((null c)
+                (when company--manual-action
+                  (message "No completion found")))
+               (t ;; We got completions!
+                (when company--manual-action
+                  (setq company--manual-prefix prefix))
+                (company-update-candidates c)
+                (run-hook-with-args 'company-completion-started-hook
+                                    (company-explicit-action-p))
+                (company-call-frontends 'show)))))
+          (cl-return c)))))
+
+  (defun company-complete-selection ()
+    "Insert the selected candidate."
+    (interactive)
+    (when (company-manual-begin)
+      (let ((result (nth company-selection company-candidates)))
+        (company-finish result)
+        ;; ### return t for jump out pair
+        t)))
+
 
   ;; fix company-candidates-length is 0 will start company
   (defun company-manual-begin ()
@@ -81,11 +138,11 @@
     (company-assert-enabled)
     (setq company--manual-action t)
     (unwind-protect
-	    (let ((company-minimum-prefix-length 1))
-	      (or company-candidates
-	          (company-auto-begin)))
+        (let ((company-minimum-prefix-length 1))
+          (or company-candidates
+              (company-auto-begin)))
       (unless company-candidates
-	    (setq company--manual-action nil))))
+        (setq company--manual-action nil))))
 
   (setq company-auto-complete t
         company-minimum-prefix-length 2
@@ -100,7 +157,8 @@
         company-tooltip-align-annotations t
         company-tooltip-flip-when-above t
         company-abort-manual-when-too-short t
-        company-selection-wrap-around nil)
+        company-selection-wrap-around nil
+        )
 
   ;; Suspend page-break-lines-mode while company menu is active
   ;; (see https://github.com/company-mode/company-mode/issues/416)
@@ -231,14 +289,13 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company cmake-mode '(company-cmake))
 (my|enable-company css-mode '(company-css))
 (my|enable-company nxml-mode '(company-nxml))
-(my|enable-company emacs-lisp-mode)
-(my|enable-company lisp-interaction-mode)
 (my|enable-company ielm-mode)
 (my|enable-company inferior-emacs-lisp-mode)
 (my|enable-company java-mode '(company-eclim))
 (my|enable-company python-mode '(elpy-company-backend))
 (my|enable-company inferior-python-mode '(elpy-company-backend))
-
+(my|enable-company emacs-lisp-mode '(company-capf))
+(my|enable-company lisp-interaction-mode '(company-capf))
 (use-package company-go
   :ensure t
   :defer t
