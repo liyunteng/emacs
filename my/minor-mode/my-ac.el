@@ -30,7 +30,7 @@
 (use-package company
   :ensure t
   :bind
-  (("TAB" . company-indent-or-complete-common)
+  (("TAB" . my/company-indent-or-complete-common)
    :map company-mode-map
    ("C-M-/" . company-other-backend)
    ("C-M-?" . company-begin-backend)
@@ -55,6 +55,25 @@
   (global-company-mode -1)
 
   :config
+  (defun my/company-indent-or-complete-common ()
+    "Indent the current line or region, or complete the common part."
+    (interactive)
+    (cond
+     ((use-region-p)
+      (indent-region (region-beginning) (region-end)))
+     ((memq indent-line-function
+            '(indent-relative indent-relative-maybe))
+      (company-complete-common))
+     ((let ((old-point (point))
+            (old-tick (buffer-chars-modified-tick))
+            (tab-always-indent t))
+        (call-interactively #'indent-for-tab-command)
+        (when (and (eq old-point (point))
+                   (eq old-tick (buffer-chars-modified-tick)))
+          (company-complete-common))))
+     ;; TODO: add jump out pairs
+     ))
+
   ;; fix company-candidates-length is 0 will start company
   (defun company-manual-begin ()
     (interactive)
