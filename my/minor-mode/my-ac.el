@@ -27,7 +27,6 @@
 ;; TODO: compat with lsp
 (setq tab-always-indent 'complete)
 (setq completion-cycle-threshold nil)
-
 (use-package company
   :ensure t
   :bind
@@ -37,7 +36,6 @@
    ("C-M-?" . company-begin-backend)
    ("M-SPC" . company-other-backend)
    ("M-/" . hippie-expand)
-   ;; ("TAB" . company-indent-or-complete-common)
    :map company-active-map
    ("TAB" . company-complete-common)
    ("C-w" . nil)
@@ -57,35 +55,17 @@
   (global-company-mode -1)
 
   :config
-  (defun my/company-indent-or-complete-common ()
-    "Indent the current line or region, or complete the common part."
-    (interactive)
-    (cond
-     ((use-region-p)
-      (indent-region (region-beginning) (region-end)))
-     ((memq indent-line-function
-            '(indent-relative indent-relative-maybe))
-      (company-complete-common))
-     ((let ((old-point (point))
-            (old-tick (buffer-chars-modified-tick))
-            (tab-always-indent t))
-        (call-interactively #'indent-for-tab-command)
-        (when (and (eq old-point (point))
-                   (eq old-tick (buffer-chars-modified-tick)))
-          (company-complete-common))))
-     ))
-
   ;; fix company-candidates-length is 0 will start company
   (defun company-manual-begin ()
     (interactive)
     (company-assert-enabled)
     (setq company--manual-action t)
     (unwind-protect
-	    (let ((company-minimum-prefix-length 1))
-	      (or company-candidates
-	          (company-auto-begin)))
+        (let ((company-minimum-prefix-length 1))
+          (or company-candidates
+              (company-auto-begin)))
       (unless company-candidates
-	    (setq company--manual-action nil))))
+        (setq company--manual-action nil))))
 
   (setq company-auto-complete t
         company-minimum-prefix-length 2
@@ -121,19 +101,19 @@
     (add-hook 'company-completion-finished-hook 'my--page-break-lines-maybe-reenable)
     (add-hook 'company-completion-cancelled-hook 'my--page-break-lines-maybe-reenable)))
 
-(use-package company-quickhelp
-  :ensure t
-  :after company
-  :if (display-graphic-p)
-  :bind
-  (:map company-active-map
-	    ("C-h"  . company-quickhelp-mode))
-  :init
-  (company-quickhelp-mode 1)
-  :config
-  ;; (setq company-quickhelp-use-propertized-text t)
-  (setq company-quickhelp-delay 0.5)
-  (setq company-quickhelp-max-lines 30))
+   (use-package company-quickhelp
+     :ensure t
+     :after company
+     :if (display-graphic-p)
+     :bind
+     (:map company-active-map
+           ("C-h"  . company-quickhelp-mode))
+     :init
+     (company-quickhelp-mode 1)
+     :config
+     ;; (setq company-quickhelp-use-propertized-text t)
+     (setq company-quickhelp-delay 0.5)
+     (setq company-quickhelp-max-lines 30))
 
 
 ;; (use-package lsp-mode
@@ -231,13 +211,13 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company cmake-mode '(company-cmake))
 (my|enable-company css-mode '(company-css))
 (my|enable-company nxml-mode '(company-nxml))
-(my|enable-company emacs-lisp-mode)
-(my|enable-company lisp-interaction-mode)
 (my|enable-company ielm-mode)
 (my|enable-company inferior-emacs-lisp-mode)
 (my|enable-company java-mode '(company-eclim))
 (my|enable-company python-mode '(elpy-company-backend))
 (my|enable-company inferior-python-mode '(elpy-company-backend))
+(my|enable-company emacs-lisp-mode '(company-capf))
+(my|enable-company lisp-interaction-mode '(company-capf))
 
 (use-package company-go
   :ensure t
