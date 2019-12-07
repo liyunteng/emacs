@@ -119,6 +119,17 @@
                            "../../../inc"
                            "../../../export")
   "My local include path.")
+(defconst my-lib-path (list
+                       "lib/"
+                       "src/lib/"
+                       "../lib"
+                       "../src/lib"
+                       "../../lib"
+                       "../../src/lib"
+                       "../../../lib"
+                       "../../../src/lib"
+                       )
+  "My local lib path.")
 
 
 (use-package cmacexp
@@ -138,6 +149,8 @@
     (add-to-list 'cc-search-directories var))
   (dolist (var my-src-path)
     (add-to-list 'cc-search-directories var))
+  (dolist (var my-lib-path)
+    (add-to-list 'cc-search-directories var))
   (dolist (var '(("\\.c\\'" (".h" ".hpp" ".hxx"))
                  ("\\.h\\'" (".c" ".cpp" ".cxx"))
                  ("\\.hpp\\'" (".cpp" ".cxx" ".c"))
@@ -150,7 +163,6 @@
 	  (xref-push-marker-stack (push-mark (point))))
     (ff-find-other-file in-other-window ignore-include)
     (recenter-top-bottom))
-
   )
 
 (use-package ffap
@@ -253,14 +265,16 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
       (with-current-buffer disaster-buffer-assembly
 	    (view-buffer-other-window disaster-buffer-assembly nil 'kill-buffer)))))
 
+(defcustom my-project-roots '("~/git/c" "/usr/src/linux")
+  "My Project Roots to setq semanticdb-project-roots."
+  :type '(repeat directory)
+  :group 'my-config
+  )
+
 (use-package semantic
   :defer t
   :commands (semantic-mode)
   :config
-  (defconst my-project-roots '("~/git/ihi/client/c9service"
-                               "/usr/src/linux")
-    "My project roots to setq semanticdb-project-roots.")
-
   ;;global-semantic-decoration-mode
   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
@@ -347,7 +361,8 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (use-package semantic/db
     :config
     (setq semanticdb-search-system-databases t)
-    (setq semanticdb-project-roots my-project-roots))
+    (setq semanticdb-project-roots my-project-roots)
+    )
 
   (use-package semantic/db-find
     :config
