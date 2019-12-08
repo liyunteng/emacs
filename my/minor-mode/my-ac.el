@@ -27,7 +27,6 @@
 ;; TODO: compat with lsp
 (setq tab-always-indent 'complete)
 (setq completion-cycle-threshold nil)
-
 (use-package company
   :ensure t
   :bind
@@ -131,7 +130,6 @@
         ;; ### return t for jump out pair
         t)))
 
-
   ;; fix company-candidates-length is 0 will start company
   (defun company-manual-begin ()
     (interactive)
@@ -179,19 +177,19 @@
     (add-hook 'company-completion-finished-hook 'my--page-break-lines-maybe-reenable)
     (add-hook 'company-completion-cancelled-hook 'my--page-break-lines-maybe-reenable)))
 
-(use-package company-quickhelp
-  :ensure t
-  :after company
-  :if (display-graphic-p)
-  :bind
-  (:map company-active-map
-	    ("C-h"  . company-quickhelp-mode))
-  :init
-  (company-quickhelp-mode 1)
-  :config
-  ;; (setq company-quickhelp-use-propertized-text t)
-  (setq company-quickhelp-delay 0.5)
-  (setq company-quickhelp-max-lines 30))
+   (use-package company-quickhelp
+     :ensure t
+     :after company
+     :if (display-graphic-p)
+     :bind
+     (:map company-active-map
+           ("C-h"  . company-quickhelp-mode))
+     :init
+     (company-quickhelp-mode 1)
+     :config
+     ;; (setq company-quickhelp-use-propertized-text t)
+     (setq company-quickhelp-delay 0.5)
+     (setq company-quickhelp-max-lines 30))
 
 
 ;; (use-package lsp-mode
@@ -296,6 +294,10 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company inferior-python-mode '(elpy-company-backend))
 (my|enable-company emacs-lisp-mode '(company-capf))
 (my|enable-company lisp-interaction-mode '(company-capf))
+<<<<<<< HEAD
+=======
+
+>>>>>>> b5a438489ee4e03ff92f18147dfd8a279cf16a96
 (use-package company-go
   :ensure t
   :defer t
