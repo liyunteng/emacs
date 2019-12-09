@@ -162,9 +162,12 @@
     "My python shell mode hook."
     (when semantic-mode
       (semantic-mode -1))
+    ;; disable python-shell-copletion-native
+    (python-shell-completion-native-turn-off)
     ;; replace indent-for-tab-command
+    ;; disable python-shell-completion keybind
+    (define-key inferior-python-mode-map (kbd "TAB") nil)
     ;; (define-key inferior-python-mode-map [remap indent-for-tab-command] 'complete-symbol)
-    ;; (define-key inferior-python-mode-map (kbd "TAB") nil)
     ;; (define-key inferior-python-mode-map (kbd "C-c C-z") 'my/python-switch-back)
     )
   (add-hook 'inferior-python-mode-hook 'my-python-shell-mode-hook)
