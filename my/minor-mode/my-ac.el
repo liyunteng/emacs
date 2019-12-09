@@ -294,10 +294,7 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company inferior-python-mode '(elpy-company-backend))
 (my|enable-company emacs-lisp-mode '(company-capf))
 (my|enable-company lisp-interaction-mode '(company-capf))
-<<<<<<< HEAD
-=======
 
->>>>>>> b5a438489ee4e03ff92f18147dfd8a279cf16a96
 (use-package company-go
   :ensure t
   :defer t
