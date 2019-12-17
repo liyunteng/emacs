@@ -143,6 +143,9 @@
   (load-theme 'zenburn t)
   (custom-theme-set-faces
    'zenburn
+   `(ivy-current-match
+     ((t (:background "#FFFFFF" :weight bold))))
+
    `(company-tooltip-search
      ((t (:background "red"))))
    `(company-tooltip-search-selection
