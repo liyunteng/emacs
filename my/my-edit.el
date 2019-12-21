@@ -968,9 +968,12 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
                ((org-at-block-p)
                 (org-narrow-to-block))
                (t (org-narrow-to-subtree))))
-        (smartparens-mode
+        ((derived-mode-p 'web-mode 'sgml-mode 'json-mode)
          (call-interactively 'sp-narrow-to-sexp))
-        (t (narrow-to-defun))))
+        ((derived-mode-p 'prog-mode)
+         (narrow-to-defun))
+        (t (narrow-to-defun))
+        ))
 
 
 ;; 添加百度搜索
