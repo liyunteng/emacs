@@ -968,6 +968,8 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
                ((org-at-block-p)
                 (org-narrow-to-block))
                (t (org-narrow-to-subtree))))
+        (smartparens-mode
+         (call-interactively 'sp-narrow-to-sexp))
         (t (narrow-to-defun))))
 
 

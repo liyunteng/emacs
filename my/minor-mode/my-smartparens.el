@@ -27,9 +27,9 @@
 (use-package smartparens
   :ensure t
   :commands (smartparens-mode
-	         smartparens-strict-mode
-	         smartparens-global-mode
-	         smartparens-global-strict-mode)
+             smartparens-strict-mode
+             smartparens-global-mode
+             smartparens-global-strict-mode)
 
   :init
   (add-hook 'prog-mode-hook 'turn-on-smartparens-mode)
@@ -37,15 +37,15 @@
 
   :config
   (setq sp-show-pair-delay 0.2
-	    sp-show-pair-from-inside t
-	    sp-cancel-autoskip-on-backward-movement t
-	    sp-highlight-pair-overlay t
-	    sp-highlight-wrap-overlay t
-	    sp-highlight-wrap-tag-overlay t)
+        ;; sp-show-pair-from-inside t
+        sp-cancel-autoskip-on-backward-movement t
+        sp-highlight-pair-overlay t
+        sp-highlight-wrap-overlay t
+        sp-highlight-wrap-tag-overlay t)
   (setq sp-base-key-bindings 'smartparens
-	    sp-autoskip-closing-pair 'always-end
-	    sp-hybrid-kill-entire-symbol nil
-	    blink-matching-paren nil)
+        sp-autoskip-closing-pair 'always-end
+        sp-hybrid-kill-entire-symbol nil
+        blink-matching-paren nil)
   (setq sp-escape-quotes-after-insert nil)
 
   (require 'smartparens-config)
@@ -57,44 +57,28 @@
   (defun my--conditionally-enable-smartparens-mode ()
     "Enable `smartparens-mode' in the minibuffer, during `eval-expression'."
     (if (or (eq this-command 'eval-expression)
-	        (eq this-command 'pp-eval-expression)
-	        (eq this-command 'eldoc-eval-expression)
+            (eq this-command 'pp-eval-expression)
+            (eq this-command 'eldoc-eval-expression)
             (eq this-command 'helm-eval-expression)
             (eq this-command 'edebug-eval-expression)
             (eq this-command 'debugger-eval-expression))
-	    (smartparens-mode)))
+        (smartparens-mode)))
   (add-hook 'minibuffer-setup-hook 'my--conditionally-enable-smartparens-mode)
 
   (defun my--smartparens-pair-newline-and-indent (id action context)
     (save-excursion
       (newline-and-indent))
     (indent-according-to-mode))
-  (defun my/smart-closing-parenthesis ()
-    (interactive)
-    (let* ((sp-navigate-close-if-unbalanced t)
-	       (current-pos (point))
-	       (current-line (line-number-at-pos current-pos))
-	       (next-pos (save-excursion
-		               (sp-up-sexp)
-		               (point)))
-	       (next-line (line-number-at-pos next-pos)))
-      (cond
-       ((and (= current-line next-line)
-	         (not (= current-pos next-pos)))
-	    (sp-up-sexp))
-       (t
-	    (insert-char ?\))))))
+
+  (defun my--smartparens-post-handler (&rest _ignored)
+    (just-one-space)
+    (save-excursion (insert "# ")))
+
 
   (sp-with-modes '(web-mode)
     (sp-local-pair "%" "%"
-		           :unless '(sp-in-string-p)
-		           :post-handlers '(((lambda (&rest _ignored)
-				                       (just-one-space)
-				                       (save-excursion (insert " ")))
-				                     "SPC" "=" "#")))
-    (sp-local-tag "%" "<% "  " %>")
-    (sp-local-tag "=" "<%= " " %>")
-    (sp-local-tag "#" "<%# " " %>"))
+                   :unless '(sp-in-string-p)
+                   :post-handlers '(("[d1]" "SPC"))))
 
   (sp-with-modes '(minibuffer-inactive-mode eldoc-in-minibuffer-mode)
     (sp-local-pair "'" nil :actions nil))
@@ -112,15 +96,6 @@
            :post-handlers
            '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
 
-
-
-
-  ;; (:open "'" :close "'" :actions
-  ;;        (insert wrap autoskip navigate escape)
-  ;;        :unless
-  ;;        (sp-in-string-quotes-p sp-point-after-word-p)
-  ;;        :post-handlers
-  ;;        (sp-escape-wrapped-region sp-escape-quotes-after-insert))
 
   ;; (define-key smartparens-mode-map (kbd ")") 'my/smart-closing-parenthesis)
   ;; (define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)
