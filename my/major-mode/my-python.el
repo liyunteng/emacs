@@ -146,6 +146,7 @@
     (when semantic-mode
       (semantic-mode -1))
     (subword-mode +1)
+    (set (make-local-variable 'tab-width) 4)
 
     (elpy-enable)
     ;; (when (fboundp #'python-imenu-create-index)
