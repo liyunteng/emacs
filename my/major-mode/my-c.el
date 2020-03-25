@@ -256,6 +256,10 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   ;;       hide-ifdef-initially nil)
   )
 
+(use-package cpp-auto-include
+  :ensure t
+  :defer t)
+
 (use-package disaster
   :ensure t
   :defer t
@@ -466,6 +470,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
 
   (define-key c-mode-base-map (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
   (define-key c-mode-base-map (kbd "C-c D") 'disaster)
+  (define-key c-mode-base-map (kbd "C-c I") 'cpp-auto-include)
 
   (define-key c-mode-base-map (kbd "C-d") 'c-hungry-delete-forward)
   (define-key c-mode-base-map (kbd "C-c C-d") 'semantic-ia-show-doc)     ;c-hungry-delete-forward

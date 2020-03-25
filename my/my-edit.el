@@ -774,6 +774,13 @@ indent yanked text (with prefix arg don't indent)."
 (diminish 'hs-minor-mode)
 
 
+(defun my/copy-file-name ()
+  "Copy buffer file name."
+  (interactive)
+  (if  buffer-file-name
+      (progn (kill-new buffer-file-name)
+             (message buffer-file-name))))
+
 (defun my/count-words-analysis (start end)
   "Count how many times each word is used in the region.
 Punctuation is ignored."
