@@ -123,9 +123,13 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   ;; ;; (set-fontset-font "fontset-my" 'han "AR PL UKai CN")
   ;; (add-to-list 'default-frame-alist '(font . "fontset-my"))
 
-  (set-fontset-font "fontset-default" 'unicode "Monospace")
-  (set-fontset-font "fontset-default" 'han "WenQuanYi Micro Hei Mono")
-  (set-face-font 'default "Monospace-10")
+  (when (system-is-linux)
+    (set-fontset-font "fontset-default" 'unicode "Monospace")
+    (set-fontset-font "fontset-default" 'han "WenQuanYi Micro Hei Mono")
+    (set-face-font 'default "Monospace-10"))
+
+  (when (system-is-mac)
+    (set-face-font 'default "Menlo-14"))
   )
 
 (if (daemonp)
