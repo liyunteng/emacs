@@ -51,7 +51,6 @@
   :commands (global-company-mode company-mode company-auto-begin)
   :init
   ;; (defalias 'completion-at-point 'company-complete-common)
-
   (global-company-mode -1)
 
   :config
@@ -70,7 +69,8 @@
         (call-interactively #'indent-for-tab-command)
         (when (and (eq old-point (point))
                    (eq old-tick (buffer-chars-modified-tick)))
-          (company-complete-common))))
+          (company-complete-common)
+          )))
 
      ;; add jump out pairs
      ((and (not company-candidates)
@@ -177,70 +177,58 @@
     (add-hook 'company-completion-finished-hook 'my--page-break-lines-maybe-reenable)
     (add-hook 'company-completion-cancelled-hook 'my--page-break-lines-maybe-reenable)))
 
-   (use-package company-quickhelp
-     :ensure t
-     :after company
-     :if (display-graphic-p)
-     :bind
-     (:map company-active-map
-           ("C-h"  . company-quickhelp-mode))
-     :init
-     (company-quickhelp-mode 1)
-     :config
-     ;; (setq company-quickhelp-use-propertized-text t)
-     (setq company-quickhelp-delay 0.5)
-     (setq company-quickhelp-max-lines 30))
-
+(use-package company-quickhelp
+  :ensure t
+  :after company
+  :if (display-graphic-p)
+  :bind
+  (:map company-active-map
+        ("C-h"  . company-quickhelp-mode))
+  :init
+  (company-quickhelp-mode 1)
+  :config
+  ;; (setq company-quickhelp-use-propertized-text t)
+  (setq company-quickhelp-delay 0.5)
+  (setq company-quickhelp-max-lines 30))
 
-;; (use-package lsp-mode
-;;   :ensure t
-;;   :config
-;;   (setq lsp-response-timeout 2)
-;;   (setq lsp-message-project-root-warning nil))
+;;  LSP
+(use-package lsp-mode
+  :ensure t
+  :init
+  (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
+  (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
+  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+  (when (executable-find "clangd")
+    (setq lsp-clients-clangd-args '("--all-scopes-completion" "--clang-tidy" "--completion-style=detailed" "--suggest-missing-includes"))
+    (add-hook 'c-mode-common-hook 'lsp))
+  (when (executable-find "go-langserver")
+    (add-hook 'go-mode-hook 'lsp))
+  (when (executable-find "pyls")
+    (add-hook 'python-mode-hook 'lsp))
+
+  :config
+  ;; (setq lsp-log-io t)
+  ;; (setq lsp-print-performance t)
+  ;; (setq lsp-log-max 20000)
+
+  (setq lsp-semantic-highlighting t)
+  (setq lsp-auto-guess-root t)
+  (setq lsp-response-timeout 2)
+  (setq lsp-document-sync-method lsp--sync-full)
+  (setq lsp-eldoc-render-all t)
+  (setq lsp-prefer-capf t))
 
 ;; (use-package lsp-ui
 ;;   :ensure t
 ;;   :init
 ;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
-;; (use-package company-lsp
-;;   :ensure t
-;;   :init
-;;   (push 'company-lsp company-backends))
-
-;; ;; need clangd
-;; (when (executable-find "clangd")
-;;   (lsp-define-stdio-client lsp-clangd-c
-;;                            "c"
-;;                            (lsp-make-traverser ".projectile")
-;;                            (list "clangd")
-;;                            :ignore-regexps
-;;                            '("^Error -[0-9]+: .+$"))
-;;   (lsp-define-stdio-client lsp-clangd-c++
-;;                            "cpp"
-;;                            (lsp-make-traverser ".projectile")
-;;                            (list "clangd")
-;;                            :ignore-regexps
-;;                            '("^Error -[0-9]+: .+$"))
-;;   (add-hook 'c-mode-hook 'lsp-clangd-c-enable)
-;;   (add-hook 'c++-mode-hook 'lsp-clangd-c++-enable))
-
-;; ;; need go-langserver
-;; (use-package lsp-go
-;;   :ensure t
-;;   :if (executable-find "go-langserver")
-;;   :init
-;;   (add-hook 'go-mode-hook 'lsp-go-enable))
-
-;; ;; need python-language-server
-;; (when (executable-find "pyls")
-;;   (lsp-define-stdio-client lsp-python
-;;                            "python"
-;;                            (lsp-make-traverser ".projectile")
-;;                            (list "pyls")
-;;                            :ignore-regexps
-;;                            '("^Error -[0-9]+: .+$"))
-;;   (add-hook 'python-mode-hook 'lsp-python-enable))
+(use-package company-lsp
+  :ensure t
+  :after company
+  :init
+  ;; (push 'company-lsp company-backends)
+  )
 
 
 ;; copy from spacemacs
@@ -328,6 +316,8 @@ MODE parameter must match the parameter used in the call to
 (my|disable-company org-agenda-mode)
 (my|disable-company calendar-mode)
 
+
+
 
 (provide 'my-ac)
 ;;; my-ac.el ends here
