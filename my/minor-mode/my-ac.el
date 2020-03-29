@@ -24,7 +24,6 @@
 
 ;;; Code:
 
-;; TODO: compat with lsp
 (setq tab-always-indent 'complete)
 (setq completion-cycle-threshold nil)
 (use-package company
@@ -210,7 +209,7 @@
   ;; (setq lsp-log-io t)
   ;; (setq lsp-print-performance t)
   ;; (setq lsp-log-max 20000)
-
+  (setq lsp-restart 'auto-restart)
   (setq lsp-semantic-highlighting t)
   (setq lsp-auto-guess-root t)
   (setq lsp-response-timeout 2)
