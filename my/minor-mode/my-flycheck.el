@@ -23,7 +23,7 @@
 ;;
 
 ;;; Code:
-(defcustom my-flycheck-use-original-bitmaps nil
+(defcustom my-flycheck-use-original-bitmaps t
   "Use flycheck bitmaps."
   :type 'boolean
   :group 'my-config)
