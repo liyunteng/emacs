@@ -38,13 +38,13 @@
   :config
   (setq dired-dwim-target t
         dired-recursive-deletes 'top
-        dired-recursive-copies 'top
-        dired-listing-switches "--group-directories-first -alhq")
+        dired-recursive-copies 'top)
 
-  ;; (if (or (eq system-type 'linux)
-  ;;         (eq system-type 'gnu/linux))
-  ;;     (setq dired-listing-switches "--group-directories-first -alhqD")
-  ;;   (setq dired-listing-switches "--group-directories-first -alh"))
+  (pcase system-type
+    ('darwin (setq dired-listing-switches "-l -G"))
+    ('gnu/linux (setq dired-listing-switches "--group-directories-first -alhq"))
+    ('windows-nt (setq dired-listing-switches "-l"))
+    )
 
   ;; goto parent dir
   (defvar-local my--subdir-parent nil)
