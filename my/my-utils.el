@@ -48,6 +48,13 @@
        ,@body
        (setq ,var (1+ ,var)))))
 
+(defmacro foreach (var in alist &rest body)
+  "Execute a simple \"foreach\" loop.
+BODY is a lambda function, receive one argument.
+
+For eaxample, (foreach v in '(1 2 3) (lambda (v) (message \"%d\" v))). "
+  `(mapcar ,@body ,alist))
+
 (defun add-functions-to-hook (hook funs &optional append local)
   "Add list of FUNS to HOOK."
   (dolist (fun funs)

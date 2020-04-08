@@ -197,12 +197,20 @@
   (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
   (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
   (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
-  (when (executable-find "clangd")
-    (setq lsp-clients-clangd-args '("--all-scopes-completion" "--clang-tidy" "--completion-style=detailed" "--suggest-missing-includes"))
-    (add-hook 'c-mode-common-hook 'lsp))
-  (when (executable-find "go-langserver")
+
+  ;; (when (executable-find "clangd")
+  ;;   (setq lsp-clients-clangd-args '("--all-scopes-completion" "--clang-tidy" "--completion-style=detailed" "--suggest-missing-includes" "--background-index" "--header-insertion-decorators" "--log=verbose"))
+  ;;   (add-hook 'c-mode-common-hook 'lsp))
+
+  ;; (when (executable-find "ccls")
+  ;;   (use-package ccls
+  ;;     :ensure t
+  ;;     :init
+  ;;     (add-hook 'c-mode-common-hook 'lsp)))
+
+  (when  (executable-find "go-langserver")
     (add-hook 'go-mode-hook 'lsp))
-  (when (executable-find "pyls")
+  (when  (executable-find "pyls")
     (add-hook 'python-mode-hook 'lsp))
 
   :config
