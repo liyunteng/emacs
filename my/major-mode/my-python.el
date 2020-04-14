@@ -43,6 +43,8 @@
   (defvar my-python-virtualenv-workon-dir
     (expand-file-name my-python-virtualenv-workon-name my-python-virtualenv-dir))
 
+  (unless (file-exists-p my-python-virtualenv-dir)
+    (make-directory my-python-virtualenv-dir))
   (when (file-exists-p my-python-virtualenv-dir)
     (setenv "WORKON_HOME" my-python-virtualenv-dir))
 
@@ -73,26 +75,37 @@
     		           elpy-module-pyvenv
     		           elpy-module-yasnippet
     		           elpy-module-django))
-  (defun my--python-install-libs (libs)
+  (defun my/python-install-lib (lib)
+    (interactive "s\lib: ")
     (let ((install-cmd (or (executable-find "pip")
-                           (executable-find "easy_install"))))
+                           (executable-find "easy_install")))
+          (async-shell-command-buffer 'new-buffer))
       (if install-cmd
-          (mapc (lambda (n)
-                  (message "%s installing %s ..." install-cmd n)
-                  (shell-command (format "%s install %s" install-cmd n) nil))
-                libs)
-        (message "pip/easy_install not found, please install pip/easy_install"))))
+          (progn
+            (message "%s installing %s ..." install-cmd lib)
+            (async-shell-command (format "%s install %s" install-cmd lib)
+                                 (get-buffer-create (format "*%s-install-%s*" (file-name-base install-cmd) lib))))
+        (message "pip/easy_install not found, please install pip/easy_install")
+        )))
+
+  (defun my--python-install-libs (libs)
+    (mapc (lambda (n)
+            (my/python-install-lib n))
+          libs))
 
   (defun my-install-python-virtualenv ()
     "My install python virtualenv."
     (if (or (not (file-exists-p my-python-virtualenv-dir))
             (not (file-exists-p my-python-virtualenv-workon-dir)))
         (progn
-          (let ((virtualenvbin (executable-find "virtualenv")))
+          (let ((virtualenvbin (executable-find "virtualenv"))
+                (async-shell-command-buffer 'new-buffer))
             (if (null virtualenvbin)
     	        (message "virtualenv not found, please install virtualenv")
     	      (message "%s %s ..." virtualenvbin my-python-virtualenv-workon-dir)
-    	      (shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir) nil)
+    	      (shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir)
+                             (get-buffer-create "*install-virtualenv-output*")
+                             nil)
 
     	      (setenv "WORKON_HOME" my-python-virtualenv-dir)
     	      (pyvenv-workon my-python-virtualenv-workon-name)

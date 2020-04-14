@@ -124,3 +124,12 @@ v
 (defun a ()
   "ABCD"
   (message "abcd"))
+
+
+(regexp-opt '("abc" "abcd" "abcdefg" "abcdefgh"))
+
+
+(defun my-callback (event)
+  (message "%s" event))
+(file-notify-add-watch "/home/lyt/test" '(change) 'my-callback)
+(file-notify-rm-watch '(2 . 9))
