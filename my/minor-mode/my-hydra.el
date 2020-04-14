@@ -60,6 +60,57 @@ _b_ackward                     _q_: quit"
   ("q" nil nil)
   )
 
+(defhydra hydra-main (:color teal :hint nil)
+  "
+    Main helper
+
+    Org. related          Help                Zooming        bookmarks          other helpers     completion
+    ------------------------------------------------------------------------------------------------------------------
+    _c_: org-capture        _f_: function doc.    _+_: zoom in     _b_: list bookmarks  _p_: prodigy        _y_: ivy-yasnippet
+    _g_: org-web-get-url    _v_: variable doc.    _-_: zoom out    _B_: bookmark file   _m_: new mail
+
+    Backups
+    ------------------------------------------------------------------------------------------------------------------
+    _s_: list backups
+    _S_: snapshot timemachine
+
+    "
+  ("B" bookmark-set)
+  ("b" list-bookmarks)
+  ("c" counsel-org-capture)
+  ("f" describe-function)
+  ("g" org-web-tools-read-url-as-org)
+  ("m" mu4e-compose-new)
+  ("p" prodigy)
+  ("s" snapshot-timeline)
+  ("S" snapshot-timemachine)
+  ("v" describe-variable)
+  ("y" ivy-yasnippet)
+  ("+" text-scale-increase :color pink)
+  ("-" text-scale-decrease :color pink)
+  ("<ESC>" nil "quit" :color blue)
+  ("q"   nil "cancel" :color blue))
+
+(defhydra hydra-project (:color teal :hint nil)
+  "
+         Project/Source management
+
+     Projects              Version control        On-the-fly
+    ------------------------------------------------------------------------------------------
+    _d_: dash projects     _m_: magit             _f_: fixme listing
+    _p_: projectile        _t_: travis status     _F_: flycheck
+
+    "
+  ("<ESC>" nil "quit")
+  ("d"   org-dashboard-display)
+  ("p"   hydra-projectile/body)
+  ("f"   fic-view-listing)
+  ("F"   hydra-flycheck/body)
+  ("m"   hydra-magit/body)
+  ("t"   show-my-travis-projects)
+  ("q"   nil "cancel" :color blue))
+(global-set-key (kbd "<f4>") 'hydra-project/body)
+
 
 (defhydra my/search-hydra ())
 (require 'hydra-examples)

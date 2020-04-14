@@ -194,6 +194,12 @@
 (use-package lsp-mode
   :ensure t
   :init
+  (setq lsp-before-save-edits t
+        lsp-inhibit-message t
+        lsp-eldoc-render-all nil
+        lsp-highlight-symbol-at-point nil
+        lsp-prefer-flymake nil
+        lsp-idle-delay 0.500)
   (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
   (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
   (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
@@ -222,19 +228,33 @@
   (setq lsp-auto-guess-root t)
   (setq lsp-response-timeout 2)
   (setq lsp-document-sync-method lsp--sync-full)
-  (setq lsp-eldoc-render-all t)
   (setq lsp-prefer-capf t))
 
-;; (use-package lsp-ui
-;;   :ensure t
-;;   :init
-;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+(use-package lsp-ui
+  :ensure t
+  :after lsp-mode
+  :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-sideline-enable t
+        lsp-ui-sideline-show-symbol t
+        lsp-ui-sideline-show-hover t
+        lsp-ui-flycheck-enable t
+        lsp-ui-sideline-show-code-actions t
+        lsp-ui-sideline-update-mode 'point))
 
 (use-package company-lsp
   :ensure t
   :after company
   :init
-  ;; (push 'company-lsp company-backends)
+  (defun company-lsp-hook ()
+    (make-local-variable 'company-backends)
+    (setq company-backends (copy-tree company-backends))
+    (set 'company-backends (append '(company-lsp) company-backends)))
+  :hook
+  (lsp-mode . company-lsp-hook)
+  :config
+  (setq company-lsp-enable-snippet t
+        company-lsp-cache-candidates 'auto)
   )
 
 

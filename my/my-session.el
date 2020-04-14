@@ -24,6 +24,7 @@
 
 ;;; Code:
 
+;;
 (use-package recentf
   :init
   (setq recentf-save-file (expand-file-name "recentf" my-cache-dir))
@@ -35,12 +36,34 @@
    recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
 		             "TAGS" "GTAGS" "GRAGS" "GPATH"))
 
-  (add-to-list 'recentf-exclude
-	           (expand-file-name my-cache-dir))
-  (add-to-list 'recentf-exclude
-	           (expand-file-name package-user-dir))
-  (add-to-list 'recentf-exclude
-	           "COMMIT_EDITMSG\\'"))
+  (add-to-list 'recentf-exclude (expand-file-name my-cache-dir))
+  (add-to-list 'recentf-exclude (expand-file-name package-user-dir))
+  ;; (add-to-list 'recentf-exclude (format "%s/\\.emacs\\.d/.*" (getenv "HOME")))
+
+  (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
+  (add-to-list 'recentf-exclude (format "%s/.orhc-bibtex-cache" (getenv "HOME")))
+  (add-to-list 'recentf-exclude (format "%s/configuration/emacs\\.d/\\(?!\\(main.*\\)\\)" (getenv "HOME")))
+
+
+  ;; Some caches
+  (add-to-list 'recentf-exclude (format "%s/\\.ido\\.last" (getenv "HOME")))
+  (add-to-list 'recentf-exclude (format "%s/\\.recentf" (getenv "HOME")))
+
+
+  ;; elfeed
+  (add-to-list 'recentf-exclude (format "%s/\\.elfeed/.*" (getenv "HOME")))
+  (add-to-list 'recentf-exclude (format "%s/shared/pCloudDrive/emacs/elfeed/.*" (getenv "HOME")))
+
+  ;; Org-mode organisation
+  (add-to-list 'recentf-exclude (format "%s/shared/pCloudDrive/org/organisation/.*" (getenv "HOME")))
+
+  ;; Org/todo/calendars
+  (add-to-list 'recentf-exclude ".*todo.org")
+  (add-to-list 'recentf-exclude (format "%s/Calendars/.*" (getenv "HOME")))
+
+  ;; Maildir
+  (add-to-list 'recentf-exclude (format "%s/maildir.*" (getenv "HOME")))
+  )
 
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
 (use-package desktop

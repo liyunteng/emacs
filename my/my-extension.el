@@ -184,7 +184,11 @@
   (setq projectile-sort-order 'recentf
         projectile-indexing-method 'alien)
   (setq projectile-enable-caching t)
-  ;; (setq projectile-switch-project-action 'projectile-dired)
+  (setq projectile-switch-project-action 'neotree-projectile-action
+        projectile-create-missing-test-files t
+        projectile-switch-project-action #'projectile-commander
+        projectile-ignored-project-function 'file-remote-p)
+
   (add-hook 'after-init-hook 'projectile-mode))
 
 ;; undo-tree
@@ -319,18 +323,10 @@
   :ensure t
   :defer t)
 
-;; (use-package vlf
-;;   :ensure t
-;;   :init
-;;   (defun ffap-vlf ()
-;;     "Find file at point with VLF."
-;;     (interactive)
-;;     (let ((file (ffap-file-at-point)))
-;;       (unless (file-exists-p file)
-;;         (error "File does not exist: %s" file))
-;;       (vlf file)))
-;;   :config
-;;   (require 'vlf-setup))
+(use-package vlf
+  :ensure t
+  :config
+  (require 'vlf-setup))
 
 (use-package crux
   :ensure t
@@ -364,6 +360,37 @@
 
 (use-package csharp-mode
   :ensure t)
+
+
+(use-package diff-at-point
+  :ensure t
+  :bind
+  ("<C-M-return>" . diff-at-point-toggle)
+  :config
+  (defun diff-at-point-toggle ()
+    (interactive)
+    (cond
+     ((string= major-mode "diff-mode")
+      (diff-at-point-goto-source-and-close))
+     (t
+      (diff-at-point-open-and-goto-hunk)))))
+
+(use-package paradox
+  :ensure t
+  :commands (paradox-list-packages)
+  :custom (paradox-automatically-star t)
+  :config
+  (setq paradox-spinner-type 'progress-bar
+        paradox-execute-asynchronously t))
+
+(use-package auto-package-update
+  :ensure t
+  :init
+  (setq auto-package-update-last-update-day-filename (expand-file-name "last-package-update-day" my-cache-dir))
+  :config
+  (setq auto-package-update-delete-old-versions t
+        auto-package-update-hide-results t)
+  (auto-package-update-maybe))
 
 ;; GTAGS
 ;; (use-package ggtags

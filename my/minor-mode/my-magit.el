@@ -30,10 +30,12 @@
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status)
-	     ("C-x M-g" . magit-dispatch-popup)
+	     ("C-x M-g" . magit-dispatch)
 	     ("C-x v =" . magit-diff-buffer-file)
 	     :map magit-status-mode-map
-	     ("M-RET" . magit-diff-visit-file-other-window))
+	     ("M-RET" . magit-diff-visit-file-other-window)
+         :map magit-mode-map
+         ("C-o" . magit-open-repo))
 
   :config
   ;; (setq magit-branch-read-upstream-first 'fallback)
@@ -84,13 +86,24 @@
         (message "opening repo %s" url)))))
 
 (use-package gitconfig-mode
-  :ensure t)
+  :ensure t
+  :mode
+  ("/\.gitconfig\'" . gitconfig-mode)
+  ("/vcs/gitconfig\'" . gitconfig-mode))
 (use-package gitignore-mode
   :ensure t)
 (use-package git-commit
   :ensure t)
 (use-package gitattributes-mode
   :ensure t)
+(use-package git-msg-prefix
+  :ensure t
+  :config
+  (setq git-msg-prefix-log-flags " --since='1 week ago' "
+        git-msg-prefix-regex "^\\([^:]*: \\)"
+        git-msg-prefix-input-method 'ivy-read)
+  ;; (add-hook 'git-commit-mode-hook 'git-msg-prefix)
+  )
 (use-package git-timemachine
   :commands (git-timemachine git-timemachine-toggle git-timemachine-switch-branch)
   :ensure t)
