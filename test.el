@@ -124,12 +124,42 @@ v
 (defun a ()
   "ABCD"
   (message "abcd"))
-
-
 (regexp-opt '("abc" "abcd" "abcdefg" "abcdefgh"))
 
 
+;;  notify
 (defun my-callback (event)
   (message "%s" event))
 (file-notify-add-watch "/home/lyt/test" '(change) 'my-callback)
 (file-notify-rm-watch '(2 . 9))
+
+
+;; thread
+(defun my/log (val)
+  (concat (format-time-string "[%Y-%m-%d %H:%M:%S] "
+                              (current-time))
+          val))
+(defun threadfun ()
+  (message (my/log "begin running ..."))
+  (sleep-for 1)
+  (messagg (my/log "running at point 1"))
+  (sleep-for 5)
+  (message (my/log "running at point 6"))
+  (sleep-for 10)
+  (message (my/log "running at point 16"))
+  (sleep-for 5)
+  (message (my/log "finished"))
+  )
+
+
+;; async
+(let ((async-shell-command-buffer 'new-buffer))
+  (async-start-process "abc" (executable-find "pip")
+
+                       (lambda (result)
+                         (message "Result: %s" result)
+                         (kill-buffer "*abc*")
+                         )
+
+                       "install" "requests" "--user"
+                       ))
