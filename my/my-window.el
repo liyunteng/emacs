@@ -235,8 +235,8 @@ Dedicated (locked) windows are left untouched."
 (global-set-key (kbd "C-x |") 'my/window-split-horizontally-instead)
 (global-set-key (kbd "C-x _") 'my/window-split-vertically-instead)
 (global-set-key (kbd "C-x C-n") 'my/window-toggle-current-file-dedication)
-(global-set-key [mouse-4] (lambda () (interactive) (scroll-down 1)))
-(global-set-key [mouse-5] (lambda () (interactive) (scroll-up 1)))
+;; (global-set-key [mouse-4] (lambda () (interactive) (scroll-down 5)))
+;; (global-set-key [mouse-5] (lambda () (interactive) (scroll-up 5)))
 (global-set-key (kbd "C-c C-s") 'my/window-rotate)
 (global-set-key (kbd "M-+") 'my/window-size-adjust)
 

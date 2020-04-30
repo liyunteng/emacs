@@ -707,18 +707,18 @@ This functions should be added to the hooks of major modes for programming."
 (defvar my-yank-indent-threshold 30000)
 (defvar my-yank-indent-modes '(prog-mode text-mode))
 ;; automatically indenting yanked text if in programming-modes
-(defun yank-advised-indent-function (beg end)
-  "Do indentation from BEG to END, as long as the region isn't  tooltip-hid large."
-  (if (<= (- end beg) my-yank-indent-threshold)
-      (indent-region beg end nil)))
-(my|advise-commands "indent" (yank yank-pop) after
-                    "If current mode is derived of `my-yank-indent-modes',
-indent yanked text (with prefix arg don't indent)."
-                    (if (and (not (ad-get-arg 0))
-                             (not (member major-mode my-indent-sensitive-modes))
-                             (apply #'derived-mode-p my-yank-indent-modes))
-                        (let ((transient-mark-mode nil))
-                          (yank-advised-indent-function (region-beginning) (region-end)))))
+;; (defun yank-advised-indent-function (beg end)
+;;   "Do indentation from BEG to END, as long as the region isn't  tooltip-hid large."
+;;   (if (<= (- end beg) my-yank-indent-threshold)
+;;       (indent-region beg end nil)))
+;; (my|advise-commands "indent" (yank yank-pop) after
+;;                     "If current mode is derived of `my-yank-indent-modes',
+;; indent yanked text (with prefix arg don't indent)."
+;;                     (if (and (not (ad-get-arg 0))
+;;                              (not (member major-mode my-indent-sensitive-modes))
+;;                              (apply #'derived-mode-p my-yank-indent-modes))
+;;                         (let ((transient-mark-mode nil))
+;;                           (yank-advised-indent-function (region-beginning) (region-end)))))
 
 
 (defmacro with-region-or-buffer (func)

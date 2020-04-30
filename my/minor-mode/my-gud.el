@@ -47,13 +47,16 @@
 ;; {{ hack buffer
 ;; move the cursor to the end of last line if it's gud-mode
 (defun hack-gud-mode ()
-  (when (string= major-mode "gud-mode")
-    (goto-char (point-max))))
+  (when (derived-mode-p 'gud-mode)
+    (goto-char (point-max)))
+  ;; (when (string= major-mode "gud-mode")
+  ;;   (goto-char (point-max)))
+  )
 
 (defadvice switch-to-buffer (after switch-to-buffer-after activate)
   (hack-gud-mode))
 
-(defadvice select-window-by-number (after select-window-by-number-after activate)
+(defadvice switch-window (after switch-window activate)
   (hack-gud-mode))
 
 ;; windmove-do-window-select is from windmove.el
