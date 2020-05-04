@@ -131,6 +131,7 @@ if no files marked, always operate on current line in dired-mode."
   (add-hook 'dired-mode-hook 'dired-omit-mode))
 
 (use-package dired-git-info
+  :defines (dgi-commit-message-format)
   :after dired
   ;; :ensure t
   :bind (:map dired-mode-map

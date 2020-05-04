@@ -25,6 +25,7 @@
 ;;; Code:
 
 (use-package org
+  :commands (org-load-modules-maybe)
   :defer t
   :bind (("C-x l" . org-store-link))
 
