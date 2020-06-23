@@ -195,18 +195,29 @@
   :ensure t
   :init
   (setq lsp-before-save-edits t
-        lsp-inhibit-message t
         lsp-eldoc-render-all nil
-        lsp-highlight-symbol-at-point nil
-        lsp-prefer-flymake nil
         lsp-idle-delay 0.500)
   (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
   (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
   (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
 
-  ;; (when (executable-find "clangd")
-  ;;   (setq lsp-clients-clangd-args '("--all-scopes-completion" "--clang-tidy" "--completion-style=detailed" "--suggest-missing-includes" "--background-index" "--header-insertion-decorators" "--log=verbose"))
-  ;;   (add-hook 'c-mode-common-hook 'lsp))
+  (when (executable-find "clangd")
+    ;; (setq lsp-clients-clangd-args '("--all-scopes-completion" "--clang-tidy" "--completion-style=detailed" "--suggest-missing-includes" "--background-index" "--header-insertion-decorators" "--log=verbose"))
+    (defun my/clangd-generate-compile-commands ()
+      (interactive)
+      (let ((cmake (executable-find "cmake"))
+            (cmakefile (file-exists-p "CMakeLists.txt"))
+            (make (executable-find "make"))
+            (bear (executable-find "bear"))
+            (makefile (file-exists-p "Makefile")))
+        (cond ((and cmake cmakefile)
+               (shell-command (format "%s -H. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES" cmake)))
+              ((and make bear makefile)
+               (shell-command (format "%s %s" bear make)))
+              (t
+               (message "Failed")))
+        ))
+    (add-hook 'c-mode-common-hook 'lsp))
 
   ;; (when (executable-find "ccls")
   ;;   (use-package ccls
@@ -220,27 +231,41 @@
     (add-hook 'python-mode-hook 'lsp))
 
   :config
-  ;; (setq lsp-log-io t)
-  ;; (setq lsp-print-performance t)
+  (setq lsp-log-io t)
+  (setq lsp-print-performance t)
   ;; (setq lsp-log-max 20000)
   (setq lsp-restart 'auto-restart)
-  (setq lsp-semantic-highlighting t)
   (setq lsp-auto-guess-root t)
   (setq lsp-response-timeout 2)
-  (setq lsp-document-sync-method lsp--sync-full)
-  (setq lsp-prefer-capf t))
+  ;; (setq lsp-document-sync-method lsp--sync-full)
+  ;; (setq lsp-headerline-breadcrumb-enable t)
+  (setq lsp-prefer-capf t)
+  (setq lsp-lens-auto-enable t)
+
+  ;; (setq lsp-keymap-prefix "C-c")
+
+
+  (setq lsp-enable-semantic-highlighting t)
+  (setq lsp-semantic-highlighting-warn-on-missing-face t)
+  (setq lsp-semantic-tokens-apply-modifiers t)
+  )
 
 (use-package lsp-ui
   :ensure t
   :after lsp-mode
   :commands lsp-ui-mode
+  :bind
+  (:map lsp-ui-mode-map
+        ("M-'" . lsp-ui-sideline-apply-code-actions))
   :config
-  (setq lsp-ui-sideline-enable t
-        lsp-ui-sideline-show-symbol t
-        lsp-ui-sideline-show-hover t
-        lsp-ui-flycheck-enable t
-        lsp-ui-sideline-show-code-actions t
-        lsp-ui-sideline-update-mode 'point))
+  (setq
+   ;; lsp-ui-doc-header t
+   ;; lsp-ui-doc-include-signature t
+   lsp-ui-sideline-enable t
+   lsp-ui-sideline-show-symbol t
+   lsp-ui-sideline-show-hover t
+   lsp-ui-sideline-show-code-actions t
+   lsp-ui-sideline-update-mode 'point))
 
 (use-package company-lsp
   :ensure t
@@ -298,7 +323,7 @@ MODE parameter must match the parameter used in the call to
        (remove-hook ',mode-hook 'company-mode)
        )))
 
-(my|enable-company c-mode-common '(company-semantic company-clang))
+(my|enable-company c-mode-common '(company-lsp company-semantic company-clang))
 (my|enable-company cmake-mode '(company-cmake))
 (my|enable-company css-mode '(company-css))
 (my|enable-company nxml-mode '(company-nxml))
