@@ -52,6 +52,7 @@
   ;; (elpy-rpc--get-package-list)
   (defvar my-python-elpy-dependency '("jedi" "flake8" "autopep8" "yapf" "rope"))
 
+  (setq python-shell-interpreter "python3")
   (when (executable-find "ipython")
     (progn (setq python-shell-interpreter "ipython"
     	         python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i")
@@ -77,7 +78,8 @@
     		           elpy-module-django))
   (defun my/python-install-lib (lib)
     (interactive "s\lib: ")
-    (let ((install-cmd (or (executable-find "pip")
+    (let ((install-cmd (or (executable-find "pip3")
+                           (executable-find "pip")
                            (executable-find "easy_install")))
           (async-shell-command-buffer 'new-buffer))
       (if install-cmd
@@ -98,7 +100,8 @@
     (if (or (not (file-exists-p my-python-virtualenv-dir))
             (not (file-exists-p my-python-virtualenv-workon-dir)))
         (progn
-          (let ((virtualenvbin (executable-find "virtualenv"))
+          (let ((virtualenvbin (or (executable-find "virtualenv")
+                                   (executable-find "pyenv-virtualenv")))
                 (async-shell-command-buffer 'new-buffer))
             (if (null virtualenvbin)
     	        (message "virtualenv not found, please install virtualenv")

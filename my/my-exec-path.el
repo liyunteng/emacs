@@ -25,7 +25,7 @@
 ;;; Code:
 (use-package exec-path-from-shell
   :ensure t
-  :if (memq window-system '(mac ns x))
+  :if (memq system-type '(darwin ms-dos windows-nt cygwin))
   :config
   (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE"))
     (add-to-list 'exec-path-from-shell-variables var))

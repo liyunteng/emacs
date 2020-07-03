@@ -65,30 +65,30 @@
 
 (use-package comint
   :config
-  (setq comint-scroll-to-bottom-on-input nil
-	    comint-scroll-to-bottom-on-output nil
+  (setq comint-scroll-to-bottom-on-input t
+	    comint-scroll-to-bottom-on-output t
 	    comint-scroll-show-maximum-output nil
 	    comint-prompt-read-only t
 	    comint-move-point-for-output t
 	    )
 
-  (setq comint-input-sender
-	    (lambda (proc command)
-	      (cond
-	       ;; Check for clear command and execute it.
-	       ((string-match "^[ \t]*clear[ \t]*$" command)
-	        (comint-send-string proc "\n")
-	        (erase-buffer))
-	       ;; Check for man command and execute it.
-	       ((string-match "^[ \t]*man[ \t]*" command)
-	        (comint-send-string proc "\n")
-	        (setq command (replace-regexp-in-string
-			               "^[ \t]*man[ \t]*" "" command))
-	        (setq command (replace-regexp-in-string
-			               "[ \t]+$" "" command))
-	        (funcall 'man command))
-	       ;; Send other commands to the default handler.
-	       (t (comint-simple-send proc command)))))
+  ;; (setq comint-input-sender
+  ;;       (lambda (proc command)
+  ;;         (cond
+  ;;          ;; Check for clear command and execute it.
+  ;;          ((string-match "^[ \t]*clear[ \t]*$" command)
+  ;;           (comint-send-string proc "\n")
+  ;;           (erase-buffer))
+  ;;          ;; Check for man command and execute it.
+  ;;          ((string-match "^[ \t]*man[ \t]*" command)
+  ;;           (comint-send-string proc "\n")
+  ;;           (setq command (replace-regexp-in-string
+  ;;   		               "^[ \t]*man[ \t]*" "" command))
+  ;;           (setq command (replace-regexp-in-string
+  ;;   		               "[ \t]+$" "" command))
+  ;;           (funcall 'man command))
+  ;;          ;; Send other commands to the default handler.
+  ;;          (t (comint-simple-send proc command)))))
 
   (defun my-comint-mode-hook ()
     (setq-local mouse-yank-at-point t)
@@ -206,6 +206,8 @@
   ;; (add-to-list 'term-bind-key-alist '("C-c C-p" . term-previous-prompt))
   ;; (add-to-list 'term-bind-key-alist '("C-c C-n" . term-next-prompt))
 
+
+  ;; char-mode
   (add-to-list 'term-bind-key-alist '("C-c C-a" . term-send-raw))
   (add-to-list 'term-bind-key-alist '("C-c C-q" . term-send-raw))
   (add-to-list 'term-bind-key-alist '("C-c C-z" . term-send-raw))
@@ -219,6 +221,7 @@
   (add-to-list 'term-bind-key-alist '("C-x ." . multi-term-next))
   (add-to-list 'term-bind-key-alist '("C-x ," . multi-term-prev))
 
+  ;; line-mode
   (define-key term-mode-map (kbd "C-c C-m") 'my/term-mode-toggle-line-mode)
   (define-key term-mode-map (kbd "C-l") 'term-send-raw)
   (define-key term-mode-map (kbd "C-c C-p") 'term-previous-prompt)

@@ -49,7 +49,7 @@
   "elpa.emacs-china.org mirror")
 (setq package-archives 163-mirrors)
 ;; (setq package-pinned-packages
-;;       '((switch-window . "melpa-stable")))
+;;       '((ivy . "gnu")))
 
 
 (setq package-user-dir my-packages-dir)

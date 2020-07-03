@@ -97,8 +97,8 @@
 	    desktop-auto-save-timeout 600
 	    desktop-missing-file-warning nil
         desktop-load-locked-desktop t
-	    desktop-restore-in-current-display t
-        desktop-restore-frames nil
+	    desktop-restore-in-current-display nil
+        desktop-restore-frames t
         desktop-restore-reuses-frames t
 	    desktop-save t
 	    ;; desktop-save 'ask-if-new

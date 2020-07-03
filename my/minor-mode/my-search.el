@@ -33,9 +33,12 @@
          ("M-s e" . rgrep)
          ("M-s l" . lgrep))
   :config
-  (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r -e "
-        grep-highlight-matches t
-        grep-scroll-output t))
+  (setq grep-highlight-matches t
+        grep-scroll-output t)
+  (if (system-is-mac)
+      (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r . -e ")
+    (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r -e "))
+  )
 
 (use-package isearch
   :bind  (:map isearch-mode-map

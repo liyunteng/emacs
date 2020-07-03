@@ -130,7 +130,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
     (set-face-font 'default "Monospace-10"))
 
   (when (system-is-mac)
-    (set-face-font 'default "Menlo-14"))
+    (set-face-font 'default "Menlo-16"))
   )
 
 (if (daemonp)
