@@ -199,7 +199,6 @@
         lsp-idle-delay 0.500)
   (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
   (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
-  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
 
   (when (executable-find "clangd")
     ;; (setq lsp-clients-clangd-args '("--all-scopes-completion" "--clang-tidy" "--completion-style=detailed" "--suggest-missing-includes" "--background-index" "--header-insertion-decorators" "--log=verbose"))
@@ -240,7 +239,7 @@
   ;; (setq lsp-document-sync-method lsp--sync-full)
   ;; (setq lsp-headerline-breadcrumb-enable t)
   (setq lsp-prefer-capf t)
-  (setq lsp-lens-auto-enable t)
+  (setq lsp-lens-enable t)
 
   ;; (setq lsp-keymap-prefix "C-c")
 
@@ -261,11 +260,16 @@
   (setq
    ;; lsp-ui-doc-header t
    ;; lsp-ui-doc-include-signature t
+   lsp-ui-doc-border "#b3b3b3"
+   lsp-ui-doc-delay 0.8
+   lsp-ui-doc-max-width 300
+   lsp-ui-doc-max-height 50
    lsp-ui-sideline-enable t
-   lsp-ui-sideline-show-symbol t
-   lsp-ui-sideline-show-hover t
+   ;; lsp-ui-sideline-show-symbol t
+   ;; lsp-ui-sideline-show-hover t
    lsp-ui-sideline-show-code-actions t
-   lsp-ui-sideline-update-mode 'point))
+   lsp-ui-sideline-update-mode 'point
+   ))
 
 (use-package company-lsp
   :ensure t
