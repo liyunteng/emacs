@@ -108,10 +108,14 @@ This is useful when followed by an immediate kill."
   (use-package ag
     :ensure t
     :bind (("M-s a" . ag)
-           ("M-s d" . ag-dired))
+           ;; ("M-s f" . ag-dired)
+           ([remap find-grep-dired] . ag-dired)
+           ("M-s p" . ag-project))
     :config
     (use-package wgrep-ag :ensure t)
-    (setq ag-highlight-search t)))
+    (setq ag-highlight-search t
+          ag-reuse-buffers t
+          ag-reuse-window t)))
 
 (use-package anzu
   :ensure t

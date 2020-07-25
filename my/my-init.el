@@ -33,7 +33,6 @@
                        my-themes
 
                        my-edit
-                       my-search
                        my-extension
                        my-buffer
                        my-dired
@@ -43,6 +42,7 @@
                        ;; my-helm
                        ;; my-ido
                        my-ivy
+                       my-search
 
                        my-jump
                        my-smartparens
