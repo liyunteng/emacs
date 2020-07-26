@@ -210,7 +210,9 @@
             (bear (executable-find "bear"))
             (makefile (file-exists-p "Makefile")))
         (cond ((and cmake cmakefile)
-               (shell-command (format "%s -H. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES" cmake)))
+               (progn (shell-command (format "%s -S. -Bcmake_build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES" cmake))
+                      (shell-command "cp -r cmake_build/compile_commands.json ./")
+                      ))
               ((and make bear makefile)
                (shell-command (format "%s %s" bear make)))
               (t
@@ -256,10 +258,47 @@
   :bind
   (:map lsp-ui-mode-map
         ("M-'" . lsp-ui-sideline-apply-code-actions))
+  :init
+  (defadvice recenter-top-bottom (after my-update-lsp-ui-doc-position activate)
+    (when (lsp-ui-doc--frame-visible-p)
+      (let ((lsp-ui-doc-delay 0))
+        (lsp-ui-doc-hide)
+        (lsp-ui-doc-show))))
+
   :config
+  (defun lsp-ui-doc--mv-at-point (frame width height start-x start-y)
+    "Move FRAME to be where the point is.
+WIDTH is the child frame width.
+HEIGHT is the child frame height.
+START-X is the position x of the current window.
+START-Y is the position y of the current window.
+The algorithm prefers to position FRAME just above the
+symbol at point, to not obstruct the view of the code that follows.
+If there's no space above in the current window, it places
+FRAME just below the symbol at point."
+    (-let* (((x . y) (--> (bounds-of-thing-at-point 'symbol)
+                          (posn-x-y (posn-at-point (car it)))))
+            (frame-relative-symbol-x (+ start-x x))
+            (frame-relative-symbol-y (+ start-y y))
+            (char-height (frame-char-height))
+            ;; Make sure the frame is positioned horizontally such that
+            ;; it does not go beyond the frame boundaries.
+            (frame-x (or (and (<= (frame-outer-width) (+ frame-relative-symbol-x width))
+                              (- x (- (+ frame-relative-symbol-x width)
+                                      (frame-outer-width))))
+                         x))
+            (frame-y (+ (or (and (<= height frame-relative-symbol-y)
+                                 (- y height))
+                            ;; move lower
+                            (+ y (* 3 char-height)))
+                        (if (fboundp 'window-tab-line-height) (window-tab-line-height) 0))))
+      (set-frame-position frame (+ start-x frame-x) (+ start-y frame-y))))
+
   (setq
    ;; lsp-ui-doc-header t
    ;; lsp-ui-doc-include-signature t
+   lsp-ui-doc-position 'at-point
+   lsp-ui-doc-alignment 'window
    lsp-ui-doc-border "#b3b3b3"
    lsp-ui-doc-delay 0.8
    lsp-ui-doc-max-width 300
