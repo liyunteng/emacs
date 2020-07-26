@@ -121,7 +121,6 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
 (add-to-list 'auto-mode-alist '("\\.zshrc\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
 
-(provide 'my-sh)
 
 (provide 'my-auto-mode)
 ;;; my-auto-mode.el ends here
