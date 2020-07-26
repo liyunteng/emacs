@@ -266,6 +266,21 @@
         (lsp-ui-doc-show))))
 
   :config
+  (setq
+   ;; lsp-ui-doc-header t
+   ;; lsp-ui-doc-include-signature t
+   lsp-ui-doc-position 'at-point
+   lsp-ui-doc-alignment 'window
+   lsp-ui-doc-border "#b3b3b3"
+   lsp-ui-doc-delay 0.8
+   lsp-ui-doc-max-width 300
+   lsp-ui-doc-max-height 50
+   lsp-ui-sideline-enable t
+   ;; lsp-ui-sideline-show-symbol t
+   ;; lsp-ui-sideline-show-hover t
+   lsp-ui-sideline-show-code-actions t
+   lsp-ui-sideline-update-mode 'point
+   )
   (defun lsp-ui-doc--mv-at-point (frame width height start-x start-y)
     "Move FRAME to be where the point is.
 WIDTH is the child frame width.
@@ -294,21 +309,7 @@ FRAME just below the symbol at point."
                         (if (fboundp 'window-tab-line-height) (window-tab-line-height) 0))))
       (set-frame-position frame (+ start-x frame-x) (+ start-y frame-y))))
 
-  (setq
-   ;; lsp-ui-doc-header t
-   ;; lsp-ui-doc-include-signature t
-   lsp-ui-doc-position 'at-point
-   lsp-ui-doc-alignment 'window
-   lsp-ui-doc-border "#b3b3b3"
-   lsp-ui-doc-delay 0.8
-   lsp-ui-doc-max-width 300
-   lsp-ui-doc-max-height 50
-   lsp-ui-sideline-enable t
-   ;; lsp-ui-sideline-show-symbol t
-   ;; lsp-ui-sideline-show-hover t
-   lsp-ui-sideline-show-code-actions t
-   lsp-ui-sideline-update-mode 'point
-   ))
+  )
 
 (use-package company-lsp
   :ensure t
