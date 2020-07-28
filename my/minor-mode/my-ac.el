@@ -210,9 +210,8 @@
             (bear (executable-find "bear"))
             (makefile (file-exists-p "Makefile")))
         (cond ((and cmake cmakefile)
-               (progn (shell-command (format "%s -S. -Bcmake_build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES" cmake))
-                      (shell-command "cp -r cmake_build/compile_commands.json ./")
-                      ))
+               (progn (shell-command (format "%s -S . -BDebug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES" cmake))
+                      (shell-command "ln -s Debug/compile_commands.json .")))
               ((and make bear makefile)
                (shell-command (format "%s %s" bear make)))
               (t

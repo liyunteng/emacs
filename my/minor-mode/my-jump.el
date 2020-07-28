@@ -49,7 +49,9 @@
 (use-package dumb-jump
   :ensure t
   :init
-  (dumb-jump-mode +1))
+  (dumb-jump-mode +1)
+  (when (fboundp 'minibuffer-inactive-mode-hook)
+    (add-hook  minibuffer-inactive-mode-hook (dumb-jump-mode -1))))
 
 ;; jump
 (defvar my-jump-default-backends'(dumb-jump-go xref-find-definitions ffap)

@@ -38,7 +38,7 @@
   (setq password-cache-expiry 36000)
 
   (require 'tramp-sh)
-  (setq tramp-histfile-override (expand-file-name "tramp/tramp-history" my-cache-dir))
+  ;; (setq tramp-histfile-override (expand-file-name "tramp/tramp-history" my-cache-dir))
 
 
   ;;使用sudo 编辑文件

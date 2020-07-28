@@ -26,6 +26,16 @@
 
 (use-package ivy
   :ensure t
+  :bind
+  (:map ivy-minibuffer-map
+        ("C-j" . ivy-immediate-done)
+        ("RET" . ivy-alt-done)
+        ("C-g" . minibuffer-keyboard-quit)
+        ("C-y" . ivy-yank-word)
+        ("C-c C-a" . ivy-toggle-ignore)
+        ("M-i" . ivy-toggle-case-fold)
+        ("C-M-n" . ivy-next-line-and-call)
+        ("C-M-p" . ivy-previous-line-and-call))
   :init
   (use-package flx :ensure t)
   (use-package swiper
@@ -73,12 +83,15 @@
   (dolist (var '(ivy--regex-plus ivy--regex-fuzzy regexp-quote))
     (add-to-list 'ivy-re-builders-alist var))
 
-  (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
-  (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
-  (define-key ivy-minibuffer-map (kbd "C-g") #'minibuffer-keyboard-quit)
-  (define-key ivy-minibuffer-map (kbd "C-y") #'ivy-yank-word)
-  (define-key ivy-minibuffer-map (kbd "C-c C-a") #'ivy-toggle-ignore)
-  (define-key ivy-minibuffer-map (kbd "M-i") #'ivy-toggle-case-fold)
+  ;; (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
+  ;; (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
+  ;; (define-key ivy-minibuffer-map (kbd "C-g") #'minibuffer-keyboard-quit)
+  ;; (define-key ivy-minibuffer-map (kbd "C-y") #'ivy-yank-word)
+  ;; (define-key ivy-minibuffer-map (kbd "C-c C-a") #'ivy-toggle-ignore)
+  ;; (define-key ivy-minibuffer-map (kbd "M-i") #'ivy-toggle-case-fold)
+  ;; (define-key ivy-minibuffer-map (kbd "C-M-n") #'ivy-next-line-and-call)
+  ;; (define-key ivy-minibuffer-map (kbd "C-M-p") #'ivy-previous-line-and-call)
+
 
   (defun my/enable-ivy-flx-matching ()
     "Make `ivy' matching work more like IDO."
