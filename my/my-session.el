@@ -163,13 +163,11 @@
 
   (defvar before-desktop-read-time nil)
   (defvar after-desktop-read-time nil)
-  (defadvice desktop-read (around time-restore activate)
-    (let ((start-time (current-time)))
-      (prog1
-          (setq before-desktop-read-time start-time)
-        ad-do-it
-        (setq after-desktop-read-time (current-time) )
-        )))
+  (defadvice desktop-read (around time-restore (&optional dirname ask) activate)
+    (progn
+      (setq before-desktop-read-time (current-time))
+      ad-do-it
+      (setq after-desktop-read-time (current-time))))
 
   (defadvice desktop-create-buffer (around time-create activate)
     (let ((start-time (current-time))
