@@ -105,6 +105,33 @@
   (if (fboundp 'helm-comint-input-ring)
       (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)))
 
+(use-package term
+  :config
+  (defadvice ansi-term (before set-shell activate)
+    "Set Shell Program."
+    (interactive (list my-term-shell)))
+
+  (defadvice term (before set-shell activate)
+    "Set Shell Program."
+    (interactive (list my-term-shell)))
+
+  (defadvice term-mode (before set-term activate)
+    "Set TERM=dumb if in 8-color."
+    (if (<= (display-color-cells) 8)
+        (set-variable 'term-term-name "dumb")))
+
+  (defun my-term-mode-hook ()
+    (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+    (setq-local mouse-yank-at-point t)
+    (setq-local transient-mark-mode nil)
+    (setq-local global-hl-line-mode nil)
+    (setq-local beacon-mode nil)
+    (setq-local scroll-margin 0)
+    (setq-default system-uses-terminfo t))
+
+  (add-hook 'term-mode-hook 'my-term-mode-hook)
+  )
+
 (use-package multi-term
   :ensure t
   :commands (multi-term)
@@ -120,10 +147,6 @@
 
   :config
   (setq multi-term-program (or (executable-find "zsh") (executable-find "bash")))
-  (defadvice ansi-term (before force-bash)
-    "Always use bash."
-    (interactive (list my-term-shell)))
-  (ad-activate 'ansi-term)
 
   (defun my-term-use-utf8 ()
     "Use utf8."
@@ -137,17 +160,6 @@
             (term-line-mode)
           (term-char-mode))
       (message "not term-mode")))
-
-  (defun my-term-mode-hook ()
-    (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
-    (setq-local mouse-yank-at-point t)
-    (setq-local transient-mark-mode nil)
-    (setq-local global-hl-line-mode nil)
-    (setq-local beacon-mode nil)
-    (setq-local scroll-margin 0)
-    (setq-default system-uses-terminfo t))
-
-  (add-hook 'term-mode-hook 'my-term-mode-hook)
 
   (setq multi-term-program my-term-shell
         multi-term-scroll-to-bottom-on-output t
@@ -225,75 +237,74 @@
   (define-key term-mode-map (kbd "C-c C-m") 'my/term-mode-toggle-line-mode)
   (define-key term-mode-map (kbd "C-l") 'term-send-raw)
   (define-key term-mode-map (kbd "C-c C-p") 'term-previous-prompt)
-  (define-key term-mode-map (kbd "C-c C-n") 'term-next-prompt)
-  )
+  (define-key term-mode-map (kbd "C-c C-n") 'term-next-prompt))
 
-(use-package eshell
-  :defer t
-  :bind (("C-x t e" . eshell))
-  :config
-  (setq eshell-directory-name (expand-file-name "eshell" my-cache-dir))
-  (setq eshell-cmpl-cycle-completions nil
-	    ;; auto truncate after 20k lines
-	    eshell-buffer-maximum-lines 20000
-	    ;; history size
-	    eshell-history-size 350
-	    ;; no duplicates in history
-	    eshell-hist-ignoredups t
-	    ;; buffer shorthand -> echo foo > #'buffer
-	    eshell-buffer-shorthand t
-	    ;; my prompt is easy enough to see
-	    eshell-highlight-prompt nil
-	    ;; treat 'echo' like shell echo
-	    eshell-plain-echo-behavior t
+  (use-package eshell
+    :defer t
+    :bind (("C-x t e" . eshell))
+    :config
+    (setq eshell-directory-name (expand-file-name "eshell" my-cache-dir))
+    (setq eshell-cmpl-cycle-completions nil
+	      ;; auto truncate after 20k lines
+	      eshell-buffer-maximum-lines 20000
+	      ;; history size
+	      eshell-history-size 350
+	      ;; no duplicates in history
+	      eshell-hist-ignoredups t
+	      ;; buffer shorthand -> echo foo > #'buffer
+	      eshell-buffer-shorthand t
+	      ;; my prompt is easy enough to see
+	      eshell-highlight-prompt nil
+	      ;; treat 'echo' like shell echo
+	      eshell-plain-echo-behavior t
 
-	    eshell-send-direct-to-subprocesses t
-	    eshell-scroll-to-bottom-on-input nil
-	    eshell-scroll-to-bottom-on-output nil
-	    )
+	      eshell-send-direct-to-subprocesses t
+	      eshell-scroll-to-bottom-on-input nil
+	      eshell-scroll-to-bottom-on-output nil
+	      )
 
-  (defun my--protect-eshell-prompt ()
-    "Protect Eshell's prompt like Comint's prompts.
+    (defun my--protect-eshell-prompt ()
+      "Protect Eshell's prompt like Comint's prompts.
 
 E.g. `evil-change-whole-line' won't wipe the prompt. This
 is achieved by adding the relevant text properties."
-    (let ((inhibit-field-text-motion t))
-      (add-text-properties
-       (point-at-bol)
-       (point)
-       '(rear-nonsticky t
-			            inhibit-line-move-field-capture t
-			            field output
-			            read-only t
-			            front-sticky (field inhibit-line-move-field-capture)))))
+      (let ((inhibit-field-text-motion t))
+        (add-text-properties
+         (point-at-bol)
+         (point)
+         '(rear-nonsticky t
+			              inhibit-line-move-field-capture t
+			              field output
+			              read-only t
+			              front-sticky (field inhibit-line-move-field-capture)))))
 
-  (add-hook 'eshell-after-prompt-hook 'my--protect-eshell-prompt)
-  (autoload 'eshell-delchar-or-maybe-eof "em-rebind")
+    (add-hook 'eshell-after-prompt-hook 'my--protect-eshell-prompt)
+    (autoload 'eshell-delchar-or-maybe-eof "em-rebind")
 
-  ;; fix scroll to bottom copy from eshell/clear
-  (defun my-eshell/clear ()
-    (interactive)
-    (eshell/clear-scrollback)
-    (let ((eshell-input-filter-functions
-           (remq 'eshell-add-to-history eshell-input-filter-functions)))
-      (eshell-send-input)))
+    ;; fix scroll to bottom copy from eshell/clear
+    (defun my-eshell/clear ()
+      (interactive)
+      (eshell/clear-scrollback)
+      (let ((eshell-input-filter-functions
+             (remq 'eshell-add-to-history eshell-input-filter-functions)))
+        (eshell-send-input)))
 
-  (defun my--init-eshell ()
-    "Stuff to do when enabling eshell."
-    (setq-default pcomplete-cycle-completions nil)
-    (if (bound-and-true-p linum-mode) (linum-mode -1))
-    (when semantic-mode
-      (semantic-mode -1))
-    (when (boundp 'eshell-output-filter-functions)
-      (push 'eshell-truncate-buffer eshell-output-filter-functions))
+    (defun my--init-eshell ()
+      "Stuff to do when enabling eshell."
+      (setq-default pcomplete-cycle-completions nil)
+      (if (bound-and-true-p linum-mode) (linum-mode -1))
+      (when semantic-mode
+        (semantic-mode -1))
+      (when (boundp 'eshell-output-filter-functions)
+        (push 'eshell-truncate-buffer eshell-output-filter-functions))
 
-    ;; Caution! this will erase buffer's content at C-l
-    (define-key eshell-mode-map (kbd "C-l") 'my-eshell/clear)
-    (define-key eshell-mode-map (kbd "C-d") 'eshell-delchar-or-maybe-eof)
-    (setq-local global-hl-line-mode nil)
-    )
+      ;; Caution! this will erase buffer's content at C-l
+      (define-key eshell-mode-map (kbd "C-l") 'my-eshell/clear)
+      (define-key eshell-mode-map (kbd "C-d") 'eshell-delchar-or-maybe-eof)
+      (setq-local global-hl-line-mode nil)
+      )
 
-  (add-hook 'eshell-mode-hook 'my--init-eshell))
+    (add-hook 'eshell-mode-hook 'my--init-eshell))
 
 (provide 'my-term)
 ;;; my-term.el ends here
