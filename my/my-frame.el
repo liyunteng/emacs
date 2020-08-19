@@ -125,7 +125,9 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
   (when (system-is-linux)
     ;; (set-fontset-font "fontset-default" 'unicode "Monospace")
-    (set-fontset-font "fontset-default" 'unicode "Dejavu Sans Mono")
+    ;; (set-fontset-font "fontset-default" 'unicode "Dejavu Sans Mono")
+    (set-fontset-font "fontset-default" 'latin "Dejavu Sans Mono")
+    (set-fontset-font "fontset-default" 'unicode "Hack")
     (set-fontset-font "fontset-default" 'han "WenQuanYi Micro Hei Mono")
     (set-face-font 'default "Monospace-10"))
 
