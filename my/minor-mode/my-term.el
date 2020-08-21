@@ -106,31 +106,31 @@
       (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)))
 
 (use-package term
-  :config
-  (defadvice ansi-term (before set-shell activate)
-    "Set Shell Program."
-    (interactive (list my-term-shell)))
+    :config
+    (defadvice ansi-term (before set-shell activate)
+        "Set Shell Program."
+        (interactive (list my-term-shell)))
 
-  (defadvice term (before set-shell activate)
-    "Set Shell Program."
-    (interactive (list my-term-shell)))
+    (defadvice term (before set-shell activate)
+        "Set Shell Program."
+        (interactive (list my-term-shell)))
 
-  (defadvice term-mode (before set-term activate)
-    "Set TERM=dumb if in 8-color."
-    (if (<= (display-color-cells) 8)
-        (set-variable 'term-term-name "dumb")))
+    (defadvice term-mode (before set-term activate)
+        "Set TERM=linux if in 8-color."
+        (if (<= (display-color-cells) 8)
+            (set-variable 'term-term-name "linux")))
 
-  (defun my-term-mode-hook ()
-    (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
-    (setq-local mouse-yank-at-point t)
-    (setq-local transient-mark-mode nil)
-    (setq-local global-hl-line-mode nil)
-    (setq-local beacon-mode nil)
-    (setq-local scroll-margin 0)
-    (setq-default system-uses-terminfo t))
+    (defun my-term-mode-hook ()
+        (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+        (setq-local mouse-yank-at-point t)
+        (setq-local transient-mark-mode nil)
+        (setq-local global-hl-line-mode nil)
+        (setq-local beacon-mode nil)
+        (setq-local scroll-margin 0)
+        (setq-default system-uses-terminfo t))
 
-  (add-hook 'term-mode-hook 'my-term-mode-hook)
-  )
+    (add-hook 'term-mode-hook 'my-term-mode-hook)
+    )
 
 (use-package multi-term
   :ensure t
