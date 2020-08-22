@@ -28,13 +28,39 @@
     :ensure t
     :commands (pyenv-mode)
     :init
-    (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t)))
-    )
+    (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t))))
+
 (use-package elpy
     :ensure t
     :defer t
+    :bind
+    (:map elpy-mode-map
+        ("C-c C-d" . elpy-doc)
+        ;; ("C-c C-j" . elpy-goto-definition)
+        ;; ("C-c C-J" . elpy-goto-definition-other-window)
+        ("C-c C-q" . my/elpy-shell-kill)
+        ("C-c C-Q" . my/elpy-shell-kill-all)
+        ("C-c C-k" . kill-region))
     :init
-    (advice-add 'python-mode :before 'elpy-enable))
+    (advice-add 'python-mode :before 'elpy-enable)
+    (defun my/elpy-shell-kill ()
+        "My elpy shell kill."
+        (interactive)
+        (elpy-shell-kill t))
+
+    (defun my/elpy-shell-kill-all ()
+        "My elpa shell kill all."
+        (interactive)
+        (elpy-shell-kill-all t nil))
+
+    :config
+    ;; (setq elpy-shell-echo-input nil)
+    (setq elpy-modules '(elpy-module-sane-defaults
+        	                elpy-module-eldoc
+        	                elpy-module-flymake
+        	                elpy-module-pyvenv
+        	                elpy-module-yasnippet))
+    )
 
 ;; (use-package elpy
 ;;     :ensure t
@@ -140,6 +166,11 @@
     :init
     (setq-default python-indent-guess-indent-offset-verbose nil)
     (setq-default python-indent-offset 4)
+
+    (setq python-shell-interpreter "python3")
+    (when (executable-find "ipython")
+        (progn (setq python-shell-interpreter "ipython"
+        	       python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i")))
 
     ;; (defvar my-python-original-buffer nil)
     ;;   (defvar my-python-switch-function 'switch-to-buffer-other-window)

@@ -3,6 +3,7 @@ elpa/
 cache/
 var/
 irony/
+elpy/
 custom.el
 *.pyc
 *.elc
