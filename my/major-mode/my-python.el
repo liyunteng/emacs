@@ -102,10 +102,8 @@
   (when (executable-find "ipython")
     (progn (setq python-shell-interpreter "ipython")
            (if  (system-is-mac)
-               (progn
-                 (setq python-shell-interpreter-args "-c exec('__import__(\\'readline\\')') --no-confirm-exit --simple-prompt -i"))
-             (setq python-shell-interpreter-args "--no-confirm-exit --simple-prompt -i"))
-           ))
+               (setq python-shell-interpreter-args "-c exec('__import__(\\'readline\\')') --no-confirm-exit --simple-prompt -i")
+             (setq python-shell-interpreter-args "--no-confirm-exit --simple-prompt -i"))))
   )
 
 (provide 'my-python)
