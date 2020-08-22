@@ -31,36 +31,36 @@
     (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t))))
 
 (use-package elpy
-    :ensure t
-    :defer t
-    :bind
-    (:map elpy-mode-map
+  :ensure t
+  :defer t
+  :bind
+  (:map elpy-mode-map
         ("C-c C-d" . elpy-doc)
         ;; ("C-c C-j" . elpy-goto-definition)
         ;; ("C-c C-J" . elpy-goto-definition-other-window)
         ("C-c C-q" . my/elpy-shell-kill)
         ("C-c C-Q" . my/elpy-shell-kill-all)
         ("C-c C-k" . kill-region))
-    :init
-    (advice-add 'python-mode :before 'elpy-enable)
-    (defun my/elpy-shell-kill ()
-        "My elpy shell kill."
-        (interactive)
-        (elpy-shell-kill t))
+  :init
+  (advice-add 'python-mode :before 'elpy-enable)
+  (defun my/elpy-shell-kill ()
+    "My elpy shell kill."
+    (interactive)
+    (elpy-shell-kill t))
 
-    (defun my/elpy-shell-kill-all ()
-        "My elpa shell kill all."
-        (interactive)
-        (elpy-shell-kill-all t nil))
+  (defun my/elpy-shell-kill-all ()
+    "My elpa shell kill all."
+    (interactive)
+    (elpy-shell-kill-all t nil))
 
-    :config
-    ;; (setq elpy-shell-echo-input nil)
-    (setq elpy-modules '(elpy-module-sane-defaults
-        	                elpy-module-eldoc
-        	                elpy-module-flymake
-        	                elpy-module-pyvenv
-        	                elpy-module-yasnippet))
-    )
+  :config
+  (setq elpy-shell-echo-input nil)
+  (setq elpy-modules '(elpy-module-sane-defaults
+        	           elpy-module-eldoc
+        	           elpy-module-flymake
+        	           elpy-module-pyvenv
+        	           elpy-module-yasnippet))
+  )
 
 ;; (use-package elpy
 ;;     :ensure t
@@ -159,93 +159,52 @@
 ;;     )
 
 (use-package python
-    :commands (python-mode run-python)
-    :defer t
-    :bind
-    (("C-x t P" . run-python))
-    :init
-    (setq-default python-indent-guess-indent-offset-verbose nil)
-    (setq-default python-indent-offset 4)
+  :commands (python-mode run-python)
+  :defer t
+  :bind
+  (("C-x t P" . run-python))
+  :init
+  (setq-default python-indent-guess-indent-offset nil)
+  (setq-default python-indent-guess-indent-offset-verbose nil)
+  (setq-default python-indent-offset 4)
 
-    (setq python-shell-interpreter "python3")
-    (when (executable-find "ipython")
-        (progn (setq python-shell-interpreter "ipython"
-        	       python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i")))
+  (setq-default python-shell-interpreter "python3")
 
-    ;; (defvar my-python-original-buffer nil)
-    ;;   (defvar my-python-switch-function 'switch-to-buffer-other-window)
-    ;;   (defun my/python-switch-back ()
-    ;;     "My from inferior-python-mode switch back to python file."
-    ;;     (interactive)
-    ;;     (if my-python-original-buffer
-    ;;         (funcall my-python-switch-function my-python-original-buffer)
-    ;;       (user-error "Node orignal buffer.")))
-    ;;   (defun my/run-python (&optional noswitch)
-    ;;     "My run python."
-    ;;     (interactive)
-    ;;     (remove-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on-maybe-with-msg)
-    ;;     (add-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on)
-    ;;     (get-buffer-process
-    ;;      (python-shell-make-comint (python-shell-calculate-command)
-    ;;                                (python-shell-get-process-name nil) t))
-    ;;     (unless noswitch
-    ;;       (pop-to-buffer  "*Python*")))
-    ;;   (defun my/python-switch-to-shell ()
-    ;;     "My from python file switch to inferior-python-mode shell.
-    ;; If *Python* buffer not exists, create it."
-    ;;     (interactive)
-    ;;     (let ((origin-buffer (current-buffer)))
-    ;;       (if (get-buffer "*Python*")
-    ;;           (funcall my-python-switch-function "*Python*")
-    ;;         (my/run-python))
-    ;;       (setq-local my-python-original-buffer origin-buffer)))
+  (defun my-python-mode-hook ()
+    "My python mode hook."
+    (when semantic-mode
+      (semantic-mode -1))
+    (subword-mode +1)
+    (set (make-local-variable 'tab-width) 4))
+  (add-hook 'python-mode-hook 'my-python-mode-hook)
 
-    (defun my-python-mode-hook ()
-        "My python mode hook."
-        (when semantic-mode
-            (semantic-mode -1))
-        (subword-mode +1)
-        (set (make-local-variable 'tab-width) 4)
+  (defun my-python-shell-mode-hook ()
+    "My python shell mode hook."
+    (when semantic-mode
+      (semantic-mode -1))
 
-        ;; (when (fboundp #'python-imenu-create-index)
-        ;;   (setq-local imenu-create-index-function
-	    ;; 	          #'python-imenu-create-index))
+    ;; disable python-shell-copletion-native
+    (python-shell-completion-native-turn-off)
 
-        ;; (unless (get-buffer "*Python*")
-        ;;   (my/run-python t))
-        ;; (define-key python-mode-map (kbd "C-c C-z") 'my/python-switch-to-shell)
-        )
-    (add-hook 'python-mode-hook 'my-python-mode-hook)
+    ;; replace indent-for-tab-command
+    ;; disable python-shell-completion keybind
+    (define-key inferior-python-mode-map (kbd "TAB") nil))
+  (add-hook 'inferior-python-mode-hook 'my-python-shell-mode-hook)
 
-    (defun my-python-shell-mode-hook ()
-        "My python shell mode hook."
-        (when semantic-mode
-            (semantic-mode -1))
-        ;; disable python-shell-copletion-native
-        (python-shell-completion-native-turn-off)
-        ;; replace indent-for-tab-command
-        ;; disable python-shell-completion keybind
-        (define-key inferior-python-mode-map (kbd "TAB") nil)
-        ;; (define-key inferior-python-mode-map [remap indent-for-tab-command] 'complete-symbol)
-        ;; (define-key inferior-python-mode-map (kbd "C-c C-z") 'my/python-switch-back)
-        )
-    (add-hook 'inferior-python-mode-hook 'my-python-shell-mode-hook)
+  :config
+  (when (executable-find "ipython")
+    (progn (setq python-shell-interpreter "ipython")
+           (if (system-is-mac)
+               (setq python-shell-interpreter-args "-c exec('__import__(\\'readline\\')') --no-confirm-exit --simple-prompt -i")
+             (setq python-shell-interpreter-args "--no-confirm-exit --simple-prompt -i")))
 
-    :config
-    (when (executable-find "ipython")
-        (progn (setq python-shell-interpreter "ipython"
-    	           python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i"))
-        (setq python-shell-completion-native-disabled-interpreters nil)
-        ;; for python shell completion
-        ;; (remove-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on-maybe-with-msg)
-        ;; (add-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on)
-        )
-    (remove-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on-maybe-with-msg)
+    ;; (setq python-shell-completion-native-disabled-interpreters nil)
+    ;; for python shell completion
+    ;; (remove-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on-maybe-with-msg)
+    ;; (add-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on)
     )
-
-
-
-
+  ;; (remove-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on-maybe-with-msg)
+  )
 (provide 'my-python)
 
 ;;; my-python.el ends here
