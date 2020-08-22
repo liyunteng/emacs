@@ -25,10 +25,10 @@
 ;;; Code:
 
 (use-package pyenv-mode
-    :ensure t
-    :commands (pyenv-mode)
-    :init
-    (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t))))
+  :ensure t
+  :commands (pyenv-mode)
+  :init
+  (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t))))
 
 (use-package elpy
   :ensure t
@@ -42,7 +42,8 @@
         ("C-c C-Q" . my/elpy-shell-kill-all)
         ("C-c C-k" . kill-region))
   :init
-  (advice-add 'python-mode :before 'elpy-enable)
+  ;; (advice-add 'python-mode :before 'elpy-enable)
+
   (defun my/elpy-shell-kill ()
     "My elpy shell kill."
     (interactive)
@@ -56,107 +57,11 @@
   :config
   (setq elpy-shell-echo-input nil)
   (setq elpy-modules '(elpy-module-sane-defaults
-        	           elpy-module-eldoc
+                       elpy-module-eldoc
         	           elpy-module-flymake
         	           elpy-module-pyvenv
         	           elpy-module-yasnippet))
   )
-
-;; (use-package elpy
-;;     :ensure t
-;;     :after python
-;;     :commands (elpy-mode elpy-enable)
-;;     :bind
-;;     (:map elpy-mode-map
-;;         ("C-c C-d" . elpy-doc)
-;;         ;; ("C-c C-j" . elpy-goto-definition)
-;;         ;; ("C-c C-J" . elpy-goto-definition-other-window)
-;;         ("C-c C-q" . my/elpy-shell-kill)
-;;         ("C-c C-Q" . my/elpy-shell-kill-all)
-;;         ("C-c C-k" . kill-region)
-;;         )
-;;     :init
-;;     (defvar my-python-virtualenv-dir (expand-file-name ".virtualenvs" "~/"))
-;;     (defvar my-python-virtualenv-workon-name "default")
-;;     (defvar my-python-virtualenv-workon-dir
-;;         (expand-file-name my-python-virtualenv-workon-name my-python-virtualenv-dir))
-
-;;     (unless (file-exists-p my-python-virtualenv-dir)
-;;         (make-directory my-python-virtualenv-dir))
-;;     (when (file-exists-p my-python-virtualenv-dir)
-;;         (setenv "WORKON_HOME" my-python-virtualenv-dir))
-
-;;     (setq elpy-rpc-virtualenv-path my-python-virtualenv-workon-dir)
-;;     ;; (elpy-rpc--get-package-list)
-;;     (defvar my-python-elpy-dependency '("jedi" "flake8" "autopep8" "yapf" "rope"))
-
-;;     (setq python-shell-interpreter "python3")
-;;     (when (executable-find "ipython")
-;;         (progn (setq python-shell-interpreter "ipython"
-;;     	           python-shell-interpreter-args "--simple-prompt --no-confirm-exit -i")
-;;             (add-to-list 'my-python-elpy-dependency "ipython")))
-
-;;     (defun my/elpy-shell-kill ()
-;;         "My elpy shell kill."
-;;         (interactive)
-;;         (elpy-shell-kill t))
-
-;;     (defun my/elpy-shell-kill-all ()
-;;         "My elpa shell kill all."
-;;         (interactive)
-;;         (elpy-shell-kill-all t nil))
-
-;;     :config
-;;     (setq elpy-shell-echo-input nil)
-;;     (setq elpy-modules '(elpy-module-sane-defaults
-;;     		                elpy-module-eldoc
-;;     		                elpy-module-flymake
-;;     		                elpy-module-pyvenv
-;;     		                elpy-module-yasnippet
-;;     		                elpy-module-django))
-;;     (defun my/python-install-lib (lib)
-;;         (interactive "s\lib: ")
-;;         (let ((install-cmd (or (executable-find "pip3")
-;;                                (executable-find "pip")
-;;                                (executable-find "easy_install")))
-;;                  (async-shell-command-buffer 'new-buffer))
-;;             (if install-cmd
-;;                 (progn
-;;                     (message "%s installing %s ..." install-cmd lib)
-;;                     (async-shell-command (format "%s install %s" install-cmd lib)
-;;                         (get-buffer-create (format "*%s-install-%s*" (file-name-base install-cmd) lib))))
-;;                 (message "pip/easy_install not found, please install pip/easy_install")
-;;                 )))
-
-;;     (defun my--python-install-libs (libs)
-;;         (mapc (lambda (n)
-;;                   (my/python-install-lib n))
-;;             libs))
-
-;;     (defun my-install-python-virtualenv ()
-;;         "My install python virtualenv."
-;;         (if (or (not (file-exists-p my-python-virtualenv-dir))
-;;                 (not (file-exists-p my-python-virtualenv-workon-dir)))
-;;             (progn
-;;                 (let ((virtualenvbin (or (executable-find "virtualenv")
-;;                                          (executable-find "pyenv-virtualenv")))
-;;                          (async-shell-command-buffer 'new-buffer))
-;;                     (if (null virtualenvbin)
-;;     	                (message "virtualenv not found, please install virtualenv")
-;;     	                (message "%s %s ..." virtualenvbin my-python-virtualenv-workon-dir)
-;;     	                (shell-command (format "%s %s" virtualenvbin my-python-virtualenv-workon-dir)
-;;                             (get-buffer-create "*install-virtualenv-output*")
-;;                             nil)
-
-;;     	                (setenv "WORKON_HOME" my-python-virtualenv-dir)
-;;     	                (pyvenv-workon my-python-virtualenv-workon-name)
-;;                         (my--python-install-libs my-python-elpy-dependency)
-;;     	                (elpy-rpc-restart)
-;;     	                (message "Done"))))))
-
-;;     (my-install-python-virtualenv)
-;;     (pyvenv-workon my-python-virtualenv-workon-name)
-;;     )
 
 (use-package python
   :commands (python-mode run-python)
@@ -168,14 +73,16 @@
   (setq-default python-indent-guess-indent-offset-verbose nil)
   (setq-default python-indent-offset 4)
 
-  (setq-default python-shell-interpreter "python3")
+  ;; (setq-default python-shell-interpreter "python3")
 
   (defun my-python-mode-hook ()
     "My python mode hook."
     (when semantic-mode
       (semantic-mode -1))
     (subword-mode +1)
-    (set (make-local-variable 'tab-width) 4))
+    (set (make-local-variable 'tab-width) 4)
+    (elpy-enable))
+
   (add-hook 'python-mode-hook 'my-python-mode-hook)
 
   (defun my-python-shell-mode-hook ()
@@ -194,17 +101,13 @@
   :config
   (when (executable-find "ipython")
     (progn (setq python-shell-interpreter "ipython")
-           (if (system-is-mac)
-               (setq python-shell-interpreter-args "-c exec('__import__(\\'readline\\')') --no-confirm-exit --simple-prompt -i")
-             (setq python-shell-interpreter-args "--no-confirm-exit --simple-prompt -i")))
-
-    ;; (setq python-shell-completion-native-disabled-interpreters nil)
-    ;; for python shell completion
-    ;; (remove-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on-maybe-with-msg)
-    ;; (add-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on)
-    )
-  ;; (remove-hook 'python-shell-first-prompt-hook 'python-shell-completion-native-turn-on-maybe-with-msg)
+           (if  (system-is-mac)
+               (progn
+                 (setq python-shell-interpreter-args "-c exec('__import__(\\'readline\\')') --no-confirm-exit --simple-prompt -i"))
+             (setq python-shell-interpreter-args "--no-confirm-exit --simple-prompt -i"))
+           ))
   )
+
 (provide 'my-python)
 
 ;;; my-python.el ends here
