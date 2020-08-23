@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-
 (defmacro my|view-buffer (buffer-name)
   "My view BUFFER-NAME buffer."
   (let* ((bn (if (symbolp buffer-name)

@@ -112,7 +112,7 @@
              (if user-full-name (concat " ("user-full-name ")"))
              " - Emacs ♥ you!\n\n")))
     (setq initial-scratch-message
-      (case initial-major-mode
+      (pcase initial-major-mode
         (lisp-interaction-mode
           (concat  ";; " m))
         (org-mode

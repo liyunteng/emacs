@@ -50,7 +50,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (defun my--console-frame-setup ()
   "Mouse in a terminal (Use shift to paste with middle button)."
   (xterm-mouse-mode 1)
-  (mwheel-install))
+  (mouse-wheel-mode 1))
 (add-hook 'my-after-make-console-frame-hooks 'my--console-frame-setup)
 
 
@@ -73,8 +73,10 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (blink-cursor-mode -1)
   (setq use-dialog-box nil)
   (setq use-file-dialog nil)
-  (setq x-gtk-use-old-file-dialog nil)
-  (setq x-gtk-file-dialog-help-text nil)
+  (when (boundp 'x-gtk-use-old-file-dialog)
+    (setq x-gtk-use-old-file-dialog nil))
+  (when (boundp 'x-gtk-file-dialog-help-text)
+    (setq x-gtk-file-dialog-help-text nil))
   (setq inhibit-startup-screen t)
 
   (setq inhibit-startup-echo-area-message t)
@@ -100,7 +102,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
 
 ;; fonts
-(setq font-use-system-font t)
+(when (boundp 'font-use-system-font)
+  (setq font-use-system-font t))
 (defun my/frame-load-fonts (&optional frame)
   (interactive)
   (when frame (select-frame frame))
@@ -132,6 +135,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
     (set-face-font 'default "Monospace-10"))
 
   (when (system-is-mac)
+    (set-fontset-font "fontset-default" 'latin "Dejavu Sans Mono")
+    (set-fontset-font "fontset-default" 'unicode "Hack")
     (set-face-font 'default "Menlo-16"))
   )
 
@@ -230,11 +235,11 @@ Selectively runs either `my-after-make-console-frame-hooks' or
                         ;;           (0 " LF")
                         ;;           (1 " CRLF")
                         ;;           (2 " CR"))
-                        ;;         (let ((sys (coding-system-plist buffer-file-coding-system)))
-                        ;;           (cond ((memq (plist-get sys :category)
-                        ;;                        '(coding-category-undecided coding-category-utf-8))
-                        ;;                  " UTF-8 ")
-                        ;;                 (t (upcase (symbol-name (plist-get sys :name)))))))
+                        ;;   (let ((sys (coding-system-plist buffer-file-coding-system)))
+                        ;;     (cond ((memq (plist-get sys :category)
+                        ;;              '(coding-category-undecided coding-category-utf-8))
+                        ;;             " UTF-8 ")
+                        ;;       (t (upcase (symbol-name (plist-get sys :name)))))))
                         (powerline-buffer-id `(mode-line-buffer-id ,face0) 'l)
                         (powerline-raw " " face0 'l)
                         (funcall separator-left face0 face1)
@@ -259,12 +264,14 @@ Selectively runs either `my-after-make-console-frame-hooks' or
                            (powerline-minor-modes face2 'l)
                            (powerline-raw " " face2)
                            (funcall separator-right face2 face1))))
-           (concat (window-number-string)
+           (concat
+             (window-number-string)
              (powerline-render lhs)
              (powerline-fill-center face1 (/ (powerline-width center) 2.0))
              (powerline-render center)
              (powerline-fill face1 (powerline-width rhs))
-             (powerline-render rhs))))))
+             (powerline-render rhs)))))
+    )
   (if (daemonp)
     (add-hook 'after-make-frame-functions #'my/frame-powerline-theme)
     (my/frame-powerline-theme)))

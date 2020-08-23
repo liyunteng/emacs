@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-
+(require 'my-load-path)
 ;; linum replaced by nlinum
 (use-package nlinum
   ;; :ensure t
@@ -50,13 +50,7 @@
 	            turn-off-fci-mode
 	            fci-mode)
   :init
-  (my|add-toggle fci-mode
-    :status fci-mode
-    :on (turn-on-fci-mode)
-    :off (turn-off-fci-mode)
-    :documentation "Display the fill column indicator"
-    :global-key "C-# i"
-    )
+  (add-hook 'prog-mode-hook 'turn-on-fci-mode)
   :config
   (setq fci-rule-width 2
 	  ;; fci-rule-color "#D0BF8F"
@@ -89,11 +83,6 @@
   :ensure t
   :diminish move-dup-mode
   :config
-  (my|add-toggle move-dup-mode
-    :mode move-dup-mode
-    :on (move-dup-mode +1)
-    :off (move-dup-mode)
-    :documentation "Move line up/down.")
   (global-move-dup-mode +1))
 
 (use-package highlight-escape-sequences
@@ -107,12 +96,6 @@
   :commands (diff-hl-mode global-diff-hl-mode)
   :bind ("C-x v f" . 'diff-hl-diff-goto-hunk)
   :init
-  (my|add-toggle diff-hl-mode
-    :mode diff-hl-mode
-    :documentation "Highlight diff")
-  (my|add-toggle global-diff-hl-mode
-    :mode global-diff-hl-mode
-    :documentation "Global highlight diff")
   (global-diff-hl-mode +1)
   :config
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
@@ -123,9 +106,6 @@
   :diminish aggressive-indent-mode
   :commands (aggressive-indent-mode)
   :init
-  (my|add-toggle aggressive-indent-mode
-    :mode aggressive-indent-mode
-    :documentation "Always keep code indent.")
   (aggressive-indent-mode -1))
 
 (use-package clang-format :ensure t)

@@ -111,18 +111,19 @@
   :commands (smeargle smeargle-clear smeargle-commits)
   :ensure t)
 
-(use-package github-explorer
-  :ensure t)
+(use-package github-explorer :ensure t)
 ;; (use-package magithub
 ;;   :after magit
 ;;   :ensure t
 ;;   :config
 ;;   (magithub-feature-autoinject t))
 
-(use-package gh
-  :ensure t)
-(use-package gh-md
-  :ensure t)
+;; (use-package gh
+;;   :ensure t)
+
+;; (use-package gh-md
+;;   :ensure t)
+
 ;; (use-package gist
 ;;   :ensure t)
 ;; (use-package yagist

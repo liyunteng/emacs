@@ -23,10 +23,9 @@
 ;;
 
 ;;; Code:
-(setq debug-on-error nil)
+(setq debug-on-error t)
 ;; (setq max-lisp-eval-depth 400)
 ;; (setq max-specpdl-size 400)
-(require 'cl-macs)
 (defvar my-debug nil)
 (defvar my-init-times nil
   "A list of (FEATURE TYPE LOAD-START-TIME LOAD-DURATION).

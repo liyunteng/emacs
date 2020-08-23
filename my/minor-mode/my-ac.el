@@ -186,7 +186,7 @@
   :init
   (company-quickhelp-mode 1)
   :config
-  ;; (setq company-quickhelp-use-propertized-text t)
+  (setq company-quickhelp-use-propertized-text t)
   (setq company-quickhelp-delay 0.5)
   (setq company-quickhelp-max-lines 30))
 
@@ -239,7 +239,8 @@
   (setq lsp-response-timeout 2)
   ;; (setq lsp-document-sync-method lsp--sync-full)
   ;; (setq lsp-headerline-breadcrumb-enable t)
-  (setq lsp-prefer-capf t)
+  ;; (setq lsp-prefer-capf t)
+  (setq-default lsp-completion-provider t)
   (setq lsp-lens-enable t)
 
   ;; (setq lsp-keymap-prefix "C-c")
@@ -257,7 +258,7 @@
   :bind
   (:map lsp-ui-mode-map
     ("M-'" . lsp-ui-sideline-apply-code-actions))
-  :init
+  :config
   (defadvice recenter-top-bottom (after my-update-lsp-ui-doc-position activate)
     (when (lsp-ui-doc--frame-visible-p)
       (let ((lsp-ui-doc-delay 0))

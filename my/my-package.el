@@ -24,7 +24,6 @@
 
 ;;; Code:
 
-(require 'cl)
 (require 'package)
 (defconst 163-mirrors
   '(("gnu" . "http://mirrors.163.com/elpa/gnu/")

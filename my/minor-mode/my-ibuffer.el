@@ -109,7 +109,7 @@
                 (list (cons "Mode"
                         (my--ibuffer-get-major-modes-ibuffer-rules-list
                           (cl-set-difference
-                            (remove-duplicates
+                            (cl-remove-duplicates
                               (my--ibuffer-get-major-modes-list)) ignore-modes)
                           '()))
 

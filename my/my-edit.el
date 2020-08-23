@@ -24,9 +24,11 @@
 ;;; Code:
 
 ;;
+(require 'my-load-path)
 
 ;; locale
-(after-load 'mule
+(use-package mule
+  :config
   (defun my-utf8-locale-p (v)
     "Return whether locale string V relates to a UTF-8 locale."
     (and v (or (string-match "UTF-8" v)
@@ -54,24 +56,29 @@
     (prefer-coding-system 'utf-8-auto)))
 
 ;; yank at point
-(after-load 'mouse
+(use-package mouse
+  :config
   (setq mouse-yank-at-point t))
 
 ;; 支持emacs和外部程序的拷贝粘贴
-(after-load 'select
+(use-package select
+  :config
   (setq select-enable-clipboard t))
 
 ;; tooltip
-(after-load 'tooltip
+(use-package tooltip
+  :config
   (setq tooltip-delay 0.7))
 
 ;; imenu
-(after-load 'imenu
+(use-package imenu
+  :config
   (setq imenu-auto-rescan t)
   (setq imenu-auto-rescan-maxout 60000)
   (setq imenu-max-items 50))
 
-(after-load 'simple
+(use-package simple
+  :config
   ;; next-error to middle
   (setq next-error-recenter '(4))
   (setq delete-trailing-lines t)
@@ -94,32 +101,38 @@
   (transient-mark-mode +1)
   )
 
-(after-load 'help
+(use-package help
+  :config
   ;; Keep focus while navigating help buffers
   (setq help-window-select nil)
-  (setq help-enable-auto-load t))
+  (setq help-enable-autoload t))
 
 ;; replace active region
-(after-load 'delsel
+(use-package delsel
+  :init
   (delete-selection-mode +1))
 
 ;; margin width
-(after-load 'fringe
+(use-package fringe
+  :init
   (fringe-mode  '(8 . 0)))
 
 ;; show image file
-(after-load 'image-file
+(use-package image-file
+  :init
   (auto-image-file-mode +1)
   ;; (when (executable-find "convert")
   ;;   (setq imagemagick-render-type 1))
   )
 
 ;; Don't try to ping things that look like domain names
-(after-load 'ffap
-  (setq-default ffap-machine-p-known 'reject))
+(use-package ffap
+  :config
+  (setq ffap-machine-p-known 'reject))
 
 ;; show battery in mode line
-(if (boundp 'battery-status-function)
+(use-package battery
+  :init
   (display-battery-mode t))
 
 ;; mouse avoid
@@ -293,7 +306,7 @@
 
   ;; filter duplicates bookmark history
   ;; (defadvice bookmark-completing-read (around filter-duplicates activate)
-  ;;   (setq bookmark-history (remove-duplicates bookmark-history :test 'equal))
+  ;;   (setq bookmark-history (cl-remove-duplicates bookmark-history :test 'equal))
   ;;   ad-do-it)
   )
 
@@ -451,7 +464,7 @@ compile-command, will auto insert new-compile-command to code file.
            (compiler (file-name-nondirectory (or (executable-find "clang")
                                                (executable-find "gcc") "gcc"))))
       (if (string-prefix-p "make" command)
-        (unless (find t candidate-make-file-name :key
+        (unless (cl-find t candidate-make-file-name :key
                   '(lambda (f) (file-readable-p f)))
           (cond ((eq major-mode 'c-mode)
                   (setq command

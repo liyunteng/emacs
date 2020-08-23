@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-
 (setq window-combination-resize t)
 (setq split-height-threshold 80)
 (setq split-width-threshold 160)
@@ -46,7 +45,6 @@
   (setq switch-window-timeout nil))
 
 (use-package window-number
-  :ensure t
   :commands (window-number-meta-mode)
   :init
   (window-number-meta-mode +1))
@@ -104,42 +102,37 @@ If the universal prefix argument is used then kill the buffer too."
 ;;----------------------------------------------------------------------------
 ;; when splitting window, show (other-buffer) in the new window
 ;;----------------------------------------------------------------------------
-(defun my-window-split-func-with-other-buffer (split-function)
-  "Split window use SPLIT-FUNCTION."
-  (lexical-let ((s-f split-function))
-    (lambda (&optional arg)
-      "split this window and switch to the new window unless arg is provided."
-      (interactive "P")
-      (funcall s-f)
-      (let ((target-window (next-window)))
-        (set-window-buffer target-window (other-buffer))
-        (unless arg
-          (select-window target-window))))))
+(defun my-window-split-func-with-other-buffer (split-function &optional arg)
+  (funcall split-function)
+  (let ((target-window (next-window)))
+    (set-window-buffer target-window (other-buffer))
+    (unless arg
+      (select-window target-window))))
 
 ;;----------------------------------------------------------------------------
 ;; Rearrange split windows
 ;;----------------------------------------------------------------------------
-(defun my/window-split-horizontally-instead ()
-  (interactive)
+(defun my/window-split-horizontally-instead (&optional arg)
+  (interactive "P")
   (save-excursion
     (delete-other-windows)
-    (funcall (my-window-split-func-with-other-buffer 'split-window-horizontally))))
+    (my-window-split-func-with-other-buffer 'split-window-horizontally arg)))
 
-(defun my/window-split-vertically-instead ()
-  (interactive)
+(defun my/window-split-vertically-instead (&optional arg)
+  (interactive "P")
   (save-excursion
     (delete-other-windows)
-    (funcall (my-window-split-func-with-other-buffer 'split-window-vertically))))
+    (my-window-split-func-with-other-buffer 'split-window-vertically arg)))
 
 (defun my/window-split-horizontally-then-switch ()
   (interactive)
   (save-excursion
-    (funcall (my-window-split-func-with-other-buffer 'split-window-horizontally))))
+    (my-window-split-func-with-other-buffer 'split-window-horizontally)))
 
 (defun my/window-split-vertically-then-switch ()
   (interactive)
   (save-excursion
-    (funcall (my-window-split-func-with-other-buffer 'split-window-vertically))))
+    (my-window-split-func-with-other-buffer 'split-window-vertically)))
 
 
 (defun my/window-toggle-current-file-dedication ()
