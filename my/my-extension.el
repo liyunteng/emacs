@@ -47,8 +47,8 @@
   :ensure t
   :diminish fci-mode
   :commands (turn-on-fci-mode
-	         turn-off-fci-mode
-	         fci-mode)
+	            turn-off-fci-mode
+	            fci-mode)
   :init
   (my|add-toggle fci-mode
     :status fci-mode
@@ -59,8 +59,8 @@
     )
   :config
   (setq fci-rule-width 2
-	    ;; fci-rule-color "#D0BF8F"
-	    ))
+	  ;; fci-rule-color "#D0BF8F"
+	  ))
 
 ;; Highlight brackets according to their depth
 (use-package rainbow-delimiters
@@ -175,19 +175,19 @@
   :ensure t
   :bind-keymap ("C-c p" . projectile-command-map)
   :bind (:map projectile-command-map
-              ("A a" . projectile-add-known-project)
-              ("A d" . projectile-remove-known-project))
+          ("A a" . projectile-add-known-project)
+          ("A d" . projectile-remove-known-project))
   :init
   (setq projectile-cache-file (expand-file-name  "projectile.cache" my-cache-dir))
   (setq projectile-known-projects-file (expand-file-name "projectile-bookmarks" my-cache-dir))
   (setq projectile-mode-line-prefix " PJ")
   (setq projectile-sort-order 'recentf
-        projectile-indexing-method 'alien)
+    projectile-indexing-method 'alien)
   (setq projectile-enable-caching t)
   (setq projectile-switch-project-action 'neotree-projectile-action
-        projectile-create-missing-test-files t
-        projectile-switch-project-action #'projectile-commander
-        projectile-ignored-project-function 'file-remote-p)
+    projectile-create-missing-test-files t
+    projectile-switch-project-action #'projectile-commander
+    projectile-ignored-project-function 'file-remote-p)
 
   (add-hook 'after-init-hook 'projectile-mode))
 
@@ -205,34 +205,34 @@
   (defun undo-tree-update-menu-bar ()
     "Update `undo-tree-mode' Edit menu items."
     (if undo-tree-mode
-        (progn
+      (progn
 	      ;; save old undo menu item, and install undo/redo menu items
 	      (setq undo-tree-old-undo-menu-item
-	            (cdr (assq 'undo (lookup-key global-map [menu-bar edit]))))
+	        (cdr (assq 'undo (lookup-key global-map [menu-bar edit]))))
 	      (define-key (lookup-key global-map [menu-bar edit])
 	        [undo] '(menu-item "Undo" undo-tree-undo
-			                   :enable (and undo-tree-mode
-					                        (not buffer-read-only)
-					                        (not (eq t buffer-undo-list))
+			              :enable (and undo-tree-mode
+					                    (not buffer-read-only)
+					                    (not (eq t buffer-undo-list))
                                             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                                            ;; add buffer-undo-tree judgement ;;
+                              ;; add buffer-undo-tree judgement ;;
                                             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-					                        (and buffer-undo-tree
-                                                 (undo-tree-node-previous
-					                              (undo-tree-current buffer-undo-tree))))
-			                   :help "Undo last operation"))
+					                    (and buffer-undo-tree
+                                (undo-tree-node-previous
+					                        (undo-tree-current buffer-undo-tree))))
+			              :help "Undo last operation"))
 	      (define-key-after (lookup-key global-map [menu-bar edit])
 	        [redo] '(menu-item "Redo" undo-tree-redo
-			                   :enable (and undo-tree-mode
-					                        (not buffer-read-only)
-					                        (not (eq t buffer-undo-list))
+			              :enable (and undo-tree-mode
+					                    (not buffer-read-only)
+					                    (not (eq t buffer-undo-list))
                                             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                                            ;; add buffer-undo-tree judgement ;;
+                              ;; add buffer-undo-tree judgement ;;
                                             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-					                        (and buffer-undo-tree
-                                                 (undo-tree-node-next
-					                              (undo-tree-current buffer-undo-tree))))
-			                   :help "Redo last operation")
+					                    (and buffer-undo-tree
+                                (undo-tree-node-next
+					                        (undo-tree-current buffer-undo-tree))))
+			              :help "Redo last operation")
 	        'undo))
       ;; uninstall undo/redo menu items
       (define-key (lookup-key global-map [menu-bar edit])
@@ -261,14 +261,14 @@
 (use-package multiple-cursors
   :ensure t
   :bind (("C-<" . mc/mark-previous-like-this)
-         ("C->" . mc/mark-next-like-this)
-         ("C-x M <" . mc/mark-previous-like-this)
-         ("C-x M >" . mc/mark-next-like-this)
-         ("C-x M C-<" . mc/mark-all-like-this)
-         ("C-x M r" . set-rectangular-region-anchor)
-         ("C-x M c" . mc/edit-ines)
-         ("C-x M e" . mc/edit-ends-of-lines)
-         ("C-x M a" . mc/edit-beginnings-of-lines)))
+          ("C->" . mc/mark-next-like-this)
+          ("C-x M <" . mc/mark-previous-like-this)
+          ("C-x M >" . mc/mark-next-like-this)
+          ("C-x M C-<" . mc/mark-all-like-this)
+          ("C-x M r" . set-rectangular-region-anchor)
+          ("C-x M c" . mc/edit-ines)
+          ("C-x M e" . mc/edit-ends-of-lines)
+          ("C-x M a" . mc/edit-beginnings-of-lines)))
 
 ;; discover-my-major
 (use-package discover-my-major
@@ -279,26 +279,26 @@
   :ensure t
   :diminish symbol-overlay-mode
   :bind (:map symbol-overlay-mode-map
-              ("M-n" . symbol-overlay-jump-next)
-              ("M-p" . symbol-overlay-jump-prev)
-              ("s-i" . my/symbol-overlay-put))
+          ("M-n" . symbol-overlay-jump-next)
+          ("M-p" . symbol-overlay-jump-prev)
+          ("s-i" . my/symbol-overlay-put))
   :init
   (defun my/symbol-overlay-put ()
     "Replace `symbol-overlay-put' with `tab-do-tab-stop' when no symbol."
     (interactive)
     (if (thing-at-point 'symbol)
-        (call-interactively 'symbol-overlay-put)
+      (call-interactively 'symbol-overlay-put)
       (call-interactively  'tab-to-tab-stop)))
   (dolist (hook '(prog-mode-hook html-mode-hook yaml-mode-hook conf-mode-hook css-mode-hook))
     (add-hook hook 'symbol-overlay-mode))
   :config
   (set-face-attribute 'symbol-overlay-default-face nil
-                      :background
-                      (face-attribute 'isearch
-                                      :background)
-                      :foreground
-                      (face-attribute 'isearch
-                                      :foreground)))
+    :background
+    (face-attribute 'isearch
+      :background)
+    :foreground
+    (face-attribute 'isearch
+      :foreground)))
 
 (use-package iedit
   :ensure t
@@ -307,9 +307,9 @@
   :config
   (setq iedit-toggle-key-default nil)
   (add-hook 'iedit-mode-hook
-            '(lambda ()
-               (define-key iedit-occurrence-keymap (kbd "M-n") 'iedit-next-occurrence)
-               (define-key iedit-occurrence-keymap (kbd "M-p") 'iedit-prev-occurrence))))
+    '(lambda ()
+       (define-key iedit-occurrence-keymap (kbd "M-n") 'iedit-next-occurrence)
+       (define-key iedit-occurrence-keymap (kbd "M-p") 'iedit-prev-occurrence))))
 
 ;; multi major mode
 ;; (use-package mmm-mode
@@ -331,11 +331,11 @@
 (use-package crux
   :ensure t
   :bind (([remap move-beginning-of-line] . crux-move-beginning-of-line)
-         ([remap open-line] . crux-smart-open-line)
-         ("C-x M-;" . crux-duplicate-and-comment-current-line-or-region)
-         ("C-x M-o" . crux-open-with)
-         ;; ("C-c u" . crux-view-url)
-         ("M-J" . crux-top-join-line))
+          ([remap open-line] . crux-smart-open-line)
+          ("C-x M-;" . crux-duplicate-and-comment-current-line-or-region)
+          ("C-x M-o" . crux-open-with)
+          ;; ("C-c u" . crux-view-url)
+          ("M-J" . crux-top-join-line))
   :init
   (defadvice crux-open-with (after my-after-crux-open-with-ad activate)
     (message "opend with external application.")))
@@ -344,13 +344,13 @@
   :ensure t
   :defer t
   :bind (("C-s-." . youdao-dictionary-search-at-point)
-         ("s-." . youdao-dictionary-search-at-point-tooltip)
-         ("s-," . youdao-dictionary-play-voice-at-point)
-         ("s-M-," . youdao-dictionary-play-voice-from-input)
-         ("s-M-." . youdao-dictionary-search-from-input)
-         :map youdao-dictionary-mode-map
-         ("v" . youdao-dictionary-play-voice-at-point)
-         ("V" . youdao-dictionary-play-voice-from-input)))
+          ("s-." . youdao-dictionary-search-at-point-tooltip)
+          ("s-," . youdao-dictionary-play-voice-at-point)
+          ("s-M-," . youdao-dictionary-play-voice-from-input)
+          ("s-M-." . youdao-dictionary-search-from-input)
+          :map youdao-dictionary-mode-map
+          ("v" . youdao-dictionary-play-voice-at-point)
+          ("V" . youdao-dictionary-play-voice-from-input)))
 
 ;; make useless word
 (use-package lorem-ipsum
@@ -370,10 +370,10 @@
   (defun diff-at-point-toggle ()
     (interactive)
     (cond
-     ((string= major-mode "diff-mode")
-      (diff-at-point-goto-source-and-close))
-     (t
-      (diff-at-point-open-and-goto-hunk)))))
+      ((string= major-mode "diff-mode")
+        (diff-at-point-goto-source-and-close))
+      (t
+        (diff-at-point-open-and-goto-hunk)))))
 
 (use-package paradox
   :ensure t
@@ -381,7 +381,7 @@
   :custom (paradox-automatically-star t)
   :config
   (setq paradox-spinner-type 'progress-bar
-        paradox-execute-asynchronously t))
+    paradox-execute-asynchronously t))
 
 (use-package auto-package-update
   :ensure t
@@ -389,7 +389,7 @@
   (setq auto-package-update-last-update-day-filename (expand-file-name "last-package-update-day" my-cache-dir))
   :config
   (setq auto-package-update-delete-old-versions t
-        auto-package-update-hide-results t)
+    auto-package-update-hide-results t)
   (auto-package-update-maybe))
 
 ;; GTAGS

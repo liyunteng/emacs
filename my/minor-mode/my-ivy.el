@@ -28,23 +28,23 @@
   :ensure t
   :bind
   (:map ivy-minibuffer-map
-        ("C-j" . ivy-immediate-done)
-        ("RET" . ivy-alt-done)
-        ("C-g" . minibuffer-keyboard-quit)
-        ("C-y" . ivy-yank-word)
-        ("C-c C-a" . ivy-toggle-ignore)
-        ("M-i" . ivy-toggle-case-fold)
-        ("C-M-n" . ivy-next-line-and-call)
-        ("C-M-p" . ivy-previous-line-and-call))
+    ("C-j" . ivy-immediate-done)
+    ("RET" . ivy-alt-done)
+    ("C-g" . minibuffer-keyboard-quit)
+    ("C-y" . ivy-yank-word)
+    ("C-c C-a" . ivy-toggle-ignore)
+    ("M-i" . ivy-toggle-case-fold)
+    ("C-M-n" . ivy-next-line-and-call)
+    ("C-M-p" . ivy-previous-line-and-call))
   :init
   (use-package flx :ensure t)
   (use-package swiper
     :ensure t
     :bind
     (("M-s u" . swiper-from-isearch)
-     ("M-s S" . swiper-all-thing-at-point)
-     ("M-s s" . swiper-thing-at-point)
-     ("M-s m" . swiper)))
+      ("M-s S" . swiper-all-thing-at-point)
+      ("M-s s" . swiper-thing-at-point)
+      ("M-s m" . swiper)))
 
   (use-package smex
     :ensure t
@@ -56,17 +56,17 @@
     :diminish counsel-mode
     :bind
     (("C-c C-j" . counsel-imenu)
-     ("C-c h r" . counsel-recentf)
-     ("C-c h i" . counsel-semantic-or-imenu)
-     ("C-c h f" . counsel-faces)
-     ("C-c h F" . counsel-describe-face)
-     ("C-c h c" . counsel-colors-emacs)
-     ("C-c h w" . counsel-colors-web)
-     ("C-c h x" . counsel-linux-app)
-     ("C-c h b" . counsel-switch-buffer)
-     ("C-c h C-b" . counsel-switch-buffer-other-window)
-     ("C-c h m" . my/woman)
-     ("C-c h M" . counsel-minor))
+      ("C-c h r" . counsel-recentf)
+      ("C-c h i" . counsel-semantic-or-imenu)
+      ("C-c h f" . counsel-faces)
+      ("C-c h F" . counsel-describe-face)
+      ("C-c h c" . counsel-colors-emacs)
+      ("C-c h w" . counsel-colors-web)
+      ("C-c h x" . counsel-linux-app)
+      ("C-c h b" . counsel-switch-buffer)
+      ("C-c h C-b" . counsel-switch-buffer-other-window)
+      ("C-c h m" . my/woman)
+      ("C-c h M" . counsel-minor))
     :config
     (setq counsel-mode-override-describe-bindings t)
     (setq counsel-find-file-at-point t)
@@ -97,7 +97,7 @@
     "Make `ivy' matching work more like IDO."
     (interactive)
     (setq-default ivy-re-builders-alist
-                  '((t . ivy--regex-fuzzy))))
+      '((t . ivy--regex-fuzzy))))
 
   (defun my/woman (&optional topic re-cache)
     "Call woman in side window."
@@ -114,12 +114,12 @@
 (diminish 'counsel-mode)
 
 (add-hook 'after-init-hook
-          (lambda ()
-            (when (bound-and-true-p ido-ubiquitous-mode)
-              (ido-ubiquitous-mode -1)
-              (ido-mode -1))
-            (ivy-mode 1)
-            (counsel-mode)))
+  (lambda ()
+    (when (bound-and-true-p ido-ubiquitous-mode)
+      (ido-ubiquitous-mode -1)
+      (ido-mode -1))
+    (ivy-mode 1)
+    (counsel-mode)))
 
 (provide 'my-ivy)
 ;;; my-ivy.el ends here

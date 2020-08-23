@@ -29,7 +29,7 @@
   :ensure t
   :defer t
   :bind (;; replace expand-abbrev
-         ("C-x '" . yas-describe-tables))
+          ("C-x '" . yas-describe-tables))
   :init
   (add-hook 'prog-mode-hook 'yas-minor-mode-on)
 
@@ -39,7 +39,7 @@
   ;; (setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))
 
   (setq yas-triggers-in-field t
-  	    yas-wrap-around-region t)
+  	yas-wrap-around-region t)
   ;; (setq yas-prompt-functions '(yas-completing-prompt))
   (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
   (yas-reload-all)

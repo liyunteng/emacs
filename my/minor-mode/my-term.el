@@ -27,9 +27,9 @@
 ;; (autoload 'multi-term-next "multi-term" nil)
 
 (defadvice shell-command-on-region
-    (after my-shell-command-in-view-mode
-           (start end command &optional output-buffer &rest other-args)
-           activate)
+  (after my-shell-command-in-view-mode
+    (start end command &optional output-buffer &rest other-args)
+    activate)
   "Put \"*Shell Command Output*\" buffers into view-mode."
   (unless output-buffer
     (with-current-buffer "*Shell Command Output*"
@@ -41,36 +41,36 @@
   (let ((process (ignore-errors (get-buffer-process (current-buffer)))))
     (when process
       (set-process-sentinel process
-                            (lambda (proc change)
-                              (when (string-match "\\(finished\\|exited\\)" change)
-                                (kill-buffer (process-buffer proc))
-                                (when (> (count-windows) 1)
-                                  (delete-window))
-                                ))))))
+        (lambda (proc change)
+          (when (string-match "\\(finished\\|exited\\)" change)
+            (kill-buffer (process-buffer proc))
+            (when (> (count-windows) 1)
+              (delete-window))
+            ))))))
 
 (dolist (hook '(term-mode-hook
-                eshell-mode-hook
-                comint-mode-hook
-                ;; comint-exec-hook
-                shell-mode-hook
-                inferior-python-mode-hook
-                ))
+                 eshell-mode-hook
+                 comint-mode-hook
+                 ;; comint-exec-hook
+                 shell-mode-hook
+                 inferior-python-mode-hook
+                 ))
   (add-hook hook 'kill-buffer-when-shell-command-exit))
 
 
 (defvar my-term-shell (or (executable-find "zsh") (executable-find "bash")))
 (setq-default explicit-shell-file-name my-term-shell)
 (setq-default term-input-ring-file-name
-              (expand-file-name "term" my-cache-dir))
+  (expand-file-name "term" my-cache-dir))
 
 (use-package comint
   :config
   (setq comint-scroll-to-bottom-on-input t
-	    comint-scroll-to-bottom-on-output t
-	    comint-scroll-show-maximum-output nil
-	    comint-prompt-read-only t
-	    comint-move-point-for-output t
-	    )
+	  comint-scroll-to-bottom-on-output t
+	  comint-scroll-show-maximum-output nil
+	  comint-prompt-read-only t
+	  comint-move-point-for-output t
+	  )
 
   ;; (setq comint-input-sender
   ;;       (lambda (proc command)
@@ -103,47 +103,47 @@
   :bind (("C-x t s" . shell))
   :config
   (if (fboundp 'helm-comint-input-ring)
-      (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)))
+    (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)))
 
 (use-package term
-    :config
-    (defadvice ansi-term (before set-shell activate)
-        "Set Shell Program."
-        (interactive (list my-term-shell)))
+  :config
+  (defadvice ansi-term (before set-shell activate)
+    "Set Shell Program."
+    (interactive (list my-term-shell)))
 
-    (defadvice term (before set-shell activate)
-        "Set Shell Program."
-        (interactive (list my-term-shell)))
+  (defadvice term (before set-shell activate)
+    "Set Shell Program."
+    (interactive (list my-term-shell)))
 
-    (defadvice term-mode (before set-term activate)
-        "Set TERM=linux if in 8-color."
-        (if (<= (display-color-cells) 8)
-            (set-variable 'term-term-name "linux")))
+  (defadvice term-mode (before set-term activate)
+    "Set TERM=linux if in 8-color."
+    (if (<= (display-color-cells) 8)
+      (set-variable 'term-term-name "linux")))
 
-    (defun my-term-mode-hook ()
-        (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
-        (setq-local mouse-yank-at-point t)
-        (setq-local transient-mark-mode nil)
-        (setq-local global-hl-line-mode nil)
-        (setq-local beacon-mode nil)
-        (setq-local scroll-margin 0)
-        (setq-default system-uses-terminfo t))
+  (defun my-term-mode-hook ()
+    (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+    (setq-local mouse-yank-at-point t)
+    (setq-local transient-mark-mode nil)
+    (setq-local global-hl-line-mode nil)
+    (setq-local beacon-mode nil)
+    (setq-local scroll-margin 0)
+    (setq-default system-uses-terminfo t))
 
-    (add-hook 'term-mode-hook 'my-term-mode-hook)
-    )
+  (add-hook 'term-mode-hook 'my-term-mode-hook)
+  )
 
 (use-package multi-term
   :ensure t
   :commands (multi-term)
   :bind (
-         ;; ("C-x e" . my/multi-term)
-         ("C-x t m" . term)
-         ("C-x t a" . ansi-term)
-         ("C-x t x" . my/multi-term-dedicated-toggle-and-select)
-         ("C-x t l" . my/multi-term)
-         ("C-x t t" . multi-term)
-         ("C-x t n" . multi-term-next)
-         ("C-x t p" . multi-term-prev))
+          ;; ("C-x e" . my/multi-term)
+          ("C-x t m" . term)
+          ("C-x t a" . ansi-term)
+          ("C-x t x" . my/multi-term-dedicated-toggle-and-select)
+          ("C-x t l" . my/multi-term)
+          ("C-x t t" . multi-term)
+          ("C-x t n" . multi-term-next)
+          ("C-x t p" . multi-term-prev))
 
   :config
   (setq multi-term-program (or (executable-find "zsh") (executable-find "bash")))
@@ -156,25 +156,25 @@
   (defun my/term-mode-toggle-line-mode ()
     (interactive)
     (if (eq major-mode 'term-mode)
-        (if (term-in-char-mode)
-            (term-line-mode)
-          (term-char-mode))
+      (if (term-in-char-mode)
+        (term-line-mode)
+        (term-char-mode))
       (message "not term-mode")))
 
   (setq multi-term-program my-term-shell
-        multi-term-scroll-to-bottom-on-output t
-        multi-term-scroll-show-maximum-output nil
-        multi-term-switch-after-close nil
-        )
+    multi-term-scroll-to-bottom-on-output t
+    multi-term-scroll-show-maximum-output nil
+    multi-term-switch-after-close nil
+    )
 
   (defvar my-multi-term-dedicated-old-buf nil)
   (defun my/multi-term-dedicated-toggle-and-select ()
     "My term dedicated toggle and select."
     (interactive)
     (if (multi-term-dedicated-exist-p)
-        (progn
-          (multi-term-dedicated-close)
-          (switch-to-buffer my-multi-term-dedicated-old-buf))
+      (progn
+        (multi-term-dedicated-close)
+        (switch-to-buffer my-multi-term-dedicated-old-buf))
       (progn
         (setq my-multi-term-dedicated-old-buf (current-buffer))
         (multi-term-dedicated-open)
@@ -189,7 +189,7 @@
     (term-char-mode)
     ;; Handle `output' variable.
     (setq term-scroll-show-maximum-output multi-term-scroll-show-maximum-output
-          term-scroll-to-bottom-on-output multi-term-scroll-to-bottom-on-output)
+      term-scroll-to-bottom-on-output multi-term-scroll-to-bottom-on-output)
     (add-hook 'kill-buffer-hook 'multi-term-kill-buffer-hook))
 
   (defun my/multi-term ()
@@ -239,72 +239,72 @@
   (define-key term-mode-map (kbd "C-c C-p") 'term-previous-prompt)
   (define-key term-mode-map (kbd "C-c C-n") 'term-next-prompt))
 
-  (use-package eshell
-    :defer t
-    :bind (("C-x t e" . eshell))
-    :config
-    (setq eshell-directory-name (expand-file-name "eshell" my-cache-dir))
-    (setq eshell-cmpl-cycle-completions nil
-	      ;; auto truncate after 20k lines
-	      eshell-buffer-maximum-lines 20000
-	      ;; history size
-	      eshell-history-size 350
-	      ;; no duplicates in history
-	      eshell-hist-ignoredups t
-	      ;; buffer shorthand -> echo foo > #'buffer
-	      eshell-buffer-shorthand t
-	      ;; my prompt is easy enough to see
-	      eshell-highlight-prompt nil
-	      ;; treat 'echo' like shell echo
-	      eshell-plain-echo-behavior t
+(use-package eshell
+  :defer t
+  :bind (("C-x t e" . eshell))
+  :config
+  (setq eshell-directory-name (expand-file-name "eshell" my-cache-dir))
+  (setq eshell-cmpl-cycle-completions nil
+	  ;; auto truncate after 20k lines
+	  eshell-buffer-maximum-lines 20000
+	  ;; history size
+	  eshell-history-size 350
+	  ;; no duplicates in history
+	  eshell-hist-ignoredups t
+	  ;; buffer shorthand -> echo foo > #'buffer
+	  eshell-buffer-shorthand t
+	  ;; my prompt is easy enough to see
+	  eshell-highlight-prompt nil
+	  ;; treat 'echo' like shell echo
+	  eshell-plain-echo-behavior t
 
-	      eshell-send-direct-to-subprocesses t
-	      eshell-scroll-to-bottom-on-input nil
-	      eshell-scroll-to-bottom-on-output nil
-	      )
+	  eshell-send-direct-to-subprocesses t
+	  eshell-scroll-to-bottom-on-input nil
+	  eshell-scroll-to-bottom-on-output nil
+	  )
 
-    (defun my--protect-eshell-prompt ()
-      "Protect Eshell's prompt like Comint's prompts.
+  (defun my--protect-eshell-prompt ()
+    "Protect Eshell's prompt like Comint's prompts.
 
 E.g. `evil-change-whole-line' won't wipe the prompt. This
 is achieved by adding the relevant text properties."
-      (let ((inhibit-field-text-motion t))
-        (add-text-properties
-         (point-at-bol)
-         (point)
-         '(rear-nonsticky t
-			              inhibit-line-move-field-capture t
-			              field output
-			              read-only t
-			              front-sticky (field inhibit-line-move-field-capture)))))
+    (let ((inhibit-field-text-motion t))
+      (add-text-properties
+        (point-at-bol)
+        (point)
+        '(rear-nonsticky t
+			     inhibit-line-move-field-capture t
+			     field output
+			     read-only t
+			     front-sticky (field inhibit-line-move-field-capture)))))
 
-    (add-hook 'eshell-after-prompt-hook 'my--protect-eshell-prompt)
-    (autoload 'eshell-delchar-or-maybe-eof "em-rebind")
+  (add-hook 'eshell-after-prompt-hook 'my--protect-eshell-prompt)
+  (autoload 'eshell-delchar-or-maybe-eof "em-rebind")
 
-    ;; fix scroll to bottom copy from eshell/clear
-    (defun my-eshell/clear ()
-      (interactive)
-      (eshell/clear-scrollback)
-      (let ((eshell-input-filter-functions
-             (remq 'eshell-add-to-history eshell-input-filter-functions)))
-        (eshell-send-input)))
+  ;; fix scroll to bottom copy from eshell/clear
+  (defun my-eshell/clear ()
+    (interactive)
+    (eshell/clear-scrollback)
+    (let ((eshell-input-filter-functions
+            (remq 'eshell-add-to-history eshell-input-filter-functions)))
+      (eshell-send-input)))
 
-    (defun my--init-eshell ()
-      "Stuff to do when enabling eshell."
-      (setq-default pcomplete-cycle-completions nil)
-      (if (bound-and-true-p linum-mode) (linum-mode -1))
-      (when semantic-mode
-        (semantic-mode -1))
-      (when (boundp 'eshell-output-filter-functions)
-        (push 'eshell-truncate-buffer eshell-output-filter-functions))
+  (defun my--init-eshell ()
+    "Stuff to do when enabling eshell."
+    (setq-default pcomplete-cycle-completions nil)
+    (if (bound-and-true-p linum-mode) (linum-mode -1))
+    (when semantic-mode
+      (semantic-mode -1))
+    (when (boundp 'eshell-output-filter-functions)
+      (push 'eshell-truncate-buffer eshell-output-filter-functions))
 
-      ;; Caution! this will erase buffer's content at C-l
-      (define-key eshell-mode-map (kbd "C-l") 'my-eshell/clear)
-      (define-key eshell-mode-map (kbd "C-d") 'eshell-delchar-or-maybe-eof)
-      (setq-local global-hl-line-mode nil)
-      )
+    ;; Caution! this will erase buffer's content at C-l
+    (define-key eshell-mode-map (kbd "C-l") 'my-eshell/clear)
+    (define-key eshell-mode-map (kbd "C-d") 'eshell-delchar-or-maybe-eof)
+    (setq-local global-hl-line-mode nil)
+    )
 
-    (add-hook 'eshell-mode-hook 'my--init-eshell))
+  (add-hook 'eshell-mode-hook 'my--init-eshell))
 
 (provide 'my-term)
 ;;; my-term.el ends here

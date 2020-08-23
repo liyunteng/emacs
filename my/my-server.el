@@ -26,7 +26,7 @@
 
 (use-package server
   :commands (server-running-p
-	         server-mode)
+	            server-mode)
   :init
 
   ;; (setq server-use-tcp t
@@ -34,7 +34,7 @@
   ;;       server-port 55555)
 
   (setq server-log t
-        server-name "server")
+    server-name "server")
 
   (defun server-remove-kill-buffer-hook ()
     (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
@@ -50,14 +50,14 @@
 
   and file 'filename' will be opened and cursor set on line 'linenumber'"
     (ad-set-arg 0
-                (mapcar (lambda (fn)
-  			              (let ((name (car fn)))
-  			                (if (string-match "^\\(.*?\\):\\([0-9]+\\)\\(?::\\([0-9]+\\)\\)?$" name)
-  				                (cons
-  				                 (match-string 1 name)
-  				                 (cons (string-to-number (match-string 2 name))
-  				                       (string-to-number (or (match-string 3 name) ""))))
-  			                  fn))) files)))
+      (mapcar (lambda (fn)
+  			        (let ((name (car fn)))
+  			          (if (string-match "^\\(.*?\\):\\([0-9]+\\)\\(?::\\([0-9]+\\)\\)?$" name)
+  				          (cons
+  				            (match-string 1 name)
+  				            (cons (string-to-number (match-string 2 name))
+  				              (string-to-number (or (match-string 3 name) ""))))
+  			            fn))) files)))
   (unless (server-running-p) (server-start))
   )
 

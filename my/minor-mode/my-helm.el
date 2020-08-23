@@ -42,20 +42,20 @@
       (require 'helm-elisp)
       (let ((default (or (face-at-point) (thing-at-point 'symbol))))
         (helm :sources (helm-def-source--emacs-faces
-		                (format "%s" (or default "default")))
-	          :buffer "*helm faces*")))
+		                     (format "%s" (or default "default")))
+	        :buffer "*helm faces*")))
 
     (defun my/resume-last-search-buffer ()
       "open last helm-ag or hgrep buffer."
       (interactive)
       (cond ((get-buffer "*helm ag results*")
-	         (switch-to-buffer-other-window "*helm ag results*"))
-	        ((get-buffer "*helm-ag*")
-	         (helm-resume "*helm-ag*"))
-	        ((get-buffer "*hgrep*")
-	         (switch-to-buffer-other-window "*hgrep*"))
-	        (t
-	         (message "No previous search buffer found"))))
+	            (switch-to-buffer-other-window "*helm ag results*"))
+	      ((get-buffer "*helm-ag*")
+	        (helm-resume "*helm-ag*"))
+	      ((get-buffer "*hgrep*")
+	        (switch-to-buffer-other-window "*hgrep*"))
+	      (t
+	        (message "No previous search buffer found"))))
 
     :config
     (define-key helm-command-prefix (kbd "R") 'helm-regexp)
@@ -81,7 +81,7 @@
 
   (use-package helm-bookmark
     :bind (([remap list-bookmarks] . helm-filtered-bookmarks)
-           ([remap bookmark-jump] . helm-filtered-bookmarks))
+            ([remap bookmark-jump] . helm-filtered-bookmarks))
     :config
     (setq helm-bookmark-show-location t)
     (define-key helm-bookmark-map (kbd "C-d") 'delete-char)
@@ -135,13 +135,13 @@
 
   (use-package helm-ring
     :bind (([remap browse-kill-ring] . helm-show-kill-ring)
-           ([remap list-registers] . helm-register)
-           :map helm-kill-ring-map
-           ("C-n" . helm-next-line)
-           ("C-p" . helm-previous-line)
-           ("C-d" . helm-kill-ring-delete)
-           ("C-]" . helm-kill-ring-toggle-truncated)
-           ("C-k" . helm-kill-ring-kill-selection))
+            ([remap list-registers] . helm-register)
+            :map helm-kill-ring-map
+            ("C-n" . helm-next-line)
+            ("C-p" . helm-previous-line)
+            ("C-d" . helm-kill-ring-delete)
+            ("C-]" . helm-kill-ring-toggle-truncated)
+            ("C-k" . helm-kill-ring-kill-selection))
     :config
     (setq helm-kill-ring-separator "\f"))
 
@@ -181,12 +181,12 @@
       (setq helm-net-prefer-curl t)))
 
   (setq helm-split-window-inside-p t
-        helm-move-to-line-cycle-in-source nil
-        helm-scroll-amount 8
-        helm-echo-input-in-header-line nil
-        helm-display-header-line nil
-        helm-always-two-windows t
-        helm-candidate-number-limit 200)
+    helm-move-to-line-cycle-in-source nil
+    helm-scroll-amount 8
+    helm-echo-input-in-header-line nil
+    helm-display-header-line nil
+    helm-always-two-windows t
+    helm-candidate-number-limit 200)
 
   (define-key helm-map (kbd "C-z") 'helm-toggle-suspend-update)
   (define-key helm-map (kbd "C-w") 'backward-kill-word)
@@ -206,10 +206,10 @@
   (use-package helm-ag
     :ensure t
     :bind (([remap ag] . helm-ag)
-           ([remap ag-dired] . helm-do-ag)
-           :map helm-ag-map
-           ("C-M-n" . helm-ag--next-file)
-           ("C-M-p" . helm-ag--previous-file))
+            ([remap ag-dired] . helm-do-ag)
+            :map helm-ag-map
+            ("C-M-n" . helm-ag--next-file)
+            ("C-M-p" . helm-ag--previous-file))
     :config
     (setq next-error-function 'next-error)))
 
@@ -222,42 +222,42 @@
 (use-package helm-projectile
   :ensure t
   :commands (helm-projectile-switch-to-buffer
-	         helm-projectile-find-dir
-	         helm-projectile-dired-find-dir
-	         helm-projectile-recentf
-	         helm-projectile-find-file
-	         helm-projectile-grep
-	         helm-projectile
-	         helm-projectile-switch-project)
+	            helm-projectile-find-dir
+	            helm-projectile-dired-find-dir
+	            helm-projectile-recentf
+	            helm-projectile-find-file
+	            helm-projectile-grep
+	            helm-projectile
+	            helm-projectile-switch-project)
   :init
   (add-hook 'after-init-hook 'helm-projectile-on)
   :config
   (setq projectile-switch-project-action 'helm-projectile
-	    projectile-completion-system 'helm))
+	  projectile-completion-system 'helm))
 
 (use-package helm-swoop
   :ensure t
   :bind
   (("M-s i" . helm-swoop)
-   ("M-s I" . helm-swoop-back-to-last-point)
-   ("M-s M-i" . helm-multi-swoop)
-   ("M-s M-I" . helm-multi-swoop-all)
-   :map helm-swoop-map
-   ("C-w" . backward-kill-word))
+    ("M-s I" . helm-swoop-back-to-last-point)
+    ("M-s M-i" . helm-multi-swoop)
+    ("M-s M-I" . helm-multi-swoop-all)
+    :map helm-swoop-map
+    ("C-w" . backward-kill-word))
 
   :config
   (setq helm-multi-swoop-edit-save t
-	    helm-swoop-split-with-multiple-windows t
-	    helm-swoop-split-direction 'split-window-vertically
-	    helm-swoop-speed-or-color t
-	    ;; helm-swoop-split-window-function 'helm-default-display-buffer
-        )
+	  helm-swoop-split-with-multiple-windows t
+	  helm-swoop-split-direction 'split-window-vertically
+	  helm-swoop-speed-or-color t
+	  ;; helm-swoop-split-window-function 'helm-default-display-buffer
+    )
   (defun my--helm-swoop-region-or-symbol ()
     (if (region-active-p)
 	    (buffer-substring-no-properties (region-beginning)
-					                    (region-end))
-	  (let ((thing (thing-at-point 'symbol t)))
-	    (if thing thing ""))))
+				(region-end))
+	    (let ((thing (thing-at-point 'symbol t)))
+	      (if thing thing ""))))
   (setq helm-swoop-pre-input-function (lambda ()))
   ;; (setq helm-swoop-pre-input-function (lambda () (thing-at-point 'symbol)))
   )

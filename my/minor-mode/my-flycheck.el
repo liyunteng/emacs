@@ -31,36 +31,36 @@
 (use-package flycheck
   :ensure t
   :bind ((:map flycheck-mode-map
-	           ("C-c ! L" . my/flycheck-error-list-and-switch)
-	           ("C-c ! C-l" . my/flycheck-error-list-and-switch)))
+	         ("C-c ! L" . my/flycheck-error-list-and-switch)
+	         ("C-c ! C-l" . my/flycheck-error-list-and-switch)))
   :init
   (add-hook 'after-init-hook 'global-flycheck-mode)
 
   :config
   (setq flycheck-mode-line-prefix "fc")
   (when (and (fboundp 'define-fringe-bitmap)
-             (not my-flycheck-use-original-bitmaps))
+          (not my-flycheck-use-original-bitmaps))
     (define-fringe-bitmap 'my-flycheck-fringe-indicator
       (vector #b00000000
-              #b00000000
-              #b00000000
-              #b00000000
-              #b00000000
-              #b00000000
-              #b00000000
-              #b00011100
-              #b00111110
-              #b00111110
-              #b00111110
-              #b00011100
-              #b00000000
-              #b00000000
-              #b00000000
-              #b00000000
-              #b00000000))
+        #b00000000
+        #b00000000
+        #b00000000
+        #b00000000
+        #b00000000
+        #b00000000
+        #b00011100
+        #b00111110
+        #b00111110
+        #b00111110
+        #b00011100
+        #b00000000
+        #b00000000
+        #b00000000
+        #b00000000
+        #b00000000))
     (let ((bitmap (if my-flycheck-use-original-bitmaps
         	          'flycheck-fringe-bitmap-double-arrow
-        	        'my-flycheck-fringe-indicator)))
+        	          'my-flycheck-fringe-indicator)))
       (flycheck-define-error-level 'error
         :severity 2
         :overlay-category 'flycheck-error-overlay
@@ -90,12 +90,12 @@
 (after-load 'popwin
   ;; (popwin-mode t)
   (push '("*Flycheck error messages*"
-          ;; :regexp t
-          :dedicated t
-          :position bottom
-          :stick t
-          :noselect t)
-        popwin:special-display-config))
+           ;; :regexp t
+           :dedicated t
+           :position bottom
+           :stick t
+           :noselect t)
+    popwin:special-display-config))
 
 (use-package flycheck-pos-tip
   :ensure t
@@ -105,7 +105,7 @@
     (flycheck-pos-tip-mode +1))
 
   (if (daemonp)
-      (add-hook 'after-make-frame-functions #'my-enable-flycheck-pos-tip-mode)
+    (add-hook 'after-make-frame-functions #'my-enable-flycheck-pos-tip-mode)
     (flycheck-pos-tip-mode +1)))
 
 (provide 'my-flycheck)

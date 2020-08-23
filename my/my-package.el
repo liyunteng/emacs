@@ -28,24 +28,24 @@
 (require 'package)
 (defconst 163-mirrors
   '(("gnu" . "http://mirrors.163.com/elpa/gnu/")
-    ("melpa" . "http://mirrors.163.com/elpa/melpa/")
-    ("melpa-stable" . "http://mirrors.163.com/elpa/melpa-stable/")
-    ("org" . "http://mirrors.163.com/elpa/org/")
-    ("marmalade" . "http://mirrors.163.com/elpa/marmalade/"))
+     ("melpa" . "http://mirrors.163.com/elpa/melpa/")
+     ("melpa-stable" . "http://mirrors.163.com/elpa/melpa-stable/")
+     ("org" . "http://mirrors.163.com/elpa/org/")
+     ("marmalade" . "http://mirrors.163.com/elpa/marmalade/"))
   "163 mirror")
 (defconst tsinghua-mirrors
   '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-    ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-    ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
-    ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
-    ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/"))
+     ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+     ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
+     ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
+     ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/"))
   "tsinghua mirror")
 (defconst elpa-china-mirrors
   '(("gnu" . "http://elpa.emacs-china.org/gnu/")
-    ("melpa" . "http://elpa.emacs-china.org/melpa/")
-    ("melpa-stable" . "http://elpa.emacs-china.org/melpa-stable/")
-    ("org" . "http://elpa.emacs-china.org/org/")
-    ("marmalade" . "http://elpa.emacs-china.org/marmalade/"))
+     ("melpa" . "http://elpa.emacs-china.org/melpa/")
+     ("melpa-stable" . "http://elpa.emacs-china.org/melpa-stable/")
+     ("org" . "http://elpa.emacs-china.org/org/")
+     ("marmalade" . "http://elpa.emacs-china.org/marmalade/"))
   "elpa.emacs-china.org mirror")
 (setq package-archives 163-mirrors)
 ;; (setq package-pinned-packages
@@ -57,14 +57,14 @@
 (package-initialize)
 
 (defvar my--pre-install-packages '(bind-key
-				                   use-package
-				                   diminish
-				                   wgrep
-				                   scratch
-				                   command-log-mode
+				                            use-package
+				                            diminish
+				                            wgrep
+				                            scratch
+				                            command-log-mode
 
-                                   try
-				                   ))
+                                    try
+				                            ))
 ;; (defun require-package (package)
 ;;   "Install PACKAGE unlesee already installed."
 ;;   (unless (package-installed-p package)
@@ -89,14 +89,14 @@
 If NO-REFRESH is non-nil, the available package lists will not be
 re-downloaded in order to locate PACKAGE."
   (or (package-installed-p package min-version)
-      (let* ((known (cdr (assoc package package-archive-contents)))
-             (versions (mapcar #'package-desc-version known)))
-        (if (cl-find-if (lambda (v) (version-list-<= min-version v)) versions)
-            (package-install package)
-          (if no-refresh
-              (error "No version of %s >= %S is available" package min-version)
-            (package-refresh-contents)
-            (require-package package min-version t))))))
+    (let* ((known (cdr (assoc package package-archive-contents)))
+            (versions (mapcar #'package-desc-version known)))
+      (if (cl-find-if (lambda (v) (version-list-<= min-version v)) versions)
+        (package-install package)
+        (if no-refresh
+          (error "No version of %s >= %S is available" package min-version)
+          (package-refresh-contents)
+          (require-package package min-version t))))))
 
 (defun maybe-require-package (package &optional min-version no-refresh)
   "Try to install PACKAGE, and return non-nil if successful.
@@ -105,10 +105,10 @@ Optionally require MIN-VERSION.  If NO-REFRESH is non-nil, the
 available package lists will not be re-downloaded in order to
 locate PACKAGE."
   (condition-case err
-      (require-package package min-version no-refresh)
+    (require-package package min-version no-refresh)
     (error
-     (message "Couldn't install optional package `%s': %S" package err)
-     nil)))
+      (message "Couldn't install optional package `%s': %S" package err)
+      nil)))
 
 (defun require-packages (packages)
   (mapc #'require-package packages))
@@ -124,17 +124,17 @@ are installed and are not in `my-packages'.  Useful for
 removing unwanted packages."
   (interactive)
   (package-show-package-list
-   package-activated-list
-   ;; (set-difference package-activated-list my--pre-install-packages)
-   ))
+    package-activated-list
+    ;; (set-difference package-activated-list my--pre-install-packages)
+    ))
 
 
 (defun my-set-tabulated-list-column-width (col-name width)
   "Set any column with name COL-NAME to the given WIDTH."
   (when (> width (length col-name))
     (cl-loop for column across tabulated-list-format
-             when (string= col-name (car column))
-             do (setf (elt column 1) width))))
+      when (string= col-name (car column))
+      do (setf (elt column 1) width))))
 
 (defun my-maybe-widen-package-menu-columns ()
   "Widen some columns of the package menu table to avoid truncation."
@@ -151,11 +151,11 @@ removing unwanted packages."
 (eval-when-compile
   (require 'use-package))
 (setq use-package-always-ensure nil
-      ;; use-package-verbose init-file-debug
-      use-package-verbose nil
-      use-package-inject-hooks t
-      ;; use-package-always-defer t
-      use-package-compute-statistics t)
+  ;; use-package-verbose init-file-debug
+  use-package-verbose nil
+  use-package-inject-hooks t
+  ;; use-package-always-defer t
+  use-package-compute-statistics t)
 
 (provide 'my-package)
 ;;; my-package.el ends here

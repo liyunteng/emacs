@@ -33,14 +33,14 @@
 (defadvice gud-display-line (after my-gud-highlight activate)
   "Highlight current line."
   (let* ((ov gud-overlay)
-         (bf (gud-find-file true-file)))
+          (bf (gud-find-file true-file)))
     (with-current-buffer bf
       (move-overlay ov (line-beginning-position) (line-beginning-position 2)
-                    (current-buffer)))))
+        (current-buffer)))))
 
 (defun gud-kill-buffer ()
   (if (derived-mode-p 'gud-mode)
-      (delete-overlay gud-overlay)))
+    (delete-overlay gud-overlay)))
 
 (add-hook 'kill-buffer-hook 'gud-kill-buffer)
 
@@ -70,14 +70,14 @@
   (let ((old-window (selected-window)))
     (save-excursion
       (cond
-       ((buffer-live-p (get-buffer "*gud-main*"))
-        (select-window (get-buffer-window "*gud-main*"))
-        (end-of-buffer)
-        (recenter-top-bottom)
-        (if (> num 1) (recenter-top-bottom))
-        (select-window old-window))
-       (t (error "GUD buffer doesn't exist!"))
-       ))
+        ((buffer-live-p (get-buffer "*gud-main*"))
+          (select-window (get-buffer-window "*gud-main*"))
+          (end-of-buffer)
+          (recenter-top-bottom)
+          (if (> num 1) (recenter-top-bottom))
+          (select-window old-window))
+        (t (error "GUD buffer doesn't exist!"))
+        ))
     ))
 
 (after-load 'gud
@@ -89,15 +89,15 @@
   (let ((old-window (selected-window)))
     (save-excursion
       (cond
-       ((buffer-live-p (get-buffer "*gud-main*"))
-        (gud-kill nil)
-        (select-window (get-buffer-window "*gud-main*"))
-        (insert "y")
-        (comint-send-input)
-        (recenter-top-bottom)
-        (select-window old-window))
-       (t (error "GUD buffer doesn't exist!"))
-       ))
+        ((buffer-live-p (get-buffer "*gud-main*"))
+          (gud-kill nil)
+          (select-window (get-buffer-window "*gud-main*"))
+          (insert "y")
+          (comint-send-input)
+          (recenter-top-bottom)
+          (select-window old-window))
+        (t (error "GUD buffer doesn't exist!"))
+        ))
     ))
 
 ;; (global-set-key "\C-x\C-a\C-g" 'gud-run)

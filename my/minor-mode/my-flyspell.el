@@ -39,7 +39,7 @@
     :ensure t
     :defer t
     :bind (:map flyspell-mode-map
-                ("C-;" . flyspell-correct-wrapper))))
+            ("C-;" . flyspell-correct-wrapper))))
 
 (provide 'my-flyspell)
 ;;; my-flyspell.el ends here

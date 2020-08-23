@@ -89,7 +89,7 @@ are (see git-log PRETTY FORMATS for all):
 
 If program returns non zero exit code return nil."
   (let* ((ecode nil)
-         (output (with-output-to-string
+          (output (with-output-to-string
                     (with-current-buffer standard-output
                       (setq ecode (apply #'process-file program nil t nil args))))))
     (when (eq ecode 0)
@@ -102,17 +102,17 @@ If program returns non zero exit code return nil."
 FILE default to current dired file. GITF determines the commit
 info format and defaults to `dgi-commit-message-format'."
   (let* ((tfile (or file (dired-get-file-for-visit)))
-         (file (or (file-remote-p tfile 'localname) tfile)))
+          (file (or (file-remote-p tfile 'localname) tfile)))
     (when file
       (let ((msg (dgi--command-to-string
-                  "git" "log" "-1"
-                  (concat "--pretty="
-                          (or gitf dgi-commit-message-format))
-                  file)))
+                   "git" "log" "-1"
+                   (concat "--pretty="
+                     (or gitf dgi-commit-message-format))
+                   file)))
         (when (and msg (not (string= "" msg)))
           (substring msg
-                     ;; skip newline
-                     0 -1))))))
+            ;; skip newline
+            0 -1))))))
 
 
 (defmacro dgi--save-marked (&rest body)
@@ -120,14 +120,14 @@ info format and defaults to `dgi-commit-message-format'."
   `(let ((marked (save-excursion
                    (goto-char (point-min))
                    (dired-get-marked-files)))
-         (inhibit-message t))
+          (inhibit-message t))
      (save-excursion
        (unwind-protect
-           (progn ,@body)
+         (progn ,@body)
          (dired-unmark-all-marks)
-           (dolist (file marked)
-             (dired-goto-file file)
-             (dired-mark 1))))))
+         (dolist (file marked)
+           (dired-goto-file file)
+           (dired-mark 1))))))
 
 
 (defun dgi--cleanup ()
@@ -145,7 +145,7 @@ info format and defaults to `dgi-commit-message-format'."
   (let ((dnames ()))
     (dolist (file files (nreverse dnames))
       (push (dgi--get-dired-file-length file)
-            dnames))))
+        dnames))))
 
 
 (defun dgi--get-dired-file-length (file)
@@ -154,8 +154,8 @@ info format and defaults to `dgi-commit-message-format'."
     (dired-goto-file file)
     (let ((opos (point)))
       (while (and (not (eolp))
-                  (or (not dired-hide-details-mode)
-                      (not (get-text-property (point) 'invisible))))
+               (or (not dired-hide-details-mode)
+                 (not (get-text-property (point) 'invisible))))
         (forward-char 1))
       (length (buffer-substring opos (point))))))
 
@@ -165,13 +165,13 @@ info format and defaults to `dgi-commit-message-format'."
   (let ((messages ()))
     (dolist (file files)
       (push (dgi--get-commit-info file)
-            messages))
+        messages))
     (with-temp-buffer
       (dolist (message (nreverse messages))
         (insert (or message "") "\n"))
       (align-regexp (point-min)
-                    (point-max)
-                    "\\(\\s-*\\)\t" nil nil t)
+        (point-max)
+        "\\(\\s-*\\)\t" nil nil t)
       (goto-char (point-min))
       (while (search-forward "\t" nil t)
         (replace-match " "))
@@ -183,7 +183,7 @@ info format and defaults to `dgi-commit-message-format'."
   "Toggle git message info in current dired buffer."
   :lighter " dgi"
   (if (not dired-git-info-mode)
-      (dgi--cleanup)
+    (dgi--cleanup)
     (unless (derived-mode-p 'dired-mode)
       (user-error "Not in a dired buffer"))
     (unless (locate-dominating-file "." ".git")
@@ -193,25 +193,25 @@ info format and defaults to `dgi-commit-message-format'."
         (setq dgi--restore-no-details t)
         (dired-hide-details-mode 1)))
     (let* ((files (dgi--save-marked
-                   (dired-unmark-all-marks)
-                   (dired-toggle-marks)
-                   (dired-get-marked-files)))
-           (minspc  (1+ (apply #'max  (dgi--get-dired-files-length files))))
-           (messages (dgi--get-commit-messages files)))
+                    (dired-unmark-all-marks)
+                    (dired-toggle-marks)
+                    (dired-get-marked-files)))
+            (minspc  (1+ (apply #'max  (dgi--get-dired-files-length files))))
+            (messages (dgi--get-commit-messages files)))
       (save-excursion
         (dolist (file files)
           (let ((msg (pop messages)))
             (when msg
               (dired-goto-file file)
               (let ((spc (make-string
-                          (- minspc (dgi--get-dired-file-length file))
-                          ?\s)))
+                           (- minspc (dgi--get-dired-file-length file))
+                           ?\s)))
                 (goto-char (line-end-position))
                 (let ((ov (make-overlay (point) (1+ (point))))
-                      (ovs (concat spc
-                                   (propertize
-                                    msg 'face 'dgi-commit-message-face)
-                                   "\n")))
+                       (ovs (concat spc
+                              (propertize
+                                msg 'face 'dgi-commit-message-face)
+                              "\n")))
                   (push ov dgi--commit-ovs)
                   ;; I don't use after-string because I didn't get it to work
                   ;; in combination with hl-line-mode overlay
@@ -226,5 +226,3 @@ info format and defaults to `dgi-commit-message-format'."
 
 (provide 'dired-git-info)
 ;;; dired-git-info.el ends here
-
-

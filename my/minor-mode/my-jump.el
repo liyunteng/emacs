@@ -26,14 +26,14 @@
 
 (use-package xref
   :commands (xref-find-definitions
-             xref-find-definitions-other-window
-             xref-find-definitions-other-frame
-             xref-find-apropos))
+              xref-find-definitions-other-window
+              xref-find-definitions-other-frame
+              xref-find-apropos))
 
 (use-package etags
   :commands (tags-loop-continue
-             tags-search
-             pop-tag-mark)
+              tags-search
+              pop-tag-mark)
   :config
   ;;设置TAGS文件
   (when (file-exists-p "/usr/include/TAGS")
@@ -42,9 +42,9 @@
     (add-to-list 'tags-table-list "/usr/local/include/TAGS"))
 
   (setq tags-revert-without-query t
-        tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
-        tags-add-tables nil               ;don't ask user
-        ))
+    tags-case-fold-search nil ;; t=case-insensitive, nil=case-sensitive
+    tags-add-tables nil               ;don't ask user
+    ))
 
 (use-package dumb-jump
   :ensure t
@@ -70,16 +70,16 @@ Example:
 \(my-define-jump-backends c-mode\)
 "
   (let ((mode-hook (intern (format "%S-hook" mode)))
-	    (func (intern (format "my--jump-init-backends-%S" mode)))
-	    (backends-list (intern (format "my--jump-backends-%S" mode))))
+	       (func (intern (format "my--jump-init-backends-%S" mode)))
+	       (backends-list (intern (format "my--jump-backends-%S" mode))))
     `(progn
        (defvar ,backends-list (append ',backends my-jump-default-backends)
-	     ,(format (concat "List of mode-specific jump backends for %S. "
+	       ,(format (concat "List of mode-specific jump backends for %S. "
 			              "These take priority over those in "
 			              "`my-jump-default-backends'.")
-		          mode))
+		        mode))
        (defun ,func ()
-	     (setq my-jump-backends ,backends-list))
+	       (setq my-jump-backends ,backends-list))
        (add-hook ',mode-hook ',func)
        )))
 
@@ -91,17 +91,17 @@ Example:
   (interactive)
   (catch 'done
     (let ((old-buffer (current-buffer))
-	      (old-point (point))
-	      (marker (point-marker))
-	      )
+	         (old-point (point))
+	         (marker (point-marker))
+	         )
       (dolist (-backend my-jump-backends)
-	    (let ((backend (if (listp -backend) (car -backend) -backend)))
-	      (ignore-errors (call-interactively backend))
-	      (when (or
-		         (not (eq old-point (point)))
-		         (not (equal old-buffer (current-buffer))))
-	        (ring-insert my-jump-mark-ring marker)
-	        (throw 'done t))
+	      (let ((backend (if (listp -backend) (car -backend) -backend)))
+	        (ignore-errors (call-interactively backend))
+	        (when (or
+		              (not (eq old-point (point)))
+		              (not (equal old-buffer (current-buffer))))
+	          (ring-insert my-jump-mark-ring marker)
+	          (throw 'done t))
           )))
     (message "No jump backend was able to find this symbol.")
     ))
@@ -120,7 +120,7 @@ Example:
     (user-error "Jump mark ring is empty"))
   (let ((marker (ring-remove my-jump-mark-ring 0)))
     (switch-to-buffer (or (marker-buffer marker)
-			              (user-error "The marked buffer has been deleted")))
+			                  (user-error "The marked buffer has been deleted")))
     (goto-char (marker-position marker))
     (set-marker marker nil nil)
     (if (> (length (window-list)) 1)

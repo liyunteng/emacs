@@ -89,52 +89,52 @@
 
 (defconst my-kernel-include-path
   (list
-   "/usr/src/linux/include"
-   "/usr/src/linux/arch/x86/include")
+    "/usr/src/linux/include"
+    "/usr/src/linux/arch/x86/include")
   "My kernel include path.")
 
 (defconst my-src-path (list
-		               "./"
-                       "src/"
-                       "../src"
-                       "../../src")
+		                    "./"
+                        "src/"
+                        "../src"
+                        "../../src")
   "My local src path.")
 
 ;;;###autoload
 (defconst my-include-path (list
-                           "include/"
-                           "inc/"
-                           "export/"
-			               "./"
-                           "../"
-                           "../include"
-                           "../inc"
-                           "../export"
-                           "../.."
-                           "../../include"
-                           "../../inc"
-                           "../../export"
-                           "../../.."
-                           "../../../include"
-                           "../../../inc"
-                           "../../../export")
+                            "include/"
+                            "inc/"
+                            "export/"
+			                      "./"
+                            "../"
+                            "../include"
+                            "../inc"
+                            "../export"
+                            "../.."
+                            "../../include"
+                            "../../inc"
+                            "../../export"
+                            "../../.."
+                            "../../../include"
+                            "../../../inc"
+                            "../../../export")
   "My local include path.")
 (defconst my-lib-path (list
-                       "lib/"
-                       "src/lib/"
-                       "../lib"
-                       "../src/lib"
-                       "../../lib"
-                       "../../src/lib"
-                       "../../../lib"
-                       "../../../src/lib"
-                       )
+                        "lib/"
+                        "src/lib/"
+                        "../lib"
+                        "../src/lib"
+                        "../../lib"
+                        "../../src/lib"
+                        "../../../lib"
+                        "../../../src/lib"
+                        )
   "My local lib path.")
 
 
 (use-package cmacexp
   :defines (c-macro-shrink-window-flag
-	        c-macro-promp-flag)
+	           c-macro-promp-flag)
   :defer t
   :config
   (setq c-macro-shrink-window-flag t)
@@ -143,7 +143,7 @@
 
 (use-package find-file
   :defines (cc-search-directories
-	        cc-other-file-alist)
+	           cc-other-file-alist)
   :config
   (dolist (var my-include-path)
     (add-to-list 'cc-search-directories var))
@@ -152,15 +152,15 @@
   (dolist (var my-lib-path)
     (add-to-list 'cc-search-directories var))
   (dolist (var '(("\\.c\\'" (".h" ".hpp" ".hxx"))
-                 ("\\.h\\'" (".c" ".cpp" ".cxx"))
-                 ("\\.hpp\\'" (".cpp" ".cxx" ".c"))
-                 ("\\.hxx\\'" (".cpp" ".cxx" ".c"))))
+                  ("\\.h\\'" (".c" ".cpp" ".cxx"))
+                  ("\\.hpp\\'" (".cpp" ".cxx" ".c"))
+                  ("\\.hxx\\'" (".cpp" ".cxx" ".c"))))
     (add-to-list 'cc-other-file-alist var))
 
   (defun my/ff-find-other-file (&optional in-other-window ignore-include)
     (interactive "P")
     (when (fboundp 'xref-push-marker-stack)
-	  (xref-push-marker-stack (push-mark (point))))
+	    (xref-push-marker-stack (push-mark (point))))
     (ff-find-other-file in-other-window ignore-include)
     (recenter-top-bottom))
   )
@@ -176,14 +176,14 @@
 (use-package hideif
   :diminish hide-ifdef-mode ;;hide-ifdef-hiding
   :commands (hide-ifdef-mode
-	         hide-ifdefs)
+	            hide-ifdefs)
   :defines (hide-ifdef-mode)
   :defer t
   :init
   (my|add-toggle hide-ifdef-mode
     :status hide-ifdef-mode
     :on (progn (hide-ifdef-mode +1)
-	           (hide-ifdefs t))
+	        (hide-ifdefs t))
     :off (hide-ifdef-mode -1)
     :documentation "Hide/Show ifdef")
 
@@ -192,7 +192,7 @@
   (defun my/toggle-ifdefs ()
     (interactive)
     (if hide-ifdef-hiding
-        (show-ifdefs)
+      (show-ifdefs)
       (hide-ifdefs)))
 
   (define-key hide-ifdef-mode-map (kbd "C-c i n") 'next-ifdef)
@@ -224,24 +224,24 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
       (save-excursion
         (re-search-forward regexp)
         (let* ((curr-regexp (match-string 0))
-               (defined (string-match hif-ifxdef-regexp curr-regexp))
-               (negate (and defined
-                            (string= (match-string 2 curr-regexp) "n")))
-               (hif-simple-token-only nil) ; Dynamic binding for `hif-tokenize'
-               (tokens (hif-tokenize (point)
-                                     (progn (hif-end-of-line) (point)))))
+                (defined (string-match hif-ifxdef-regexp curr-regexp))
+                (negate (and defined
+                          (string= (match-string 2 curr-regexp) "n")))
+                (hif-simple-token-only nil) ; Dynamic binding for `hif-tokenize'
+                (tokens (hif-tokenize (point)
+                          (progn (hif-end-of-line) (point)))))
           (if defined
-              (setq tokens (list 'hif-defined tokens)))
+            (setq tokens (list 'hif-defined tokens)))
           (if negate
-              (setq tokens (list 'hif-not tokens)))
+            (setq tokens (list 'hif-not tokens)))
 
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
           ;; fix can't work in __cplusplus >= 201103L ;;
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
           (if (and (equal (car tokens) '__cplusplus)
-                   (= (length tokens) 4)
-                   (equal (last tokens) '(L)))
-              (setq tokens (butlast tokens)))
+                (= (length tokens) 4)
+                (equal (last tokens) '(L)))
+            (setq tokens (butlast tokens)))
           ;; (message "######TOKEN: %S" tokens)
           (hif-parse-exp tokens)))))
 
@@ -267,7 +267,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (defadvice disaster (after make-disaster-view-mode activate)
     (when (get-buffer disaster-buffer-assembly)
       (with-current-buffer disaster-buffer-assembly
-	    (view-buffer-other-window disaster-buffer-assembly nil 'kill-buffer)))))
+	      (view-buffer-other-window disaster-buffer-assembly nil 'kill-buffer)))))
 
 (defcustom my-project-roots '("~/git/c" "/usr/src/linux")
   "My Project Roots to setq semanticdb-project-roots."
@@ -301,9 +301,9 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   ;; (setq semantic-update-mode-line t)
   (use-package semantic/idle
     :defines (semantic-idle-scheduler-idle-time
-              semantic-idle-scheduler-max-buffer-size
-              semantic-idle-scheduler-work-idle-time
-              semantic-idle-work-update-headers-flag)
+               semantic-idle-scheduler-max-buffer-size
+               semantic-idle-scheduler-work-idle-time
+               semantic-idle-work-update-headers-flag)
     :init
     (setq semantic-idle-scheduler-idle-time 1)
     (setq semantic-idle-scheduler-max-buffer-size 0)
@@ -346,17 +346,17 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
     (defun my/semantic-find-definition (arg)
       (interactive "P")
       (when (fboundp 'xref-push-marker-stack)
-	    (xref-push-marker-stack (push-mark (point))))
+	      (xref-push-marker-stack (push-mark (point))))
       (semantic-ia-fast-jump (point))
       (recenter-top-bottom))
 
     ;; fix cursor not on word
     (defadvice semantic-ia-show-doc (around fix-not-on-word  (apoint) activate)
       (catch 'a
-	    (if (semantic-analyze-current-context apoint)
+	      (if (semantic-analyze-current-context apoint)
     	    ad-do-it
-    	  (message "Cursor not on symbol")
-	      (throw 'a nil)))))
+    	    (message "Cursor not on symbol")
+	        (throw 'a nil)))))
 
   (use-package semantic/db-file
     :config
@@ -371,7 +371,7 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (use-package semantic/db-find
     :config
     (setq semanticdb-find-default-throttle
-          '(local project unloaded system recursive)))
+      '(local project unloaded system recursive)))
 
   (use-package semantic/db-global
     :config
@@ -381,13 +381,13 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
 
   (defun my-semantic-remove-completion ()
     (remove-hook 'completion-at-point-functions
-                 'semantic-analyze-nolongprefix-completion-at-point-function)
+      'semantic-analyze-nolongprefix-completion-at-point-function)
     (remove-hook 'completion-at-point-functions
-                 'semantic-analyze-notc-completion-at-point-function)
+      'semantic-analyze-notc-completion-at-point-function)
     (remove-hook 'completion-at-point-functions
-                 'semantic-analyze-completion-at-point-function))
+      'semantic-analyze-completion-at-point-function))
   (add-hook 'semantic-mode-hook
-            'my-semantic-remove-completion)
+    'my-semantic-remove-completion)
 
   (define-key semantic-mode-map (kbd "C-c , R") 'semantic-symref-regexp)
   (define-key semantic-mode-map (kbd "C-c , h") 'semantic-decoration-include-visit)
@@ -415,9 +415,9 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   :config
 
   (c-add-style "linux-4"
-  	           '("linux"
-  	             (c-basic-offset . 4)
-  	             (indent-tabs-mode . nil)))
+  	'("linux"
+  	   (c-basic-offset . 4)
+  	   (indent-tabs-mode . nil)))
 
 
   (defun my-cc-mode-hook ()
@@ -441,18 +441,18 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
 
     (after-load 'flycheck
       (if (equal (flycheck-get-checker-for-buffer) 'c/c++-clang)
-          (setq flycheck-clang-include-path my-include-path)
+        (setq flycheck-clang-include-path my-include-path)
         (if (equal (flycheck-get-checker-for-buffer) 'c/c++-gcc)
-            (setq flycheck-gcc-include-path my-include-path))))
+          (setq flycheck-gcc-include-path my-include-path))))
 
     ;; set flycheck include paths
     ;; (when (boundp 'flycheck-mode)
     ;;   (after-load 'semantic/dep
     ;;     (mapc (lambda (arg) (dolist (incs (append semantic-dependency-system-include-path my-include-path))
-	;; 		             (add-to-list arg incs)))
-	;;           '(flycheck-gcc-include-path
+	  ;; 		             (add-to-list arg incs)))
+	  ;;           '(flycheck-gcc-include-path
     ;;             flycheck-clang-include-path
-	;; 			flycheck-cppcheck-include-path))))
+	  ;; 			flycheck-cppcheck-include-path))))
     ;; (setq-default company-clang-arguments '("-std=c++11"))
     )
   (add-hook 'c-mode-common-hook 'my-cc-mode-hook)

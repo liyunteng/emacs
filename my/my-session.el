@@ -31,10 +31,10 @@
   (add-hook 'after-init-hook 'recentf-mode)
   :config
   (setq
-   recentf-max-saved-items 300
-   recentf-max-menu-items 30
-   recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
-		             "TAGS" "GTAGS" "GRAGS" "GPATH"))
+    recentf-max-saved-items 300
+    recentf-max-menu-items 30
+    recentf-exclude '("/tmp/" "/ssh:" "/root@" "/sudo:"
+		                   "TAGS" "GTAGS" "GRAGS" "GPATH"))
 
   (add-to-list 'recentf-exclude (expand-file-name my-cache-dir))
   (add-to-list 'recentf-exclude (expand-file-name package-user-dir))
@@ -68,7 +68,7 @@
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
 (use-package desktop
   :commands (desktop-full-file-name
-	         desktop-save)
+	            desktop-save)
   :bind (("C-x M-k" . my/desktop-clear))
   :defines (desktop-save)
   :init
@@ -79,30 +79,30 @@
     (desktop-remove))
 
   (if (daemonp)
-      ;; In daemon mode only first make frame, load desktop
-      (add-hook 'after-make-frame-functions
-                (lambda (frame)
-                  (with-selected-frame frame
-                    (unless desktop-save-mode
-                      ;; FIXME: turn on restore window-configuration
-                      ;; in daemon mode
-                      (setq desktop-restore-frames nil)
-                      (desktop-save-mode +1)
-                      (desktop-read)))))
+    ;; In daemon mode only first make frame, load desktop
+    (add-hook 'after-make-frame-functions
+      (lambda (frame)
+        (with-selected-frame frame
+          (unless desktop-save-mode
+            ;; FIXME: turn on restore window-configuration
+            ;; in daemon mode
+            (setq desktop-restore-frames nil)
+            (desktop-save-mode +1)
+            (desktop-read)))))
     (desktop-save-mode +1))
 
   :config
   (setq desktop-path (list my-cache-dir)
-	    ;; desktop-dirname my-cache-dir
-	    desktop-auto-save-timeout 600
-	    desktop-missing-file-warning nil
-        desktop-load-locked-desktop t
-	    desktop-restore-in-current-display nil
-        desktop-restore-frames t
-        desktop-restore-reuses-frames t
-	    desktop-save t
-	    ;; desktop-save 'ask-if-new
-	    )
+	  ;; desktop-dirname my-cache-dir
+	  desktop-auto-save-timeout 600
+	  desktop-missing-file-warning nil
+    desktop-load-locked-desktop t
+	  desktop-restore-in-current-display nil
+    desktop-restore-frames t
+    desktop-restore-reuses-frames t
+	  desktop-save t
+	  ;; desktop-save 'ask-if-new
+	  )
   ;; don't save /tmp/*
   (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
   ;; (add-to-list 'desktop-minor-mode-table '(yas-minor-mode nil))
@@ -114,52 +114,52 @@
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
   (setq desktop-globals-to-save
-	    (append '((desktop-saved-frameset   . nil)  ;don't save frameset
-                  (buffer-name-history      . 30)
-                  (command-history          . 30)
-                  (compile-history          . 10)
-                  (extended-command-history . 30)
-                  (comint-input-ring        . 30)
-                  (dired-regexp-history     . 10)
-                  (face-name-history        . 20)
-                  (file-name-history        . 50)
-                  desktop-missing-file-warning
-                  (grep-files-history       . 10)
-		          (grep-find-history        . 10)
-		          (grep-history             . 10)
-                  (grep-regexp-history      . 10)
-		          (helm-ff-history          . 30)
-		          (helm-file-name-history   . 30)
-                  (helm-M-x-input-history   . 30)
-                  (helm-external-command-history . 30)
-		          (helm-grep-history        . 30)
-		          (helm-occur-history       . 30)
-                  (ido-file-history         . 30)
-		          (ido-buffer-history       . 30)
-		          (ido-last-directory-list  . 30)
-		          (ido-work-directory-list  . 30)
-		          (ido-work-file-list       . 30)
-		          (ivy-history              . 30)
-                  (counsel-M-x-history      . 30)
-                  (counsel-compile-history       . 10)
-                  (counsel-describe-symbol-history . 10)
-                  (counsel-grep-history           . 10)
-                  (counsel-locate-history    . 10 )
-                  (counsel-set-variable-history . 10)
-                  (swiper-history           . 30)
-                  (minibuffer-history       . 50)
-		          (magit-read-rev-history   . 50)
-		          (org-clock-history        . 50)
-		          (org-refile-history       . 50)
-		          (org-tags-history         . 50)
-		          (query-replace-history    . 10)
-		          (read-expression-history  . 10)
-		          (regexp-history           . 10)
-		          (regexp-search-ring       . 10)
-		          (search-ring              . 20)
-		          (shell-command-history    . 50)
-		          tags-file-name
-		          tags-table-list)))
+	  (append '((desktop-saved-frameset   . nil)  ;don't save frameset
+               (buffer-name-history      . 30)
+               (command-history          . 30)
+               (compile-history          . 10)
+               (extended-command-history . 30)
+               (comint-input-ring        . 30)
+               (dired-regexp-history     . 10)
+               (face-name-history        . 20)
+               (file-name-history        . 50)
+               desktop-missing-file-warning
+               (grep-files-history       . 10)
+		           (grep-find-history        . 10)
+		           (grep-history             . 10)
+               (grep-regexp-history      . 10)
+		           (helm-ff-history          . 30)
+		           (helm-file-name-history   . 30)
+               (helm-M-x-input-history   . 30)
+               (helm-external-command-history . 30)
+		           (helm-grep-history        . 30)
+		           (helm-occur-history       . 30)
+               (ido-file-history         . 30)
+		           (ido-buffer-history       . 30)
+		           (ido-last-directory-list  . 30)
+		           (ido-work-directory-list  . 30)
+		           (ido-work-file-list       . 30)
+		           (ivy-history              . 30)
+               (counsel-M-x-history      . 30)
+               (counsel-compile-history       . 10)
+               (counsel-describe-symbol-history . 10)
+               (counsel-grep-history           . 10)
+               (counsel-locate-history    . 10 )
+               (counsel-set-variable-history . 10)
+               (swiper-history           . 30)
+               (minibuffer-history       . 50)
+		           (magit-read-rev-history   . 50)
+		           (org-clock-history        . 50)
+		           (org-refile-history       . 50)
+		           (org-tags-history         . 50)
+		           (query-replace-history    . 10)
+		           (read-expression-history  . 10)
+		           (regexp-history           . 10)
+		           (regexp-search-ring       . 10)
+		           (search-ring              . 20)
+		           (shell-command-history    . 50)
+		           tags-file-name
+		           tags-table-list)))
 
   (defvar before-desktop-read-time nil)
   (defvar after-desktop-read-time nil)
@@ -171,17 +171,17 @@
 
   (defadvice desktop-create-buffer (around time-create activate)
     (let ((start-time (current-time))
-          (filename (ad-get-arg 1))
-          (buffername (ad-get-arg 2))
-          (mj (ad-get-arg 3)))
+           (filename (ad-get-arg 1))
+           (buffername (ad-get-arg 2))
+           (mj (ad-get-arg 3)))
       (prog1
-          ad-do-it
+        ad-do-it
         (message "Desktop: %.2fms to restore %s [%S]"
-    	         (my-time-subtract-millis (current-time) start-time)
-    	         (if filename
-    	             (abbreviate-file-name filename)
-    	           buffername)
-    	         mj))))
+    	    (my-time-subtract-millis (current-time) start-time)
+    	    (if filename
+    	      (abbreviate-file-name filename)
+    	      buffername)
+    	    mj))))
 
   (defadvice desktop-remove (around set-desktop-dirname activate)
     ad-do-it

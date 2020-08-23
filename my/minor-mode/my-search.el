@@ -26,39 +26,39 @@
 ;;; grep 默认递归查找
 (use-package grep
   :commands (grep-mode grep grep-find
-                       find-grep lgrep rgrep
-                       zrgrep rzgrep)
+              find-grep lgrep rgrep
+              zrgrep rzgrep)
   :bind (("M-s /" . find-grep)
-         ("M-s g" . grep)
-         ("M-s e" . rgrep)
-         ("M-s l" . lgrep))
+          ("M-s g" . grep)
+          ("M-s e" . rgrep)
+          ("M-s l" . lgrep))
   :config
   (setq grep-highlight-matches t
-        grep-scroll-output t)
+    grep-scroll-output t)
   (if (system-is-mac)
-      (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r . -e ")
+    (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r . -e ")
     (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r -e "))
   )
 
 (use-package isearch
   :bind  (:map isearch-mode-map
-	           ("C-o" . isearch-occur)
-	           ("C-q" . isearch-del-char)
-	           ;; ("C-w" . isearch-delete-char)
-	           ("C-w" . my/isearch-backward-kill-word)
+	         ("C-o" . isearch-occur)
+	         ("C-q" . isearch-del-char)
+	         ;; ("C-w" . isearch-delete-char)
+	         ("C-w" . my/isearch-backward-kill-word)
 
-	           ("C-y" . isearch-yank-word-or-char)
-	           ("M-l" . isearch-yank-line)
-	           ("M-w" . isearch-yank-kill)
-	           ("C-M-w" . my/isearch-yank-symbol)
-	           ("C-M-y" . isearch-yank-pop)
+	         ("C-y" . isearch-yank-word-or-char)
+	         ("M-l" . isearch-yank-line)
+	         ("M-w" . isearch-yank-kill)
+	         ("C-M-w" . my/isearch-yank-symbol)
+	         ("C-M-y" . isearch-yank-pop)
 
-	           ("C-e" . isearch-edit-string)
+	         ("C-e" . isearch-edit-string)
 
-	           ("M-i" . isearch-toggle-case-fold)
-	           ("M-r" . isearch-toggle-regexp)
+	         ("M-i" . isearch-toggle-case-fold)
+	         ("M-r" . isearch-toggle-regexp)
 
-	           ([(control return)] . my/isearch-exit-other-end))
+	         ([(control return)] . my/isearch-exit-other-end))
 
   :config
   ;; backward kill word in isearch
@@ -69,14 +69,14 @@
   (defun my/isearch-backward-kill-word ()
     (interactive)
     (if (null (cdr isearch-cmds))
-        (ding)
+      (ding)
       (let* ((current-state (car isearch-cmds))
-             (current-string (isearch--state-string current-state))
-             (new-string (my--drop-until-backwards "[[:word:]][^[:word:]]" current-string)))
+              (current-string (isearch--state-string current-state))
+              (new-string (my--drop-until-backwards "[[:word:]][^[:word:]]" current-string)))
         (while (not (string-equal current-string new-string))
           (setf isearch-cmds (cdr isearch-cmds)
-                current-state (car isearch-cmds)
-                current-string (isearch--state-string current-state)))
+            current-state (car isearch-cmds)
+            current-string (isearch--state-string current-state)))
         (isearch--set-state (car isearch-cmds))))
     (isearch-update))
 
@@ -87,12 +87,12 @@
     (interactive)
     (let ((sym (thing-at-point 'symbol)))
       (if sym
-          (progn
-            (setq isearch-regexp t
-                  isearch-string (concat "\\_<" (regexp-quote sym) "\\_>")
-                  isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
-                  isearch-yank-flag t))
-	    (ding)))
+        (progn
+          (setq isearch-regexp t
+            isearch-string (concat "\\_<" (regexp-quote sym) "\\_>")
+            isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
+            isearch-yank-flag t))
+	      (ding)))
     (isearch-search-and-update))
 
   ;; http://www.emacswiki.org/emacs/ZapToISearch
@@ -108,21 +108,21 @@ This is useful when followed by an immediate kill."
   (use-package ag
     :ensure t
     :bind (("M-s a" . ag)
-           ;; ("M-s f" . ag-dired)
-           ([remap find-grep-dired] . ag-dired)
-           ("M-s p" . ag-project))
+            ;; ("M-s f" . ag-dired)
+            ([remap find-grep-dired] . ag-dired)
+            ("M-s p" . ag-project))
     :config
     (use-package wgrep-ag :ensure t)
     (setq ag-highlight-search t
-          ag-reuse-buffers t
-          ag-reuse-window t)))
+      ag-reuse-buffers t
+      ag-reuse-window t)))
 
 (use-package anzu
   :ensure t
   :bind (([remap query-replace-regexp]. anzu-query-replace-regexp)
-	     ([remap query-replace] . anzu-query-replace)
-	     ("M-s r" . anzu-query-replace)
-	     ("M-s M-r" . anzu-query-replace-regexp))
+	        ([remap query-replace] . anzu-query-replace)
+	        ("M-s r" . anzu-query-replace)
+	        ("M-s M-r" . anzu-query-replace-regexp))
   :diminish anzu-mode
   :init
   (global-anzu-mode +1)
@@ -131,11 +131,11 @@ This is useful when followed by an immediate kill."
     (when anzu--state
       (let ((status (cl-case anzu--state
                       (search (format "(%s/%d%s) "
-                                      (anzu--format-here-position here total)
-                                      total (if anzu--overflow-p "+" "")))
+                                (anzu--format-here-position here total)
+                                total (if anzu--overflow-p "+" "")))
                       (replace-query (format "(%d replace) " total))
                       (replace (format "(%d/%d) " here total)))))
-	    status)))
+	      status)))
 
   (setq anzu-mode-line-update-function 'my-anzu--update-mode-line))
 
@@ -145,12 +145,12 @@ This is useful when followed by an immediate kill."
   :commands (hi-lock-mode global-hi-lock-mode)
   :diminish hi-lock-mode
   :bind (("M-s h l" . highlight-lines-matching-regexp)
-         ("M-s h f" . hi-lock-find-patterns)
-         ("M-s h r" . highlight-regexp)
-         ("M-s h p" . highlight-phrase)
-         ("M-s h ." . highlight-symbol-at-point)
-         ("M-s h u" . unhighlight-regexp)
-         ("M-s h b" . hi-lock-write-interactive-patterns)))
+          ("M-s h f" . hi-lock-find-patterns)
+          ("M-s h r" . highlight-regexp)
+          ("M-s h p" . highlight-phrase)
+          ("M-s h ." . highlight-symbol-at-point)
+          ("M-s h u" . unhighlight-regexp)
+          ("M-s h b" . hi-lock-write-interactive-patterns)))
 
 
 (provide 'my-search)

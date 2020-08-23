@@ -115,7 +115,7 @@ Linum mode is a buffer-local minor mode."
   ;; (kill-local-variable 'nlinum--ol-counter)
   (kill-local-variable 'nlinum--width)
   (when (and (local-variable-p 'nlinum--using-right-margin)
-             (not (eq nlinum--using-right-margin nlinum-use-right-margin)))
+          (not (eq nlinum--using-right-margin nlinum-use-right-margin)))
     ;; Remove outdated margins as well as margin annotations.
     (let ((nlinum-mode nil)) (nlinum--flush))
     (kill-local-variable 'nlinum--using-right-margin))
@@ -129,7 +129,7 @@ Linum mode is a buffer-local minor mode."
     (add-hook 'after-change-functions #'nlinum--after-change nil :local)
     (add-hook 'pre-redisplay-functions #'nlinum--check-narrowing nil :local)
     (if nlinum-highlight-current-line
-        (add-hook 'post-command-hook #'nlinum--current-line-update nil :local))
+      (add-hook 'post-command-hook #'nlinum--current-line-update nil :local))
     (jit-lock-register #'nlinum--region :contextual))
   (nlinum--setup-windows))
 
@@ -141,7 +141,7 @@ Linum mode is a buffer-local minor mode."
     (when (> (length fi) 11)
       (let ((width (aref fi 11)))
         (if (<= width 0)
-            (aref fi 10)
+          (aref fi 10)
           width)))))
 
 (defun nlinum--setup-window ()
@@ -149,36 +149,36 @@ Linum mode is a buffer-local minor mode."
   ;; problematic.  We should have a way for different packages to indicate (and
   ;; change) their preference independently.
   (let* ((width (if (display-graphic-p)
-                    (ceiling
-                     (let ((width (nlinum--face-width 'linum)))
-                       (if width
-                           (/ (* nlinum--width 1.0 width)
-                              (frame-char-width))
-                         (/ (* nlinum--width 1.0
-                               (nlinum--face-height 'linum))
-                            (frame-char-height)))))
+                  (ceiling
+                    (let ((width (nlinum--face-width 'linum)))
+                      (if width
+                        (/ (* nlinum--width 1.0 width)
+                          (frame-char-width))
+                        (/ (* nlinum--width 1.0
+                             (nlinum--face-height 'linum))
+                          (frame-char-height)))))
                   nlinum--width))
-         (cur-margins (window-margins))
-         (cur-margin (if nlinum--using-right-margin
-                         (cdr cur-margins) (car cur-margins)))
-         ;; (EXT . OURS) keeps track of the size of the margin, where EXT is the
-         ;; size chosen by external code and OURS is the size we last set.
-         ;; OURS is used to detect when someone else modifies the margin.
-         (margin-settings (window-parameter nil 'linum--margin)))
+          (cur-margins (window-margins))
+          (cur-margin (if nlinum--using-right-margin
+                        (cdr cur-margins) (car cur-margins)))
+          ;; (EXT . OURS) keeps track of the size of the margin, where EXT is the
+          ;; size chosen by external code and OURS is the size we last set.
+          ;; OURS is used to detect when someone else modifies the margin.
+          (margin-settings (window-parameter nil 'linum--margin)))
     (if margin-settings
-        (unless (eq (cdr margin-settings) cur-margin)
-          ;; Damn!  The margin is not what it used to be!  => Update EXT!
-          (setcar margin-settings cur-margin))
+      (unless (eq (cdr margin-settings) cur-margin)
+        ;; Damn!  The margin is not what it used to be!  => Update EXT!
+        (setcar margin-settings cur-margin))
       (set-window-parameter nil 'linum--margin
-                            (setq margin-settings (list cur-margin))))
+        (setq margin-settings (list cur-margin))))
     (and (car margin-settings) width
-         (setq width (max width (car margin-settings))))
+      (setq width (max width (car margin-settings))))
     (setcdr margin-settings width)
     (apply #'set-window-margins nil
-           (let ((new-margin (if nlinum-mode width (car margin-settings))))
-           (if nlinum--using-right-margin
-               (list (car cur-margins) new-margin)
-             (list new-margin (cdr cur-margins)))))))
+      (let ((new-margin (if nlinum-mode width (car margin-settings))))
+        (if nlinum--using-right-margin
+          (list (car cur-margins) new-margin)
+          (list new-margin (cdr cur-margins)))))))
 
 (defun nlinum--setup-windows ()
   (dolist (win (get-buffer-window-list nil nil t))
@@ -192,17 +192,17 @@ Linum mode is a buffer-local minor mode."
       ;; (kill-local-variable 'nlinum--ol-counter)
       (remove-overlays (point-min) (point-max) 'nlinum t)
       (run-with-timer 0 nil
-                      (lambda (buf)
-                        (with-current-buffer buf
-                          (with-silent-modifications
-                            ;; FIXME: only remove `fontified' on those parts of
-                            ;; the buffer that had an nlinum overlay!
-                            (save-excursion
-                              (save-restriction
-                                (widen)
-                                (remove-text-properties
-                                 (point-min) (point-max) '(fontified)))))))
-                      (current-buffer)))))
+        (lambda (buf)
+          (with-current-buffer buf
+            (with-silent-modifications
+              ;; FIXME: only remove `fontified' on those parts of
+              ;; the buffer that had an nlinum overlay!
+              (save-excursion
+                (save-restriction
+                  (widen)
+                  (remove-text-properties
+                    (point-min) (point-max) '(fontified)))))))
+        (current-buffer)))))
 
 (defun nlinum--current-line-update ()
   "Update current line number."
@@ -212,14 +212,14 @@ Linum mode is a buffer-local minor mode."
                                  (nlinum--line-number-at-pos)))
 
     (let ((line-diff (- last-line nlinum--current-line))
-          beg end)
+           beg end)
       ;; Remove the text properties only if the current line has changed.
       (when (not (zerop line-diff))
         (if (natnump line-diff)
-            ;; Point is moving upward.
-            (progn
-              (setq beg (line-beginning-position))
-              (setq end (line-end-position (1+ line-diff))))
+          ;; Point is moving upward.
+          (progn
+            (setq beg (line-beginning-position))
+            (setq end (line-end-position (1+ line-diff))))
           ;; Point is moving downward.
           (setq beg (line-beginning-position (1+ line-diff)))
           (setq end (line-end-position)))
@@ -228,9 +228,9 @@ Linum mode is a buffer-local minor mode."
         ;;          nlinum--current-line beg end last-line)
         (with-silent-modifications
           (remove-text-properties beg
-                                  ;; Handle the case of blank lines too.
-                                  (min (point-max) (1+ end))
-                                  '(fontified)))))))
+            ;; Handle the case of blank lines too.
+            (min (point-max) (1+ end))
+            '(fontified)))))))
 
 ;; (defun nlinum--ol-count ()
 ;;   (let ((i 0))
@@ -310,21 +310,21 @@ Linum mode is a buffer-local minor mode."
 Only works right if point is at BOL."
   ;; (cl-assert (bolp))
   (if nlinum-widen
-      (save-excursion
-        (save-restriction
-          (widen)
-          (forward-line 0)              ;In case (point-min) was not at BOL.
-          (let ((nlinum-widen nil))
-            (nlinum--line-number-at-pos))))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (forward-line 0)              ;In case (point-min) was not at BOL.
+        (let ((nlinum-widen nil))
+          (nlinum--line-number-at-pos))))
     (let ((pos
-           (if (and nlinum--line-number-cache
-                    (> (- (point) (point-min))
-                       (abs (- (point) (car nlinum--line-number-cache)))))
-               (funcall (if (> (point) (car nlinum--line-number-cache))
-                            #'+ #'-)
-                        (cdr nlinum--line-number-cache)
-                        (count-lines (point) (car nlinum--line-number-cache)))
-             (line-number-at-pos))))
+            (if (and nlinum--line-number-cache
+                  (> (- (point) (point-min))
+                    (abs (- (point) (car nlinum--line-number-cache)))))
+              (funcall (if (> (point) (car nlinum--line-number-cache))
+                         #'+ #'-)
+                (cdr nlinum--line-number-cache)
+                (count-lines (point) (car nlinum--line-number-cache)))
+              (line-number-at-pos))))
       ;;(assert (= pos (line-number-at-pos)))
       (setq nlinum--line-number-cache (cons (point) pos))
       pos)))
@@ -338,16 +338,16 @@ Used by the default `nlinum-format-function'."
 (defvar nlinum-format-function
   (lambda (line width)
     (let* ((is-current-line (= line nlinum--current-line))
-           (str (format nlinum-format line)))
+            (str (format nlinum-format line)))
       (when (< (length str) width)
         ;; Left pad to try and right-align the line-numbers.
         (setq str (concat (make-string (- width (length str)) ?\ ) str)))
       (put-text-property 0 width 'face
-                         (if (and nlinum-highlight-current-line
-                                  is-current-line)
-                             'nlinum-current-line
-                           'linum)
-                         str)
+        (if (and nlinum-highlight-current-line
+              is-current-line)
+          'nlinum-current-line
+          'linum)
+        str)
       str))
   "Function to build the string representing the line number.
 Takes 2 arguments LINE and WIDTH, both of them numbers, and should return
@@ -364,27 +364,27 @@ it may cause the margin to be resized and line numbers to be recomputed.")
       (remove-overlays (point) limit 'nlinum t)
       (let ((line (nlinum--line-number-at-pos)))
         (while
-            (and (not (eobp)) (< (point) limit)
-                 (let* ((ol (make-overlay (point) (1+ (point))))
-                        (str (funcall nlinum-format-function
-                                      line nlinum--width))
-                        (width (string-width str))
-                        (margin (if nlinum--using-right-margin
-                                    'right-margin 'left-margin)))
-                   (when (< nlinum--width width)
-                     (setq nlinum--width width)
-                     (nlinum--flush))
-                   (overlay-put ol 'nlinum t)
-                   (overlay-put ol 'evaporate t)
-                   (overlay-put ol 'before-string
-                                (propertize " " 'display
-                                            `((margin ,margin) ,str)))
-                   ;; (setq nlinum--ol-counter (1- nlinum--ol-counter))
-                   ;; (when (= nlinum--ol-counter 0)
-                   ;;   (run-with-idle-timer 0.5 nil #'nlinum--flush-overlays
-                   ;;                        (current-buffer)))
-                   (setq line (1+ line))
-                   (zerop (forward-line 1))))))))
+          (and (not (eobp)) (< (point) limit)
+            (let* ((ol (make-overlay (point) (1+ (point))))
+                    (str (funcall nlinum-format-function
+                           line nlinum--width))
+                    (width (string-width str))
+                    (margin (if nlinum--using-right-margin
+                              'right-margin 'left-margin)))
+              (when (< nlinum--width width)
+                (setq nlinum--width width)
+                (nlinum--flush))
+              (overlay-put ol 'nlinum t)
+              (overlay-put ol 'evaporate t)
+              (overlay-put ol 'before-string
+                (propertize " " 'display
+                  `((margin ,margin) ,str)))
+              ;; (setq nlinum--ol-counter (1- nlinum--ol-counter))
+              ;; (when (= nlinum--ol-counter 0)
+              ;;   (run-with-idle-timer 0.5 nil #'nlinum--flush-overlays
+              ;;                        (current-buffer)))
+              (setq line (1+ line))
+              (zerop (forward-line 1))))))))
   ;; (setq nlinum--desc (format "-%d" (nlinum--ol-count)))
   nil)
 
@@ -395,67 +395,67 @@ it may cause the margin to be resized and line numbers to be recomputed.")
 ;;;; ChangeLog:
 
 ;; 2019-03-26  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* packages/nlinum/nlinum.el (nlinum--flush): Widen to really flush all.
-;; 
+;;
 ;; 2019-03-26  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* packages/nlinum/nlinum.el (nlinum--check-narrowing): Reset
 ;; 	current-line
-;; 
+;;
 ;; 2019-03-26  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* packages/nlinum/nlinum.el (nlinum--check-narrowing): Flush the
 ;; 	line-number-cache as well.
-;; 
+;;
 ;; 2019-03-26  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* packages/nlinum/nlinum.el (nlinum-widen): New custom var
-;; 
+;;
 ;; 	(nlinum--line-number-at-pos): Use it.
 ;; 	(nlinum--last-point-min): New var.
 ;; 	(nlinum--check-narrowing): New function.
 ;; 	(nlinum-mode): Use it.
-;; 
+;;
 ;; 2017-11-04  Noam Postavsky  <npostavs@users.sourceforge.net>
-;; 
+;;
 ;; 	* packages/nlinum/nlinum.el: Bump version to 1.8.1.
-;; 
+;;
 ;; 2017-11-04  Christophe Rhodes  <csr21@cantab.net>
-;; 
+;;
 ;; 	Fix nlinum face height function (Bug#26552)
-;; 
-;; 	* packages/nlinum/nlinum.el (nlinum--face-height): Get the height from 
+;;
+;; 	* packages/nlinum/nlinum.el (nlinum--face-height): Get the height from
 ;; 	font-info, not size.
-;; 
+;;
 ;; 	Copyright-paperwork-exempt: yes
-;; 
+;;
 ;; 2017-10-15  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* nlinum/nlinum.el: Don't assume nlinum-use-right-margin is fixed
-;; 
+;;
 ;; 	(nlinum--using-right-margin): New var.
 ;; 	(nlinum-mode): Copy nlinum-use-right-margin to
 ;; 	nlinum--using-right-margin.
 ;; 	(nlinum--setup-window): Use the new var.
-;; 
+;;
 ;; 2017-10-15  R. 'Patches' S  <email.patches@gmail.com>
-;; 
+;;
 ;; 	nlinum.el: Make it possible to use the right margin
-;; 
+;;
 ;; 	Copyright-exempt: yes
-;; 
+;;
 ;; 	(nlinum-use-right-margin): New var.
 ;; 	(nlinum--setup-window, nlinum--region): Use it.
-;; 
+;;
 ;; 2017-06-06  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* nlinum.el: Bump version to 1.7
-;; 
+;;
 ;; 2016-07-20  Kaushal Modi  <kaushal.modi@gmail.com>
-;; 
+;;
 ;; 	* nlinum.el: Add highlighting of the current line
-;; 
+;;
 ;; 	(nlinum): New group.
 ;; 	(nlinum-highlight-current-line): New defcustom.
 ;; 	(nlinum-current-line): New face.
@@ -463,56 +463,56 @@ it may cause the margin to be resized and line numbers to be recomputed.")
 ;; 	(nlinum-format-function): Use them.
 ;; 	(nlinum--current-line-update): New function.
 ;; 	(nlinum-mode): Use it.
-;; 
+;;
 ;; 2015-05-28  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* nlinum.el (nlinum--setup-window): Better preserve margin settings
-;; 
+;;
 ;; 	(bug#20674)
-;; 
+;;
 ;; 2015-02-09  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* nlinum.el: Use face-width if available.  Hook into text-scale-mode
-;; 
+;;
 ;; 2014-07-02  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	Fixes: debbugs:17906
-;; 
-;; 	* packages/nlinum/nlinum.el (nlinum--setup-window): Don't burp in 
+;;
+;; 	* packages/nlinum/nlinum.el (nlinum--setup-window): Don't burp in
 ;; 	non-graphic terminals.
-;; 
+;;
 ;; 2014-06-20  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* packages/nlinum/nlinum.el (nlinum--face-height): New function.
 ;; 	(nlinum--setup-window): Use it.
-;; 
+;;
 ;; 2014-05-26  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* packages/nlinum/nlinum.el (nlinum-mode): Don't leave overlays around
 ;; 	when switching major mode.
-;; 
+;;
 ;; 2014-04-29  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* nlinum.el (nlinum-format): New custom variable.
 ;; 	(nlinum--region): Change calling convention of nlinum-format-function.
 ;; 	(nlinum-format-function): Change default value accordingly; Use
 ;; 	nlinum-format; Try to generate less garbage.
-;; 
+;;
 ;; 2014-01-02  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* nlinum.el: Add global-nlinum-mode and nlinum-format-function.
-;; 
+;;
 ;; 2012-10-24  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* nlinum.el: Speed up by caching last line-number.
 ;; 	(nlinum--line-number-cache): New var.
 ;; 	(nlinum--after-change, nlinum--line-number-at-pos): New functions.
 ;; 	(nlinum-mode, nlinum--region): Use them.
-;; 
+;;
 ;; 2012-06-08  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	Add nlinum.el
-;; 
+;;
 
 
 (provide 'nlinum)

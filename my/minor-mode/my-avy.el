@@ -27,22 +27,22 @@
   :ensure t
   :bind-keymap (("C-x j" . my--avy-command-prefix))
   :bind (("C-'" . avy-goto-word-or-subword-1)
-         ;; replace abbrev-aprefix-mark
-         :map my--avy-command-prefix
-		 ("j" . avy-goto-char)
-		 ("c" . avy-goto-char)
-		 ("w" . avy-goto-word-1)
-		 ("s" . avy-goto-symbol-1)
-		 ("." . avy-goto-word-or-subword-1)
-		 ("l" . avy-goto-line)
-		 ("m" . avy-move-line)
-		 ("p" . avy-copy-line)
-		 ("b" . avy-pop-mark)
-		 ("r" . avy-resume)
-		 ("u" . my/avy-goto-url)
-		 ("o" . my/avy-open-url)
-		 :map isearch-mode-map
-		 ("C-j" . avy-isearch))
+          ;; replace abbrev-aprefix-mark
+          :map my--avy-command-prefix
+		      ("j" . avy-goto-char)
+		      ("c" . avy-goto-char)
+		      ("w" . avy-goto-word-1)
+		      ("s" . avy-goto-symbol-1)
+		      ("." . avy-goto-word-or-subword-1)
+		      ("l" . avy-goto-line)
+		      ("m" . avy-move-line)
+		      ("p" . avy-copy-line)
+		      ("b" . avy-pop-mark)
+		      ("r" . avy-resume)
+		      ("u" . my/avy-goto-url)
+		      ("o" . my/avy-open-url)
+		      :map isearch-mode-map
+		      ("C-j" . avy-isearch))
   :init
   (defvar my--avy-command-prefix)
   (define-prefix-command 'my--avy-command-prefix)
