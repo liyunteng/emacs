@@ -26,13 +26,11 @@
 (use-package exec-path-from-shell
   :ensure t
   :if (memq system-type '(darwin ms-dos windows-nt cygwin))
+  :init
+  ;; (exec-path-from-shell-initialize)
   :config
   (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE"))
-    (add-to-list 'exec-path-from-shell-variables var))
-  
-  :init
-  (setq exec-path-from-shell-check-startup-files nil)
-  (exec-path-from-shell-initialize))
+    (add-to-list 'exec-path-from-shell-variables var)))
 
 
 (provide 'my-exec-path)
