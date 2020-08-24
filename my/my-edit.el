@@ -26,7 +26,6 @@
 ;;
 (require 'my-load-path)
 
-
 ;; locale
 (use-package mule
   :config
@@ -134,7 +133,11 @@
 ;; show battery in mode line
 (use-package battery
   :init
-  (display-battery-mode t))
+  (display-battery-mode t)
+  :config
+  ;; for compat with powerline
+  (setq battery-mode-line-format "[%L %p%%%%]")
+  (setq battery-mode-line-limit 70))
 
 ;; mouse avoid
 (if (display-mouse-p)

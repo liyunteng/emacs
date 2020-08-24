@@ -25,7 +25,6 @@
   ;;; Code:
 
 (require 'my-load-path)
-;; linum replaced by nlinum
 
 (use-package goto-line-preview
   :ensure t

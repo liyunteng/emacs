@@ -56,10 +56,10 @@
      ("M-s s" . swiper-thing-at-point)
      ("M-s m" . swiper)))
 
-  ;; (use-package smex
-  ;;   :ensure t
-  ;;   :config
-  ;;   (smex-initialize))
+  (use-package smex
+    :ensure t
+    :config
+    (smex-initialize))
 
   (use-package counsel
     :ensure t
@@ -89,7 +89,7 @@
   :config
   (setq ivy-use-virtual-buffers t
         ivy-virtual-abbreviate 'fullpath
-        ivy-count-format ""
+        ivy-count-format "(%d/%d) "
         ivy-magic-tilde nil
         ivy-dynamic-exhibit-delay-ms 150
         ivy-use-selectable-prompt t)

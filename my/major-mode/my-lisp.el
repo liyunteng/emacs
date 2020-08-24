@@ -237,6 +237,7 @@ there is no current file, eval the current buffer."
   (local-set-key (kbd "C-c C-b") 'eval-buffer)
   (local-set-key (kbd "C-c C-c") 'eval-defun)
   (local-set-key (kbd "C-x C-e") 'my/eval-last-sexp-or-region)
+  (local-set-key (kbd "C-c C-l") 'my/load-this-file)
   (set-up-hippie-expand-for-elisp)
 
   (if (boundp 'yas-minor-mode)
