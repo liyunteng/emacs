@@ -24,7 +24,6 @@
 
 ;;; Code:
 
-
 ;; Always load newest byte code
 (setq load-prefer-newer t)
 
@@ -104,22 +103,11 @@
 
 ;; initial mode
 (setq-default initial-major-mode 'lisp-interaction-mode)
-;; (setq-default initial-major-mode 'org-mode)
 ;; initial scarch message
-(defun my--set-initial-scratch-message ()
-  "My set initial scratch message."
-  (let ((m (concat "Happy Hacking, " user-login-name
-                   (if user-full-name (concat " ("user-full-name ")"))
-                   " - Emacs ♥ you!\n\n")))
-    (setq initial-scratch-message
-          (pcase initial-major-mode
-            (lisp-interaction-mode
-             (concat  ";; " m))
-            (org-mode
-             (concat  "# " m))
-            (otherwise
-             (concat  "" m))))))
-(add-hook 'after-init-hook #'my--set-initial-scratch-message)
+(setq-default initial-scratch-message
+              (concat ";; Happy Hacking, " user-login-name
+                      (if user-full-name (concat " ("user-full-name ")"))
+                      " - Emacs ♥ you!\n\n"))
 
 ;; conflic with desktop
 ;; (setq initial-buffer-choice t)

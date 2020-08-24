@@ -179,14 +179,6 @@
 	         hide-ifdefs)
   :defines (hide-ifdef-mode)
   :defer t
-  :init
-  (my|add-toggle hide-ifdef-mode
-    :status hide-ifdef-mode
-    :on (progn (hide-ifdef-mode +1)
-	           (hide-ifdefs t))
-    :off (hide-ifdef-mode -1)
-    :documentation "Hide/Show ifdef")
-
   :config
   (setq hide-ifdef-shadow t)
   (defun my/toggle-ifdefs ()
@@ -439,11 +431,11 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
     ;; (setq comment-start '"/* ")
     ;; (setq comment-end '" */")
 
-    (after-load 'flycheck
+    (with-eval-after-load 'flycheck
       (if (equal (flycheck-get-checker-for-buffer) 'c/c++-clang)
-          (setq flycheck-clang-include-path my-include-path)
+          (setq-default flycheck-clang-include-path my-include-path)
         (if (equal (flycheck-get-checker-for-buffer) 'c/c++-gcc)
-            (setq flycheck-gcc-include-path my-include-path))))
+            (setq-default flycheck-gcc-include-path my-include-path))))
 
     ;; set flycheck include paths
     ;; (when (boundp 'flycheck-mode)

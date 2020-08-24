@@ -42,8 +42,8 @@
                        ;; my-helm
                        ;; my-ido
                        my-ivy
+                       
                        my-search
-
                        my-jump
                        my-smartparens
                        my-flyspell
@@ -97,14 +97,15 @@
              (file-exists-p my-personal-info-file))
     (my-load my-personal-info-file))
 
-  ;;(mapc 'my-load my-modules)
+  ;; (mapc 'my-load my-modules)
   (mapc 'my-require my-modules)
 
   (when (and custom-file (file-exists-p custom-file))
     (my-load custom-file))
 
   (add-hook 'after-init-hook
-  	        (lambda () (run-at-time 0 nil 'my/show-init-time)) t))
+	        (lambda () (run-at-time 0 nil 'my/show-init-time)) t)
+  )
 (my-init)
 
 (provide 'my-init)

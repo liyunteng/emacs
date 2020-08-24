@@ -115,8 +115,8 @@
             (when (bound-and-true-p ido-ubiquitous-mode)
               (ido-ubiquitous-mode -1)
               (ido-mode -1))
-            (ivy-mode 1)
-            (counsel-mode)))
+            (ivy-mode +1)
+            (counsel-mode +1)))
 
 (provide 'my-ivy)
 ;;; my-ivy.el ends here

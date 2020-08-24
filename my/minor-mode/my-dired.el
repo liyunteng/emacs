@@ -100,25 +100,26 @@ if no files marked, always operate on current line in dired-mode."
 
 (use-package dired-filter
   :ensure t
+  :commands (dired-filter-group-mode)
   :init
   (add-hook 'dired-mode-hook 'dired-filter-group-mode)
 
   :config
   (set-face-attribute 'dired-filter-group-header  nil
-                      :inherit 'isearch)
+    :inherit 'isearch)
   (setq dired-filter-group-saved-groups
-        '(("default"
-           ("Directories" (directory))
-           ("PDF"
-            (extension . "pdf"))
-           ("LaTeX"
-            (extension "tex" "bib"))
-           ("Org"
-            (extension . "org"))
-           ("Archives"
-            (extension "zip" "rar" "gz" "bz2" "tar"))
-           ("Multimedia"
-            (extension "ogg" "flv" "mpg" "avi" "mp4" "mp3" "mkv" "webm"))))))
+    '(("default"
+        ("Directories" (directory))
+        ("PDF"
+          (extension . "pdf"))
+        ("LaTeX"
+          (extension "tex" "bib"))
+        ("Org"
+          (extension . "org"))
+        ("Archives"
+          (extension "zip" "rar" "gz" "bz2" "tar"))
+        ("Multimedia"
+          (extension "ogg" "flv" "mpg" "avi" "mp4" "mp3" "mkv" "webm"))))))
 
 (use-package dired-x
   :after dired
@@ -150,9 +151,10 @@ if no files marked, always operate on current line in dired-mode."
               ("s" . hydra-dired-quick-sort/body)))
 
 (use-package dired-filetype-face
-  :after dired
   :ensure t
-  :config
+  :after dired
+  :commands (deffiletype-face)
+  :init
   (deffiletype-face "code" "#9FC59F" "code")
   (deffiletype-face-regexp code
     :type-for-docstring "code"
@@ -167,6 +169,7 @@ if no files marked, always operate on current line in dired-mode."
     :type-for-docstring "video"
     :extensions
     '("ts" "h264" "h265" "m3u8"))
+  
   (deffiletype-face "my-video" "SandyBrown")
   (deffiletype-setup "my-video" "my-video"))
 
@@ -188,8 +191,8 @@ if no files marked, always operate on current line in dired-mode."
 (unless (version< emacs-version "26")
   (use-package treemacs
     :ensure t
-    :bind (:map global-map
-                ([f8] . treemacs))
+    :defer t
+    :bind (([f8] . treemacs))
     :config
     (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
           treemacs-deferred-git-apply-delay      0.5
@@ -242,6 +245,7 @@ if no files marked, always operate on current line in dired-mode."
 
   (use-package treemacs-icons-dired
     :ensure t
+    :after dired
     :hook
     (dired-mode . treemacs-icons-dired--enable-highlight-correction)
     (dired-mode . treemacs--select-icon-set )

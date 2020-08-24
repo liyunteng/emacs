@@ -331,6 +331,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 ;; 		'(lambda ()
 ;; 		   (invert-face 'mode-line)
 ;; 		   (run-with-timer 0.05 nil 'invert-face 'mode-line)))
+
 (use-package mode-line-bell
   :ensure t
   :diminish mode-line-bell-mode
@@ -340,10 +341,10 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (use-package dimmer
   :ensure t
   :init
-  (setq-default dimmer-fraction 0.15)
   (dimmer-mode +1)
   :config
-  (advice-add 'frame-set-background-mode :after (lambda (&rest args) (dimmer-process-all)))
+  (setq dimmer-fraction 0.2)
+  (advice-add 'frame-set-background-mode :after (lambda (&rest _) (dimmer-process-all)))
   (defun my--display-not-graphic-p ()
     (not (display-graphic-p)))
   (add-to-list 'dimmer-exclusion-predicates 'my--display-not-graphic-p))

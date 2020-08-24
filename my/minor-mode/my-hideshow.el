@@ -29,7 +29,6 @@
   :bind ("C-c m ;" . nocomments-mode))
 
 (use-package hideshow
-  :ensure t
   :commands (hs-minor-mode)
   :bind (:map hs-minor-mode-map
 	          ;; ("C-c m h" . hs-hide-block)

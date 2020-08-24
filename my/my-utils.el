@@ -48,7 +48,7 @@
        ,@body
        (setq ,var (1+ ,var)))))
 
-(defmacro foreach (var in alist &rest body)
+(defmacro foreach (_ __ alist &rest body)
   "Execute a simple \"foreach\" loop.
 BODY is a lambda function, receive one argument.
 
@@ -332,8 +332,8 @@ Exaple:
 	           commands)))
 
 (provide 'my-utils)
-;;; my-utils.el ends here
+;; ;;; my-utils.el ends here
 
-;; Local Variables:
-;; compile-command: "make -k "
-;; End:
+;; ;; Local Variables:
+;; ;; compile-command: "make -k "
+;; ;; End:

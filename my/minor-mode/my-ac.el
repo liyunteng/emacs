@@ -51,7 +51,7 @@
   :init
   ;; (defalias 'completion-at-point 'company-complete-common)
   (global-company-mode -1)
-
+  
   :config
   (defun my/company-indent-or-complete-common ()
     "Indent the current line or region, or complete the common part."
@@ -140,7 +140,7 @@
               (company-auto-begin)))
       (unless company-candidates
         (setq company--manual-action nil))))
-
+  
   (setq company-auto-complete t
         company-minimum-prefix-length 2
         company-idle-delay 2
@@ -183,23 +183,17 @@
   :bind
   (:map company-active-map
         ("C-h"  . company-quickhelp-mode))
-  :init
-  (company-quickhelp-mode 1)
   :config
   (setq company-quickhelp-use-propertized-text t)
   (setq company-quickhelp-delay 0.5)
   (setq company-quickhelp-max-lines 30))
+
 
-;;  LSP
+;; LSP
 (use-package lsp-mode
   :ensure t
+  :defer t
   :init
-  (setq lsp-before-save-edits t
-        lsp-eldoc-render-all nil
-        lsp-idle-delay 0.500)
-  (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
-  (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
-
   (when (executable-find "clangd")
     ;; (setq lsp-clients-clangd-args '("--all-scopes-completion" "--clang-tidy" "--completion-style=detailed" "--suggest-missing-includes" "--background-index" "--header-insertion-decorators" "--log=verbose"))
     (defun my/clangd-generate-compile-commands ()
@@ -231,6 +225,12 @@
     (add-hook 'python-mode-hook 'lsp))
 
   :config
+  (setq lsp-before-save-edits t
+        lsp-eldoc-render-all nil
+        lsp-idle-delay 0.500)
+  (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
+  (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
+
   (setq lsp-log-io t)
   (setq lsp-print-performance t)
   ;; (setq lsp-log-max 20000)
@@ -308,7 +308,6 @@ FRAME just below the symbol at point."
                             (+ y (* 3 char-height)))
                         (if (fboundp 'window-tab-line-height) (window-tab-line-height) 0))))
       (set-frame-position frame (+ start-x frame-x) (+ start-y frame-y))))
-
   )
 
 (use-package company-lsp

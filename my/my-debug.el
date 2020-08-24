@@ -115,14 +115,14 @@ arguments is that we want to process these arguments as soon as possible."
 
 (defun my-init-times-tabulated-list-entries ()
   (cl-loop for (feature type start-time millis) in my-init-times
-		   with order = 0
-		   do (incf order)
-		   collect (list order
-						 (vector
-						  (format "%.3f" (my-time-subtract-millis start-time before-init-time))
-						  (format "%.3f" millis)
-						  (format "[%8s]" type)
-						  (symbol-name feature)))))
+		with order = 0
+		do (1+ order)
+		collect (list order
+						  (vector
+						    (format "%.3f" (my-time-subtract-millis start-time before-init-time))
+						    (format "%.3f" millis)
+						    (format "[%8s]" type)
+						    feature))))
 
 (defun my/show-init-time ()
   "Show init time."
