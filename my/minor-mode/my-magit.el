@@ -36,14 +36,16 @@
 	     ("M-RET" . magit-diff-visit-file-other-window)
          :map magit-mode-map
          ("C-o" . magit-open-repo))
+  :init
+  (setq-default magit-diff-refine-hunk t)
 
   :config
   ;; (setq magit-branch-read-upstream-first 'fallback)
-  ;; (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
-  ;; (setq magit-diff-refine-hunk t)
-  (after-load 'diff-hl
+  ;; (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:
+  ;; "))
+  (with-eval-after-load 'diff-hl
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
-  (after-load 'compile
+  (with-eval-after-load 'compile
     (dolist (defn (list '(git-svn-updated "^\t[A-Z]\t\\(.*\\)$" 1 nil nil 0 1)
 			            '(git-svn-needs-update "^\\(.*\\): needs update$" 1 nil nil 2 1)))
       (add-to-list 'compilation-error-regexp-alist-alist defn)
@@ -85,17 +87,34 @@
         (browse-url (parse-url url))
         (message "opening repo %s" url)))))
 
+(use-package git-blamed
+  :ensure t)
+
+(use-package magit-todos
+  :ensure t)
+
+(use-package git-timemachine
+  :bind (("C-x v t" . git-timemachine-toggle))
+  :commands (git-timemachine git-timemachine-toggle git-timemachine-switch-branch)
+  :ensure t)
+
 (use-package gitconfig-mode
   :ensure t
   :mode
   ("/\.gitconfig\'" . gitconfig-mode)
   ("/vcs/gitconfig\'" . gitconfig-mode))
+
 (use-package gitignore-mode
   :ensure t)
+
 (use-package git-commit
-  :ensure t)
+  :ensure t
+  :init
+  (add-hook 'git-commit-mode-hook 'goto-address-mode))
+
 (use-package gitattributes-mode
   :ensure t)
+
 (use-package git-msg-prefix
   :ensure t
   :config
@@ -104,42 +123,17 @@
         git-msg-prefix-input-method 'ivy-read)
   ;; (add-hook 'git-commit-mode-hook 'git-msg-prefix)
   )
-(use-package git-timemachine
-  :commands (git-timemachine git-timemachine-toggle git-timemachine-switch-branch)
+
+
+(use-package yagist
   :ensure t)
-(use-package smeargle
-  :commands (smeargle smeargle-clear smeargle-commits)
-  :ensure t)
-
-(use-package github-explorer :ensure t)
-;; (use-package magithub
-;;   :after magit
-;;   :ensure t
-;;   :config
-;;   (magithub-feature-autoinject t))
-
-;; (use-package gh
-;;   :ensure t)
-
-;; (use-package gh-md
-;;   :ensure t)
-
-;; (use-package gist
-;;   :ensure t)
-;; (use-package yagist
-;;   :ensure t)
-
-;; (use-package bug-reference-github
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (add-hook 'prog-mode-hook 'bug-reference-prog-mode))
-
-;; 激活magit-log，可在magit-log中操作magit
-;; (global-set-key (kbd "C-x v g") 'magit-log)
-
-;; fullscreen
-;; (setq-default magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+(use-package bug-reference-github
+  :ensure t
+  :init
+  (add-hook 'prog-mode-hook 'bug-reference-prog-mode))
+;; (use-package github-clone :ensure t)
+;; (use-package forge :ensure t)
+;; (use-package github-review :ensure t)
 
 (provide 'my-magit)
 ;;; my-magit.el ends here

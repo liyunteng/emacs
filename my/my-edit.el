@@ -26,6 +26,7 @@
 ;;
 (require 'my-load-path)
 
+
 ;; locale
 (use-package mule
   :config
@@ -156,24 +157,12 @@
 (setq-default desktop-base-file-name "emacs.desktop")
 
 
-
-;; (use-package linum
-;;   :init
-;;   (my|add-toggle linum-mode
-;;     :status linum-mode
-;;     :on (linum-mode +1)
-;;     :off (linum-mode -1)
-;;     :documentation "Show line number")
-
-;;   :config
-;;   ;; (defadvice linum-schedule (around my-linum-schedule () activate)
-;;   ;;   "Updated line number every second."
-;;   ;;   (run-with-idle-timer 1 nil #'linum-update-current)
-;;   ;;   ad-do-it)
-;;   (setq linum-delay nil)
-;;   (setq linum-format 'dynamic)
-;;   (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
-;;   )
+(use-package nlinum)
+(use-package display-line-numbers
+  :if (fboundp 'display-line-numbers-mode)
+  :init
+  ;; (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  )
 
 ;; highlight current line
 (use-package hl-line
@@ -501,20 +490,35 @@ compile-command, will auto insert new-compile-command to code file.
 
   :config
   (require 'ansi-color)
-  (setq compilation-ask-about-save nil  ; Just save before compiling
-        compilation-always-kill t       ; Just kill old compile processes before
-                                        ; starting the new one
-        compilation-scroll-output 'first-error ; Automatically scroll to first
-                                        ; error
-        )
-  ;; Compilation from Emacs
+  (setq compilation-ask-about-save nil
+        compilation-always-kill t
+        compilation-scroll-output 'first-error)
+
+  (defvar my--last-compilation-buffer nil
+    "The last buffer in which compilation took place.")
+
+  (defun my--save-compilation-buffer (&rest _)
+    "Save the compilation buffer to find it later."
+    (setq my--last-compilation-buffer next-error-last-buffer))
+  (advice-add 'compilation-start :after 'my--save-compilation-buffer)
+
+  (defun my--find-prev-compilation (orig &optional edit-command)
+    "Find the previous compilation buffer, if present, and recompile there."
+    (if (and (null edit-command)
+             (not (derived-mode-p 'compilation-mode))
+             my--last-compilation-buffer
+             (buffer-live-p (get-buffer my--last-compilation-buffer)))
+        (with-current-buffer my--last-compilation-buffer
+          (funcall orig edit-command))
+      (funcall orig edit-command)))
+  (advice-add 'recompile :around 'my--find-prev-compilation)
+
   (defun my/colorize-compilation-buffer ()
     "Colorize a compilation mode buffer."
     (interactive)
     ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
     (when (eq major-mode 'compilation-mode)
-      (let ((inhibit-read-only t))
-        (ansi-color-apply-on-region (point-min) (point-max)))))
+      (ansi-color-apply-on-region compilation-filter-start (point-max))))
   (add-hook 'compilation-filter-hook #'my/colorize-compilation-buffer))
 
 ;; align
@@ -652,9 +656,8 @@ at the end of the line."
 This functions should be added to the hooks of major modes for programming."
     (font-lock-add-keywords
      nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|\\BUG\\):\\)"
-            1 font-lock-warning-face t)))
+            1 font-lock-warning-face t))))
 
-    )
   (defun my-prog-mode-defaults ()
     "Default coding hook, useful with any programming language."
     (unless (my-derived-mode-p major-mode 'makefile-mode)
@@ -665,8 +668,8 @@ This functions should be added to the hooks of major modes for programming."
     (unless (or (fboundp 'smartparens-mode)
                 (fboundp 'pairedit-mode))
       (electric-pair-mode +1))
-    (my-font-lock-comment-annotations)
-    )
+    (my-font-lock-comment-annotations))
+
   (add-hook 'prog-mode-hook 'my-prog-mode-defaults))
 
 ;; proced
@@ -784,7 +787,25 @@ This functions should be added to the hooks of major modes for programming."
 
 (diminish 'subword-mode)
 (diminish 'auto-fill-mode)
+(diminish 'refill-mode)
 (diminish 'hs-minor-mode)
+(diminish 'elpy-mode)
+(diminish 'lsp-lens-mode)
+(diminish 'macrostep-mode)
+(diminish 'subword-mode)
+(diminish 'hs-minor-mode)
+(diminish 'prose-mode)
+(diminish 'yagist-minor-mode)
+(diminish 'pcre-mode)
+(diminish 'org-cdlatex-mode)
+(diminish 'orgtbl-mode)
+(diminish 'org-table-follow-field-mode)
+(diminish '2C-mode)
+(diminish 'markdown-live-preview-mode)
+(diminish 'outline-minor-mode)
+(diminish 'mml-mode)
+(diminish 'buffer-face-mode)
+(diminish 'auto-fill-function)
 
 
 (defun my/copy-file-name ()

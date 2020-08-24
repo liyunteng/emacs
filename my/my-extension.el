@@ -1,4 +1,4 @@
-;;; my-extension.el --- extension package            -*- lexical-binding: t; -*-
+  ;;; my-extension.el --- extension package            -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2018  liyunteng
 
@@ -18,25 +18,24 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-;;; Commentary:
+  ;;; Commentary:
 
 ;;
 
-;;; Code:
+  ;;; Code:
 
 (require 'my-load-path)
 ;; linum replaced by nlinum
-(use-package nlinum
-  ;; :ensure t
-  :commands (nlinum-mode)
+
+(use-package goto-line-preview
+  :ensure t
+  :bind (([remap goto-line] . goto-line-preview))
   :init
-  (my|add-toggle linum-mode
-    :status nlinum-mode
-    :on (nlinum-mode +1)
-    :off (nlinum-mode -1)
-    :documentation "Show line number")
-  ;; (add-hook 'prog-mode-hook 'my/toggle-linum-mode-on)
-  )
+  (when (fboundp 'display-line-numbers-mode)
+    (defun my-with-display-line-numbers (f &rest args)
+      (let ((display-line-numbers t))
+        (apply f args)))
+    (advice-add 'goto-line-preview :around 'my-with-display-line-numbers)))
 
 (use-package json-mode
   :ensure t
@@ -47,14 +46,14 @@
   :ensure t
   :diminish fci-mode
   :commands (turn-on-fci-mode
-	         turn-off-fci-mode
-	         fci-mode)
+             turn-off-fci-mode
+             fci-mode)
   :init
   (add-hook 'prog-mode-hook 'turn-on-fci-mode)
   :config
   (setq fci-rule-width 2
-	    ;; fci-rule-color "#D0BF8F"
-	    ))
+        ;; fci-rule-color "#D0BF8F"
+        ))
 
 ;; Highlight brackets according to their depth
 (use-package rainbow-delimiters
@@ -84,6 +83,12 @@
   :diminish move-dup-mode
   :config
   (global-move-dup-mode +1))
+
+(use-package whole-line-or-region
+  :ensure t
+  :diminish whole-line-or-region-global-mode whole-line-or-region-local-mode
+  :init
+  (whole-line-or-region-global-mode +1))
 
 (use-package highlight-escape-sequences
   :ensure t
@@ -142,11 +147,15 @@
 ;; smarter kill-ring navigation
 (use-package browse-kill-ring
   :ensure t
-  :bind (("M-y" . browse-kill-ring))
+  :bind (("M-y" . browse-kill-ring)
+         :map browse-kill-ring-mode-map
+         ("C-g" . browse-kill-ring-quit)
+         ("M-n" . browse-kill-ring-forward)
+         ("M-p" . browse-kill-ring-previous))
   :init
   (setq browse-kill-ring-separator "\f")
   (after-load 'page-break-lines
-    (push 'browse-kill-ring-mode page-break-lines-modes))
+    (add-to-list 'page-break-lines-modes 'browse-kill-ring-mode))
   :config
   (browse-kill-ring-default-keybindings))
 
@@ -160,7 +169,7 @@
   :init
   (setq projectile-cache-file (expand-file-name  "projectile.cache" my-cache-dir))
   (setq projectile-known-projects-file (expand-file-name "projectile-bookmarks" my-cache-dir))
-  (setq projectile-mode-line-prefix " PJ")
+  (setq projectile-mode-line-prefix " P")
   (setq projectile-sort-order 'recentf
         projectile-indexing-method 'alien)
   (setq projectile-enable-caching t)
@@ -186,34 +195,34 @@
     "Update `undo-tree-mode' Edit menu items."
     (if undo-tree-mode
         (progn
-	      ;; save old undo menu item, and install undo/redo menu items
-	      (setq undo-tree-old-undo-menu-item
-	            (cdr (assq 'undo (lookup-key global-map [menu-bar edit]))))
-	      (define-key (lookup-key global-map [menu-bar edit])
-	        [undo] '(menu-item "Undo" undo-tree-undo
-			                   :enable (and undo-tree-mode
-					                        (not buffer-read-only)
-					                        (not (eq t buffer-undo-list))
+          ;; save old undo menu item, and install undo/redo menu items
+          (setq undo-tree-old-undo-menu-item
+                (cdr (assq 'undo (lookup-key global-map [menu-bar edit]))))
+          (define-key (lookup-key global-map [menu-bar edit])
+            [undo] '(menu-item "Undo" undo-tree-undo
+                               :enable (and undo-tree-mode
+                                            (not buffer-read-only)
+                                            (not (eq t buffer-undo-list))
                                             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                                             ;; add buffer-undo-tree judgement ;;
                                             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-					                        (and buffer-undo-tree
+                                            (and buffer-undo-tree
                                                  (undo-tree-node-previous
-					                              (undo-tree-current buffer-undo-tree))))
-			                   :help "Undo last operation"))
-	      (define-key-after (lookup-key global-map [menu-bar edit])
-	        [redo] '(menu-item "Redo" undo-tree-redo
-			                   :enable (and undo-tree-mode
-					                        (not buffer-read-only)
-					                        (not (eq t buffer-undo-list))
+                                                  (undo-tree-current buffer-undo-tree))))
+                               :help "Undo last operation"))
+          (define-key-after (lookup-key global-map [menu-bar edit])
+            [redo] '(menu-item "Redo" undo-tree-redo
+                               :enable (and undo-tree-mode
+                                            (not buffer-read-only)
+                                            (not (eq t buffer-undo-list))
                                             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                                             ;; add buffer-undo-tree judgement ;;
                                             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-					                        (and buffer-undo-tree
+                                            (and buffer-undo-tree
                                                  (undo-tree-node-next
-					                              (undo-tree-current buffer-undo-tree))))
-			                   :help "Redo last operation")
-	        'undo))
+                                                  (undo-tree-current buffer-undo-tree))))
+                               :help "Redo last operation")
+            'undo))
       ;; uninstall undo/redo menu items
       (define-key (lookup-key global-map [menu-bar edit])
         [undo] undo-tree-old-undo-menu-item)
@@ -227,7 +236,7 @@
   :config
   (editorconfig-mode +1))
 
-;;; indent-guide
+  ;;; indent-guide
 (use-package indent-guide
   :ensure t
   :diminish indent-guide-mode
@@ -261,7 +270,8 @@
   :bind (:map symbol-overlay-mode-map
               ("M-n" . symbol-overlay-jump-next)
               ("M-p" . symbol-overlay-jump-prev)
-              ("s-i" . my/symbol-overlay-put))
+              ("s-i" . symbol-overlay-put)
+              ("s-I" . symbol-overlay-remove-all))
   :init
   (defun my/symbol-overlay-put ()
     "Replace `symbol-overlay-put' with `tab-do-tab-stop' when no symbol."
@@ -269,6 +279,7 @@
     (if (thing-at-point 'symbol)
         (call-interactively 'symbol-overlay-put)
       (call-interactively  'tab-to-tab-stop)))
+
   (dolist (hook '(prog-mode-hook html-mode-hook yaml-mode-hook conf-mode-hook css-mode-hook))
     (add-hook hook 'symbol-overlay-mode))
   :config
@@ -372,6 +383,40 @@
         auto-package-update-hide-results t)
   (auto-package-update-maybe))
 
+(use-package alert
+  :ensure t
+  :init
+  (setq alert-default-style 'mode-line)
+  (defun my-alert-after-compilation-finish (buf result)
+    "Use `alert' to report compilation RESULT if BUF is hidden."
+    (when (buffer-live-p buf)
+      (unless (catch 'is-visible
+                (walk-windows (lambda (w)
+                                (when (eq (window-buffer w) buf)
+                                  (throw 'is-visible t))))
+                nil)
+        (alert (concat "Compilation " result)
+               :buffer buf
+               :category 'compilation))
+
+      ;; (alert (concat "Compilation " result)
+      ;;        :buffer buf
+      ;;        :category 'compilation)
+      ))
+  (with-eval-after-load 'compile
+    (add-hook 'compilation-finish-functions
+              'my-alert-after-compilation-finish)))
+
+(use-package info-colors
+  :ensure t
+  :init
+  (add-hook 'Info-select-node 'info-colors-fontify-node))
+
+(use-package so-long
+  :ensure t
+  :init
+  (global-so-long-mode +1))
+
 ;; GTAGS
 ;; (use-package ggtags
 ;;   :ensure t
@@ -401,4 +446,4 @@
 
 
 (provide 'my-extension)
-;;; my-extension.el ends here
+  ;;; my-extension.el ends here

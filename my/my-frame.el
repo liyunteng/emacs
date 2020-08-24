@@ -61,9 +61,12 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (when (window-system)
     (set-frame-width (selected-frame) 80)
     (set-frame-height (selected-frame) 35))
-  ;; removes the GUI elements
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
+
+  (when (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
+  (when (fboundp 'set-scroll-bar-mode)
+    (set-scroll-bar-mode nil))
+
   ;; tooltips in echo-aera
   (tooltip-mode -1)
   ;; buffer menu
@@ -73,6 +76,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (blink-cursor-mode -1)
   (setq use-dialog-box nil)
   (setq use-file-dialog nil)
+
+
   (when (boundp 'x-gtk-use-old-file-dialog)
     (setq x-gtk-use-old-file-dialog nil))
   (when (boundp 'x-gtk-file-dialog-help-text)
@@ -145,6 +150,29 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (my/frame-load-fonts))
 
 
+
+;; set osx key
+(when (system-is-mac)
+  ;; (setq mac-command-modifier 'meta)
+  ;; (setq mac-option-modifier 'none)
+  ;; Make mouse wheel / trackpad scrolling less jerky
+  (setq mouse-wheel-scroll-amount '(1
+                                    ((shift) . 5)
+                                    ((control))))
+  (dolist (multiple '("" "double-" "triple-"))
+    (dolist (direction '("right" "left"))
+      (global-set-key (read-kbd-macro (concat "<" multiple "wheel-" direction ">")) 'ignore)))
+  ;; (global-set-key (kbd "M-`") 'ns-next-frame)
+  ;; (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
+  ;; (global-set-key (kbd "M-˙") 'ns-do-hide-others)
+  ;; (global-set-key (kbd "M-ˍ") 'ns-do-hide-others)
+  (use-package ns-auto-titlebar
+    :ensure t
+    :init
+    (ns-auto-titlebar-mode))
+  )
+
+
 ;; frame opacity
 (defun my--adjust-opacity (frame incr)
   "Adjust the background opacity of FRAME by increment INCR."
@@ -185,6 +213,10 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (global-set-key (kbd "C-x C-=") 'text-scale-adjust)
 (global-set-key (kbd "C-x C--") 'text-scale-adjust)
 (global-set-key (kbd "C-x C-0") 'text-scale-adjust)
+
+;; TODO: keybind adpat with my/frame-opacity-adjust
+(use-package default-text-scale
+  :ensure t)
 
 (use-package disable-mouse
   :disabled
@@ -308,7 +340,13 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (use-package dimmer
   :ensure t
   :init
-  (dimmer-mode +1))
+  (setq-default dimmer-fraction 0.15)
+  (dimmer-mode +1)
+  :config
+  (advice-add 'frame-set-background-mode :after (lambda (&rest args) (dimmer-process-all)))
+  (defun my--display-not-graphic-p ()
+    (not (display-graphic-p)))
+  (add-to-list 'dimmer-exclusion-predicates 'my--display-not-graphic-p))
 
 (use-package speedbar
   :defer t
@@ -334,4 +372,6 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 ;; (global-set-key (kbd "<f12>") 'menu-bar-mode)
 
 (provide 'my-frame)
+
+
 ;;; my-frame.el ends here1

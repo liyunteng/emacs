@@ -179,6 +179,7 @@
      ((t (:background "#FFFF00" :weight bold))))
    )
   )
+
 (defun my/frame-load-theme (&optional frame)
   (interactive)
   (when frame (select-frame frame))

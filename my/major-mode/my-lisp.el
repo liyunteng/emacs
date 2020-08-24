@@ -38,7 +38,6 @@
   (auto-compile-on-save-mode +1)
   (auto-compile-on-load-mode +1))
 
-;; (use-package hl-sexp)
 (use-package cl-lib-highlight
   :ensure t
   :commands (cl-lib-highlight-initialize)
@@ -80,7 +79,7 @@
 				                debugger-mode-hook))
 (use-package rainbow-mode
   :diminish rainbow-mode
-  ;; :ensure t
+  :ensure t
   :commands (rainbow-mode
 	         rainbow-turn-on)
   :init
@@ -102,17 +101,17 @@
   :init
   (add-function-to-hooks 'turn-on-elisp-slime-nav-mode my-common-mode-hooks))
 
-;; (use-package ipretty
-;;   :ensure t
-;;   :commands (ipretty-mode)
-;;   :init
-;;   (ipretty-mode +1))
+(use-package ipretty
+  :ensure t
+  :commands (ipretty-mode)
+  :init
+  (ipretty-mode +1))
 
 ;; Make C-x C-e run 'eval-region if the region is active
 (use-package pp
   :bind (([remap eval-expression] . pp-eval-expression))
   :defer t
-  :init
+  :config
   (defun my/eval-last-sexp-or-region (prefix)
     "Eval PREFIX if active, otherwise the last sexp."
     (interactive "P")
@@ -120,19 +119,40 @@
 	    (eval-region (min (point) (mark)) (max (point) (mark)))
       (pp-eval-last-sexp prefix)))
 
-  (defadvice pp-display-expression (after my-make-read-only (expression out-buffer-name) activate)
+  (defun my--make-read-only (expression out-buffer-name)
     "Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
     (when (get-buffer out-buffer-name)
       (with-current-buffer out-buffer-name
-	    (view-mode 1))))
+        (view-mode 1))))
+  (advice-add 'pp-display-expression :after 'my--make-read-only))
 
-  (defun my-maybe-set-bundled-elisp-readonly ()
+(use-package lisp-mode
+  :bind (:map emacs-lisp-mode-map
+              ("C-c C-l" . my/load-this-file))
+  :init
+  (defun my/load-this-file ()
+    "Load the current file or buffer.
+The current directory is temporarily added to `load-path'.  When
+there is no current file, eval the current buffer."
+    (interactive)
+    (let ((load-path (cons default-directory load-path))
+          (file (buffer-file-name)))
+      (if file
+          (progn
+            (save-some-buffers nil (apply-partially 'derived-mode-p 'emacs-lisp-mode))
+            (load-file (buffer-file-name))
+            (message "Loaded %s" file))
+        (eval-buffer)
+        (message "Evaluated %s" (current-buffer)))))
+
+  :config
+  (defun my--maybe-set-bundled-elisp-readonly ()
     "If this elisp appears to be part of Emacs, then disallow editing."
     (when (and (buffer-file-name)
-	           (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
+               (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
       (setq buffer-read-only t)
       (view-mode 1)))
-  (add-hook 'emacs-lisp-mode-hook 'my-maybe-set-bundled-elisp-readonly))
+  (add-hook 'emacs-lisp-mode-hook 'my--maybe-set-bundled-elisp-readonly))
 
 ;; Use C-c C-z to toggle between elisp files and an ielm session
 ;; I might generalise this to ruby etc., or even just adopt the repl-toggle package.
@@ -167,17 +187,6 @@
 	    (ielm))
       (setq-local my-repl-original-buffer orig-buffer))))
 
-;; ----------------------------------------------------------------------------
-;; Hippie-expand
-;; ----------------------------------------------------------------------------
-
-;; (defun set-up-hippie-expand-for-elisp ()
-;;   "Locally set `hippie-expand' completion functions for use with Emacs Lisp."
-;;   (make-local-variable 'hippie-expand-try-functions-list)
-;;   (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol t)
-;;   (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol-partially t))
-
-
 ;; Prevent flickery behaviour due to hl-sexp-mode unhighlighting before each command
 ;; (after-load 'hl-sexp
 ;;   (defadvice hl-sexp-mode (after unflicker (&optional turn-on) activate)
@@ -200,6 +209,16 @@
        " ")))))
 
 ;; ----------------------------------------------------------------------------
+;; Hippie-expand
+;; ----------------------------------------------------------------------------
+
+(defun set-up-hippie-expand-for-elisp ()
+  "Locally set `hippie-expand' completion functions for use with Emacs Lisp."
+  (make-local-variable 'hippie-expand-try-functions-list)
+  (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol t)
+  (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol-partially t))
+
+;; ----------------------------------------------------------------------------
 ;; Enable desired features for all lisp modes
 ;; ----------------------------------------------------------------------------
 (defun my-enable-check-parens-on-save ()
@@ -218,15 +237,14 @@
   (local-set-key (kbd "C-c C-b") 'eval-buffer)
   (local-set-key (kbd "C-c C-c") 'eval-defun)
   (local-set-key (kbd "C-x C-e") 'my/eval-last-sexp-or-region)
-  ;; (set-up-hippie-expand-for-elisp)
+  (set-up-hippie-expand-for-elisp)
 
   (if (boundp 'yas-minor-mode)
       (yas-minor-mode -1))
   (if (eq major-mode 'emacs-lisp-mode)
       (setq mode-name "EL"))
   (if (eq major-mode 'lisp-interaction-mode)
-      (setq mode-name "LI"))
-  )
+      (setq mode-name "LI")))
 
 (defconst my-lispy-modes
   '(emacs-lisp-mode ielm-mode lisp-mode inferior-lisp-mode lisp-interaction-mode)
@@ -253,55 +271,27 @@
 ;; their .elc counterparts removed - VC hooks would be necessary for
 ;; that.
 
-(defvar my-vc-reverting nil
+(defvar my--vc-reverting nil
   "Whether or not VC or Magit is currently reverting buffers.")
 
-(defadvice revert-buffer (after my-maybe-remove-elc activate)
+(defun my--maybe-remove-elc (&rest _)
   "If reverting from VC, delete any .elc file that will now be out of sync."
-  (when my-vc-reverting
+  (when my--vc-reverting
     (when (and (eq 'emacs-lisp-mode major-mode)
-	           buffer-file-name
+               buffer-file-name
                (string= "el" (file-name-extension buffer-file-name)))
       (let ((elc (concat buffer-file-name "c")))
         (when (file-exists-p elc)
           (message "Removing out-of-sync elc file %s" (file-name-nondirectory elc))
           (delete-file elc))))))
+(advice-add 'revert-buffer :after 'my--maybe-remove-elc)
 
-(defadvice magit-revert-buffers (around my-reverting activate)
-  (let ((my-vc-reverting t))
-    ad-do-it))
-(defadvice vc-revert-buffer-internal (around my-reverting activate)
-  (let ((my-vc-reverting t))
-    ad-do-it))
+(defun my--reverting (orig &rest args)
+  (let ((my--vc-reverting t))
+    (apply orig args)))
+(advice-add 'magit-revert-buffers :around 'my--reverting)
+(advice-add 'vc-revert-buffer-internal :around 'my--reverting)
 
-;; ERT
-(after-load 'ert
-  (define-key ert-results-mode-map (kbd "g") 'ert-results-rerun-all-tests))
-
-(defun my/cl-libify-next ()
-  "Find next symbol from 'cl and replace it with the 'cl-lib equivalent."
-  (interactive)
-  (let ((case-fold-search nil))
-    (re-search-forward
-     (concat
-      "("
-      (regexp-opt
-       ;; Not an exhaustive list
-       '("loop" "incf" "plusp" "first" "decf" "minusp" "assert"
-         "case" "destructuring-bind" "second" "third" "defun*"
-         "defmacro*" "return-from" "labels" "cadar" "fourth"
-         "cadadr") t)
-      "\\_>")))
-  (let ((form (match-string 1)))
-    (backward-sexp)
-    (cond
-     ((string-match "^\\(defun\\|defmacro\\)\\*$" form)
-      (kill-sexp)
-      (insert (concat "cl-" (match-string 1))))
-     (t
-      (insert "cl-")))
-    (when (fboundp 'aggressive-indent-indent-defun)
-      (aggressive-indent-indent-defun))))
-
+
 (provide 'my-lisp)
 ;;; my-lisp.el ends here

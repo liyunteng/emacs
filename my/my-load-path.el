@@ -58,6 +58,7 @@
   "Cache files directory."
   :type 'directory
   :group 'my-config)
+
 (unless (file-exists-p my-cache-dir)
   (make-directory my-cache-dir))
 

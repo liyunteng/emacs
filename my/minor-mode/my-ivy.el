@@ -28,8 +28,9 @@
   :ensure t
   :bind
   (:map ivy-minibuffer-map
-        ("C-j" . ivy-immediate-done)
         ("RET" . ivy-alt-done)
+        ("C-j" . ivy-immediate-done)
+        ("C-RET" . ivy-immediate-done)
         ("C-g" . minibuffer-keyboard-quit)
         ("C-y" . ivy-yank-word)
         ("C-c C-a" . ivy-toggle-ignore)
@@ -38,6 +39,15 @@
         ("C-M-p" . ivy-previous-line-and-call))
   :init
   (use-package flx :ensure t)
+  (use-package ivy-rich
+    :ensure t
+    :config
+    (setq ivy-virtual-abbreviate 'abbreviate
+          ivy-rich-path-style 'abbrev)
+    (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+    :init
+    (add-hook 'ivy-mode-hook (lambda () (ivy-rich-mode ivy-mode))))
+
   (use-package swiper
     :ensure t
     :bind
@@ -46,10 +56,10 @@
      ("M-s s" . swiper-thing-at-point)
      ("M-s m" . swiper)))
 
-  (use-package smex
-    :ensure t
-    :config
-    (smex-initialize))
+  ;; (use-package smex
+  ;;   :ensure t
+  ;;   :config
+  ;;   (smex-initialize))
 
   (use-package counsel
     :ensure t
@@ -72,32 +82,22 @@
     (setq counsel-find-file-at-point t)
     (setq counsel-preselect-current-file t)
     ;; (add-to-list 'counsel-find-file-extern-extensions "ts")
+    ;; (setq ivy-initial-inputs-alist '((Man-completion-table . "^")
+    ;;                                  (woman . "^")))
     )
 
   :config
-  (setq ivy-use-virtual-buffers t)
+  (setq ivy-use-virtual-buffers t
+        ivy-virtual-abbreviate 'fullpath
+        ivy-count-format ""
+        ivy-magic-tilde nil
+        ivy-dynamic-exhibit-delay-ms 150
+        ivy-use-selectable-prompt t)
   (setq ivy-ignore-buffers '("\\*"))
-  (when (fboundp 'projectile-mode)
-    (setq projectile-completion-system 'ivy))
+  (setq-default projectile-completion-system 'ivy)
 
   (dolist (var '(ivy--regex-plus ivy--regex-fuzzy regexp-quote))
     (add-to-list 'ivy-re-builders-alist var))
-
-  ;; (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
-  ;; (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
-  ;; (define-key ivy-minibuffer-map (kbd "C-g") #'minibuffer-keyboard-quit)
-  ;; (define-key ivy-minibuffer-map (kbd "C-y") #'ivy-yank-word)
-  ;; (define-key ivy-minibuffer-map (kbd "C-c C-a") #'ivy-toggle-ignore)
-  ;; (define-key ivy-minibuffer-map (kbd "M-i") #'ivy-toggle-case-fold)
-  ;; (define-key ivy-minibuffer-map (kbd "C-M-n") #'ivy-next-line-and-call)
-  ;; (define-key ivy-minibuffer-map (kbd "C-M-p") #'ivy-previous-line-and-call)
-
-
-  (defun my/enable-ivy-flx-matching ()
-    "Make `ivy' matching work more like IDO."
-    (interactive)
-    (setq-default ivy-re-builders-alist
-                  '((t . ivy--regex-fuzzy))))
 
   (defun my/woman (&optional topic re-cache)
     "Call woman in side window."
@@ -106,9 +106,6 @@
       (woman topic re-cache)
       (display-buffer b 'display-buffer-in-side-window)))
   )
-
-
-
 
 (diminish 'ivy-mode)
 (diminish 'counsel-mode)

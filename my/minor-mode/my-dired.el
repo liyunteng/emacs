@@ -41,9 +41,9 @@
         dired-recursive-copies 'top)
 
   (pcase system-type
-    ('darwin (setq dired-listing-switches "-l -G"))
-    ('gnu/linux (setq dired-listing-switches "--group-directories-first -alhq"))
-    ('windows-nt (setq dired-listing-switches "-l"))
+    ('darwin (setq-default dired-listing-switches "-alh -G"))
+    ('gnu/linux (setq-default dired-listing-switches "--group-directories-first -alhq"))
+    ('windows-nt (setq-default dired-listing-switches "-al"))
     )
 
   ;; goto parent dir
@@ -124,7 +124,6 @@ if no files marked, always operate on current line in dired-mode."
   :after dired
   :config
   (setq dired-omit-verbose nil
-	    ;; dired忽略的上限
 	    dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*")
   (dolist (ex '(".cache" ".o" ".ui"))
     (add-to-list 'dired-omit-extensions ex))
@@ -169,8 +168,7 @@ if no files marked, always operate on current line in dired-mode."
     :extensions
     '("ts" "h264" "h265" "m3u8"))
   (deffiletype-face "my-video" "SandyBrown")
-  (deffiletype-setup "my-video" "my-video")
-  )
+  (deffiletype-setup "my-video" "my-video"))
 
 ;; (setq dired-ls-sorting-switches "SXU")
 
@@ -191,7 +189,7 @@ if no files marked, always operate on current line in dired-mode."
   (use-package treemacs
     :ensure t
     :bind (:map global-map
-                ([f8]        . treemacs))
+                ([f8] . treemacs))
     :config
     (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
           treemacs-deferred-git-apply-delay      0.5
@@ -236,23 +234,20 @@ if no files marked, always operate on current line in dired-mode."
 
   (use-package treemacs-projectile
     :ensure t
-    :after treemacs projectile)
+    :after projectile treemacs)
 
   (use-package treemacs-magit
-    :after treemacs magit
-    :ensure t)
+    :ensure t
+    :after treemacs magit)
 
   (use-package treemacs-icons-dired
-    :after treemacs dired
     :ensure t
-    :config
-    ;; (treemacs-icons-dired-mode +1)
     :hook
     (dired-mode . treemacs-icons-dired--enable-highlight-correction)
     (dired-mode . treemacs--select-icon-set )
     (dired-mode . treemacs-icons-dired-mode)
-    )
-
+    :init
+    (treemacs-icons-dired-mode +1))
   )
 
 (provide 'my-dired)

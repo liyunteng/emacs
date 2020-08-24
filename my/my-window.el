@@ -63,7 +63,6 @@
                   "*inferior-lisp*"
                   "*Fuzzy Completions*"
                   "*Apropos*"
-                  "*Help*"
                   "*cvs*"
                   "*Buffer List*"
                   "*Ibuffer*"
@@ -84,10 +83,10 @@
   "Split the window to see the most recent buffer in the other window.
 Call a second time to restore the original window configuration."
   (interactive)
-  (if (eq last-command 'my/split-window)
+  (if (eq last-command 'my/window-split)
       (progn
-        (jump-to-register :my/split-window)
-        (setq this-command 'my/unsplit-window))
+        (jump-to-register :my/window-split)
+        (setq this-command 'my/window-unsplit))
     (window-configuration-to-register :my/window-split)
     (switch-to-buffer-other-window nil)))
 
@@ -124,15 +123,13 @@ If the universal prefix argument is used then kill the buffer too."
     (delete-other-windows)
     (my-window-split-func-with-other-buffer 'split-window-vertically arg)))
 
-(defun my/window-split-horizontally-then-switch ()
-  (interactive)
-  (save-excursion
-    (my-window-split-func-with-other-buffer 'split-window-horizontally)))
+(defun my/window-split-horizontally-then-switch (&optional arg)
+  (interactive "P")
+  (my-window-split-func-with-other-buffer 'split-window-horizontally arg))
 
-(defun my/window-split-vertically-then-switch ()
-  (interactive)
-  (save-excursion
-    (my-window-split-func-with-other-buffer 'split-window-vertically)))
+(defun my/window-split-vertically-then-switch (&optional arg)
+  (interactive "P")
+  (my-window-split-func-with-other-buffer 'split-window-vertically arg))
 
 
 (defun my/window-toggle-current-file-dedication ()
@@ -220,7 +217,7 @@ Dedicated (locked) windows are left untouched."
        map))))
 
 
-(global-set-key (kbd "<f1>") 'my/window-toggle-show)
+(global-set-key (kbd "<f1>") 'my/window-split)
 (global-set-key (kbd "C-x 0") 'delete-window)
 (global-set-key (kbd "C-x 1") 'my/window-toggle-show)
 (global-set-key (kbd "C-x 2") 'my/window-split-vertically-then-switch)

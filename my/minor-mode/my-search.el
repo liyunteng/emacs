@@ -32,19 +32,21 @@
          ("M-s g" . grep)
          ("M-s e" . rgrep)
          ("M-s l" . lgrep))
-  :config
-  (setq grep-highlight-matches t
-        grep-scroll-output t)
+  :init
+  (setq-default grep-highlight-matches t
+                grep-scroll-output t)
   (if (system-is-mac)
-      (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r . -e ")
-    (setq grep-command "grep --color --exclude=\"archive-contents\" -nHE -r -e "))
+      (progn
+        (setq-default locate-command "mfind")
+        (setq-default grep-command "grep --color --exclude=\"archive-contents\" -nHE -r . -e "))
+    (setq-default grep-command "grep --color --exclude=\"archive-contents\" -nHE -r -e "))
   )
 
 (use-package isearch
   :bind  (:map isearch-mode-map
 	           ("C-o" . isearch-occur)
+               ;; ("C-q" . isearch-delete-char)
 	           ("C-q" . isearch-del-char)
-	           ;; ("C-w" . isearch-delete-char)
 	           ("C-w" . my/isearch-backward-kill-word)
 
 	           ("C-y" . isearch-yank-word-or-char)
@@ -115,7 +117,8 @@ This is useful when followed by an immediate kill."
     (use-package wgrep-ag :ensure t)
     (setq ag-highlight-search t
           ag-reuse-buffers t
-          ag-reuse-window t)))
+          ag-reuse-window t)
+    ))
 
 (use-package anzu
   :ensure t

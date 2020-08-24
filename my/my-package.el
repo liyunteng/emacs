@@ -89,6 +89,11 @@ locate PACKAGE."
 
 (require-packages my--pre-install-packages)
 
+
+(let ((package-check-signature nil))
+  (require-package 'gnu-elpa-keyring-update))
+
+
 
 (defun my/list-foreign-packages ()
   "Browse third-party packages not bundled with My.
