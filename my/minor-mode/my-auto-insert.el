@@ -49,49 +49,49 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   (license-content nil :type string))
 
 (defvar streamocean-header (make-my-auto-insert-header
-                             :author (concat (user-full-name) " <liyunteng@streamocean.com>")
-                             :copyright (concat (format-time-string "%Y")
-                                          " StreamOcean, Inc."
-                                          "\n"
-                                          "All rights reserved.")
-                             :update-time nil)
+                            :author (concat (user-full-name) " <liyunteng@streamocean.com>")
+                            :copyright (concat (format-time-string "%Y")
+                                               " StreamOcean, Inc."
+                                               "\n"
+                                               "All rights reserved.")
+                            :update-time nil)
   "streamocean auto-insert header.")
 (defvar mega-header (make-my-auto-insert-header
-                      :author (concat (user-full-name) " <liyunteng@megarobo.tech>")
-                      :copyright (concat (format-time-string "%Y")
-                                   " Megarobo, Inc."
-                                   "\n"
-                                   "All rights reserved.")))
+                     :author (concat (user-full-name) " <liyunteng@megarobo.tech>")
+                     :copyright (concat (format-time-string "%Y")
+                                        " Megarobo, Inc."
+                                        "\n"
+                                        "All rights reserved.")))
 
 (defvar gpl-header (make-my-auto-insert-header
-                     :license "GPL-2.0"
-                     :copyright nil
-                     :license-content gpl-license-content
-                     :update-time nil)
+                    :license "GPL-2.0"
+                    :copyright nil
+                    :license-content gpl-license-content
+                    :update-time nil)
   "gpl auto-insert header.")
 
 (defvar null-header (make-my-auto-insert-header
-                      :short-description nil
-                      :license nil
-                      :copyright nil
-                      :license-content nil
-                      :author nil
-                      :update-time nil
-                      :time nil)
+                     :short-description nil
+                     :license nil
+                     :copyright nil
+                     :license-content nil
+                     :author nil
+                     :update-time nil
+                     :time nil)
   "null auto-insert header.")
 
 (defvar my-header (make-my-auto-insert-header
-                    :license nil
-                    :author nil
-                    ;; :copyright (concat (format-time-string "%Y") " "(user-full-name) " " user-mail-address)
-                    :update-time nil)
+                   :license nil
+                   :author nil
+                   ;; :copyright (concat (format-time-string "%Y") " "(user-full-name) " " user-mail-address)
+                   :update-time nil)
   "my auto-insert header")
 
 (defcustom my-auto-insert-header-alist '(null-header
-                                          my-header
-                                          streamocean-header
-                                          mega-header
-                                          gpl-header)
+                                         my-header
+                                         streamocean-header
+                                         mega-header
+                                         gpl-header)
   "My auto insert headers."
   :type 'list
   :group 'my-config)
@@ -121,7 +121,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
     :config
     (defun my/update-time-stamp ()
       (when time-stamp-active
-	      (time-stamp)))
+	    (time-stamp)))
     (setq time-stamp-line-limit 15)
     (setq time-stamp-start "Last-Updated:[ \t]+\\\\?[\"<]+")
     ;; (setq time-stamp-format "%04Y/%02m/%02d %02H:%02M:%02S %U")
@@ -135,40 +135,40 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   (defun my-header (&optional prefix postfix)
     "My header with PREFIX and POSTFIX."
     (append
-      '('(goto-char (point-min)))
-      (if prefix prefix)
-      '('(setq-local auto-insert--begin (point))
-         '(setq-local auto-insert-header-value (symbol-value auto-insert-header))
-         ;; "Description: " (read-string "Description: ") "\n\n"
-         (when (my-auto-insert-header-short-description auto-insert-header-value)
-           (concat (file-name-nondirectory (buffer-file-name)) " - " (file-name-base (buffer-file-name)) "\n\n"))
+     '('(goto-char (point-min)))
+     (if prefix prefix)
+     '('(setq-local auto-insert--begin (point))
+       '(setq-local auto-insert-header-value (symbol-value auto-insert-header))
+       ;; "Description: " (read-string "Description: ") "\n\n"
+       (when (my-auto-insert-header-short-description auto-insert-header-value)
+         (concat (file-name-nondirectory (buffer-file-name)) " - " (file-name-base (buffer-file-name)) "\n\n"))
 
-         (when  (my-auto-insert-header-author auto-insert-header-value)
-           (concat "Author : " (my-auto-insert-header-author auto-insert-header-value) "\n"))
+       (when  (my-auto-insert-header-author auto-insert-header-value)
+         (concat "Author : " (my-auto-insert-header-author auto-insert-header-value) "\n"))
 
-         (when (my-auto-insert-header-time auto-insert-header-value)
-           (concat "Date   : " (format-time-string "%Y/%m/%d") "\n"))
+       (when (my-auto-insert-header-time auto-insert-header-value)
+         (concat "Date   : " (format-time-string "%Y/%m/%d") "\n"))
 
-         (when (my-auto-insert-header-license auto-insert-header-value)
-           (concat "License: " (my-auto-insert-header-license auto-insert-header-value) "\n"))
+       (when (my-auto-insert-header-license auto-insert-header-value)
+         (concat "License: " (my-auto-insert-header-license auto-insert-header-value) "\n"))
 
-         (when (my-auto-insert-header-copyright auto-insert-header-value)
-           (concat "\nCopyright (C) " (my-auto-insert-header-copyright auto-insert-header-value) "\n"))
+       (when (my-auto-insert-header-copyright auto-insert-header-value)
+         (concat "\nCopyright (C) " (my-auto-insert-header-copyright auto-insert-header-value) "\n"))
 
-         (when (my-auto-insert-header-update-time auto-insert-header-value)
-           (concat "Last-Updated: <>\n"))
+       (when (my-auto-insert-header-update-time auto-insert-header-value)
+         (concat "Last-Updated: <>\n"))
 
-         (when (my-auto-insert-header-license-content auto-insert-header-value)
-           (concat "\n" (my-auto-insert-header-license-content auto-insert-header-value) "\n"))
+       (when (my-auto-insert-header-license-content auto-insert-header-value)
+         (concat "\n" (my-auto-insert-header-license-content auto-insert-header-value) "\n"))
 
-         (if (not (equal (point) (point-min)))
+       (if (not (equal (point) (point-min)))
            (let ((comment-style-origin comment-style))
              (setq comment-style 'extra-line)
              (comment-region auto-insert--begin (point))
              (setq comment-style comment-style-origin)
              nil)))
-      (if postfix postfix)
-      ))
+     (if postfix postfix)
+     ))
 
   (define-auto-insert 'sh-mode (my-header '("#!/usr/bin/bash\n")))
   (define-auto-insert 'python-mode
@@ -180,7 +180,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   (defun my/auto-insert-select-header (&optional h)
     (interactive)
     (let ((p (completing-read "which header: "
-               my-auto-insert-header-alist)))
+                              my-auto-insert-header-alist)))
       (setq auto-insert-header (intern p)))
     (funcall-interactively #'auto-insert))
   )

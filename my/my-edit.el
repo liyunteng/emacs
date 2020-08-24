@@ -32,14 +32,14 @@
   (defun my-utf8-locale-p (v)
     "Return whether locale string V relates to a UTF-8 locale."
     (and v (or (string-match "UTF-8" v)
-             (string-match "utf8" v))))
+               (string-match "utf8" v))))
 
   (defun my-locale-is-utf8-p ()
     "Return t iff the \"locale\" command or environment variables prefer UTF-8."
     (or (my-utf8-locale-p (and (executable-find "locale") (shell-command-to-string "locale")))
-      (my-utf8-locale-p (getenv "LC_ALL"))
-      (my-utf8-locale-p (getenv "LC_CTYPE"))
-      (my-utf8-locale-p (getenv "LANG"))))
+        (my-utf8-locale-p (getenv "LC_ALL"))
+        (my-utf8-locale-p (getenv "LC_CTYPE"))
+        (my-utf8-locale-p (getenv "LANG"))))
 
   (when (or window-system (my-locale-is-utf8-p))
     (set-language-environment 'utf-8)
@@ -137,7 +137,7 @@
 
 ;; mouse avoid
 (if (display-mouse-p)
-  (mouse-avoidance-mode 'animate))
+    (mouse-avoidance-mode 'animate))
 
 (setq-default url-cache-directory (expand-file-name "url" my-cache-dir))
 (setq-default url-cookie-file (expand-file-name "url/cookies" my-cache-dir))
@@ -178,7 +178,7 @@
 ;; highlight current line
 (use-package hl-line
   :commands (global-hl-line-mode
-              hl-line-mode)
+             hl-line-mode)
   :init
   (my|add-toggle hl-line-mode
     :status hl-line-mode
@@ -221,10 +221,10 @@
   :commands (ediff)
   :config
   (setq
-    ediff-window-setup-function 'ediff-setup-windows-plain
-    ediff-split-window-function 'split-window-horizontally
-    ediff-merge-split-window-function 'split-window-horizontally
-    ediff-diff-options "-w --text")
+   ediff-window-setup-function 'ediff-setup-windows-plain
+   ediff-split-window-function 'split-window-horizontally
+   ediff-merge-split-window-function 'split-window-horizontally
+   ediff-diff-options "-w --text")
   (require 'outline)
   (add-hook 'ediff-prepare-buffer-hook #'show-all)
 
@@ -233,20 +233,20 @@
   (defun my-ediff-remember-windowconfig ()
     (unless (memq major-mode '(magit-popup-mode magit-status-mode))
       (setq my--ediff-previous-winconf (cons (current-window-configuration)
-                                         (cons(current-buffer)
-                                           (point))))))
+                                             (cons(current-buffer)
+                                                  (point))))))
   (defun ediff-kill-buffer-carefully (buf)
     "Kill buffer BUF if it exists."
     (if (ediff-buffer-live-p buf)
-      (kill-buffer (get-buffer buf))))
+        (kill-buffer (get-buffer buf))))
   (defun my-ediff-cleanup-auxiliary-buffers ()
     (let* ((ctl-buf ediff-control-buffer)
-            (ctl-win (ediff-get-visible-buffer-window ctl-buf))
-            (ctl-frm ediff-control-frame)
-            (main-frame (cond ((window-live-p ediff-window-A)
-                                (window-frame ediff-window-A))
-                          ((window-live-p ediff-window-B)
-                            (window-frame ediff-window-B)))))
+           (ctl-win (ediff-get-visible-buffer-window ctl-buf))
+           (ctl-frm ediff-control-frame)
+           (main-frame (cond ((window-live-p ediff-window-A)
+                              (window-frame ediff-window-A))
+                             ((window-live-p ediff-window-B)
+                              (window-frame ediff-window-B)))))
       (ediff-kill-buffer-carefully ediff-diff-buffer)
       (ediff-kill-buffer-carefully ediff-custom-diff-buffer)
       (ediff-kill-buffer-carefully ediff-fine-diff-buffer)
@@ -255,22 +255,22 @@
       (ediff-kill-buffer-carefully ediff-msg-buffer)
       (ediff-kill-buffer-carefully ediff-debug-buffer)
       (unless (equal ediff-buffer-A
-                (car (cdr my--ediff-previous-winconf)))
+                     (car (cdr my--ediff-previous-winconf)))
         (ediff-kill-buffer-carefully ediff-buffer-A))
       (unless (equal ediff-buffer-B
-                (car (cdr my--ediff-previous-winconf)))
+                     (car (cdr my--ediff-previous-winconf)))
         (ediff-kill-buffer-carefully ediff-buffer-B))
       (unless (equal ediff-buffer-C
-                (car (cdr my--ediff-previous-winconf)))
+                     (car (cdr my--ediff-previous-winconf)))
         (ediff-kill-buffer-carefully ediff-buffer-C))
       (ediff-kill-buffer-carefully ediff-ancestor-buffer)
       (when (boundp 'ediff-patch-diagnostics)
         (ediff-kill-buffer-carefully ediff-patch-diagnostics))
       (cond ((and (ediff-window-display-p)
-               (frame-live-p ctl-frm))
-              (delete-frame ctl-frm))
-        ((window-live-p ctl-win)
-          (delete-window ctl-win)))
+                  (frame-live-p ctl-frm))
+             (delete-frame ctl-frm))
+            ((window-live-p ctl-win)
+             (delete-window ctl-win)))
       (unless (ediff-multiframe-setup-p)
         (ediff-kill-bottom-toolbar))
       (ediff-kill-buffer-carefully ctl-buf)
@@ -285,7 +285,7 @@
 
   (setq ediff-before-setup-hook '(my-ediff-remember-windowconfig))
   (setq ediff-quit-hook  '(my-ediff-cleanup-auxiliary-buffers
-                            my-ediff-restore-previous-winconf)))
+                           my-ediff-restore-previous-winconf)))
 
 ;; clean up obsolete buffers automatically
 (use-package midnight
@@ -295,8 +295,8 @@
 ;; bookmark
 (use-package bookmark
   :bind (("C-x r b" . bookmark-jump)
-          ("C-x r m" . bookmark-set)
-          ("C-x r l" . list-bookmarks))
+         ("C-x r m" . bookmark-set)
+         ("C-x r l" . list-bookmarks))
 
   :config
   (setq bookmark-save-flag t)
@@ -325,7 +325,7 @@
   :commands (executable-make-buffer-file-executable-if-script-p)
   :init
   (add-hook 'after-save-hook
-    'executable-make-buffer-file-executable-if-script-p))
+            'executable-make-buffer-file-executable-if-script-p))
 
 ;; saner regex syntax
 (use-package re-builder
@@ -340,7 +340,7 @@
   (add-hook 'after-init-hook 'global-auto-revert-mode)
   :config
   (setq global-auto-revert-non-file-buffers t
-    auto-revert-verbose nil)
+        auto-revert-verbose nil)
   (add-to-list 'global-auto-revert-ignore-modes 'my-init-times-mode))
 
 ;; print current in which function in mode line
@@ -366,17 +366,17 @@
   :config
   (setq whitespace-line-column fill-column)
   (setq whitespace-style
-    '(face
-       tabs
-       tab-mark
-       spaces
-       space-mark
-       trailling
-       lines-tail
-       indentation::space
-       indentation:tab
-       newline
-       newline-mark))
+        '(face
+          tabs
+          tab-mark
+          spaces
+          space-mark
+          trailling
+          lines-tail
+          indentation::space
+          indentation:tab
+          newline
+          newline-mark))
   ;; (set-face-attribute 'whitespace-space nil
   ;;                                      :background nil
   ;;                                      :foreground (face-attribute 'font-lock-warning-face
@@ -396,27 +396,27 @@
   :commands (hippie-expand)
   :init
   (setq hippie-expand-try-functions-list
-    '(;; Try to expand word "dynamically", searching the current buffer.
-       try-expand-dabbrev
-       ;; Try to expand word "dynamically", searching all other buffers.
-       try-expand-dabbrev-all-buffers
-       ;; Try to expand word "dynamically", searching the kill ring.
-       try-expand-dabbrev-from-kill
-       ;; Try to complete text as a file name, as many characters as unique.
-       try-complete-file-name-partially
-       ;; Try to complete text as a file name.
-       try-complete-file-name
-       ;; Try to expand word before point according to all abbrev tables.
-       ;; try-expand-all-abbrevs
-       ;; Try to complete the current line to an entire line in the buffer.
-       try-expand-list
-       ;; Try to complete the current line to an entire line in the buffer.
-       try-expand-line
-       ;; Try to complete as an Emacs Lisp symbol, as many characters as
-       ;; unique.
-       try-complete-lisp-symbol-partially
-       ;; Try to complete word as an Emacs Lisp symbol.
-       try-complete-lisp-symbol)))
+        '(;; Try to expand word "dynamically", searching the current buffer.
+          try-expand-dabbrev
+          ;; Try to expand word "dynamically", searching all other buffers.
+          try-expand-dabbrev-all-buffers
+          ;; Try to expand word "dynamically", searching the kill ring.
+          try-expand-dabbrev-from-kill
+          ;; Try to complete text as a file name, as many characters as unique.
+          try-complete-file-name-partially
+          ;; Try to complete text as a file name.
+          try-complete-file-name
+          ;; Try to expand word before point according to all abbrev tables.
+          ;; try-expand-all-abbrevs
+          ;; Try to complete the current line to an entire line in the buffer.
+          try-expand-list
+          ;; Try to complete the current line to an entire line in the buffer.
+          try-expand-line
+          ;; Try to complete as an Emacs Lisp symbol, as many characters as
+          ;; unique.
+          try-complete-lisp-symbol-partially
+          ;; Try to complete word as an Emacs Lisp symbol.
+          try-complete-lisp-symbol)))
 
 ;; compile
 (use-package compile
@@ -436,8 +436,8 @@
       ;; (modify-file-local-variable-prop-line 'compile-command (eval compile-command)
       ;;                                                                                `add-or-replace)
       (modify-file-local-variable 'compile-command
-        (eval compile-command)
-        `add-or-replace)))
+                                  (eval compile-command)
+                                  `add-or-replace)))
 
   (defun my/smart-compile()
     "Smart compile.
@@ -457,42 +457,42 @@ compile-command, will auto insert new-compile-command to code file.
     ;; do save
     (setq-local compilation-directory default-directory)
     (save-some-buffers (not compilation-ask-about-save)
-      compilation-save-buffers-predicate)
+                       compilation-save-buffers-predicate)
     ;; find compile-command
     (let ((command (eval compile-command))
-           (candidate-make-file-name '("makefile" "Makefile" "GNUmakefile" "GNUMakefile"))
-           (compiler (file-name-nondirectory (or (executable-find "clang")
-                                               (executable-find "gcc") "gcc"))))
+          (candidate-make-file-name '("makefile" "Makefile" "GNUmakefile" "GNUMakefile"))
+          (compiler (file-name-nondirectory (or (executable-find "clang")
+                                                (executable-find "gcc") "gcc"))))
       (if (string-prefix-p "make" command)
-        (unless (cl-find t candidate-make-file-name :key
-                  '(lambda (f) (file-readable-p f)))
-          (cond ((eq major-mode 'c-mode)
-                  (setq command
-                    (concat compiler " -Wall -o "
-                      (file-name-sans-extension
-                        (file-name-nondirectory buffer-file-name))
-                      " "
-                      (file-name-nondirectory buffer-file-name)
-                      " -g ")))
-            ;; c++-mode
-            ((eq major-mode 'c++-mode)
-              (setq command
-                (concat  (cond ((equal "gcc" compiler) "g++")
-                           ((equal "clang" compiler) "clang++")
-                           (t "g++")) " -Wall -o "
-                  (file-name-sans-extension
-                    (file-name-nondirectory buffer-file-name))
-                  " "
-                  (file-name-nondirectory buffer-file-name)
-                  " -g ")))
-            ((eq major-mode 'go-mode)
-              (setq command
-                (concat "go run " (buffer-file-name) " "))))))
+          (unless (cl-find t candidate-make-file-name :key
+                           '(lambda (f) (file-readable-p f)))
+            (cond ((eq major-mode 'c-mode)
+                   (setq command
+                         (concat compiler " -Wall -o "
+                                 (file-name-sans-extension
+                                  (file-name-nondirectory buffer-file-name))
+                                 " "
+                                 (file-name-nondirectory buffer-file-name)
+                                 " -g ")))
+                  ;; c++-mode
+                  ((eq major-mode 'c++-mode)
+                   (setq command
+                         (concat  (cond ((equal "gcc" compiler) "g++")
+                                        ((equal "clang" compiler) "clang++")
+                                        (t "g++")) " -Wall -o "
+                                        (file-name-sans-extension
+                                         (file-name-nondirectory buffer-file-name))
+                                        " "
+                                        (file-name-nondirectory buffer-file-name)
+                                        " -g ")))
+                  ((eq major-mode 'go-mode)
+                   (setq command
+                         (concat "go run " (buffer-file-name) " "))))))
       ;; (setq-local compilation-directory default-directory)
       (let ((new-command (compilation-read-command command)))
         (unless (equal command new-command)
           (unless (or (equal new-command "make -k clean")
-                    (equal new-command "make clean"))
+                      (equal new-command "make clean"))
             (setq-local compile-command new-command)
             (when my-samrt-compile-auto-insert-compile-command
               (my/insert-compile-command))))
@@ -502,11 +502,11 @@ compile-command, will auto insert new-compile-command to code file.
   :config
   (require 'ansi-color)
   (setq compilation-ask-about-save nil  ; Just save before compiling
-    compilation-always-kill t       ; Just kill old compile processes before
+        compilation-always-kill t       ; Just kill old compile processes before
                                         ; starting the new one
-    compilation-scroll-output 'first-error ; Automatically scroll to first
+        compilation-scroll-output 'first-error ; Automatically scroll to first
                                         ; error
-    )
+        )
   ;; Compilation from Emacs
   (defun my/colorize-compilation-buffer ()
     "Colorize a compilation mode buffer."
@@ -529,27 +529,27 @@ left. If AFTER is non-nil, add whitespace to the left instead of
 the right."
     (interactive "r\nsAlign regexp: ")
     (let* ((ws-regexp (if (string-empty-p regexp)
-                        "\\(\\s-+\\)"
+                          "\\(\\s-+\\)"
                         "\\(\\s-*\\)"))
-            (complete-regexp
-              ;; (if after
-              ;;     (concat regexp ws-regexp)
-              ;;   (concat ws-regexp regexp))
-              (concat regexp "\\(\\s-+\\)")
-              )
-            (group (if justify-right -1 1)))
+           (complete-regexp
+            ;; (if after
+            ;;     (concat regexp ws-regexp)
+            ;;   (concat ws-regexp regexp))
+            (concat regexp "\\(\\s-+\\)")
+            )
+           (group (if justify-right -1 1)))
       (message "%S" complete-regexp)
       (align-regexp start end complete-regexp group 1 t)))
   (defun my/align-repeat-decimal (start end)
     "Align a table of numbers on decimal points and dollar signs (both optional) from START to END."
     (interactive "r")
     (align-region start end nil
-      '((nil (regexp . "\\([\t ]*\\)\\$?\\([\t ]+[0-9]+\\)\\.?")
-          (repeat . t)
-          (group 1 2)
-          (spacing 1 1)
-          (justify nil t)))
-      nil))
+                  '((nil (regexp . "\\([\t ]*\\)\\$?\\([\t ]+[0-9]+\\)\\.?")
+                         (repeat . t)
+                         (group 1 2)
+                         (spacing 1 1)
+                         (justify nil t)))
+                  nil))
   (defmacro my|create-align-repeat-x (name regexp &optional justify-right default-after)
     (let ((new-func (intern (concat "my/align-repeat-" name))))
       `(defun ,new-func (start end switch)
@@ -571,20 +571,20 @@ the right."
 ;; comment
 (use-package newcomment
   :commands (comment-line
-              comment-indent-new-line
-              comment-dwim
-              comment-or-uncomment-region
-              comment-box
-              comment-region
-              uncomment-region
-              comment-kill
-              comment-set-column
-              comment-indent
-              comment-indent-default
-              )
+             comment-indent-new-line
+             comment-dwim
+             comment-or-uncomment-region
+             comment-box
+             comment-region
+             uncomment-region
+             comment-kill
+             comment-set-column
+             comment-indent
+             comment-indent-default
+             )
   :bind (("M-;" . my/comment-dwim-line)
-          ("C-M-;" . comment-kill)
-          ("C-c M-;" . comment-box))
+         ("C-M-;" . comment-kill)
+         ("C-c M-;" . comment-box))
   :init
   (defun my/comment-dwim-line (&optional arg)
     "Replacement for the \"comment-dwim\" command.
@@ -596,11 +596,11 @@ at the end of the line."
     (comment-normalize-vars)
     (if  (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
 
-      (if (comment-beginning)
-        (comment-or-uncomment-region (comment-beginning)
-          (progn (backward-char) (search-forward comment-end)))
-        (comment-or-uncomment-region (line-beginning-position)
-          (line-end-position)))
+        (if (comment-beginning)
+            (comment-or-uncomment-region (comment-beginning)
+                                         (progn (backward-char) (search-forward comment-end)))
+          (comment-or-uncomment-region (line-beginning-position)
+                                       (line-end-position)))
       (comment-dwim arg))
     (indent-according-to-mode))
   :config
@@ -612,14 +612,14 @@ at the end of the line."
 ;; register
 (use-package register
   :bind (("C-x r f" . frameset-to-register)
-          ("C-x r w" . window-configuration-to-register)
-          ("C-x r v" . list-registers)
+         ("C-x r w" . window-configuration-to-register)
+         ("C-x r v" . list-registers)
 
-          ("C-x r ." . point-to-register)
-          ("C-x r j" . jump-to-register)
-          ("C-x r i" . insert-register)
-          ("C-x r a" . append-to-register)
-          ("C-x r p" . prepend-to-register))
+         ("C-x r ." . point-to-register)
+         ("C-x r j" . jump-to-register)
+         ("C-x r i" . insert-register)
+         ("C-x r a" . append-to-register)
+         ("C-x r p" . prepend-to-register))
   :config
   (setq register-preview-delay 0)
   (set-register ?z '(file . "~/git/"))
@@ -637,7 +637,7 @@ at the end of the line."
 (use-package goto-addr
   :commands (goto-address-prog-mode goto-address-mode)
   :bind (:map goto-address-highlight-keymap
-          ("C-c RET" . goto-address-at-point))
+              ("C-c RET" . goto-address-at-point))
   :config
   (setq goto-address-url-face 'underline))
 
@@ -651,8 +651,8 @@ at the end of the line."
 
 This functions should be added to the hooks of major modes for programming."
     (font-lock-add-keywords
-      nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|\\BUG\\):\\)"
-              1 font-lock-warning-face t)))
+     nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|\\BUG\\):\\)"
+            1 font-lock-warning-face t)))
 
     )
   (defun my-prog-mode-defaults ()
@@ -663,7 +663,7 @@ This functions should be added to the hooks of major modes for programming."
     (goto-address-prog-mode +1)
     (bug-reference-prog-mode +1)
     (unless (or (fboundp 'smartparens-mode)
-              (fboundp 'pairedit-mode))
+                (fboundp 'pairedit-mode))
       (electric-pair-mode +1))
     (my-font-lock-comment-annotations)
     )
@@ -685,37 +685,37 @@ This functions should be added to the hooks of major modes for programming."
 ;;;netstat命令的默认参数
 (use-package net-utils
   :commands (ifconfig iwconfig netstat-program-options arp route traceroute ping
-              nslookup-host nslookup dns-lookup-host dig run-dig ftp
-              finger  whois  network-connection-to-service
-              network-connection)
+                      nslookup-host nslookup dns-lookup-host dig run-dig ftp
+                      finger  whois  network-connection-to-service
+                      network-connection)
   :config
   (setq netstat-program-options '("-natup")
-    ping-program-options '()))
+        ping-program-options '()))
 
 ;; calendar
 (use-package calendar
   :commands (calendar)
   :config
   (setq
-    calendar-date-style (quote iso)
-    calendar-mark-holidays-flag t
-    calendar-chinese-all-holidays-flag t))
+   calendar-date-style (quote iso)
+   calendar-mark-holidays-flag t
+   calendar-chinese-all-holidays-flag t))
 
 
 
 ;; auto indent when yanking
 (defvar my-indent-sensitive-modes
   '(coffee-mode
-     elm-mode
-     haml-mode
-     haskell-mode
-     slim-mode
-     makefile-mode
-     makefile-bsdmake-mode
-     makefile-gmake-mode
-     makefile-imake-mode
-     python-mode
-     yaml-mode)
+    elm-mode
+    haml-mode
+    haskell-mode
+    slim-mode
+    makefile-mode
+    makefile-bsdmake-mode
+    makefile-gmake-mode
+    makefile-imake-mode
+    python-mode
+    yaml-mode)
   "Modes for which auto-indenting is suppressed.")
 (defvar my-yank-indent-threshold 30000)
 (defvar my-yank-indent-modes '(prog-mode text-mode))
@@ -738,9 +738,9 @@ This functions should be added to the hooks of major modes for programming."
   "When called with no active region, call FUNC on current buffer."
   `(defadvice ,func (before with-region-or-buffer activate compile)
      (interactive
-       (if mark-active
-         (list (region-beginning) (region-end))
-         (list (point-min) (point-max))))))
+      (if mark-active
+          (list (region-beginning) (region-end))
+        (list (point-min) (point-max))))))
 (with-region-or-buffer align)
 (with-region-or-buffer indent-region)
 (with-region-or-buffer untabify)
@@ -750,7 +750,7 @@ This functions should be added to the hooks of major modes for programming."
 (defadvice exchange-point-and-mark (before deactivate-mark activate compile)
   "When called with no active region, do not activate mark."
   (interactive
-    (list (not (region-active-p)))))
+   (list (not (region-active-p)))))
 
 ;; hidden mode line
 (defvar-local hidden-mode-line-mode nil)
@@ -762,20 +762,20 @@ This functions should be added to the hooks of major modes for programming."
   :variable hidden-mode-line-mode
   :group 'editing-basics
   (if hidden-mode-line-mode
-    (setq hide-mode-line mode-line-format
-      mode-line-format nil)
+      (setq hide-mode-line mode-line-format
+            mode-line-format nil)
     (setq mode-line-format hide-mode-line
-      hide-mode-line nil))
+          hide-mode-line nil))
   (force-mode-line-update)
   ;; Apparently force-mode-line-update is not always enough to
   ;; redisplay the mode-line
   (redraw-display)
   (when (and (called-interactively-p 'interactive)
-          hidden-mode-line-mode)
+             hidden-mode-line-mode)
     (run-with-idle-timer
-      0 nil 'message
-      (concat "Hidden Mode Line Mode enabled.  "
-        "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
+     0 nil 'message
+     (concat "Hidden Mode Line Mode enabled.  "
+             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
 
 
 ;; disable feature
@@ -791,46 +791,46 @@ This functions should be added to the hooks of major modes for programming."
   "Copy buffer file name."
   (interactive)
   (if  buffer-file-name
-    (progn (kill-new buffer-file-name)
-      (message buffer-file-name))))
+      (progn (kill-new buffer-file-name)
+             (message buffer-file-name))))
 
 (defun my/count-words-analysis (start end)
   "Count how many times each word is used in the region.
 Punctuation is ignored."
   (interactive "r")
   (let (words
-         alist_words_compare
-         (formated "")
-         (overview (call-interactively 'count-words)))
+        alist_words_compare
+        (formated "")
+        (overview (call-interactively 'count-words)))
     (save-excursion
       (goto-char start)
       (while (re-search-forward "\\w+" end t)
         (let* ((word (intern (match-string 0)))
-                (cell (assq word words)))
+               (cell (assq word words)))
           (if cell
-            (setcdr cell (1+ (cdr cell)))
+              (setcdr cell (1+ (cdr cell)))
             (setq words (cons (cons word 1) words))))))
     (defun alist_words_compare (a b)
       "Compare elements from an associative list of words count.
 Compare them on count first,and in case of tie sort them alphabetically."
       (let ((a_key (car a))
-             (a_val (cdr a))
-             (b_key (car b))
-             (b_val (cdr b)))
+            (a_val (cdr a))
+            (b_key (car b))
+            (b_val (cdr b)))
         (if (eq a_val b_val)
-          (string-lessp a_key b_key)
+            (string-lessp a_key b_key)
           (> a_val b_val))))
     (setq words (cl-sort words 'alist_words_compare))
     (while words
       (let* ((word (pop words))
-              (name (car word))
-              (count (cdr word)))
+             (name (car word))
+             (count (cdr word)))
         (setq formated (concat formated (format "[%s: %d], " name count)))))
     (when (called-interactively-p 'my/count-words-analysis)
       (if (> (length formated) 2)
-        (message (format "%s\nWord count: %s"
-                   overview
-                   (substring formated 0 -2)))
+          (message (format "%s\nWord count: %s"
+                           overview
+                           (substring formated 0 -2)))
         (message "No words.")))
     words))
 
@@ -852,7 +852,7 @@ Compare them on count first,and in case of tie sort them alphabetically."
 `backward-kill-sexp' if no region is active."
   (interactive "p")
   (if (region-active-p)
-    (call-interactively #'kill-region)
+      (call-interactively #'kill-region)
     (backward-kill-sexp arg)))
 
 (defun my/rename-file (filename &optional new-filename)
@@ -865,27 +865,27 @@ projectile cache when it's possible and update recentf list."
   (interactive "f")
   (when (and filename (file-exists-p filename))
     (let* ((buffer (find-buffer-visiting filename))
-            (short-name (file-name-nondirectory filename))
-            (new-name (if new-filename new-filename
-                        (read-file-name
-                          (format "Rename %s to: " short-name)))))
+           (short-name (file-name-nondirectory filename))
+           (new-name (if new-filename new-filename
+                       (read-file-name
+                        (format "Rename %s to: " short-name)))))
       (cond ((get-buffer new-name)
-              (error "A buffer named '%s' already exists!" new-name))
-        (t
-          (let ((dir (file-name-directory new-name)))
-            (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
-              (make-directory dir t)))
-          (rename-file filename new-name 1)
-          (when buffer
-            (kill-buffer buffer)
-            (find-file new-name))
-          (when (fboundp 'recentf-add-file)
-            (recentf-add-file new-name)
-            (recentf-remove-if-non-kept filename))
-          (when (projectile-project-p)
-            (call-interactively #'projectile-invalidate-cache))
-          (message "File '%s' successfully renamed to '%s'" short-name
-            (file-name-nondirectory new-name)))))))
+             (error "A buffer named '%s' already exists!" new-name))
+            (t
+             (let ((dir (file-name-directory new-name)))
+               (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
+                 (make-directory dir t)))
+             (rename-file filename new-name 1)
+             (when buffer
+               (kill-buffer buffer)
+               (find-file new-name))
+             (when (fboundp 'recentf-add-file)
+               (recentf-add-file new-name)
+               (recentf-remove-if-non-kept filename))
+             (when (projectile-project-p)
+               (call-interactively #'projectile-invalidate-cache))
+             (message "File '%s' successfully renamed to '%s'" short-name
+                      (file-name-nondirectory new-name)))))))
 
 
 ;; from magnars
@@ -893,28 +893,28 @@ projectile cache when it's possible and update recentf list."
   "Renames current buffer and file it is visiting."
   (interactive)
   (let* ((name (buffer-name))
-          (filename (buffer-file-name)))
+         (filename (buffer-file-name)))
     (if (not (and filename (file-exists-p filename)))
-      ;; (error "Buffer '%s' is not visiting a file!" name)
-      (rename-buffer (read-from-minibuffer "New name: " (buffer-name)))
+        ;; (error "Buffer '%s' is not visiting a file!" name)
+        (rename-buffer (read-from-minibuffer "New name: " (buffer-name)))
       (let* ((dir (file-name-directory filename))
-              (new-name (read-file-name "New name: " dir)))
+             (new-name (read-file-name "New name: " dir)))
         (cond ((get-buffer new-name)
-                (error "A buffer named '%s' already exists!" new-name))
-          (t
-            (let ((dir (file-name-directory new-name)))
-              (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
-                (make-directory dir t)))
-            (rename-file filename new-name 1)
-            (rename-buffer new-name)
-            (set-visited-file-name new-name)
-            (set-buffer-modified-p nil)
-            (when (fboundp 'recentf-add-file)
-              (recentf-add-file new-name)
-              (recentf-remove-if-non-kept filename))
-            (when (projectile-project-p)
-              (call-interactively #'projectile-invalidate-cache))
-            (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
+               (error "A buffer named '%s' already exists!" new-name))
+              (t
+               (let ((dir (file-name-directory new-name)))
+                 (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
+                   (make-directory dir t)))
+               (rename-file filename new-name 1)
+               (rename-buffer new-name)
+               (set-visited-file-name new-name)
+               (set-buffer-modified-p nil)
+               (when (fboundp 'recentf-add-file)
+                 (recentf-add-file new-name)
+                 (recentf-remove-if-non-kept filename))
+               (when (projectile-project-p)
+                 (call-interactively #'projectile-invalidate-cache))
+               (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
 
 (defun my/delete-file (filename &optional ask-user)
   "Remove specified file or directory.
@@ -931,7 +931,7 @@ removal."
       (when buffer
         (kill-buffer buffer)))
     (when (or (not ask-user)
-            (yes-or-no-p (format "Are you sure you want to delete %s? " filename)))
+              (yes-or-no-p (format "Are you sure you want to delete %s? " filename)))
       (delete-file filename)
       (when (projectile-project-p)
         (call-interactively #'projectile-invalidate-cache)))))
@@ -948,9 +948,9 @@ FILENAME is deleted using `my/delete-file' function.."
   "Remove file connected to current buffer and kill buffer."
   (interactive)
   (let ((filename (buffer-file-name))
-         (buffer (current-buffer)))
+        (buffer (current-buffer)))
     (if (not (and filename (file-exists-p filename)))
-      (kill-buffer)
+        (kill-buffer)
       (when (yes-or-no-p (format "Are you sure you want to delete %s? " filename))
         (delete-file filename t)
         (kill-buffer buffer)
@@ -965,7 +965,7 @@ FILENAME is deleted using `my/delete-file' function.."
   ;; list-buffers-directory is the variable set in dired buffers
   (let ((file-name (or (buffer-file-name) list-buffers-directory)))
     (if file-name
-      (message (kill-new file-name))
+        (message (kill-new file-name))
       (error "Buffer not visiting a file"))))
 
 
@@ -978,22 +978,22 @@ Narrowing to org-src-block actually Call `org-edit-src-code'.
 With prefix P, dont' widen, just narrow even if buffer is already narrowed."
   (interactive "P")
   (cond ((and (buffer-narrowed-p) (not p)) (widen))
-    ((region-active-p)
-      (narrow-to-region (region-beginning) (region-end)))
-    ((derived-mode-p 'org-mode)
-      ;; `org-edit-src-code' is not a real narrowing command.
-      ;; Remove this first conditional if you don't want it.
-      (cond ((ignore-errors (org-edit-src-code))
-              (delete-other-window))
-        ((org-at-block-p)
-          (org-narrow-to-block))
-        (t (org-narrow-to-subtree))))
-    ((derived-mode-p 'web-mode 'sgml-mode 'json-mode)
-      (call-interactively 'sp-narrow-to-sexp))
-    ((derived-mode-p 'prog-mode)
-      (narrow-to-defun))
-    (t (narrow-to-defun))
-    ))
+        ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing command.
+         ;; Remove this first conditional if you don't want it.
+         (cond ((ignore-errors (org-edit-src-code))
+                (delete-other-window))
+               ((org-at-block-p)
+                (org-narrow-to-block))
+               (t (org-narrow-to-subtree))))
+        ((derived-mode-p 'web-mode 'sgml-mode 'json-mode)
+         (call-interactively 'sp-narrow-to-sexp))
+        ((derived-mode-p 'prog-mode)
+         (narrow-to-defun))
+        (t (narrow-to-defun))
+        ))
 
 
 ;; 添加百度搜索
@@ -1001,11 +1001,11 @@ With prefix P, dont' widen, just narrow even if buffer is already narrowed."
   "Open the search url constructed with the QUERY-URL.
 PROMPT sets the `read-string prompt."
   (browse-url
-    (concat query-url
-      (url-hexify-string
-        (if mark-active
-          (buffer-substring (region-beginning) (region-end))
-          (read-string prompt))))))
+   (concat query-url
+           (url-hexify-string
+            (if mark-active
+                (buffer-substring (region-beginning) (region-end))
+              (read-string prompt))))))
 
 (defmacro my|install-search-engine (search-engine-name search-engine-url search-engine-prompt)
   "Given some information regarding a search engine, install the interactive command to search through them"
@@ -1034,117 +1034,117 @@ PROMPT sets the `read-string prompt."
   If optional IN-OTHER-WINDOW is non-nil, find the file in another window."
 
     (let (match           ;; matching regexp for this file
-           suffixes        ;; set of replacing regexps for the matching regexp
-           action          ;; function to generate the names of the other files
-           fname           ;; basename of this file
-           pos             ;; where we start matching filenames
-           stub            ;; name of the file without extension
-           alist           ;; working copy of the list of file extensions
-           pathname        ;; the pathname of the file or the #include line
-           default-name    ;; file we should create if none found
-           format          ;; what we have to match
-           found           ;; name of the file or buffer found - nil if none
-           dirs            ;; local value of ff-search-directories
-           no-match)       ;; whether we know about this kind of file
+          suffixes        ;; set of replacing regexps for the matching regexp
+          action          ;; function to generate the names of the other files
+          fname           ;; basename of this file
+          pos             ;; where we start matching filenames
+          stub            ;; name of the file without extension
+          alist           ;; working copy of the list of file extensions
+          pathname        ;; the pathname of the file or the #include line
+          default-name    ;; file we should create if none found
+          format          ;; what we have to match
+          found           ;; name of the file or buffer found - nil if none
+          dirs            ;; local value of ff-search-directories
+          no-match)       ;; whether we know about this kind of file
       (run-hooks 'ff-pre-find-hook 'ff-pre-find-hooks)
       (message "Working...")
       (setq dirs
-        (if (symbolp ff-search-directories)
-          (ff-list-replace-env-vars (symbol-value ff-search-directories))
-          (ff-list-replace-env-vars ff-search-directories)))
+            (if (symbolp ff-search-directories)
+                (ff-list-replace-env-vars (symbol-value ff-search-directories))
+              (ff-list-replace-env-vars ff-search-directories)))
       (setq fname (ff-treat-as-special))
       (cond
-        ((and (not ff-ignore-include) fname)
-          (setq default-name fname)
-          (setq found (ff-get-file dirs fname nil in-other-window)))
-        ;; let's just get the corresponding file
-        (t
-          (setq alist (if (symbolp ff-other-file-alist)
+       ((and (not ff-ignore-include) fname)
+        (setq default-name fname)
+        (setq found (ff-get-file dirs fname nil in-other-window)))
+       ;; let's just get the corresponding file
+       (t
+        (setq alist (if (symbolp ff-other-file-alist)
                         (symbol-value ff-other-file-alist)
-                        ff-other-file-alist)
-            pathname (if (buffer-file-name)
-                       (buffer-file-name)
-                       "/none.none"))
-          (setq fname (file-name-nondirectory pathname)
-            no-match nil
-            match (car alist))
+                      ff-other-file-alist)
+              pathname (if (buffer-file-name)
+                           (buffer-file-name)
+                         "/none.none"))
+        (setq fname (file-name-nondirectory pathname)
+              no-match nil
+              match (car alist))
 
-          ;; find the table entry corresponding to this file
-          (setq pos (ff-string-match (car match) fname))
-          (while (and match (if (and pos (>= pos 0)) nil (not pos)))
-            (setq alist (cdr alist))
-            (setq match (car alist))
-            (setq pos (ff-string-match (car match) fname)))
+        ;; find the table entry corresponding to this file
+        (setq pos (ff-string-match (car match) fname))
+        (while (and match (if (and pos (>= pos 0)) nil (not pos)))
+          (setq alist (cdr alist))
+          (setq match (car alist))
+          (setq pos (ff-string-match (car match) fname)))
 
-          ;; no point going on if we haven't found anything
-          (if (not match)
+        ;; no point going on if we haven't found anything
+        (if (not match)
             (setq no-match t)
 
-            ;; otherwise, suffixes contains what we need
-            (setq suffixes (car (cdr match))
-              action (car (cdr match))
-              found nil)
+          ;; otherwise, suffixes contains what we need
+          (setq suffixes (car (cdr match))
+                action (car (cdr match))
+                found nil)
 
-            ;; if we have a function to generate new names,
-            ;; invoke it with the name of the current file
-            (if (and (atom action) (fboundp action))
+          ;; if we have a function to generate new names,
+          ;; invoke it with the name of the current file
+          (if (and (atom action) (fboundp action))
               (progn
                 (setq suffixes (funcall action (buffer-file-name))
-                  match (cons (car match) (list suffixes))
-                  stub nil
-                  default-name (car suffixes)))
+                      match (cons (car match) (list suffixes))
+                      stub nil
+                      default-name (car suffixes)))
 
-              ;; otherwise build our filename stub
-              (cond
-                ;; get around the problem that 0 and nil both mean false!
-                ((= pos 0)
-                  (setq format "")
-                  (setq stub "")
-                  )
-                (t
-                  (setq format (concat "\\(.+\\)" (car match)))
-                  (string-match format fname)
-                  (setq stub (substring fname (match-beginning 1) (match-end 1)))
-                  ))
-              ;; if we find nothing, we should try to get a file like this one
-              (setq default-name
-                (concat stub (car (car (cdr match))))))
-            ;; do the real work - find the file
-            (setq found
-              (ff-get-file dirs
-                stub
-                suffixes
-                in-other-window)))))
+            ;; otherwise build our filename stub
+            (cond
+             ;; get around the problem that 0 and nil both mean false!
+             ((= pos 0)
+              (setq format "")
+              (setq stub "")
+              )
+             (t
+              (setq format (concat "\\(.+\\)" (car match)))
+              (string-match format fname)
+              (setq stub (substring fname (match-beginning 1) (match-end 1)))
+              ))
+            ;; if we find nothing, we should try to get a file like this one
+            (setq default-name
+                  (concat stub (car (car (cdr match))))))
+          ;; do the real work - find the file
+          (setq found
+                (ff-get-file dirs
+                             stub
+                             suffixes
+                             in-other-window)))))
       (cond
-        (no-match                     ;; could not even determine the other file
-          (message ""))
-        (t
+       (no-match                     ;; could not even determine the other file
+        (message ""))
+       (t
+        (cond
+         ((not found)                ;; could not find the other file
+          (run-hooks 'ff-not-found-hook 'ff-not-found-hooks)
           (cond
-            ((not found)                ;; could not find the other file
-              (run-hooks 'ff-not-found-hook 'ff-not-found-hooks)
-              (cond
-                (ff-always-try-to-create  ;; try to create the file
-                  (let (name pathname)
+           (ff-always-try-to-create  ;; try to create the file
+            (let (name pathname)
               ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                    ;; fix with helm will create file in directory ;;
+              ;; fix with helm will create file in directory ;;
                 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                    (setq name
-                      (expand-file-name default-name
-                        (read-directory-name
-                          (format "Find or create %s in: " default-name)
-                          default-directory)))
-                    (setq pathname
-                      (if (file-directory-p name)
+              (setq name
+                    (expand-file-name default-name
+                                      (read-directory-name
+                                       (format "Find or create %s in: " default-name)
+                                       default-directory)))
+              (setq pathname
+                    (if (file-directory-p name)
                         (concat (file-name-as-directory name) default-name)
-                        (setq found name)))
+                      (setq found name)))
 
-                    (ff-find-file pathname in-other-window t)))
+              (ff-find-file pathname in-other-window t)))
 
-                (t                        ;; don't create the file, just whinge
-                  (message "No file found for %s" fname))))
+           (t                        ;; don't create the file, just whinge
+            (message "No file found for %s" fname))))
 
-            (t                          ;; matching file found
-              nil))))
+         (t                          ;; matching file found
+          nil))))
       found))
   )
 

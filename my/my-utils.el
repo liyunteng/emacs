@@ -27,7 +27,7 @@
 ;; after-load
 
 (if (fboundp 'with-eval-after-load)
-  (defalias 'after-load 'with-eval-after-load)
+    (defalias 'after-load 'with-eval-after-load)
   (defmacro after-load (feature &rest body)
     "After FEATURE is loaded, evaluate BODY."
     (declare (indent defun))
@@ -124,23 +124,23 @@ ARGS if MSG is format-string ARGS contain message."
   "Indent FILENAME"
   (interactive "f")
   (if (file-exists-p filename)
-    (condition-case nil
-      (progn
-        (find-file filename)
-        (indent-region (point-min) (point-max))
-        (save-buffer)
-        (kill-buffer nil))
-      (user-error "failed inent %s" filename))
+      (condition-case nil
+          (progn
+            (find-file filename)
+            (indent-region (point-min) (point-max))
+            (save-buffer)
+            (kill-buffer nil))
+        (user-error "failed inent %s" filename))
     (user-error "Invalid filename %s" filename)))
 
 (defun my--indent-directory (dir regex)
   "Indent Directory."
   (interactive "D")
   (if (and (file-exists-p dir))
-    (dolist (file (directory-files-recursively dir regex))
-      (message "indenting %s" file)
-      (my/indent-file file)
-      (message "indented %s\n" file))
+      (dolist (file (directory-files-recursively dir regex))
+        (message "indenting %s" file)
+        (my/indent-file file)
+        (message "indented %s\n" file))
     (user-error "Invalid directory %s" dir)))
 (defun my/dos2unix-directory (dir regex)
   "Convert dos file to utf-8-unix.
@@ -149,10 +149,10 @@ Example:
 "
   (interactive "D")
   (if (and (file-exists-p dir))
-    (dolist (file (directory-files-recursively dir regex))
-      (message "dos2unix %s" file)
-      (my/dos2unix file)
-      (kill-current-buffer))
+      (dolist (file (directory-files-recursively dir regex))
+        (message "dos2unix %s" file)
+        (my/dos2unix file)
+        (kill-current-buffer))
     (user-error "Invalid directory %s" dir)))
 
 (defun my/indent-my-emacs-lisp ()
@@ -163,7 +163,7 @@ Example:
 (defun my-mplist-get (plist prop)
   "Get the values associated to  PLIST of PROP, a modified plist."
   (let ((tail plist)
-         result)
+        result)
     (while (and (consp tail) (not (eq prop (car tail))))
       (pop tail))
     (pop tail)
@@ -174,7 +174,7 @@ Example:
 (defun my-mplist-remove (plist prop)
   "Return a copy of a modified PLIST without PROP and its values."
   (let ((tail plist)
-         result)
+        result)
     (while (and (consp tail) (not (eq prop (car tail))))
       (push (pop tail) result))
     (when (eq prop (car tail))
@@ -197,14 +197,14 @@ Supported properties:
     One or several cons cells (MAP . KEY) where MAP is a mode map and KEY is a
     key sequence string to be set with `define-key'. "
   (let ((global-key (my-mplist-get props :global-key))
-         (def-key (my-mplist-get props :define-key)))
+        (def-key (my-mplist-get props :define-key)))
     (append
-      (when global-key
-        `((dolist (key ',global-key)
-            (global-set-key (kbd key) ',func))))
-      (when def-key
-        `((dolist (val ',def-key)
-            (define-key (eval (car val)) (kbd (cdr val)) ',func)))))))
+     (when global-key
+       `((dolist (key ',global-key)
+           (global-set-key (kbd key) ',func))))
+     (when def-key
+       `((dolist (val ',def-key)
+           (define-key (eval (car val)) (kbd (cdr val)) ',func)))))))
 
 (defvar my-toggles '()
   "List of all declared toggles.
@@ -262,43 +262,43 @@ my/toggle-company-mode-off."
 
   (declare (indent 1))
   (let* ((wrapper-func (intern (format "my/toggle-%s"
-                                 (symbol-name name))))
-          (wrapper-func-status (intern (format "%s-p" wrapper-func)))
-          (wrapper-func-on (intern (format "%s-on" wrapper-func)))
-          (wrapper-func-off (intern (format "%s-off" wrapper-func)))
-          (mode (plist-get props :mode))
-          (status (or mode (plist-get props :status)))
-          (condition (plist-get props :if))
-          (doc (plist-get props :documentation))
-          (on-body (if mode `((,mode)) (my-mplist-get props :on)))
-          (off-body (if mode `((,mode -1)) (my-mplist-get props :off)))
-          (prefix-arg-var (plist-get props :prefix))
-          (on-message (plist-get props :on-message))
-          (bindkeys (my--create-key-binding-form props wrapper-func))
-          ;; we evaluate condition and status only if they are a list or
-          ;; a bound symbol
-          (status-eval `(and (or (and (symbolp ',status) (boundp ',status))
-                               (listp ',status))
-                          ,status)))
+                                       (symbol-name name))))
+         (wrapper-func-status (intern (format "%s-p" wrapper-func)))
+         (wrapper-func-on (intern (format "%s-on" wrapper-func)))
+         (wrapper-func-off (intern (format "%s-off" wrapper-func)))
+         (mode (plist-get props :mode))
+         (status (or mode (plist-get props :status)))
+         (condition (plist-get props :if))
+         (doc (plist-get props :documentation))
+         (on-body (if mode `((,mode)) (my-mplist-get props :on)))
+         (off-body (if mode `((,mode -1)) (my-mplist-get props :off)))
+         (prefix-arg-var (plist-get props :prefix))
+         (on-message (plist-get props :on-message))
+         (bindkeys (my--create-key-binding-form props wrapper-func))
+         ;; we evaluate condition and status only if they are a list or
+         ;; a bound symbol
+         (status-eval `(and (or (and (symbolp ',status) (boundp ',status))
+                                (listp ',status))
+                            ,status)))
     `(progn
        (push (append '(,name) '(:function ,wrapper-func
-                                 :predicate ,wrapper-func-status) ',props)
-         my-toggles)
+                                          :predicate ,wrapper-func-status) ',props)
+             my-toggles)
        ;; toggle function
        (defun ,wrapper-func ,(if prefix-arg-var (list prefix-arg-var) ())
          ,(format "%s\nToggle %s on and off." doc (symbol-name name))
          ,(if prefix-arg-var '(interactive "P") '(interactive))
          (if (or (null ',condition)
-               (and (or (and (symbolp ',condition) (boundp ',condition))
-                      (listp ',condition))
-                 ,condition))
-           (if (,wrapper-func-status)
-             (progn ,@off-body
+                 (and (or (and (symbolp ',condition) (boundp ',condition))
+                          (listp ',condition))
+                      ,condition))
+             (if (,wrapper-func-status)
+                 (progn ,@off-body
+                        (when (called-interactively-p 'any)
+                          (message ,(format "%s disabled." name))))
+               ,@on-body
                (when (called-interactively-p 'any)
-                 (message ,(format "%s disabled." name))))
-             ,@on-body
-             (when (called-interactively-p 'any)
-               (message ,(or on-message (format "%s enabled." name)))))
+                 (message ,(or on-message (format "%s enabled." name)))))
            (message "This toggle is not supported.")))
        ;; predicate function
        (defun ,wrapper-func-status ()
@@ -311,11 +311,11 @@ my/toggle-company-mode-off."
                ,(format "Toggle %s on." (symbol-name name))
                (interactive)
                (unless (,wrapper-func-status) (,wrapper-func)))
-              ;; off-function
-              (defun ,wrapper-func-off ()
-                ,(format "Toggle %s off." (symbol-name name))
-                (interactive)
-                (when (,wrapper-func-status) (,wrapper-func)))))
+             ;; off-function
+             (defun ,wrapper-func-off ()
+               ,(format "Toggle %s off." (symbol-name name))
+               (interactive)
+               (when (,wrapper-func-status) (,wrapper-func)))))
        ,@bindkeys)))
 
 (defmacro my|advise-commands (advice-name commands class &rest body)
@@ -327,9 +327,9 @@ Exaple:
    (my|advise-commands \"abc\" (proced) before (message \"from advise\"))"
   `(progn
      ,@(mapcar (lambda (command)
-		             `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
-		                ,@body))
-	       commands)))
+		         `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
+		            ,@body))
+	           commands)))
 
 (provide 'my-utils)
 ;;; my-utils.el ends here

@@ -35,12 +35,12 @@
   :defer t
   :bind
   (:map elpy-mode-map
-    ("C-c C-d" . elpy-doc)
-    ;; ("C-c C-j" . elpy-goto-definition)
-    ;; ("C-c C-J" . elpy-goto-definition-other-window)
-    ("C-c C-q" . my/elpy-shell-kill)
-    ("C-c C-Q" . my/elpy-shell-kill-all)
-    ("C-c C-k" . kill-region))
+        ("C-c C-d" . elpy-doc)
+        ;; ("C-c C-j" . elpy-goto-definition)
+        ;; ("C-c C-J" . elpy-goto-definition-other-window)
+        ("C-c C-q" . my/elpy-shell-kill)
+        ("C-c C-Q" . my/elpy-shell-kill-all)
+        ("C-c C-k" . kill-region))
   :init
   ;; (advice-add 'python-mode :before 'elpy-enable)
 
@@ -57,10 +57,10 @@
   :config
   (setq elpy-shell-echo-input nil)
   (setq elpy-modules '(elpy-module-sane-defaults
-                        elpy-module-eldoc
-        	              elpy-module-flymake
-        	              elpy-module-pyvenv
-        	              elpy-module-yasnippet))
+                       elpy-module-eldoc
+        	           elpy-module-flymake
+        	           elpy-module-pyvenv
+        	           elpy-module-yasnippet))
   )
 
 (use-package python
@@ -101,9 +101,9 @@
   :config
   (when (executable-find "ipython")
     (progn (setq python-shell-interpreter "ipython")
-      (if  (system-is-mac)
-        (setq python-shell-interpreter-args "-c exec('__import__(\\'readline\\')') --no-confirm-exit --simple-prompt -i")
-        (setq python-shell-interpreter-args "--no-confirm-exit --simple-prompt -i"))))
+           (if  (system-is-mac)
+               (setq python-shell-interpreter-args "-c exec('__import__(\\'readline\\')') --no-confirm-exit --simple-prompt -i")
+             (setq python-shell-interpreter-args "--no-confirm-exit --simple-prompt -i"))))
   )
 
 (provide 'my-python)

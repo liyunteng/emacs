@@ -38,8 +38,8 @@
 
   :group 'whitespace-cleanup-mode
   :type '(choice (const :tag "all whitespace" 'all)
-		       (const :tag "trailing whitespace" 'trailing)
-		       (const :tag "changed lines" 'changed)))
+		         (const :tag "trailing whitespace" 'trailing)
+		         (const :tag "changed lines" 'changed)))
 
 ;;;###autoload
 (define-minor-mode whitespace-cleanup-mode
@@ -52,7 +52,7 @@ of the cleanup."
   :
   :group 'whitespace-cleanup-mode
   (if whitespace-cleanup-mode
-    (whitespace-cleanup//turn-on)
+      (whitespace-cleanup//turn-on)
     (whitespace-cleanup//turn-off)))
 
 ;;;###autoload
@@ -63,31 +63,31 @@ of the cleanup."
   "Return a string to display when the mode is activated. GLOBAL?"
   (pcase my-whitespace-cleanup
     (`all
-      (format "whitespace-cleanup enabled (all whitespace)"))
+     (format "whitespace-cleanup enabled (all whitespace)"))
     (`trailing
-      (format "whitespace-cleanup enabled (trailing whitespace)"))
+     (format "whitespace-cleanup enabled (trailing whitespace)"))
     (`changed
-      (format "whitespace-cleanup enabled (changed lines)"))))
+     (format "whitespace-cleanup enabled (changed lines)"))))
 
 (defun whitespace-cleanup//turn-on ()
   "Turn on `my-whitespace-cleanup-mode'. GLOBAL?"
   (pcase my-whitespace-cleanup
     (`all
-      (add-hook 'before-save-hook 'whitespace-cleanup nil t))
+     (add-hook 'before-save-hook 'whitespace-cleanup nil t))
     (`trailing
-      (add-hook 'before-save-hook 'delete-trailing-whitespace nil t))
+     (add-hook 'before-save-hook 'delete-trailing-whitespace nil t))
     (`changed
-      (when (fboundp 'ws-butler-mode) (ws-butler-mode)))))
+     (when (fboundp 'ws-butler-mode) (ws-butler-mode)))))
 
 (defun whitespace-cleanup//turn-off ()
   "Turn off `my-whitespace-cleanup-mode'. GLOBAL?"
   (pcase my-whitespace-cleanup
     (`all
-      (remove-hook 'before-save-hook 'whitespace-cleanup t))
+     (remove-hook 'before-save-hook 'whitespace-cleanup t))
     (`trailing
-      (remove-hook 'before-save-hook 'delete-trailing-whitespace t))
+     (remove-hook 'before-save-hook 'delete-trailing-whitespace t))
     (`changed
-      (when (fboundp 'ws-butler-mode) (ws-butler-mode -1)))))
+     (when (fboundp 'ws-butler-mode) (ws-butler-mode -1)))))
 
 (provide 'my-whitespace-cleanup-mode)
 ;;; my-whitespace-cleanup-mode.el ends here

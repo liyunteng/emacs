@@ -27,13 +27,13 @@
 ;; remove annoying ellipsis when printing sexp in message buffer
 
 (setq eval-expression-print-length nil
-  eval-expression-print-level nil)
+      eval-expression-print-level nil)
 
 ;; automatically compile Emacs Lisp libraries
 (use-package auto-compile
   :ensure t
   :commands (auto-compile-on-save-mode
-              auto-compile-on-load-mode)
+             auto-compile-on-load-mode)
   :init
   (auto-compile-on-save-mode +1)
   (auto-compile-on-load-mode +1))
@@ -54,9 +54,9 @@
 (use-package macrostep
   :ensure t
   :bind (:map emacs-lisp-mode-map
-	        ("C-c C-e" . macrostep-expand)
-	        :map lisp-interaction-mode-map
-	        ("C-c C-e" . macrostep-expand)))
+	          ("C-c C-e" . macrostep-expand)
+	          :map lisp-interaction-mode-map
+	          ("C-c C-e" . macrostep-expand)))
 
 (use-package eldoc-eval
   :ensure t
@@ -73,23 +73,23 @@
   (add-hook 'ielm-mode-hook #'eldoc-mode))
 
 (defvar my-common-mode-hooks  '(emacs-lisp-mode-hook
-				                         ielm-mode-hook
-				                         help-mode-hook
-				                         messages-buffer-mode-hook
-				                         completion-list-mode-hook
-				                         debugger-mode-hook))
+				                ielm-mode-hook
+				                help-mode-hook
+				                messages-buffer-mode-hook
+				                completion-list-mode-hook
+				                debugger-mode-hook))
 (use-package rainbow-mode
   :diminish rainbow-mode
   ;; :ensure t
   :commands (rainbow-mode
-	            rainbow-turn-on)
+	         rainbow-turn-on)
   :init
   (add-function-to-hooks 'rainbow-turn-on my-common-mode-hooks))
 
 (use-package highlight-quoted
   :ensure t
   :commands (highlight-quoted-mode
-	            highlight-quoted--turn-on)
+	         highlight-quoted--turn-on)
   :init
   (add-function-to-hooks 'highlight-quoted--turn-on my-common-mode-hooks)
   (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode))
@@ -97,7 +97,7 @@
 (use-package elisp-slime-nav
   :ensure t
   :bind (:map elisp-slime-nav-mode-map
-          ("C-c C-d" . elisp-slime-nav-describe-elisp-thing-at-point))
+              ("C-c C-d" . elisp-slime-nav-describe-elisp-thing-at-point))
   :diminish elisp-slime-nav-mode
   :init
   (add-function-to-hooks 'turn-on-elisp-slime-nav-mode my-common-mode-hooks))
@@ -124,12 +124,12 @@
     "Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
     (when (get-buffer out-buffer-name)
       (with-current-buffer out-buffer-name
-	      (view-mode 1))))
+	    (view-mode 1))))
 
   (defun my-maybe-set-bundled-elisp-readonly ()
     "If this elisp appears to be part of Emacs, then disallow editing."
     (when (and (buffer-file-name)
-	          (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
+	           (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
       (setq buffer-read-only t)
       (view-mode 1)))
   (add-hook 'emacs-lisp-mode-hook 'my-maybe-set-bundled-elisp-readonly))
@@ -139,12 +139,12 @@
 (use-package ielm
   :defer t
   :bind (:map ielm-map
-	        ("C-c C-z" . my/repl-switch-back)
-	        :map emacs-lisp-mode-map
-	        ("C-c C-z" . my/switch-to-ielm)
-	        :map lisp-interaction-mode-map
-	        ("C-c C-z" . my/switch-to-ielm)
-	        )
+	          ("C-c C-z" . my/repl-switch-back)
+	          :map emacs-lisp-mode-map
+	          ("C-c C-z" . my/switch-to-ielm)
+	          :map lisp-interaction-mode-map
+	          ("C-c C-z" . my/switch-to-ielm)
+	          )
   :init
   (defvar my-repl-original-buffer nil
     "Buffer from which we jumped to this REPL.")
@@ -164,7 +164,7 @@
     (let ((orig-buffer (current-buffer)))
       (if (get-buffer "*ielm*")
 	      (funcall my-repl-switch-function "*ielm*")
-	      (ielm))
+	    (ielm))
       (setq-local my-repl-original-buffer orig-buffer))))
 
 ;; ----------------------------------------------------------------------------
@@ -192,12 +192,12 @@
   (interactive "fFile to byte-compile in batch mode: ")
   (let ((emacs (car command-line-args)))
     (compile
-      (concat
-        emacs " "
-        (mapconcat
-          'shell-quote-argument
-          (list "-Q" "-batch" "-f" "batch-byte-compile" filename)
-          " ")))))
+     (concat
+      emacs " "
+      (mapconcat
+       'shell-quote-argument
+       (list "-Q" "-batch" "-f" "batch-byte-compile" filename)
+       " ")))))
 
 ;; ----------------------------------------------------------------------------
 ;; Enable desired features for all lisp modes
@@ -221,11 +221,11 @@
   ;; (set-up-hippie-expand-for-elisp)
 
   (if (boundp 'yas-minor-mode)
-    (yas-minor-mode -1))
+      (yas-minor-mode -1))
   (if (eq major-mode 'emacs-lisp-mode)
-    (setq mode-name "EL"))
+      (setq mode-name "EL"))
   (if (eq major-mode 'lisp-interaction-mode)
-    (setq mode-name "LI"))
+      (setq mode-name "LI"))
   )
 
 (defconst my-lispy-modes
@@ -260,8 +260,8 @@
   "If reverting from VC, delete any .elc file that will now be out of sync."
   (when my-vc-reverting
     (when (and (eq 'emacs-lisp-mode major-mode)
-	          buffer-file-name
-            (string= "el" (file-name-extension buffer-file-name)))
+	           buffer-file-name
+               (string= "el" (file-name-extension buffer-file-name)))
       (let ((elc (concat buffer-file-name "c")))
         (when (file-exists-p elc)
           (message "Removing out-of-sync elc file %s" (file-name-nondirectory elc))
@@ -283,23 +283,23 @@
   (interactive)
   (let ((case-fold-search nil))
     (re-search-forward
-      (concat
-        "("
-        (regexp-opt
-          ;; Not an exhaustive list
-          '("loop" "incf" "plusp" "first" "decf" "minusp" "assert"
-             "case" "destructuring-bind" "second" "third" "defun*"
-             "defmacro*" "return-from" "labels" "cadar" "fourth"
-             "cadadr") t)
-        "\\_>")))
+     (concat
+      "("
+      (regexp-opt
+       ;; Not an exhaustive list
+       '("loop" "incf" "plusp" "first" "decf" "minusp" "assert"
+         "case" "destructuring-bind" "second" "third" "defun*"
+         "defmacro*" "return-from" "labels" "cadar" "fourth"
+         "cadadr") t)
+      "\\_>")))
   (let ((form (match-string 1)))
     (backward-sexp)
     (cond
-      ((string-match "^\\(defun\\|defmacro\\)\\*$" form)
-        (kill-sexp)
-        (insert (concat "cl-" (match-string 1))))
-      (t
-        (insert "cl-")))
+     ((string-match "^\\(defun\\|defmacro\\)\\*$" form)
+      (kill-sexp)
+      (insert (concat "cl-" (match-string 1))))
+     (t
+      (insert "cl-")))
     (when (fboundp 'aggressive-indent-indent-defun)
       (aggressive-indent-indent-defun))))
 

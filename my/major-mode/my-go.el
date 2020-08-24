@@ -30,22 +30,22 @@
   :defer t
   :commands (go-mode)
   :bind (:map go-mode-map
-	        ("C-c C-d" . godoc-at-point)  ; need go-tools's go doc
-	        ("C-c C-p" . godoc)	    ; need godoc
-	        ("C-M-\\" . gofmt)
+	          ("C-c C-d" . godoc-at-point)  ; need go-tools's go doc
+	          ("C-c C-p" . godoc)	    ; need godoc
+	          ("C-M-\\" . gofmt)
 
 
-	        ("C-c C-a" . go-import-add)
-	        ("C-c C-q" . go-remove-unused-imports)
+	          ("C-c C-a" . go-import-add)
+	          ("C-c C-q" . go-remove-unused-imports)
 
-	        ("C-c RET" . my/smart-compile)
-	        ("C-c C-c" . my/smart-compile)
+	          ("C-c RET" . my/smart-compile)
+	          ("C-c C-c" . my/smart-compile)
 
 
-	        ("M-." . godef-jump)
-	        ("C-c C-l" . godef-describe)
-	        ;; ("C-c C-b" . xref-pop-marker-stack)
-	        )
+	          ("M-." . godef-jump)
+	          ("C-c C-l" . godef-describe)
+	          ;; ("C-c C-b" . xref-pop-marker-stack)
+	          )
   :init
   (use-package go-eldoc
     :ensure t
@@ -74,7 +74,7 @@
   :config
   ;; need go get golang.org/tools/cmd/goimports
   (if (executable-find "goimports")
-    (setq gofmt-command "goimports"))
+      (setq gofmt-command "goimports"))
 
   (defun my-go-mode-hook ()
     (set (make-local-variable 'tab-width) 4)

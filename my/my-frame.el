@@ -35,7 +35,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 `my-after-make-window-system-frame-hooks'"
   (with-selected-frame frame
     (run-hooks (if window-system
-                 'my-after-make-window-system-frame-hooks
+                   'my-after-make-window-system-frame-hooks
                  'my-after-make-console-frame-hooks))))
 (add-hook 'after-make-frame-functions 'run-after-make-frame-hooks)
 
@@ -43,8 +43,8 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   "The frame (if any) active during Emacs initialization.")
 
 (add-hook 'after-init-hook
-  (lambda () (when my--initial-frame
-               (run-after-make-frame-hooks my--initial-frame))))
+          (lambda () (when my--initial-frame
+                  (run-after-make-frame-hooks my--initial-frame))))
 
 
 (defun my--console-frame-setup ()
@@ -84,20 +84,20 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 
   ;; title format
   (setq frame-title-format
-    '("%F"
-       (:eval (if (frame-parameter nil 'client)
-                "*"))
-       "  -  " (:eval (if (buffer-file-name)
-                        ;; (file-truename (buffer-file-name))
-                        (abbreviate-file-name (buffer-file-name))
-                        "%b"))))
+        '("%F"
+          (:eval (if (frame-parameter nil 'client)
+                     "*"))
+          "  -  " (:eval (if (buffer-file-name)
+                             ;; (file-truename (buffer-file-name))
+                             (abbreviate-file-name (buffer-file-name))
+                           "%b"))))
 
 
   (let ((no-border '(internal-border-width . 0)))
     (add-to-list 'default-frame-alist no-border)
     (add-to-list 'initial-frame-alist no-border)))
 (if (daemonp)
-  (add-hook 'after-make-frame-functions #'my/frame-set-gui)
+    (add-hook 'after-make-frame-functions #'my/frame-set-gui)
   (my/frame-set-gui))
 
 
@@ -141,7 +141,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   )
 
 (if (daemonp)
-  (add-hook 'after-make-frame-functions #'my/frame-load-fonts)
+    (add-hook 'after-make-frame-functions #'my/frame-load-fonts)
   (my/frame-load-fonts))
 
 
@@ -151,33 +151,33 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   (unless (display-graphic-p frame)
     (error "Cannot adjust opacity of this frame"))
   (let* ((oldalpha (or (frame-parameter frame 'alpha) 100))
-          ;; The 'alpha frame param became a pair at some point in
-          ;; emacs 24.x, e.g. (100 100)
-          (oldalpha (if (listp oldalpha) (car oldalpha) oldalpha))
-          (newalpha (min (+ incr oldalpha) 100)))
+         ;; The 'alpha frame param became a pair at some point in
+         ;; emacs 24.x, e.g. (100 100)
+         (oldalpha (if (listp oldalpha) (car oldalpha) oldalpha))
+         (newalpha (min (+ incr oldalpha) 100)))
     (when (and (<= frame-alpha-lower-limit newalpha) (>= 100 newalpha))
       (modify-frame-parameters frame (list (cons 'alpha newalpha))))))
 
 (defun my/frame-opacity-adjust (inc)
   (interactive "p")
   (let ((ev last-command-event)
-         (echo-keystrokes t))
+        (echo-keystrokes t))
     (let* ((base (event-basic-type ev))
-            (step (pcase base
-                    ((or ?+ ?=) (* 5 inc))
-                    (?- (* 5 (- inc)))
-                    (?0 100)
-                    (_ inc))))
+           (step (pcase base
+                   ((or ?+ ?=) (* 5 inc))
+                   (?- (* 5 (- inc)))
+                   (?0 100)
+                   (_ inc))))
       (my--adjust-opacity nil step))
     (and echo-keystrokes
-      (message "Use +,-,0 for further adjustment"))
+         (message "Use +,-,0 for further adjustment"))
     (set-transient-map
-      (let ((map (make-sparse-keymap)))
-        (dolist (mods '(() (control)))
-          (dolist (key '(?- ?+ ?= ?0))
-            (define-key map (vector (append mods (list key)))
-              (lambda () (interactive) (my/frame-opacity-adjust (abs inc))))))
-        map))))
+     (let ((map (make-sparse-keymap)))
+       (dolist (mods '(() (control)))
+         (dolist (key '(?- ?+ ?= ?0))
+           (define-key map (vector (append mods (list key)))
+             (lambda () (interactive) (my/frame-opacity-adjust (abs inc))))))
+       map))))
 (global-set-key (kbd "C-M-=") 'my/frame-opacity-adjust)
 (global-set-key (kbd "C-M--") 'my/frame-opacity-adjust)
 (global-set-key (kbd "C-M-0") 'my/frame-opacity-adjust)
@@ -211,69 +211,69 @@ Selectively runs either `my-after-make-console-frame-hooks' or
     (interactive)
     (when frame (select-frame frame))
     (setq-default mode-line-format
-      '(:eval
-         (let* ((active (powerline-selected-window-active))
-                 (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
-                 (mode-line (if active 'mode-line 'mode-line-inactive))
-                 (face0 (if active 'powerline-active0 'powerline-inactive0))
-                 (face1 (if active 'powerline-active1 'powerline-inactive1))
-                 (face2 (if active 'powerline-active2 'powerline-inactive2))
-                 (separator-left (intern (format "powerline-%s-%s"
-                                           (powerline-current-separator)
-                                           (car powerline-default-separator-dir))))
-                 (separator-right (intern (format "powerline-%s-%s"
-                                            (powerline-current-separator)
-                                            (cdr powerline-default-separator-dir))))
-                 (lhs (list
-                        (powerline-raw mode-line-modified face0 'l)
-                        (when powerline-display-buffer-size
-                          (powerline-buffer-size face0 'l)
-                          (powerline-raw " " face0 'l))
-                        (when powerline-display-mule-info
-                          (powerline-raw mode-line-mule-info face0 'r))
-                        ;; (concat (pcase (coding-system-eol-type buffer-file-coding-system)
-                        ;;           (0 " LF")
-                        ;;           (1 " CRLF")
-                        ;;           (2 " CR"))
-                        ;;   (let ((sys (coding-system-plist buffer-file-coding-system)))
-                        ;;     (cond ((memq (plist-get sys :category)
-                        ;;              '(coding-category-undecided coding-category-utf-8))
-                        ;;             " UTF-8 ")
-                        ;;       (t (upcase (symbol-name (plist-get sys :name)))))))
-                        (powerline-buffer-id `(mode-line-buffer-id ,face0) 'l)
-                        (powerline-raw " " face0 'l)
-                        (funcall separator-left face0 face1)
-                        (powerline-narrow face1 'l)
-                        (powerline-vc face1)))
-                 (rhs (list (powerline-raw global-mode-string face1 'r)
-                        (when (and (derived-mode-p 'prog-mode) which-function-mode)
-                          (powerline-raw which-func-format face1 'r))
-                        (funcall separator-right face1 face0)
-                        (powerline-raw " " face0 'r)
-                        (powerline-raw "%l:%c" face0 'r)
-                        (powerline-raw "%4p" face0 'r)
-                        (powerline-hud face2 face1)
-                        (powerline-fill face0 0)))
-                 (center (list (powerline-raw " " face1)
-                           (funcall separator-left face1 face2)
-                           (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
-                             (powerline-raw erc-modified-channels-object face2 'l))
-                           (powerline-major-mode face2 'l)
-                           (powerline-process face2)
-                           (powerline-raw " :" face2)
-                           (powerline-minor-modes face2 'l)
-                           (powerline-raw " " face2)
-                           (funcall separator-right face2 face1))))
-           (concat
-             (window-number-string)
-             (powerline-render lhs)
-             (powerline-fill-center face1 (/ (powerline-width center) 2.0))
-             (powerline-render center)
-             (powerline-fill face1 (powerline-width rhs))
-             (powerline-render rhs)))))
+                  '(:eval
+                    (let* ((active (powerline-selected-window-active))
+                           (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
+                           (mode-line (if active 'mode-line 'mode-line-inactive))
+                           (face0 (if active 'powerline-active0 'powerline-inactive0))
+                           (face1 (if active 'powerline-active1 'powerline-inactive1))
+                           (face2 (if active 'powerline-active2 'powerline-inactive2))
+                           (separator-left (intern (format "powerline-%s-%s"
+                                                           (powerline-current-separator)
+                                                           (car powerline-default-separator-dir))))
+                           (separator-right (intern (format "powerline-%s-%s"
+                                                            (powerline-current-separator)
+                                                            (cdr powerline-default-separator-dir))))
+                           (lhs (list
+                                 (powerline-raw mode-line-modified face0 'l)
+                                 (when powerline-display-buffer-size
+                                   (powerline-buffer-size face0 'l)
+                                   (powerline-raw " " face0 'l))
+                                 (when powerline-display-mule-info
+                                   (powerline-raw mode-line-mule-info face0 'r))
+                                 ;; (concat (pcase (coding-system-eol-type buffer-file-coding-system)
+                                 ;;           (0 " LF")
+                                 ;;           (1 " CRLF")
+                                 ;;           (2 " CR"))
+                                 ;;   (let ((sys (coding-system-plist buffer-file-coding-system)))
+                                 ;;     (cond ((memq (plist-get sys :category)
+                                 ;;              '(coding-category-undecided coding-category-utf-8))
+                                 ;;             " UTF-8 ")
+                                 ;;       (t (upcase (symbol-name (plist-get sys :name)))))))
+                                 (powerline-buffer-id `(mode-line-buffer-id ,face0) 'l)
+                                 (powerline-raw " " face0 'l)
+                                 (funcall separator-left face0 face1)
+                                 (powerline-narrow face1 'l)
+                                 (powerline-vc face1)))
+                           (rhs (list (powerline-raw global-mode-string face1 'r)
+                                      (when (and (derived-mode-p 'prog-mode) which-function-mode)
+                                        (powerline-raw which-func-format face1 'r))
+                                      (funcall separator-right face1 face0)
+                                      (powerline-raw " " face0 'r)
+                                      (powerline-raw "%l:%c" face0 'r)
+                                      (powerline-raw "%4p" face0 'r)
+                                      (powerline-hud face2 face1)
+                                      (powerline-fill face0 0)))
+                           (center (list (powerline-raw " " face1)
+                                         (funcall separator-left face1 face2)
+                                         (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
+                                           (powerline-raw erc-modified-channels-object face2 'l))
+                                         (powerline-major-mode face2 'l)
+                                         (powerline-process face2)
+                                         (powerline-raw " :" face2)
+                                         (powerline-minor-modes face2 'l)
+                                         (powerline-raw " " face2)
+                                         (funcall separator-right face2 face1))))
+                      (concat
+                       (window-number-string)
+                       (powerline-render lhs)
+                       (powerline-fill-center face1 (/ (powerline-width center) 2.0))
+                       (powerline-render center)
+                       (powerline-fill face1 (powerline-width rhs))
+                       (powerline-render rhs)))))
     )
   (if (daemonp)
-    (add-hook 'after-make-frame-functions #'my/frame-powerline-theme)
+      (add-hook 'after-make-frame-functions #'my/frame-powerline-theme)
     (my/frame-powerline-theme)))
 
 (use-package beacon
@@ -317,16 +317,16 @@ Selectively runs either `my-after-make-console-frame-hooks' or
   :config
   (setq speedbar-show-unknown-files t)
   (setq speedbar-tag-hierarchy-method
-    '(speedbar-prefix-group-tag-hierarchy))
+        '(speedbar-prefix-group-tag-hierarchy))
 
   (speedbar-add-supported-extension ".go")
   (add-hook 'speedbar-mode-hook
-    (lambda ()
-      (auto-raise-mode t)
-      (setq dframe-update-speed 1)
-      ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
-      ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
-      )))
+            (lambda ()
+              (auto-raise-mode t)
+              (setq dframe-update-speed 1)
+              ;; (add-to-list 'speedbar-frame-parameters '(top . 0))
+              ;; (add-to-list 'speedbar-frame-parameters '(left . 0))
+              )))
 
 (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)
 (global-set-key (kbd "<f11>") 'toggle-frame-maximized)

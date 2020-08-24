@@ -25,8 +25,8 @@
 ;;; Code:
 
 (defhydra my/rectangle-hydra (:body-pre (rectangle-mark-mode 1)
-                               :color pink
-                               :post (deactivate-mark))
+                                        :color pink
+                                        :post (deactivate-mark))
   "
   ^_k_^        _d_elete       _s_tring
 _h_  _l_       _o_k           _y_ank
@@ -42,7 +42,7 @@ _h_  _l_       _o_k           _y_ank
   ("n" copy-rectangle-as-kill nil)
   ("d" delete-rectangle nil)
   ("r" (if (region-active-p)
-         (deactivate-mark)
+           (deactivate-mark)
          (rectangle-mark-mode 1)) nil)
   ("y" yank-rectangle nil)
   ("u" undo nil)

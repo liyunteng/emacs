@@ -33,7 +33,7 @@
     (defun ibuffer-set-up-preferred-filters ()
       (ibuffer-vc-set-filter-groups-by-vc-root)
       (unless (eq ibuffer-sorting-mode 'filename/process)
-	      (ibuffer-do-sort-by-filename/process)))
+	    (ibuffer-do-sort-by-filename/process)))
 
     (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters))
 
@@ -44,7 +44,7 @@
       (interactive)
       (ibuffer-projectile-set-filter-groups)
       (unless (eq ibuffer-sorting-mode 'alphabetic)
-	      (ibuffer-do-sort-by-alphabetic))
+	    (ibuffer-do-sort-by-alphabetic))
       )
     (define-key ibuffer-mode-map (kbd "/ p") 'my/ibuffer-group-by-projects))
 
@@ -59,64 +59,64 @@
     :config
     ;; 使用/ r来进行切换
     (setq ibuffer-saved-filters
-      (append '(("c" (or
-	                     (mode . c-mode)
-	                     (mode . c++-mode)
-	                     (mode . makefile-gmake-mode)
-	                     (mode . asm-mode)))
+          (append '(("c" (or
+	                      (mode . c-mode)
+	                      (mode . c++-mode)
+	                      (mode . makefile-gmake-mode)
+	                      (mode . asm-mode)))
 
-                 ("lisp" (or
-		                       (mode . emacs-lisp-mode)
-		                       (mode . lisp-mode)
-		                       (mode . lisp-interaction-mode)
-		                       (mode . inferior-emacs-lisp-mode)))
+                    ("lisp" (or
+		                     (mode . emacs-lisp-mode)
+		                     (mode . lisp-mode)
+		                     (mode . lisp-interaction-mode)
+		                     (mode . inferior-emacs-lisp-mode)))
 
-                 ("go" (mode . go-mode))
+                    ("go" (mode . go-mode))
 
-                 ("file" (filename . ".*")))
-        ibuffer-saved-filters))
+                    ("file" (filename . ".*")))
+                  ibuffer-saved-filters))
 
 
     (defun my--ibuffer-get-major-modes-ibuffer-rules-list (mm-list result-list)
       (if mm-list
-        (let* ((cur-mm (car mm-list))
-                (next-res-list-el `(,(symbol-name cur-mm) (mode . ,cur-mm))))
-          (my--ibuffer-get-major-modes-ibuffer-rules-list
-            (cdr mm-list) (cons next-res-list-el result-list)))
+          (let* ((cur-mm (car mm-list))
+                 (next-res-list-el `(,(symbol-name cur-mm) (mode . ,cur-mm))))
+            (my--ibuffer-get-major-modes-ibuffer-rules-list
+             (cdr mm-list) (cons next-res-list-el result-list)))
         result-list))
 
     (defun my--ibuffer-get-major-modes-list ()
       (mapcar
-        (function (lambda (buffer)
-                    (buffer-local-value 'major-mode (get-buffer buffer))))
-        (buffer-list (selected-frame))))
+       (function (lambda (buffer)
+                   (buffer-local-value 'major-mode (get-buffer buffer))))
+       (buffer-list (selected-frame))))
 
     (defun my/ibuffer-create-buffs-group ()
       (interactive)
       (let* ((ignore-modes '(Buffer-menu-mode
-                              compilation-mode
-                              minibuffer-inactive-mode
-                              ibuffer-mode
-                              magit-process-mode
-                              messages-buffer-mode
-                              fundamental-mode
-                              completion-list-mode
-                              help-modenn
-                              Info-mode
-                              helm-major-mode
-                              ))
-              (cur-bufs
-                (list (cons "Mode"
-                        (my--ibuffer-get-major-modes-ibuffer-rules-list
-                          (cl-set-difference
+                             compilation-mode
+                             minibuffer-inactive-mode
+                             ibuffer-mode
+                             magit-process-mode
+                             messages-buffer-mode
+                             fundamental-mode
+                             completion-list-mode
+                             help-modenn
+                             Info-mode
+                             helm-major-mode
+                             ))
+             (cur-bufs
+              (list (cons "Mode"
+                          (my--ibuffer-get-major-modes-ibuffer-rules-list
+                           (cl-set-difference
                             (cl-remove-duplicates
-                              (my--ibuffer-get-major-modes-list)) ignore-modes)
-                          '()))
+                             (my--ibuffer-get-major-modes-list)) ignore-modes)
+                           '()))
 
-                  (cons "File" '(("dir" (mode . dired-mode))
-                        		      ("file" (filename . ".*"))
-                                  ("special" (derived-mode . special-mode))))
-                  )))
+                    (cons "File" '(("dir" (mode . dired-mode))
+                        		   ("file" (filename . ".*"))
+                                   ("special" (derived-mode . special-mode))))
+                    )))
         (setq ibuffer-saved-filter-groups cur-bufs)
         ;; (ibuffer-switch-to-saved-filter-groups "Home")
         ))
@@ -162,29 +162,29 @@
     (define-ibuffer-column size-h
       (:name "Size" :inline t)
       (cond
-        ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
-        ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
-        (t (format "%8d" (buffer-size)))))
+       ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
+       ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
+       (t (format "%8d" (buffer-size)))))
     ;; Modify the default ibuffer-formats (toggle with `)
     (setq ibuffer-formats
-	    '((mark modified read-only vc-status-mini " "
-		      (name 30 30 :left :elide)
-		      " "
-		      (size-h 9 -1 :right)
-		      " "
-		      (mode 16 16 :left :elide)
-		      " "
-		      filename-and-process)
-	       (mark modified read-only vc-status-mini " "
-		       (name 30 30 :left :elide)
-		       " "
-		       (size-h 9 -1 :right)
-		       " "
-		       (mode 16 16 :left :elide)
-		       " "
-		       (vc-status 16 16 :left)
-		       " "
-		       filename-and-process))))
+	      '((mark modified read-only vc-status-mini " "
+		          (name 30 30 :left :elide)
+		          " "
+		          (size-h 9 -1 :right)
+		          " "
+		          (mode 16 16 :left :elide)
+		          " "
+		          filename-and-process)
+	        (mark modified read-only vc-status-mini " "
+		          (name 30 30 :left :elide)
+		          " "
+		          (size-h 9 -1 :right)
+		          " "
+		          (mode 16 16 :left :elide)
+		          " "
+		          (vc-status 16 16 :left)
+		          " "
+		          filename-and-process))))
 
   (define-key ibuffer-mode-map (kbd "/ g") 'ibuffer-switch-to-saved-filter-groups)
   ;; 禁用filter-groups decompose 和 pop

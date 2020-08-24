@@ -30,23 +30,23 @@
   :ensure t
   :bind
   (("TAB" . my/company-indent-or-complete-common)
-    :map company-mode-map
-    ("C-M-/" . company-other-backend)
-    ("C-M-?" . company-begin-backend)
-    ("M-SPC" . company-other-backend)
-    ("M-/" . hippie-expand)
-    :map company-active-map
-    ("TAB" . company-complete-common)
-    ("C-w" . nil)
-    ("C-l" . company-show-location)
-    ("C-n" . company-select-next)
-    ("C-p" . company-select-previous)
-    ("C-v" . company-next-page)
-    ("C-d" . company-show-doc-buffer)
-    ("M-v" . company-previous-page)
-    :map company-search-map
-    ("C-n" . company-select-next)
-    ("C-p" . company-select-previous))
+   :map company-mode-map
+   ("C-M-/" . company-other-backend)
+   ("C-M-?" . company-begin-backend)
+   ("M-SPC" . company-other-backend)
+   ("M-/" . hippie-expand)
+   :map company-active-map
+   ("TAB" . company-complete-common)
+   ("C-w" . nil)
+   ("C-l" . company-show-location)
+   ("C-n" . company-select-next)
+   ("C-p" . company-select-previous)
+   ("C-v" . company-next-page)
+   ("C-d" . company-show-doc-buffer)
+   ("M-v" . company-previous-page)
+   :map company-search-map
+   ("C-n" . company-select-next)
+   ("C-p" . company-select-previous))
   :commands (global-company-mode company-mode company-auto-begin)
   :init
   ;; (defalias 'completion-at-point 'company-complete-common)
@@ -57,67 +57,67 @@
     "Indent the current line or region, or complete the common part."
     (interactive)
     (cond
-      ((use-region-p)
-        (indent-region (region-beginning) (region-end)))
-      ((memq indent-line-function
-         '(indent-relative indent-relative-maybe))
-        (company-complete-common))
-      ((let ((old-point (point))
-              (old-tick (buffer-chars-modified-tick))
-              (tab-always-indent t))
-         (call-interactively #'indent-for-tab-command)
-         (when (and (eq old-point (point))
-                 (eq old-tick (buffer-chars-modified-tick)))
-           (company-complete-common)
-           )))
+     ((use-region-p)
+      (indent-region (region-beginning) (region-end)))
+     ((memq indent-line-function
+            '(indent-relative indent-relative-maybe))
+      (company-complete-common))
+     ((let ((old-point (point))
+            (old-tick (buffer-chars-modified-tick))
+            (tab-always-indent t))
+        (call-interactively #'indent-for-tab-command)
+        (when (and (eq old-point (point))
+                   (eq old-tick (buffer-chars-modified-tick)))
+          (company-complete-common)
+          )))
 
-      ;; add jump out pairs
-      ((and (not company-candidates)
-         (not company-common)
-         (-contains-p (list "\"" "'" ";" "|" "}" "]" ")" ">")
-           (make-string 1 (char-after))))
-        (forward-char))))
+     ;; add jump out pairs
+     ((and (not company-candidates)
+           (not company-common)
+           (-contains-p (list "\"" "'" ";" "|" "}" "]" ")" ">")
+                        (make-string 1 (char-after))))
+      (forward-char))))
 
   (defun company--begin-new ()
     (let (prefix c)
       (cl-dolist (backend (if company-backend
-                            ;; prefer manual override
-                            (list company-backend)
+                              ;; prefer manual override
+                              (list company-backend)
                             company-backends))
         (setq prefix
-          (if (or (symbolp backend)
-                (functionp backend))
-            (when (company--maybe-init-backend backend)
-              (let ((company-backend backend))
-                (company-call-backend 'prefix)))
-            (company--multi-backend-adapter backend 'prefix)))
+              (if (or (symbolp backend)
+                      (functionp backend))
+                  (when (company--maybe-init-backend backend)
+                    (let ((company-backend backend))
+                      (company-call-backend 'prefix)))
+                (company--multi-backend-adapter backend 'prefix)))
         (when prefix
           (when (company--good-prefix-p prefix)
             (let ((ignore-case (company-call-backend 'ignore-case)))
               (setq company-prefix (company--prefix-str prefix)
-                company-backend backend
-                c (company-calculate-candidates company-prefix ignore-case))
+                    company-backend backend
+                    c (company-calculate-candidates company-prefix ignore-case))
               (cond
-                ((and (company--unique-match-p c company-prefix ignore-case)
-                   (if company--manual-action
-                     ;; If `company-manual-begin' was called, the user
-                     ;; really wants something to happen.  Otherwise...
-                     (progn (ignore (message "Sole completion"))
-                       ;; ##### return for jump out pair
-                       (cl-return nil))
-                     t))
-                  ;; ...abort and run the hooks, e.g. to clear the cache.
-                  (company-cancel 'unique))
-                ((null c)
-                  (when company--manual-action
-                    (message "No completion found")))
-                (t ;; We got completions!
-                  (when company--manual-action
-                    (setq company--manual-prefix prefix))
-                  (company-update-candidates c)
-                  (run-hook-with-args 'company-completion-started-hook
-                    (company-explicit-action-p))
-                  (company-call-frontends 'show)))))
+               ((and (company--unique-match-p c company-prefix ignore-case)
+                     (if company--manual-action
+                         ;; If `company-manual-begin' was called, the user
+                         ;; really wants something to happen.  Otherwise...
+                         (progn (ignore (message "Sole completion"))
+                                ;; ##### return for jump out pair
+                                (cl-return nil))
+                       t))
+                ;; ...abort and run the hooks, e.g. to clear the cache.
+                (company-cancel 'unique))
+               ((null c)
+                (when company--manual-action
+                  (message "No completion found")))
+               (t ;; We got completions!
+                (when company--manual-action
+                  (setq company--manual-prefix prefix))
+                (company-update-candidates c)
+                (run-hook-with-args 'company-completion-started-hook
+                                    (company-explicit-action-p))
+                (company-call-frontends 'show)))))
           (cl-return c)))))
 
   (defun company-complete-selection ()
@@ -135,27 +135,27 @@
     (company-assert-enabled)
     (setq company--manual-action t)
     (unwind-protect
-      (let ((company-minimum-prefix-length 1))
-        (or company-candidates
-          (company-auto-begin)))
+        (let ((company-minimum-prefix-length 1))
+          (or company-candidates
+              (company-auto-begin)))
       (unless company-candidates
         (setq company--manual-action nil))))
 
   (setq company-auto-complete t
-    company-minimum-prefix-length 2
-    company-idle-delay 2
-    ;; company-show-numbers t
-    company-transformers '(company-sort-by-occurrence
-                            company-sort-by-backend-importance
-                            company-sort-prefer-same-case-prefix)
+        company-minimum-prefix-length 2
+        company-idle-delay 2
+        ;; company-show-numbers t
+        company-transformers '(company-sort-by-occurrence
+                               company-sort-by-backend-importance
+                               company-sort-prefer-same-case-prefix)
 
-    company-tooltip-limit 20
-    company-tooltip-idle-delay 0
-    company-tooltip-align-annotations t
-    company-tooltip-flip-when-above t
-    company-abort-manual-when-too-short t
-    company-selection-wrap-around nil
-    )
+        company-tooltip-limit 20
+        company-tooltip-idle-delay 0
+        company-tooltip-align-annotations t
+        company-tooltip-flip-when-above t
+        company-abort-manual-when-too-short t
+        company-selection-wrap-around nil
+        )
 
   ;; Suspend page-break-lines-mode while company menu is active
   ;; (see https://github.com/company-mode/company-mode/issues/416)
@@ -182,7 +182,7 @@
   :if (display-graphic-p)
   :bind
   (:map company-active-map
-    ("C-h"  . company-quickhelp-mode))
+        ("C-h"  . company-quickhelp-mode))
   :init
   (company-quickhelp-mode 1)
   :config
@@ -195,8 +195,8 @@
   :ensure t
   :init
   (setq lsp-before-save-edits t
-    lsp-eldoc-render-all nil
-    lsp-idle-delay 0.500)
+        lsp-eldoc-render-all nil
+        lsp-idle-delay 0.500)
   (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
   (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
 
@@ -205,17 +205,17 @@
     (defun my/clangd-generate-compile-commands ()
       (interactive)
       (let ((cmake (executable-find "cmake"))
-             (cmakefile (file-exists-p "CMakeLists.txt"))
-             (make (executable-find "make"))
-             (bear (executable-find "bear"))
-             (makefile (file-exists-p "Makefile")))
+            (cmakefile (file-exists-p "CMakeLists.txt"))
+            (make (executable-find "make"))
+            (bear (executable-find "bear"))
+            (makefile (file-exists-p "Makefile")))
         (cond ((and cmake cmakefile)
-                (progn (shell-command (format "%s -S . -BDebug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES" cmake))
-                  (shell-command "ln -s Debug/compile_commands.json .")))
-          ((and make bear makefile)
-            (shell-command (format "%s %s" bear make)))
-          (t
-            (message "Failed")))
+               (progn (shell-command (format "%s -S . -BDebug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES" cmake))
+                      (shell-command "ln -s Debug/compile_commands.json .")))
+              ((and make bear makefile)
+               (shell-command (format "%s %s" bear make)))
+              (t
+               (message "Failed")))
         ))
     (add-hook 'c-mode-common-hook 'lsp))
 
@@ -257,7 +257,7 @@
   :commands lsp-ui-mode
   :bind
   (:map lsp-ui-mode-map
-    ("M-'" . lsp-ui-sideline-apply-code-actions))
+        ("M-'" . lsp-ui-sideline-apply-code-actions))
   :config
   (defadvice recenter-top-bottom (after my-update-lsp-ui-doc-position activate)
     (when (lsp-ui-doc--frame-visible-p)
@@ -267,20 +267,20 @@
 
   :config
   (setq
-    ;; lsp-ui-doc-header t
-    ;; lsp-ui-doc-include-signature t
-    lsp-ui-doc-position 'at-point
-    lsp-ui-doc-alignment 'window
-    lsp-ui-doc-border "#b3b3b3"
-    lsp-ui-doc-delay 0.8
-    lsp-ui-doc-max-width 300
-    lsp-ui-doc-max-height 50
-    lsp-ui-sideline-enable t
-    ;; lsp-ui-sideline-show-symbol t
-    ;; lsp-ui-sideline-show-hover t
-    lsp-ui-sideline-show-code-actions t
-    lsp-ui-sideline-update-mode 'point
-    )
+   ;; lsp-ui-doc-header t
+   ;; lsp-ui-doc-include-signature t
+   lsp-ui-doc-position 'at-point
+   lsp-ui-doc-alignment 'window
+   lsp-ui-doc-border "#b3b3b3"
+   lsp-ui-doc-delay 0.8
+   lsp-ui-doc-max-width 300
+   lsp-ui-doc-max-height 50
+   lsp-ui-sideline-enable t
+   ;; lsp-ui-sideline-show-symbol t
+   ;; lsp-ui-sideline-show-hover t
+   lsp-ui-sideline-show-code-actions t
+   lsp-ui-sideline-update-mode 'point
+   )
   (defun lsp-ui-doc--mv-at-point (frame width height start-x start-y)
     "Move FRAME to be where the point is.
 WIDTH is the child frame width.
@@ -292,20 +292,20 @@ symbol at point, to not obstruct the view of the code that follows.
 If there's no space above in the current window, it places
 FRAME just below the symbol at point."
     (-let* (((x . y) (--> (bounds-of-thing-at-point 'symbol)
-                       (posn-x-y (posn-at-point (car it)))))
-             (frame-relative-symbol-x (+ start-x x))
-             (frame-relative-symbol-y (+ start-y y))
-             (char-height (frame-char-height))
-             ;; Make sure the frame is positioned horizontally such that
-             ;; it does not go beyond the frame boundaries.
-             (frame-x (or (and (<= (frame-outer-width) (+ frame-relative-symbol-x width))
-                            (- x (- (+ frame-relative-symbol-x width)
-                                   (frame-outer-width))))
-                        x))
-             (frame-y (+ (or (and (<= height frame-relative-symbol-y)
-                               (- y height))
-                           ;; move lower
-                           (+ y (* 3 char-height)))
+                          (posn-x-y (posn-at-point (car it)))))
+            (frame-relative-symbol-x (+ start-x x))
+            (frame-relative-symbol-y (+ start-y y))
+            (char-height (frame-char-height))
+            ;; Make sure the frame is positioned horizontally such that
+            ;; it does not go beyond the frame boundaries.
+            (frame-x (or (and (<= (frame-outer-width) (+ frame-relative-symbol-x width))
+                              (- x (- (+ frame-relative-symbol-x width)
+                                      (frame-outer-width))))
+                         x))
+            (frame-y (+ (or (and (<= height frame-relative-symbol-y)
+                                 (- y height))
+                            ;; move lower
+                            (+ y (* 3 char-height)))
                         (if (fboundp 'window-tab-line-height) (window-tab-line-height) 0))))
       (set-frame-position frame (+ start-x frame-x) (+ start-y frame-y))))
 
@@ -323,16 +323,16 @@ FRAME just below the symbol at point."
   (lsp-mode . company-lsp-hook)
   :config
   (setq company-lsp-enable-snippet t
-    company-lsp-cache-candidates 'auto)
+        company-lsp-cache-candidates 'auto)
   )
 
 
 ;; copy from spacemacs
 (defvar my-company-default-backends
   '(company-capf
-     company-yasnippet
-     (company-dabbrev-code company-gtags company-etags company-keywords)
-     company-files company-oddmuse company-dabbrev)
+    company-yasnippet
+    (company-dabbrev-code company-gtags company-etags company-keywords)
+    company-files company-oddmuse company-dabbrev)
   "The list of default company backends used.")
 
 (defmacro my|enable-company (mode &optional backends)
@@ -340,17 +340,17 @@ FRAME just below the symbol at point."
 MODE must match the symbol passed in `my|defvar-company-backends'.
 The initialization function is hooked to `MODE-hook'."
   (let ((mode-hook (intern (format "%S-hook" mode)))
-	       (func (intern (format "my--init-company-%S" mode)))
-	       (backend-list (intern (format "company-backends-%S" mode))))
+	    (func (intern (format "my--init-company-%S" mode)))
+	    (backend-list (intern (format "company-backends-%S" mode))))
     `(progn
        (defvar ,backend-list
          (append ,backends my-company-default-backends)
          ,(format "Company backend list for %S" mode))
 
        (defun ,func ()
-	       ,(format "Initialize company for %S" mode)
-	       (set (make-local-variable 'company-backends)
-	         ,backend-list))
+	     ,(format "Initialize company for %S" mode)
+	     (set (make-local-variable 'company-backends)
+	          ,backend-list))
 
        (add-hook ',mode-hook ',func t)
        (add-hook ',mode-hook 'company-mode t)
@@ -361,7 +361,7 @@ The initialization function is hooked to `MODE-hook'."
 MODE parameter must match the parameter used in the call to
 `my|enable-company'."
   (let ((mode-hook (intern (format "%S-hook" mode)))
-	       (func (intern (format "my--init-company-%S" mode))))
+	    (func (intern (format "my--init-company-%S" mode))))
     `(progn
        (remove-hook ',mode-hook ',func)
        (remove-hook ',mode-hook 'company-mode)
@@ -389,7 +389,7 @@ MODE parameter must match the parameter used in the call to
   :ensure t
   :defer t
   :commands (company-shell
-	            company-shell-env))
+	         company-shell-env))
 (my|enable-company sh-mode '(company-shell company-shell-env))
 
 (use-package company-php

@@ -27,20 +27,20 @@
 (use-package web-mode
   :ensure t
   :mode (("\\.xml\\'" . web-mode)
-	        ("\\.phtml\\'" . web-mode)
-	        ("\\.tpl\\.php\\'" . web-mode)
-	        ("\\.tpl\\'" . web-mode)
-	        ("\\.blade\\.php\\'" . web-mode)
-	        ("\\.jsp\\'" . web-mode)
-	        ("\\.as[cp]x\\'" . web-mode)
-	        ("\\.erb\\'" . web-mode)
-	        ("\\.html?\\'" . web-mode)
-	        ("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode)
-	        )
+	     ("\\.phtml\\'" . web-mode)
+	     ("\\.tpl\\.php\\'" . web-mode)
+	     ("\\.tpl\\'" . web-mode)
+	     ("\\.blade\\.php\\'" . web-mode)
+	     ("\\.jsp\\'" . web-mode)
+	     ("\\.as[cp]x\\'" . web-mode)
+	     ("\\.erb\\'" . web-mode)
+	     ("\\.html?\\'" . web-mode)
+	     ("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode)
+	     )
 
   :config
   (setq web-mode-enable-auto-pairing nil
-	  web-mode-indent-style 4))
+	    web-mode-indent-style 4))
 
 (provide 'my-web)
 ;;; my-web.el ends here

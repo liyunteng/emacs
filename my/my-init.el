@@ -26,75 +26,75 @@
 (require 'my-load-path)
 
 (defconst my-modules '(my-utils
-                        my-base
-                        my-package
-                        my-exec-path
-                        my-frame
-                        my-themes
+                       my-base
+                       my-package
+                       my-exec-path
+                       my-frame
+                       my-themes
 
-                        my-edit
-                        my-extension
-                        my-buffer
-                        my-dired
-                        my-ibuffer
-                        my-window
-                        my-session
-                        ;; my-helm
-                        ;; my-ido
-                        my-ivy
-                        my-search
+                       my-edit
+                       my-extension
+                       my-buffer
+                       my-dired
+                       my-ibuffer
+                       my-window
+                       my-session
+                       ;; my-helm
+                       ;; my-ido
+                       my-ivy
+                       my-search
 
-                        my-jump
-                        my-smartparens
-                        my-flyspell
-                        my-flycheck
-                        my-yas
-                        my-ac
-                        ;; my-auto-complete
+                       my-jump
+                       my-smartparens
+                       my-flyspell
+                       my-flycheck
+                       my-yas
+                       my-ac
+                       ;; my-auto-complete
 
-                        my-term
-                        my-magit
-                        my-tramp
-                        my-gud
-                        my-mu4e
+                       my-term
+                       my-magit
+                       my-tramp
+                       my-gud
+                       my-mu4e
 
-                        my-avy
-                        my-auto-insert
-                        ;; my-header
-                        my-hideshow
-                        my-auto-mode
+                       my-avy
+                       my-auto-insert
+                       ;; my-header
+                       my-hideshow
+                       my-auto-mode
 
-                        my-lisp
-                        my-c
-                        ;; my-qt
-                        my-go
-                        my-python
-                        my-org
-                        my-web
-                        my-syslog
-                        my-javascript
+                       my-lisp
+                       my-c
+                       ;; my-qt
+                       my-go
+                       my-python
+                       my-org
+                       my-web
+                       my-syslog
+                       my-javascript
 
-                        my-server
-                        )
+                       my-server
+                       )
   "My auto load modules.")
 
 (defun my-load (m)
   "Load feature M."
   (if (load (locate-library (format "%s" m)))
-    (message "Loading %s" m)
+      (message "Loading %s" m)
     (error "Loading %s failed" m)))
 
 (defun my-require (m)
   "Require feature M."
   (if (require m)
-    (message "Loading %s" m)
+      (message "Loading %s" m)
     (error "Requiring %s failed" m)))
 
 (defun my-init ()
   "Load my modules."
 
   (when (and my-personal-info-file
-          (file-exists-p my-personal-info-file))
+             (file-exists-p my-personal-info-file))
     (my-load my-personal-info-file))
 
   ;;(mapc 'my-load my-modules)
@@ -104,7 +104,7 @@
     (my-load custom-file))
 
   (add-hook 'after-init-hook
-  	(lambda () (run-at-time 0 nil 'my/show-init-time)) t))
+  	        (lambda () (run-at-time 0 nil 'my/show-init-time)) t))
 (my-init)
 
 (provide 'my-init)

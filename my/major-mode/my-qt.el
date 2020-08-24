@@ -48,7 +48,7 @@
 (dolist (file (directory-files qt-include-directory))
   (let ((path (expand-file-name file qt-include-directory)))
     (when (and (file-directory-p path)
-            (not (or (equal file ".") (equal file ".."))))
+               (not (or (equal file ".") (equal file ".."))))
       (progn
         (semantic-add-system-include path 'c++-mode)
         (semantic-add-system-include path 'c-mode)
@@ -63,14 +63,14 @@
 
 
 (dolist (file (list "QtCore/qconfig.h" "QtCore/qconfig-dist.h"
-                "QtCore/qconfig-large.h" "QtCore/qconfig-nacl.h"
-                "QtCore/qconfig-medium.h" "QtCore/qconfig-minimal.h"
-                "QtCore/qconfig-small.h" "QtCore/qglobal.h"
-                "QtCore/qglobalstatic.h"
-                "Gentoo/gentoo-qconfig.h" "Gentoo/qtdbus-qconfig.h"
-                "Gentoo/qtgui-qconfig.h" "Gentoo/qtnetwork-qconfig.h"
-                "Gentoo/qtprintsupport-qconfig.h"
-                ))
+                    "QtCore/qconfig-large.h" "QtCore/qconfig-nacl.h"
+                    "QtCore/qconfig-medium.h" "QtCore/qconfig-minimal.h"
+                    "QtCore/qconfig-small.h" "QtCore/qglobal.h"
+                    "QtCore/qglobalstatic.h"
+                    "Gentoo/gentoo-qconfig.h" "Gentoo/qtdbus-qconfig.h"
+                    "Gentoo/qtgui-qconfig.h" "Gentoo/qtnetwork-qconfig.h"
+                    "Gentoo/qtprintsupport-qconfig.h"
+                    ))
   (add-to-list 'semantic-lex-c-preprocessor-symbol-file (expand-file-name file qt-include-directory)))
 
 
@@ -91,9 +91,9 @@
 
 
 (c-add-style "qt-gnu" '("gnu"
-                         (c-access-key .
-                           "\\<\\(signals\\|public\\|protected\\|private\\|public slots\\|protected slots\\|private slots\\):")
-                         (c-basic-offset . 4)))
+                        (c-access-key .
+                                      "\\<\\(signals\\|public\\|protected\\|private\\|public slots\\|protected slots\\|private slots\\):")
+                        (c-basic-offset . 4)))
 
 ;; syntax-highlighting for Qt
 ;; (based on work by Arndt Gulbrandsen, Troll Tech)
@@ -109,25 +109,25 @@ Includes support for Qt code (signal, slots and alikes)."
   ;; qt keywords and stuff ...
   ;; set up indenting correctly for new qt kewords
   (setq c-protection-key (concat "\\<\\(public\\|public slot\\|protected"
-                           "\\|protected slot\\|private\\|private slot"
-                           "\\)\\>")
-    c-C++-access-key (concat "\\<\\(signals\\|public\\|protected\\|private"
-                       "\\|public slots\\|protected slots\\|private slots"
-                       "\\)\\>[ \t]*:"))
+                                 "\\|protected slot\\|private\\|private slot"
+                                 "\\)\\>")
+        c-C++-access-key (concat "\\<\\(signals\\|public\\|protected\\|private"
+                                 "\\|public slots\\|protected slots\\|private slots"
+                                 "\\)\\>[ \t]*:"))
   (progn
     ;; modify the colour of slots to match public, private, etc ...
     (font-lock-add-keywords 'c++-mode
-      '(("\\<\\(slots\\|signals\\)\\>" . font-lock-type-face)))
+                            '(("\\<\\(slots\\|signals\\)\\>" . font-lock-type-face)))
     ;; make new font for rest of qt keywords
     (make-face 'qt-keywords-face)
     (set-face-foreground 'qt-keywords-face "BlueViolet")
     ;; qt keywords
     (font-lock-add-keywords 'c++-mode
-      '(("\\<Q_OBJECT\\>" . 'qt-keywords-face)))
+                            '(("\\<Q_OBJECT\\>" . 'qt-keywords-face)))
     (font-lock-add-keywords 'c++-mode
-      '(("\\<SIGNAL\\|SLOT\\>" . 'qt-keywords-face)))
+                            '(("\\<SIGNAL\\|SLOT\\>" . 'qt-keywords-face)))
     (font-lock-add-keywords 'c++-mode
-      '(("\\<Q[A-Z][A-Za-z]*" . 'qt-keywords-face)))
+                            '(("\\<Q[A-Z][A-Za-z]*" . 'qt-keywords-face)))
     ))
 (add-hook 'c-mode-common-hook 'jk/c-mode-common-hook)
 
@@ -147,28 +147,28 @@ Includes support for Qt code (signal, slots and alikes)."
   (interactive)
   (when (string-match "^\\(.*\\)\\.\\([^.]*\\)$" buffer-file-name)
     (let ((name (match-string 1 buffer-file-name))
-           (suffix (match-string 2 buffer-file-name)))
+          (suffix (match-string 2 buffer-file-name)))
       (cond ((string-match suffix "c\\|cc\\|C\\|cpp")
-              (cond ((file-exists-p (concat name ".h"))
-                      (find-file (concat name ".h"))
-                      )
-                ((file-exists-p (concat name ".hh"))
-                  (find-file (concat name ".hh"))
-                  )
-                ))
-        ((string-match suffix "h\\|hh")
-          (cond ((file-exists-p (concat name ".cc"))
-                  (find-file (concat name ".cc"))
-                  )
-            ((file-exists-p (concat name ".C"))
-              (find-file (concat name ".C"))
-              )
-            ((file-exists-p (concat name ".cpp"))
-              (find-file (concat name ".cpp"))
-              )
-            ((file-exists-p (concat name ".c"))
-              (find-file (concat name ".c"))
-              )))))))
+             (cond ((file-exists-p (concat name ".h"))
+                    (find-file (concat name ".h"))
+                    )
+                   ((file-exists-p (concat name ".hh"))
+                    (find-file (concat name ".hh"))
+                    )
+                   ))
+            ((string-match suffix "h\\|hh")
+             (cond ((file-exists-p (concat name ".cc"))
+                    (find-file (concat name ".cc"))
+                    )
+                   ((file-exists-p (concat name ".C"))
+                    (find-file (concat name ".C"))
+                    )
+                   ((file-exists-p (concat name ".cpp"))
+                    (find-file (concat name ".cpp"))
+                    )
+                   ((file-exists-p (concat name ".c"))
+                    (find-file (concat name ".c"))
+                    )))))))
 
 (setq c-C++-access-key "\\<\\(slots\\|signals\\|private\\|protected\\|public\\)\\>[ \t]*[(slots\\|signals)]*[ \t]*:")
 (font-lock-add-keywords 'c++-mode '(("\\<\\(Q_OBJECT\\|public

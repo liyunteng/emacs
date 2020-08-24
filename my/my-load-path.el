@@ -80,9 +80,9 @@ If APPEND add to end."
   (dolist (f (directory-files parent-dir))
     (let ((name (expand-file-name f parent-dir)))
       (when (and (file-directory-p name)
-				      (not (string-prefix-p "." f)))
-		    (add-to-list 'load-path name)
-		    (my-add-subfolders-to-load-path name)))))
+				 (not (string-prefix-p "." f)))
+		(add-to-list 'load-path name)
+		(my-add-subfolders-to-load-path name)))))
 
 (my-add-to-load-path my-dir)
 (my-add-to-load-path-if-exists my-personal-dir)

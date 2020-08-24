@@ -26,15 +26,15 @@
 (defmacro my|view-buffer (buffer-name)
   "My view BUFFER-NAME buffer."
   (let* ((bn (if (symbolp buffer-name)
-               (symbol-value buffer-name)
+                 (symbol-value buffer-name)
                buffer-name))
-          (name (if (string-match "\\*+\\([a-z][A-Z]+\\)\\*+" bn)
-                  (match-string 1 bn)
-                  bn))
-          (vname (intern (format "my/view-buffer--%s" name)))
-          (voname (intern (format "my/view-buffer-other-window--%s" name)))
-          (sname (intern (format "my/switch-buffer--%s" name)))
-          (soname (intern (format "my/switch-buffer-other-window--%s" name))))
+         (name (if (string-match "\\*+\\([a-z][A-Z]+\\)\\*+" bn)
+                   (match-string 1 bn)
+                 bn))
+         (vname (intern (format "my/view-buffer--%s" name)))
+         (voname (intern (format "my/view-buffer-other-window--%s" name)))
+         (sname (intern (format "my/switch-buffer--%s" name)))
+         (soname (intern (format "my/switch-buffer-other-window--%s" name))))
     `(progn
        (defun ,vname ()
          ,(format "View %s buffer." bn)
@@ -51,7 +51,7 @@
          (interactive)
          (let ((buffer (get-buffer ,buffer-name)))
            (if buffer
-             (switch-to-buffer buffer)
+               (switch-to-buffer buffer)
              (message "No %s buffer" ,name))))
 
        (defun ,soname ()
@@ -59,7 +59,7 @@
          (interactive)
          (let ((buffer (get-buffer ,buffer-name)))
            (if buffer
-             (switch-to-buffer-other-window buffer)
+               (switch-to-buffer-other-window buffer)
              (message "No %s buffer" ,name)))))))
 
 
@@ -67,35 +67,35 @@
   "Switch back and forth between current and last buffer in the current window."
   (interactive)
   (let ((current-buffer (window-buffer window))
-         (buffer-predicate
-           (frame-parameter (window-frame window) 'buffer-predicate)))
+        (buffer-predicate
+         (frame-parameter (window-frame window) 'buffer-predicate)))
     ;; switch to first buffer previously shown in this window that matches
     ;; frame-parameter `buffer-predicate'
     (switch-to-buffer
-      (or (cl-find-if (lambda (buffer)
-                        (and (not (eq buffer current-buffer))
-                          (or (null buffer-predicate)
-                            (funcall buffer-predicate buffer))))
-            (mapcar #'car (window-prev-buffers window)))
-        ;; `other-buffer' honors `buffer-predicate' so no need to filter
-        (other-buffer current-buffer t)))))
+     (or (cl-find-if (lambda (buffer)
+                       (and (not (eq buffer current-buffer))
+                            (or (null buffer-predicate)
+                                (funcall buffer-predicate buffer))))
+                     (mapcar #'car (window-prev-buffers window)))
+         ;; `other-buffer' honors `buffer-predicate' so no need to filter
+         (other-buffer current-buffer t)))))
 
 (defun my/alternate-buffer-other-window (&optional window)
   "Switch back and forth between current and last buffer in other window."
   (interactive)
   (let ((current-buffer (window-buffer window))
-         (buffer-predicate
-           (frame-parameter (window-frame window) 'buffer-predicate)))
+        (buffer-predicate
+         (frame-parameter (window-frame window) 'buffer-predicate)))
     ;; switch to first buffer previously shown in this window that matches
     ;; frame-parameter `buffer-predicate'
     (switch-to-buffer-other-window
-      (or (cl-find-if (lambda (buffer)
-                        (and (not (eq buffer current-buffer))
-                          (or (null buffer-predicate)
-                            (funcall buffer-predicate buffer))))
-            (mapcar #'car (window-prev-buffers window)))
-        ;; `other-buffer' honors `buffer-predicate' so no need to filter
-        (other-buffer current-buffer t)))))
+     (or (cl-find-if (lambda (buffer)
+                       (and (not (eq buffer current-buffer))
+                            (or (null buffer-predicate)
+                                (funcall buffer-predicate buffer))))
+                     (mapcar #'car (window-prev-buffers window)))
+         ;; `other-buffer' honors `buffer-predicate' so no need to filter
+         (other-buffer current-buffer t)))))
 
 (unless (fboundp 'kill-current-buffer)
   (defun kill-current-buffer ()
@@ -108,8 +108,8 @@ via the menu bar, and pays no attention to the menu-bar's frame."
     (interactive)
     (let ((frame (selected-frame)))
       (if (and (frame-live-p frame)
-            (not (window-minibuffer-p (frame-selected-window frame))))
-        (kill-buffer (current-buffer))
+               (not (window-minibuffer-p (frame-selected-window frame))))
+          (kill-buffer (current-buffer))
         (abort-recursive-edit)))))
 
 (my|view-buffer "*Help*")

@@ -144,17 +144,17 @@
   "Returns a list of the windows, in fixed order and the
 minibuffer (even if not active) last."
   (let* ((walk-windows-start
-           (car (cl-set-difference
-                  (window-list (selected-frame) t)
-                  (window-list (selected-frame) 1))))
-          (walk-windows-current walk-windows-start)
-          list)
+          (car (cl-set-difference
+                (window-list (selected-frame) t)
+                (window-list (selected-frame) 1))))
+         (walk-windows-current walk-windows-start)
+         list)
     (while (progn
              (setq walk-windows-current
-               (next-window walk-windows-current t))
+                   (next-window walk-windows-current t))
              (let ((b (window-buffer walk-windows-current)))
                (when (or (not b)
-                       (with-current-buffer b (not window-number-skip)))
+                         (with-current-buffer b (not window-number-skip)))
                  (setq list (cons walk-windows-current list))))
              (not (eq walk-windows-current walk-windows-start))))
     (reverse (cons (car list) (cdr list)))))
@@ -228,11 +228,11 @@ Prompt user input window number if have more windows."
 (defmacro window-number-define-keys (mode-map prefix)
   `(progn
      ,@(cl-loop for number from 1 to 10 collect
-         `(define-key ,mode-map
-            (kbd ,(concat prefix (number-to-string
-                                   (if (>= number 10) 0 number))))
-            (lambda nil (interactive)
-              (window-number-select ,number))))))
+                `(define-key ,mode-map
+                   (kbd ,(concat prefix (number-to-string
+                                         (if (>= number 10) 0 number))))
+                   (lambda nil (interactive)
+                     (window-number-select ,number))))))
 
                                         ; define C-x C-j 1 to switch to win 1, etc (C-x C-j 0 = win 10)
 (unless window-number-mode-map

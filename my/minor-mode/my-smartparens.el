@@ -27,9 +27,9 @@
 (use-package smartparens
   :ensure t
   :commands (smartparens-mode
-              smartparens-strict-mode
-              smartparens-global-mode
-              smartparens-global-strict-mode)
+             smartparens-strict-mode
+             smartparens-global-mode
+             smartparens-global-strict-mode)
 
   :init
   (add-hook 'prog-mode-hook 'turn-on-smartparens-mode)
@@ -37,32 +37,32 @@
 
   :config
   (setq sp-show-pair-delay 0.2
-    ;; sp-show-pair-from-inside t
-    sp-cancel-autoskip-on-backward-movement t
-    sp-highlight-pair-overlay t
-    sp-highlight-wrap-overlay t
-    sp-highlight-wrap-tag-overlay t)
+        ;; sp-show-pair-from-inside t
+        sp-cancel-autoskip-on-backward-movement t
+        sp-highlight-pair-overlay t
+        sp-highlight-wrap-overlay t
+        sp-highlight-wrap-tag-overlay t)
   (setq sp-base-key-bindings 'smartparens
-    sp-autoskip-closing-pair 'always-end
-    sp-hybrid-kill-entire-symbol nil
-    blink-matching-paren nil)
+        sp-autoskip-closing-pair 'always-end
+        sp-hybrid-kill-entire-symbol nil
+        blink-matching-paren nil)
   (setq sp-escape-quotes-after-insert nil)
 
   (require 'smartparens-config)
   ;; (sp-use-paredit-bindings)
   (sp-use-smartparens-bindings)
   (diminish 'smartparens-mode
-    '(" sp" (:eval (if smartparens-strict-mode "/s"))))
+            '(" sp" (:eval (if smartparens-strict-mode "/s"))))
 
   (defun my--conditionally-enable-smartparens-mode ()
     "Enable `smartparens-mode' in the minibuffer, during `eval-expression'."
     (if (or (eq this-command 'eval-expression)
-          (eq this-command 'pp-eval-expression)
-          (eq this-command 'eldoc-eval-expression)
-          (eq this-command 'helm-eval-expression)
-          (eq this-command 'edebug-eval-expression)
-          (eq this-command 'debugger-eval-expression))
-      (smartparens-mode)))
+            (eq this-command 'pp-eval-expression)
+            (eq this-command 'eldoc-eval-expression)
+            (eq this-command 'helm-eval-expression)
+            (eq this-command 'edebug-eval-expression)
+            (eq this-command 'debugger-eval-expression))
+        (smartparens-mode)))
   (add-hook 'minibuffer-setup-hook 'my--conditionally-enable-smartparens-mode)
 
   (defun my--smartparens-pair-newline-and-indent (id action context)
@@ -77,24 +77,24 @@
 
   (sp-with-modes '(web-mode)
     (sp-local-pair "%" "%"
-      :unless '(sp-in-string-p)
-      :post-handlers '(("[d1]" "SPC"))))
+                   :unless '(sp-in-string-p)
+                   :post-handlers '(("[d1]" "SPC"))))
 
   (sp-with-modes '(minibuffer-inactive-mode eldoc-in-minibuffer-mode)
     (sp-local-pair "'" nil :actions nil))
 
   (sp-pair "{" "}"
-    :unless '(sp-in-comment-p sp-in-string-p)
-    :post-handlers
-    '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
+           :unless '(sp-in-comment-p sp-in-string-p)
+           :post-handlers
+           '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
   (sp-pair "(" ")"
-    :unless '(sp-in-comment-p sp-in-string-p)
-    :post-handlers
-    '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
+           :unless '(sp-in-comment-p sp-in-string-p)
+           :post-handlers
+           '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
   (sp-pair "[" "]"
-    :unless '(sp-in-comment-p sp-in-string-p)
-    :post-handlers
-    '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
+           :unless '(sp-in-comment-p sp-in-string-p)
+           :post-handlers
+           '(:add (my--smartparens-pair-newline-and-indent "RET" newline-and-indent)))
 
 
   ;; (define-key smartparens-mode-map (kbd ")") 'my/smart-closing-parenthesis)

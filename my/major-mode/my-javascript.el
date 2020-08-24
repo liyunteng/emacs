@@ -43,18 +43,18 @@
   ;; Need to first remove from list if present, since elpa adds entries too, which
   ;; may be in an arbitrary order
   (setq auto-mode-alist (cons `("\\.\\(js\\|es6\\)\\(\\.erb\\)?\\'" . ,preferred-javascript-mode)
-			                    (cl-loop for entry in auto-mode-alist
-				                    unless (eq preferred-javascript-mode (cdr entry))
-				                    collect entry)))
+			                  (cl-loop for entry in auto-mode-alist
+				                       unless (eq preferred-javascript-mode (cdr entry))
+				                       collect entry)))
 
   (setq js-indent-level preferred-javascript-indent-level)
 
   ;; Change some defaults: customize them to override
   (setq js2-basic-offset 2
-	  js2-bounce-indent-p nil
-	  js2-mode-show-parse-errors nil
-	  js2-mode-show-strict-warnings nil
-	  )
+	    js2-bounce-indent-p nil
+	    js2-mode-show-parse-errors nil
+	    js2-mode-show-strict-warnings nil
+	    )
 
   :config
   (js2-imenu-extras-setup)
@@ -75,7 +75,7 @@
     (after-load 'js2-mode
       (define-key js2-mode-map (kbd "M-.") nil)
       (add-hook 'js2-mode-hook
-		    (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))))
+		        (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))))
 
 
 
@@ -83,7 +83,7 @@
 
   (after-load 'coffee-mode
     (setq-default coffee-js-mode preferred-javascript-mode
-	    coffee-tab-width preferred-javascript-indent-level))
+	              coffee-tab-width preferred-javascript-indent-level))
 
   (when (fboundp 'coffee-mode)
     (add-to-list 'auto-mode-alist '("\\.coffee\\.erb\\'" . coffee-mode)))
@@ -121,6 +121,6 @@
   :after js2-mode
   :config
   (add-hook 'skewer-mode-hook
-	(lambda () (inferior-js-keys-mode -1))))
+	        (lambda () (inferior-js-keys-mode -1))))
 (provide 'my-javascript)
 ;;; my-javascript.el ends here

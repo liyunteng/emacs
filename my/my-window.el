@@ -52,22 +52,22 @@
 ;; enable winner-mode to manage window configurations
 (use-package winner
   :bind (("C-c <left>" . winner-undo)
-          ("C-c <right>" . winner-redo))
+         ("C-c <right>" . winner-redo))
   :init
   (winner-mode +1)
   :config
   (setq winner-boring-buffers
-    (append winner-boring-buffers
-      '("*Completions*"
-         "*Compile-Log*"
-         "*inferior-lisp*"
-         "*Fuzzy Completions*"
-         "*Apropos*"
-         "*Help*"
-         "*cvs*"
-         "*Buffer List*"
-         "*Ibuffer*"
-         "*esh command on file*"))))
+        (append winner-boring-buffers
+                '("*Completions*"
+                  "*Compile-Log*"
+                  "*inferior-lisp*"
+                  "*Fuzzy Completions*"
+                  "*Apropos*"
+                  "*Help*"
+                  "*cvs*"
+                  "*Buffer List*"
+                  "*Ibuffer*"
+                  "*esh command on file*"))))
 
 
 
@@ -75,8 +75,8 @@
   "Delete other windows in frame if any, or restore previous window config."
   (interactive)
   (if (and winner-mode
-        (equal (selected-window) (next-window)))
-    (winner-undo)
+           (equal (selected-window) (next-window)))
+      (winner-undo)
     (delete-other-windows)))
 
 ;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
@@ -85,9 +85,9 @@
 Call a second time to restore the original window configuration."
   (interactive)
   (if (eq last-command 'my/split-window)
-    (progn
-      (jump-to-register :my/split-window)
-      (setq this-command 'my/unsplit-window))
+      (progn
+        (jump-to-register :my/split-window)
+        (setq this-command 'my/unsplit-window))
     (window-configuration-to-register :my/window-split)
     (switch-to-buffer-other-window nil)))
 
@@ -96,7 +96,7 @@ Call a second time to restore the original window configuration."
 If the universal prefix argument is used then kill the buffer too."
   (interactive "P")
   (if (equal '(4) arg)
-    (kill-buffer-and-window)
+      (kill-buffer-and-window)
     (delete-window)))
 
 ;;----------------------------------------------------------------------------
@@ -139,32 +139,32 @@ If the universal prefix argument is used then kill the buffer too."
   "Toggle whether the current window is dedicated to its current buffer."
   (interactive)
   (let* ((window (selected-window))
-          (was-dedicated (window-dedicated-p window)))
+         (was-dedicated (window-dedicated-p window)))
     (set-window-dedicated-p window (not was-dedicated))
     (if was-dedicated
 	    (setq-local mode-line-process nil)
       (setq-local mode-line-process " [D]"))
     (message "Window %sdedicated to %s"
-      (if was-dedicated "no longer " "")
-      (buffer-name))))
+             (if was-dedicated "no longer " "")
+             (buffer-name))))
 
 ;; from @bmag
 (defun my/window-layout-toggle ()
   "Toggle between horizontal and vertical layout of two windows."
   (interactive)
   (if (= (count-windows) 2)
-    (let* ((window-tree (car (window-tree)))
-            (current-split-vertical-p (car window-tree))
-            (first-window (nth 2 window-tree))
-            (second-window (nth 3 window-tree))
-            (second-window-state (window-state-get second-window))
-            (splitter (if current-split-vertical-p
-                        #'split-window-horizontally
-                        #'split-window-vertically)))
-      (delete-other-windows first-window)
-      ;; `window-state-put' also re-selects the window if needed, so we don't
-      ;; need to call `select-window'
-      (window-state-put second-window-state (funcall splitter)))
+      (let* ((window-tree (car (window-tree)))
+             (current-split-vertical-p (car window-tree))
+             (first-window (nth 2 window-tree))
+             (second-window (nth 3 window-tree))
+             (second-window-state (window-state-get second-window))
+             (splitter (if current-split-vertical-p
+                           #'split-window-horizontally
+                         #'split-window-vertically)))
+        (delete-other-windows first-window)
+        ;; `window-state-put' also re-selects the window if needed, so we don't
+        ;; need to call `select-window'
+        (window-state-put second-window-state (funcall splitter)))
     (error "Can't toggle window layout when the number of windows isn't two.")))
 
 ;; originally from magnars and modified by ffevotte for dedicated windows
@@ -175,15 +175,15 @@ A negative prefix argument rotates each window backwards.
 Dedicated (locked) windows are left untouched."
   (interactive "p")
   (let* ((non-dedicated-windows (cl-remove-if 'window-dedicated-p (window-list)))
-          (states (mapcar #'window-state-get non-dedicated-windows))
-          (num-windows (length non-dedicated-windows))
-          (step (+ num-windows count)))
+         (states (mapcar #'window-state-get non-dedicated-windows))
+         (num-windows (length non-dedicated-windows))
+         (step (+ num-windows count)))
     (if (< num-windows 2)
-      (error "You can't rotate a single window!")
+        (error "You can't rotate a single window!")
       (dotimes (i num-windows)
         (window-state-put
-          (elt states i)
-          (elt non-dedicated-windows (% (+ step i) num-windows)))))))
+         (elt states i)
+         (elt non-dedicated-windows (% (+ step i) num-windows)))))))
 
 (defun my/window-rotate-backward (count)
   "Rotate each window backwards.
@@ -195,13 +195,13 @@ Dedicated (locked) windows are left untouched."
   "Rotate use `my/window-rotate-backward'."
   (interactive "P")
   (if arg
-    (my/window-rotate-forward -1)
+      (my/window-rotate-forward -1)
     (my/window-rotate-forward 1)))
 
 (defun my/window-size-adjust (inc)
   (interactive "p")
   (let ((ev last-command-event)
-         (echo-keystrokes nil))
+        (echo-keystrokes nil))
     (let* ((base (event-basic-type ev)))
       (pcase base
         (?j (enlarge-window 5))
@@ -212,12 +212,12 @@ Dedicated (locked) windows are left untouched."
     (message "Use h,j,k,l,0 for further adjustment")
 
     (set-transient-map
-      (let ((map (make-sparse-keymap)))
-        (dolist (mods '(() (control)))
-          (dolist (key '(?j ?h ?k ?l ?0))
-            (define-key map (vector (append mods (list key)))
-              (lambda () (interactive) (my/window-size-adjust (abs inc))))))
-        map))))
+     (let ((map (make-sparse-keymap)))
+       (dolist (mods '(() (control)))
+         (dolist (key '(?j ?h ?k ?l ?0))
+           (define-key map (vector (append mods (list key)))
+             (lambda () (interactive) (my/window-size-adjust (abs inc))))))
+       map))))
 
 
 (global-set-key (kbd "<f1>") 'my/window-toggle-show)

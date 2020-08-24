@@ -30,10 +30,10 @@
 
 ;; adjust grabage collection thresholds during startup, and thereafter
 (let ((normal-gc-cons-threshold (* 20 1024 1024))
-       (init-gc-cons-threshold (* 128 1024 1024)))
+      (init-gc-cons-threshold (* 128 1024 1024)))
   (setq gc-cons-threshold init-gc-cons-threshold)
   (add-hook 'emacs-startup-hook
-    (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
 ;; 递归minibuffer
 (setq enable-recursive-minibuffers t)
@@ -43,7 +43,7 @@
 
 ;; don't let the cursor go into minibuffer prompt
 (setq minibuffer-prompt-properties
-  '(read-only t cursor-intangible t face minibuffer-prompt))
+      '(read-only t cursor-intangible t face minibuffer-prompt))
 
 ;; delete duplicates minibuffer history
 (setq history-delete-duplicates t)
@@ -67,8 +67,8 @@
 
 ;; smooth scrolling
 (setq scroll-margin 2
-  scroll-conservatively 100000
-  scroll-preserve-screen-position t)
+      scroll-conservatively 100000
+      scroll-preserve-screen-position t)
 
 ;; fill-column 80
 ;; (setq-default fill-column 80)
@@ -100,7 +100,7 @@
 (setq recenter-positions '(top middle bottom))
 
 (setq adaptive-fill-regexp
-  "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
+      "[ \t]*\\([-–!|#%;>*·•‣⁃◦]+\\|\\([0-9]+\\.\\)[ \t]*\\)*")
 
 ;; initial mode
 (setq-default initial-major-mode 'lisp-interaction-mode)
@@ -109,16 +109,16 @@
 (defun my--set-initial-scratch-message ()
   "My set initial scratch message."
   (let ((m (concat "Happy Hacking, " user-login-name
-             (if user-full-name (concat " ("user-full-name ")"))
-             " - Emacs ♥ you!\n\n")))
+                   (if user-full-name (concat " ("user-full-name ")"))
+                   " - Emacs ♥ you!\n\n")))
     (setq initial-scratch-message
-      (pcase initial-major-mode
-        (lisp-interaction-mode
-          (concat  ";; " m))
-        (org-mode
-          (concat  "# " m))
-        (otherwise
-          (concat  "" m))))))
+          (pcase initial-major-mode
+            (lisp-interaction-mode
+             (concat  ";; " m))
+            (org-mode
+             (concat  "# " m))
+            (otherwise
+             (concat  "" m))))))
 (add-hook 'after-init-hook #'my--set-initial-scratch-message)
 
 ;; conflic with desktop
@@ -143,21 +143,21 @@
 (setq backup-directory-alist `((".*" . ,(expand-file-name "Backup/" my-cache-dir))))
 (when make-backup-files
   (setq save-silently t
-	  version-control nil
-	  kept-old-versions 2
-	  kept-new-versions 2
-	  delete-old-versions t
-    create-lockfiles nil
-	  backup-by-copying t))
+	    version-control nil
+	    kept-old-versions 2
+	    kept-new-versions 2
+	    delete-old-versions t
+        create-lockfiles nil
+	    backup-by-copying t))
 
 ;; replaced by super-save
 (setq auto-save-default t)
 (setq auto-save-list-file-prefix
-  (cond ((eq system-type 'ms-dos)
-	        ;; MS-DOS cannot have initial dot, and allows only 8.3 names
-	        (concat (expand-file-name "auto-save/" my-cache-dir) "_saves-") )
-    (t
-	    (concat (expand-file-name "auto-save/" my-cache-dir) ".saves-"))))
+      (cond ((eq system-type 'ms-dos)
+	         ;; MS-DOS cannot have initial dot, and allows only 8.3 names
+	         (concat (expand-file-name "auto-save/" my-cache-dir) "_saves-") )
+            (t
+	         (concat (expand-file-name "auto-save/" my-cache-dir) ".saves-"))))
 (setq auto-save-file-name-transforms `((".*" ,(concat (expand-file-name "auto-save/" my-cache-dir)) t)))
 
 (provide 'my-base)

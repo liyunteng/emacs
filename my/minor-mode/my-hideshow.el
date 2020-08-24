@@ -32,15 +32,15 @@
   :ensure t
   :commands (hs-minor-mode)
   :bind (:map hs-minor-mode-map
-	        ;; ("C-c m h" . hs-hide-block)
-	        ;; ("C-c m s" . hs-show-block)
-	        ;; ("C-c m H" . hs-hide-all)
-	        ;; ("C-c m S" . hs-show-all)
-	        ;; ("C-c m l" . hs-hide-level)
-	        ("C-c m m" . hs-toggle-hiding)
-	        ("C-c m M" . my/hs-toggle-hiding-all)
-	        ("C-c m l" . my/hs-toggle-initial-comment-block)
-	        ([shfit mouse-1] . hs-mouse-toggle-hiding))
+	          ;; ("C-c m h" . hs-hide-block)
+	          ;; ("C-c m s" . hs-show-block)
+	          ;; ("C-c m H" . hs-hide-all)
+	          ;; ("C-c m S" . hs-show-all)
+	          ;; ("C-c m l" . hs-hide-level)
+	          ("C-c m m" . hs-toggle-hiding)
+	          ("C-c m M" . my/hs-toggle-hiding-all)
+	          ("C-c m l" . my/hs-toggle-initial-comment-block)
+	          ([shfit mouse-1] . hs-mouse-toggle-hiding))
 
   :init
   (defvar my-hs-hide nil "Current state of hideshow for toggling all.")
@@ -49,7 +49,7 @@
     (interactive)
     (setq my-hs-hide (not my-hs-hide))
     (if my-hs-hide
-      (hs-hide-all)
+        (hs-hide-all)
       (hs-show-all)))
 
   (defun hs-show-initial-comment-block ()
@@ -57,10 +57,10 @@
 This can be useful if you have huge RCS logs in those comments."
     (interactive)
     (hs-life-goes-on
-      (save-excursion
-        (goto-char (point-min))
-        (skip-chars-forward " \t\n\f")
-        (hs-show-block))))
+     (save-excursion
+       (goto-char (point-min))
+       (skip-chars-forward " \t\n\f")
+       (hs-show-block))))
 
   (defun my/hs-toggle-initial-comment-block ()
     "Hide the first block of comments in a file.
@@ -70,9 +70,9 @@ This can be useful if you have huge RCS logs in those comments."
       (goto-char (point-min))
       (skip-chars-forward " \t\n\f")
       (if (and (hs-inside-comment-p)
-	          (hs-already-hidden-p))
+	           (hs-already-hidden-p))
 	      (hs-show-initial-comment-block)
-	      (hs-hide-initial-comment-block))))
+	    (hs-hide-initial-comment-block))))
 
   (my|add-toggle hs-minor-mode
     :status hs-minor-mode
@@ -84,14 +84,14 @@ This can be useful if you have huge RCS logs in those comments."
 
   :config
   (setq hs-set-up-overlay
-    (defun my-display-code-line-counts (ov)
-      (when (eq 'code (overlay-get ov 'hs))
-        (overlay-put ov 'display
-          (propertize
-            (format " ... <%d>"
-              (count-lines (overlay-start ov)
-                (overlay-end ov)))
-            'face 'font-lock-type-face))))))
+        (defun my-display-code-line-counts (ov)
+          (when (eq 'code (overlay-get ov 'hs))
+            (overlay-put ov 'display
+                         (propertize
+                          (format " ... <%d>"
+                                  (count-lines (overlay-start ov)
+                                               (overlay-end ov)))
+                          'face 'font-lock-type-face))))))
 
 (provide 'my-hideshow)
 ;;; my-hideshow.el ends here
