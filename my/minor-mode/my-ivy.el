@@ -26,6 +26,7 @@
 
 (use-package ivy
   :ensure t
+  :diminish ivy-mode
   :bind
   (:map ivy-minibuffer-map
         ("RET" . ivy-alt-done)
