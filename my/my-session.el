@@ -98,23 +98,25 @@
 	    desktop-missing-file-warning nil
         desktop-load-locked-desktop t
 	    desktop-restore-in-current-display nil
-        desktop-restore-frames t
+        desktop-restore-frames nil      ; don't resotre frame
         desktop-restore-reuses-frames t
 	    desktop-save t
 	    ;; desktop-save 'ask-if-new
 	    )
   ;; don't save /tmp/*
   (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
-  ;; (add-to-list 'desktop-minor-mode-table '(yas-minor-mode nil))
+  ;; (add-to-list 'des'ktop-minor-mode-table '(yas-minor-mode nil))
   (add-to-list 'desktop-minor-mode-table '(dired-git-info-mode nil))
   ;; fixme global-auto-revert-mode can't work
   (defun global-auto-revert-desktop-restore (arg))
   (add-to-list 'desktop-minor-mode-handlers '(global-auto-revert-mode . global-auto-revert-desktop-restore))
 
+  ;; (setq desktop-globals-to-clear)
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
   (setq desktop-globals-to-save
-	    (append '((desktop-saved-frameset   . nil)  ;don't save frameset
+	    (append '(
+                  (desktop-saved-frameset   . 2)  ;don't save frameset
                   (buffer-name-history      . 30)
                   (command-history          . 30)
                   (compile-history          . 10)
