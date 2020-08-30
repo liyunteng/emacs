@@ -28,7 +28,7 @@
 (setq user-full-name "liyunteng"
       user-mail-address "li_yunteng@163.com")
 
-(eval-after-load 'mu4e
+(with-eval-after-load 'mu4e
   '(progn
      (setq mu4e-maildir-shortcuts '(("/163/INBOX" . ?i)
                                     ("/163/已发送" . ?s)

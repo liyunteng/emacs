@@ -98,7 +98,7 @@
 	    desktop-missing-file-warning nil
         desktop-load-locked-desktop t
 	    desktop-restore-in-current-display nil
-        desktop-restore-frames nil      ; don't resotre frame
+        desktop-restore-frames nil      ; don't restore frame
         desktop-restore-reuses-frames t
 	    desktop-save t
 	    ;; desktop-save 'ask-if-new
@@ -116,7 +116,7 @@
   ;; for lists specify the len of the maximal saved data also
   (setq desktop-globals-to-save
 	    (append '(
-                  (desktop-saved-frameset   . 2)  ;don't save frameset
+                  (desktop-saved-frameset   . nil)  ;don't save frameset
                   (buffer-name-history      . 30)
                   (command-history          . 30)
                   (compile-history          . 10)
