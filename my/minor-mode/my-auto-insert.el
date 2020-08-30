@@ -114,7 +114,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
   ;; don't auto-insert to custom.el
   (defadvice auto-insert (around check-custom-file-auto-insert activate)
     (when custom-file
-      (if (not (equal (buffer-file-name) custom-file))
+      (if (not (equal (buffer-file-name) (file-truename custom-file)))
 	      ad-do-it)))
   :config
   (use-package time-stamp
