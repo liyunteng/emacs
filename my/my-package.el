@@ -129,10 +129,9 @@ removing unwanted packages."
 ;; use package
 (require 'use-package)
 (setq use-package-always-ensure nil
-      ;; use-package-verbose init-file-debug
       use-package-verbose nil
       use-package-inject-hooks t
-      use-package-always-defer t
+      use-package-always-defer nil
       use-package-compute-statistics t)
 
 (provide 'my-package)

@@ -231,8 +231,8 @@
   (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
   (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
 
-  (setq lsp-log-io t)
-  (setq lsp-print-performance t)
+  (setq lsp-log-io nil)
+  (setq lsp-print-performance nil)
   ;; (setq lsp-log-max 20000)
   (setq lsp-restart 'auto-restart)
   (setq lsp-auto-guess-root t)
@@ -310,21 +310,6 @@ FRAME just below the symbol at point."
       (set-frame-position frame (+ start-x frame-x) (+ start-y frame-y))))
   )
 
-(use-package company-lsp
-  :ensure t
-  :after company
-  :init
-  (defun company-lsp-hook ()
-    (make-local-variable 'company-backends)
-    (setq company-backends (copy-tree company-backends))
-    (set 'company-backends (append '(company-lsp) company-backends)))
-  :hook
-  (lsp-mode . company-lsp-hook)
-  :config
-  (setq company-lsp-enable-snippet t
-        company-lsp-cache-candidates 'auto)
-  )
-
 
 ;; copy from spacemacs
 (defvar my-company-default-backends
@@ -366,7 +351,7 @@ MODE parameter must match the parameter used in the call to
        (remove-hook ',mode-hook 'company-mode)
        )))
 
-(my|enable-company c-mode-common '(company-lsp company-semantic company-clang))
+(my|enable-company c-mode-common '(company-capf company-semantic company-clang))
 (my|enable-company cmake-mode '(company-cmake))
 (my|enable-company css-mode '(company-css))
 (my|enable-company nxml-mode '(company-nxml))

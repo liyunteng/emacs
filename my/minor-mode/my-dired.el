@@ -169,7 +169,7 @@ if no files marked, always operate on current line in dired-mode."
     :type-for-docstring "video"
     :extensions
     '("ts" "h264" "h265" "m3u8"))
-  
+
   (deffiletype-face "my-video" "SandyBrown")
   (deffiletype-setup "my-video" "my-video"))
 
@@ -191,7 +191,7 @@ if no files marked, always operate on current line in dired-mode."
 (unless (version< emacs-version "26")
   (use-package treemacs
     :ensure t
-    :defer t
+    :after dired
     :bind (([f8] . treemacs))
     :config
     (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)

@@ -42,7 +42,7 @@
                        ;; my-helm
                        ;; my-ido
                        my-ivy
-                       
+
                        my-search
                        my-jump
                        my-smartparens
@@ -104,7 +104,7 @@
     (my-load custom-file))
 
   (add-hook 'after-init-hook
-	        (lambda () (run-at-time 0 nil 'my/show-init-time)) t)
+            (lambda () (run-at-time 0 nil 'my/show-init-time)) t)
   )
 (my-init)
 

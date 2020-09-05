@@ -30,6 +30,7 @@
 (defvar my-init-times nil
   "A list of (FEATURE TYPE LOAD-START-TIME LOAD-DURATION).
 LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
+(defvar my-after-init-time nil)
 
 (defun my--parse-command-line (args)
   "Handle specific command line ARGS.
@@ -128,10 +129,16 @@ arguments is that we want to process these arguments as soon as possible."
   "Show init time."
   (interactive)
   (if desktop-save-mode
-      (message "Emacs startup time: %.2fms Desktop restore time: %.2fms"
+      (message "Emacs startup time: %.2fms(%.2fms) Desktop restore time: %.2fms"
+               (my-time-subtract-millis (if (not my-after-init-time)
+                                            (setq my-after-init-time (current-time))
+                                          my-after-init-time)  before-init-time)
 	           (my-time-subtract-millis after-init-time before-init-time)
 	           (my-time-subtract-millis after-desktop-read-time before-desktop-read-time))
-    (message "Emacs startup time: %.2fms"
+    (message "Emacs startup time: %.2fms(%.2fms)"
+             (my-time-subtract-millis (if (not my-after-init-time)
+                                          (setq my-after-init-time (current-time))
+                                        my-after-init-time) before-init-time)
 	         (my-time-subtract-millis after-init-time before-init-time))))
 
 (defun my/show-init-times ()

@@ -30,12 +30,12 @@
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status)
-	        ("C-x M-g" . magit-dispatch)
-	        ("C-x v =" . magit-diff-buffer-file)
-	        :map magit-status-mode-map
-	        ("M-RET" . magit-diff-visit-file-other-window)
-          :map magit-mode-map
-          ("C-o" . magit-open-repo))
+	     ("C-x M-g" . magit-dispatch)
+	     ("C-x v =" . magit-diff-buffer-file)
+	     :map magit-status-mode-map
+	     ("M-RET" . magit-diff-visit-file-other-window)
+         :map magit-mode-map
+         ("C-o" . magit-open-repo))
   :config
   (setq magit-diff-refine-hunk t)
   ;; (setq magit-branch-read-upstream-first 'fallback)
@@ -45,38 +45,19 @@
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
   (with-eval-after-load 'compile
     (dolist (defn (list '(git-svn-updated "^\t[A-Z]\t\\(.*\\)$" 1 nil nil 0 1)
-			              '(git-svn-needs-update "^\\(.*\\): needs update$" 1 nil nil 2 1)))
+			            '(git-svn-needs-update "^\\(.*\\): needs update$" 1 nil nil 2 1)))
       (add-to-list 'compilation-error-regexp-alist-alist defn)
       (add-to-list 'compilation-error-regexp-alist (car defn))))
   ;; (add-hook 'magit-popup-mode-hook 'my/toggle-show-trailing-whitespace-off)
-
-  ;; Ignore recent commit
-  (setq magit-status-sections-hook
-    '(magit-insert-status-headers
-       magit-insert-merge-log
-       magit-insert-rebase-sequence
-       magit-insert-am-sequence
-       magit-insert-sequencer-sequence
-       magit-insert-bisect-output
-       magit-insert-bisect-rest
-       magit-insert-bisect-log
-       magit-insert-untracked-files
-       magit-insert-unstaged-changes
-       magit-insert-staged-changes
-       magit-insert-stashes
-       magit-insert-unpulled-from-upstream
-       magit-insert-unpulled-from-pushremote
-       magit-insert-unpushed-to-upstream
-       magit-insert-unpushed-to-pushremote))
 
   ;; Opening repo externally
   (defun parse-url (url)
     "convert a git remote location as a HTTP URL"
     (if (string-match "^http" url)
-      url
+        url
       (replace-regexp-in-string "\\(.*\\)@\\(.*\\):\\(.*\\)\\(\\.git?\\)"
-        "https://\\2/\\3"
-        url)))
+                                "https://\\2/\\3"
+                                url)))
   (defun magit-open-repo ()
     "open remote repo URL"
     (interactive)
@@ -101,11 +82,14 @@
 (use-package gitconfig-mode
   :ensure t
   :mode
-  ("/\.gitconfig\'" . gitconfig-mode)
-  ("/vcs/gitconfig\'" . gitconfig-mode))
+  ("/\\.gitconfig\\'" . gitconfig-mode)
+  ("/\\gitconfig\\'" . gitconfig-mode))
 
 (use-package gitignore-mode
-  :ensure t)
+  :ensure t
+  :mode
+  ("/\\.gitignore\\'" . gitignore-mode)
+  ("/\\gitignore\\'" . gitignore-mode))
 
 (use-package git-commit
   :ensure t
@@ -116,11 +100,12 @@
 (use-package gitattributes-mode
   :ensure t)
 
+;; commit prefix
 (use-package git-msg-prefix
   :ensure t
   :config
   (setq git-msg-prefix-log-flags " --since='1 week ago' "
-        git-msg-prefix-regex "^\\([^:]*: \\)"
+        ;; git-msg-prefix-regex "^\\([^:]*: \\)"
         git-msg-prefix-input-method 'ivy-read)
   ;; (add-hook 'git-commit-mode-hook 'git-msg-prefix)
   )

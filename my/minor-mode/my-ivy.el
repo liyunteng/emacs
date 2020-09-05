@@ -78,6 +78,9 @@
      ("C-c h C-b" . counsel-switch-buffer-other-window)
      ("C-c h m" . my/woman)
      ("C-c h M" . counsel-minor))
+    :init
+    (counsel-mode +1)
+
     :config
     (setq counsel-mode-override-describe-bindings t)
     (setq counsel-find-file-at-point t)
@@ -86,6 +89,7 @@
     ;; (setq ivy-initial-inputs-alist '((Man-completion-table . "^")
     ;;                                  (woman . "^")))
     )
+  (ivy-mode +1);
 
   :config
   (setq ivy-use-virtual-buffers t
@@ -111,13 +115,13 @@
 (diminish 'ivy-mode)
 (diminish 'counsel-mode)
 
-(add-hook 'after-init-hook
-          (lambda ()
-            (when (bound-and-true-p ido-ubiquitous-mode)
-              (ido-ubiquitous-mode -1)
-              (ido-mode -1))
-            (ivy-mode +1)
-            (counsel-mode +1)))
+;; (add-hook 'after-init-hook
+;;           (lambda ()
+;;             (when (bound-and-true-p ido-ubiquitous-mode)
+;;               (ido-ubiquitous-mode -1)
+;;               (ido-mode -1))
+;;             (ivy-mode +1)
+;;             (counsel-mode +1)))
 
 (provide 'my-ivy)
 ;;; my-ivy.el ends here

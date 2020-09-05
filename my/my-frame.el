@@ -39,14 +39,6 @@ Selectively runs either `my-after-make-console-frame-hooks' or
                  'my-after-make-console-frame-hooks))))
 (add-hook 'after-make-frame-functions 'run-after-make-frame-hooks)
 
-(defconst my--initial-frame (selected-frame)
-  "The frame (if any) active during Emacs initialization.")
-
-(add-hook 'after-init-hook
-          (lambda () (when my--initial-frame
-                  (run-after-make-frame-hooks my--initial-frame))))
-
-
 (defun my--console-frame-setup ()
   "Mouse in a terminal (Use shift to paste with middle button)."
   (xterm-mouse-mode 1)
