@@ -159,7 +159,7 @@
 
   ;; Suspend page-break-lines-mode while company menu is active
   ;; (see https://github.com/company-mode/company-mode/issues/416)
-  (when (fboundp 'page-break-lines-mode)
+  (with-eval-after-load 'page-break-lines
     (defvar my--page-break-lines-on-p nil)
     (make-local-variable 'my--page-break-lines-on-p)
 
@@ -174,7 +174,19 @@
 
     (add-hook 'company-completion-started-hook 'my--page-break-lines-disable)
     (add-hook 'company-completion-finished-hook 'my--page-break-lines-maybe-reenable)
-    (add-hook 'company-completion-cancelled-hook 'my--page-break-lines-maybe-reenable)))
+    (add-hook 'company-completion-cancelled-hook 'my--page-break-lines-maybe-reenable))
+
+  (with-eval-after-load 'lsp-ui
+    (defun my--lsp-ui-doc-hide (&rest ignore)
+      (null ignore)
+      (lsp-ui-doc-mode -1))
+    (defun my--lsp-ui-doc-show (&rest ignore)
+      (null ignore)
+      (lsp-ui-doc-mode +1))
+    (add-hook 'company-completion-started-hook 'my--lsp-ui-doc-hide)
+    (add-hook 'company-completion-finished-hook 'my--lsp-ui-doc-show)
+    (add-hook 'company-completion-cancelled-hook 'my--lsp-ui-doc-show))
+  )
 
 (use-package company-quickhelp
   :ensure t
