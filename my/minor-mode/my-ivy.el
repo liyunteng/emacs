@@ -77,7 +77,9 @@
      ("C-c h b" . counsel-switch-buffer)
      ("C-c h C-b" . counsel-switch-buffer-other-window)
      ("C-c h m" . my/woman)
-     ("C-c h M" . counsel-minor))
+     ("C-c h M" . counsel-minor)
+     ("M-X" . ivy-resume)
+     )
     :init
     (counsel-mode +1)
 

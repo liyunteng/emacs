@@ -205,6 +205,7 @@ Selectively runs either `my-after-make-console-frame-hooks' or
 (global-set-key (kbd "C-x C-=") 'text-scale-adjust)
 (global-set-key (kbd "C-x C--") 'text-scale-adjust)
 (global-set-key (kbd "C-x C-0") 'text-scale-adjust)
+;; (modify-frame-parameters (selected-frame) (list '(alpha . 95)))
 
 ;; TODO: keybind adpat with my/frame-opacity-adjust
 (use-package default-text-scale
