@@ -31,7 +31,7 @@
              xref-find-apropos))
 
 (use-package etags
-  :commands (tags-loop-continue
+  :commands (fileloop-continue
              tags-search
              pop-tag-mark)
   :config
@@ -48,10 +48,15 @@
 
 (use-package dumb-jump
   :ensure t
-  :init
-  (dumb-jump-mode +1)
-  (when (fboundp 'minibuffer-inactive-mode-hook)
-    (add-hook  minibuffer-inactive-mode-hook (dumb-jump-mode -1))))
+  :bind ((:map dumb-jump-mode-map
+               ("C-M-g" . nil)
+               ("C-M-p" . nil)
+               ("C-M-q" . nil)))
+  ;; :init
+  ;; (dumb-jump-mode +1)
+  ;; (when (fboundp 'minibuffer-inactive-mode-hook)
+  ;;   (add-hook  minibuffer-inactive-mode-hook (dumb-jump-mode -1)))
+  )
 
 ;; jump
 (defvar my-jump-default-backends'(dumb-jump-go xref-find-definitions ffap)

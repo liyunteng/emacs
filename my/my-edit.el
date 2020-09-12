@@ -602,14 +602,18 @@ at the end of the line."
     (interactive "*P")
     (comment-normalize-vars)
     (if  (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
-
         (if (comment-beginning)
             (comment-or-uncomment-region (comment-beginning)
                                          (progn (backward-char) (search-forward comment-end)))
-          (comment-or-uncomment-region (line-beginning-position)
-                                       (line-end-position)))
+          (if (and (fboundp 'smartparens-mode) (eq smartparens-strict-mode t))
+              (progn (sp-mark-sexp)
+                     (when (region-active-p)
+                       (comment-or-uncomment-region (region-beginning) (region-end))))
+            (comment-or-uncomment-region (line-beginning-position)
+                                         (line-end-position))))
       (comment-dwim arg))
     (indent-according-to-mode))
+
   :config
   (setq comment-auto-fill-only-comments t)
   (setq comment-style 'multi-line)
@@ -677,7 +681,7 @@ This functions should be added to the hooks of major modes for programming."
 
 ;; proced
 (use-package proced
-  :bind ("C-x p" . proced)
+  :bind ("C-x P" . proced)
   :config
   (setq proced-auto-update-flag t)
   (setq proced-auto-update-interval 3)
@@ -1234,9 +1238,11 @@ PROMPT sets the `read-string prompt."
 (defun my/mark-beginning-of-buffer ()
   (interactive)
   (set-mark (point-min)))
+
 (defun my/mark-end-of-buffer ()
   (interactive)
   (set-mark (point-max)))
+
 (global-set-key (kbd "C-M-<") 'my/mark-beginning-of-buffer)
 (global-set-key (kbd "C-M->") 'my/mark-end-of-buffer)
 ;; pop mark
@@ -1248,6 +1254,8 @@ PROMPT sets the `read-string prompt."
 (global-set-key (kbd "C-<return>") 'cua-rectangle-mark-mode)
 
 ;; 删除光标之前的单词(保存到kill-ring)
+;; M-\ delete-horizontal-space
+;; M-^ delete-indentation
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-c C-w") 'my/backward-kill-sexp-or-region)
 ;;删除光标之前的字符(不保存到kill-ring)
@@ -1268,13 +1276,15 @@ PROMPT sets the `read-string prompt."
 (global-set-key (kbd "C-x M-p") 'list-processes)
 
 ;; narrow/widen
-(global-set-key (kbd "C-x n") #'my/narrow-or-widen-dwim)
+(global-set-key (kbd "C-x N") #'my/narrow-or-widen-dwim)
 
 ;; s-q 来插入转义字符
 (global-set-key (kbd "s-q") 'quoted-insert)
 
 (global-set-key (kbd "RET") 'newline-and-indent)
 
+(global-set-key (kbd "C-x p") 'previous-buffer)
+(global-set-key (kbd "C-x n") 'next-buffer)
 
 (provide 'my-edit)
 ;;; my-edit.el ends here
