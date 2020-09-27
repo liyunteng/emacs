@@ -126,13 +126,17 @@ if no files marked, always operate on current line in dired-mode."
            ))))
 
 (use-package dired-x
-  :after dired
+  :commands (dired-omit-mode)
+  :init
+  (add-hook 'dired-mode-hook (lambda () (dired-omit-mode)))
+
   :config
+  (setq dired-omit-size-limit 300000)
   (setq dired-omit-verbose nil
 	    dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*")
   (dolist (ex '(".cache" ".o" ".ui" ".ko" ".mod"))
     (add-to-list 'dired-omit-extensions ex))
-  (add-hook 'dired-mode-hook 'dired-omit-mode))
+  )
 
 (use-package dired-git-info
   :defines (dgi-commit-message-format)
