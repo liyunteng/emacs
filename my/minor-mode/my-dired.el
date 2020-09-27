@@ -101,32 +101,36 @@ if no files marked, always operate on current line in dired-mode."
 (use-package dired-filter
   :ensure t
   :commands (dired-filter-group-mode)
+  :bind (("M-n" . dired-filter-group-forward-drawer)
+         ("M-p" . dired-filter-group-backward-drawer))
   :init
   (add-hook 'dired-mode-hook 'dired-filter-group-mode)
 
   :config
   (set-face-attribute 'dired-filter-group-header  nil
-    :inherit 'isearch)
+                      :inherit 'isearch)
   (setq dired-filter-group-saved-groups
-    '(("default"
-        ("Directories" (directory))
-        ("PDF"
-          (extension . "pdf"))
-        ("LaTeX"
-          (extension "tex" "bib"))
-        ("Org"
-          (extension . "org"))
-        ("Archives"
-          (extension "zip" "rar" "gz" "bz2" "tar"))
-        ("Multimedia"
-          (extension "ogg" "flv" "mpg" "avi" "mp4" "mp3" "mkv" "webm"))))))
+        '(("default"
+           ("Directories" (directory))
+           ("Execute" (executable))
+           ("PDF"
+            (extension . "pdf"))
+           ("LaTeX"
+            (extension "tex" "bib"))
+           ("Org"
+            (extension . "org"))
+           ("Archives"
+            (extension "zip" "rar" "gz" "bz2" "tar" "7z"))
+           ("Multimedia"
+            (extension "ogg" "flv" "mpg" "avi" "mp4" "mp3" "mkv" "webm" "h264" "aac" "hevc" "ts"))
+           ))))
 
 (use-package dired-x
   :after dired
   :config
   (setq dired-omit-verbose nil
 	    dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*")
-  (dolist (ex '(".cache" ".o" ".ui"))
+  (dolist (ex '(".cache" ".o" ".ui" ".ko" ".mod"))
     (add-to-list 'dired-omit-extensions ex))
   (add-hook 'dired-mode-hook 'dired-omit-mode))
 
