@@ -70,7 +70,7 @@
       scroll-preserve-screen-position t)
 
 ;; fill-column 80
-;; (setq-default fill-column 80)
+(setq-default fill-column 80)
 
 ;; search case fold
 (setq-default case-fold-search t)
