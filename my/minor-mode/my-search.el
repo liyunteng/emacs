@@ -112,7 +112,11 @@ This is useful when followed by an immediate kill."
     :bind (("M-s a" . ag)
            ;; ("M-s f" . ag-dired)
            ([remap find-grep-dired] . ag-dired)
-           ("M-s p" . ag-project))
+           ("M-s p" . ag-project)
+           :map ag-mode-map
+           ("M-n" . compilation-next-file)
+           ("M-p" . compilation-previous-file)
+           )
     :config
     (use-package wgrep-ag :ensure t)
     (setq ag-highlight-search t
