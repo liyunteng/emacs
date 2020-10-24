@@ -163,8 +163,6 @@
   ;;   :init
   ;;   (setq lsp-completion-provider t))
 
-  (add-hook 'kill-emacs-hook 'lsp--global-teardown)
-
   :config
   (setq lsp-log-io nil)
   (setq lsp-print-performance nil)
@@ -184,6 +182,8 @@
   (setq lsp-enable-semantic-highlighting t)
   (setq lsp-semantic-highlighting-warn-on-missing-face t)
   (setq lsp-semantic-tokens-apply-modifiers t)
+
+  (add-hook 'kill-emacs-hook 'lsp--global-teardown)
   )
 
 (use-package lsp-ui
