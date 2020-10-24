@@ -29,7 +29,7 @@
 (use-package company
   :ensure t
   :bind
-  (("TAB" . my/company-indent-or-complete-common)
+  (("TAB" . company-indent-or-complete-common)
    :map company-mode-map
    ("C-M-/" . company-other-backend)
    ("C-M-?" . company-begin-backend)
@@ -37,7 +37,7 @@
    ("M-/" . hippie-expand)
    :map company-active-map
    ("TAB" . company-complete-common)
-   ("C-w" . nil)
+   ("C-w" . company-abort)
    ("C-l" . company-show-location)
    ("C-n" . company-select-next)
    ("C-p" . company-select-previous)
@@ -50,98 +50,10 @@
   :commands (global-company-mode company-mode company-auto-begin)
   :init
   ;; (defalias 'completion-at-point 'company-complete-common)
-  (global-company-mode -1)
+  (global-company-mode +1)
 
   :config
-  (defun my/company-indent-or-complete-common ()
-    "Indent the current line or region, or complete the common part."
-    (interactive)
-    (cond
-     ((use-region-p)
-      (indent-region (region-beginning) (region-end)))
-     ((memq indent-line-function
-            '(indent-relative indent-relative-maybe))
-      (company-complete-common))
-     ((let ((old-point (point))
-            (old-tick (buffer-chars-modified-tick))
-            (tab-always-indent t))
-        (call-interactively #'indent-for-tab-command)
-        (when (and (eq old-point (point))
-                   (eq old-tick (buffer-chars-modified-tick)))
-          (company-complete-common)
-          )))
-
-     ;; add jump out pairs
-     ((and (not company-candidates)
-           (not company-common)
-           (-contains-p (list "\"" "'" ";" "|" "}" "]" ")" ">")
-                        (make-string 1 (char-after))))
-      (forward-char))))
-
-  (defun company--begin-new ()
-    (let (prefix c)
-      (cl-dolist (backend (if company-backend
-                              ;; prefer manual override
-                              (list company-backend)
-                            company-backends))
-        (setq prefix
-              (if (or (symbolp backend)
-                      (functionp backend))
-                  (when (company--maybe-init-backend backend)
-                    (let ((company-backend backend))
-                      (company-call-backend 'prefix)))
-                (company--multi-backend-adapter backend 'prefix)))
-        (when prefix
-          (when (company--good-prefix-p prefix)
-            (let ((ignore-case (company-call-backend 'ignore-case)))
-              (setq company-prefix (company--prefix-str prefix)
-                    company-backend backend
-                    c (company-calculate-candidates company-prefix ignore-case))
-              (cond
-               ((and (company--unique-match-p c company-prefix ignore-case)
-                     (if company--manual-action
-                         ;; If `company-manual-begin' was called, the user
-                         ;; really wants something to happen.  Otherwise...
-                         (progn (ignore (message "Sole completion"))
-                                ;; ##### return for jump out pair
-                                (cl-return nil))
-                       t))
-                ;; ...abort and run the hooks, e.g. to clear the cache.
-                (company-cancel 'unique))
-               ((null c)
-                (when company--manual-action
-                  (message "No completion found")))
-               (t ;; We got completions!
-                (when company--manual-action
-                  (setq company--manual-prefix prefix))
-                (company-update-candidates c)
-                (run-hook-with-args 'company-completion-started-hook
-                                    (company-explicit-action-p))
-                (company-call-frontends 'show)))))
-          (cl-return c)))))
-
-  (defun company-complete-selection ()
-    "Insert the selected candidate."
-    (interactive)
-    (when (company-manual-begin)
-      (let ((result (nth company-selection company-candidates)))
-        (company-finish result)
-        ;; ### return t for jump out pair
-        t)))
-
-  ;; fix company-candidates-length is 0 will start company
-  (defun company-manual-begin ()
-    (interactive)
-    (company-assert-enabled)
-    (setq company--manual-action t)
-    (unwind-protect
-        (let ((company-minimum-prefix-length 1))
-          (or company-candidates
-              (company-auto-begin)))
-      (unless company-candidates
-        (setq company--manual-action nil))))
-
-  (setq company-auto-complete t
+  (setq company-auto-commit t
         company-minimum-prefix-length 2
         company-idle-delay 2
         ;; company-show-numbers t
@@ -195,6 +107,8 @@
   :bind
   (:map company-active-map
         ("C-h"  . company-quickhelp-mode))
+  :init
+  (company-quickhelp-mode +1)
   :config
   (setq company-quickhelp-use-propertized-text t)
   (setq company-quickhelp-delay 0.5)
@@ -206,6 +120,14 @@
   :ensure t
   :defer t
   :init
+  (setq lsp-keymap-prefix "C-c o")
+  (setq lsp-before-save-edits t)
+  (setq lsp-eldoc-render-all nil)
+  (setq lsp-idle-delay 0.500)
+
+  (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
+  (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
+
   (when (executable-find "clangd")
     ;; (setq lsp-clients-clangd-args '("--all-scopes-completion" "--clang-tidy" "--completion-style=detailed" "--suggest-missing-includes" "--background-index" "--header-insertion-decorators" "--log=verbose"))
     (defun my/clangd-generate-compile-commands ()
@@ -233,25 +155,26 @@
 
   (when  (executable-find "go-langserver")
     (add-hook 'go-mode-hook 'lsp))
+
   (when  (executable-find "pyls")
     (add-hook 'python-mode-hook 'lsp))
 
-  :config
-  (setq lsp-before-save-edits t
-        lsp-eldoc-render-all nil
-        lsp-idle-delay 0.500)
-  (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
-  (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
+  ;; (use-package lsp-completion
+  ;;   :init
+  ;;   (setq lsp-completion-provider t))
 
+  (add-hook 'kill-emacs-hook 'lsp--global-teardown)
+
+  :config
   (setq lsp-log-io nil)
   (setq lsp-print-performance nil)
   ;; (setq lsp-log-max 20000)
-  (setq lsp-restart 'auto-restart)
+  ;; (setq lsp-restart 'auto-restart)
+  (setq lsp-keep-workspace-alive nil)
   (setq lsp-auto-guess-root t)
   (setq lsp-response-timeout 2)
-  ;; (setq lsp-document-sync-method lsp--sync-full)
+  (setq lsp-document-sync-method lsp--sync-incremental)
   ;; (setq lsp-headerline-breadcrumb-enable t)
-  ;; (setq lsp-prefer-capf t)
   (setq-default lsp-completion-provider t)
   (setq lsp-lens-enable t)
 
@@ -270,12 +193,6 @@
   :bind
   (:map lsp-ui-mode-map
         ("M-'" . lsp-ui-sideline-apply-code-actions))
-  :config
-  (defadvice recenter-top-bottom (after my-update-lsp-ui-doc-position activate)
-    (when (lsp-ui-doc--frame-visible-p)
-      (let ((lsp-ui-doc-delay 0))
-        (lsp-ui-doc-hide)
-        (lsp-ui-doc-show))))
 
   :config
   (setq
@@ -287,12 +204,16 @@
    lsp-ui-doc-delay 0.8
    lsp-ui-doc-max-width 300
    lsp-ui-doc-max-height 50
-   lsp-ui-sideline-enable t
-   ;; lsp-ui-sideline-show-symbol t
-   ;; lsp-ui-sideline-show-hover t
-   lsp-ui-sideline-show-code-actions t
-   lsp-ui-sideline-update-mode 'point)
-  )
+   lsp-ui-sideline-ignore-duplicate t
+   lsp-ui-sideline-show-symbol nil
+   lsp-ui-sideline-show-hover nil
+   lsp-ui-sideline-show-code-actions nil)
+
+  (defadvice recenter-top-bottom (after my-update-lsp-ui-doc-position activate)
+    (when (and (lsp-ui-doc--frame-visible-p) lsp-ui-mode)
+      (let ((lsp-ui-doc-delay 0))
+        (lsp-ui-doc-hide)
+        (lsp-ui-doc-show)))))
 
 
 ;; copy from spacemacs
@@ -335,7 +256,7 @@ MODE parameter must match the parameter used in the call to
        (remove-hook ',mode-hook 'company-mode)
        )))
 
-(my|enable-company c-mode-common '(company-capf company-semantic company-clang))
+;; (my|enable-company c-mode-common '(company-lsp company-semantic company-clang))
 (my|enable-company cmake-mode '(company-cmake))
 (my|enable-company css-mode '(company-css))
 (my|enable-company nxml-mode '(company-nxml))

@@ -380,6 +380,8 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
                  'semantic-analyze-completion-at-point-function))
   (add-hook 'semantic-mode-hook
             'my-semantic-remove-completion)
+  (setq-mode-local c-mode semantic-dependency-include-path my-include-path)
+  (setq-mode-local c++-mode semantic-dependency-include-path my-include-path)
 
   (define-key semantic-mode-map (kbd "C-c , R") 'semantic-symref-regexp)
   (define-key semantic-mode-map (kbd "C-c , h") 'semantic-decoration-include-visit)
@@ -415,11 +417,8 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (defun my-cc-mode-hook ()
     "My c common mode hooks."
 
-    (unless semantic-mode
-      (progn
-        (semantic-mode +1)
-        (setq-mode-local c-mode semantic-dependency-include-path my-include-path)
-        (setq-mode-local c++-mode semantic-dependency-include-path my-include-path)))
+    ;; (unless semantic-mode
+    ;;   (semantic-mode +1))
 
     (auto-fill-mode +1)
     (subword-mode +1)
@@ -446,6 +445,16 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
     ;;             flycheck-clang-include-path
 	;; 			flycheck-cppcheck-include-path))))
     ;; (setq-default company-clang-arguments '("-std=c++11"))
+
+    (with-eval-after-load 'semantic
+      (define-key c-mode-base-map (kbd "C-c C-d") 'semantic-ia-show-doc)
+      (define-key c-mode-base-map (kbd "C-c C-l") 'semantic-ia-show-summary)
+      (define-key c-mode-base-map (kbd "C-c g") 'semantic-analyze-proto-impl-toggle))
+
+    (with-eval-after-load 'lsp-mode
+      (define-key c-mode-base-map (kbd "C-c C-d") 'lsp-describe-thing-at-point)
+      (define-key c-mode-base-map (kbd "C-c C-l") nil)
+      (define-key c-mode-base-map (kbd "C-c g") nil))
     )
   (add-hook 'c-mode-common-hook 'my-cc-mode-hook)
 
@@ -460,19 +469,14 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   ;;         (call-interactively 'company-indent-or-complete-common)
   ;;       (call-interactively 'indent-for-tab-command))))
 
-  (define-key c-mode-base-map (kbd "C-c g") 'semantic-analyze-proto-impl-toggle)
   (define-key c-mode-base-map (kbd "C-c D") 'disaster)
   (define-key c-mode-base-map (kbd "C-c I") 'cpp-auto-include)
-
   (define-key c-mode-base-map (kbd "C-d") 'c-hungry-delete-forward)
-  (define-key c-mode-base-map (kbd "C-c C-d") 'semantic-ia-show-doc)     ;c-hungry-delete-forward
-  (define-key c-mode-base-map (kbd "C-c C-l") 'semantic-ia-show-summary) ;c-toggle-elecric-state
 
   (define-key c-mode-base-map (kbd "C-c C-a") 'my/ff-find-other-file)     ;c-toggle-auto-newline
-
   (define-key c-mode-base-map (kbd "C-c C-m") 'my/smart-compile)
   (define-key c-mode-base-map (kbd "C-c C-s") nil)                       ;c-show-syntactic-information
-  (define-key c-mode-base-map (kbd "C-c C-c") nil)                       ;comment-region
+  (define-key c-mode-base-map (kbd "C-c C-c") 'c-toggle-comment-style)   ;comment-region
   (define-key c-mode-base-map (kbd "C-c C-b") nil)                       ;c-submit-bug-report
   (define-key c-mode-base-map (kbd "C-c C-w") nil)                       ;c-subword-mode
   (define-key c-mode-base-map (kbd "C-c C-k") 'kill-region)              ;c-toggle-comment-style

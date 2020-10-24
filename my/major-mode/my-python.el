@@ -27,8 +27,9 @@
 (use-package pyenv-mode
   :ensure t
   :commands (pyenv-mode)
-  :init
-  (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t))))
+  ;; :init
+  ;; (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t)))
+  )
 
 (use-package elpy
   :ensure t
@@ -40,7 +41,11 @@
         ;; ("C-c C-J" . elpy-goto-definition-other-window)
         ("C-c C-q" . my/elpy-shell-kill)
         ("C-c C-Q" . my/elpy-shell-kill-all)
-        ("C-c C-k" . kill-region))
+        ("C-c C-k" . kill-region)
+        ("C-c C-r" . revert-buffer)
+        ([remap iedit-mode] . elpy-multiedit)
+        ("C-c C-e" . elpy-refactor-map)
+        )
   :init
   ;; (advice-add 'python-mode :before 'elpy-enable)
 
@@ -81,7 +86,9 @@
       (semantic-mode -1))
     (subword-mode +1)
     (set (make-local-variable 'tab-width) 4)
-    (elpy-enable))
+    (pyenv-mode +1)
+    (elpy-enable)
+    )
 
   (add-hook 'python-mode-hook 'my-python-mode-hook)
 
