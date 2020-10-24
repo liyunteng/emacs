@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: include unistd.h
-# key: iun
-# --
-#include <unistd.h>
-$0

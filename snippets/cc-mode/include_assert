@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: include assert
-# key: iass
-# --
-#include <assert.h>
-$0

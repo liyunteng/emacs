@@ -5,7 +5,7 @@
 #group: doxygen
 # --
 /**
- *   @brief ${1:A Documented file}
+ *   @brief ${1: file description}
  *
  *   @CopyRight (C) `(concat (format-time-string "%Y") " " (getenv "ORGANIZATION"))`
  *   @date Last-Updated: <>

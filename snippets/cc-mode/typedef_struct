@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: typedef struct
+# key: tds
+# --
+typedef struct _$1 {
+    $0
+} ${1:name}_t

@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: include string.h
-# key: istr
-# --
-#include <string.h>
-$0

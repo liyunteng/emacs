@@ -2,5 +2,4 @@
 # name : #include "..."
 # key  : i.
 # --
-#include "$1"
-$0
+#include "${1:`(file-name-sans-extension (file-name-nondirectory (buffer-file-name)))`}.h"$0

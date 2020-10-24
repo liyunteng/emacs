@@ -662,7 +662,7 @@ at the end of the line."
 
 This functions should be added to the hooks of major modes for programming."
     (font-lock-add-keywords
-     nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|\\BUG\\):\\)"
+     nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|BUG\\):\\)"
             1 font-lock-warning-face t))))
 
   (defun my-prog-mode-defaults ()

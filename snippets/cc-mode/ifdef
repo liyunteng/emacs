@@ -2,6 +2,6 @@
 # name: ifdef
 # key: ifd
 # --
-#ifdef ${1:Macro}
-$0
-#endif // $1
+#ifdef ${1:SYMBOL}
+    $0
+#endif `comment-start`ifdef $1`comment-end`

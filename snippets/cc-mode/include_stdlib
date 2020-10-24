@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: include stdlib
-# key: ilib
-# --
-#include <stdlib.h>
-$0

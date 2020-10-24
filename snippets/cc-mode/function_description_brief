@@ -4,5 +4,6 @@
 # group: doxygen
 # --
 /**
- * @brief $0
+ * @brief ${1: function brief description}
  */
+$0

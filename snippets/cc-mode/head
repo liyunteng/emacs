@@ -1,23 +1,24 @@
 # -*- mode: snippet -*-
 # name: header
-# key: header
+# key: head
 # --
 /*
 *=====================================================================
 *
-*    Description:  ${1:}
+*    Description:  ${1: file description}
 *
 *        Verison:  ${2:1.0}
 *       Revision:  ${3:none}
 *       Compiler:  ${4:gcc}
-*   Last-Updated: <2019/12/06 23:30:24>
+*   Last-Updated: <>
 *
-*         Author:  `user-full-name` (`user-full-name`) `user-mail-address`
+*         Author:  `user-full-name` <`user-mail-address`>
 *        Company:  `(getenv "ORGANIZATION")`
 *      Copyright:  Copyright (c) `(format-time-string "%Y")`, `(getenv "ORGANIZATION")`
 *
 *=====================================================================
 */
+$0
 
 `(progn
   (setq header "")
@@ -35,4 +36,3 @@
              (if (equal header "")
                  nil
                (concat "#include \"" header "\"")))))`
-$0

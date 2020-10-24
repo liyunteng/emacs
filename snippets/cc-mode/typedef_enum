@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: typedef enum
+# key: tde
+# --
+typedef enum {
+    $0
+} ${1:name}
