@@ -5,3 +5,4 @@
 #group: doxygen
 # --
 /*!< ${1:Detailed description after the member} */
+$0

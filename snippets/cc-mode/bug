@@ -2,4 +2,4 @@
 # name: bug
 # key: bug
 # --
-`comment-start`BUG: ${0:Bug description}`comment-end`
+`comment-start`BUG: ${1:Bug description}`comment-end`$0

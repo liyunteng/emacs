@@ -2,4 +2,4 @@
 # name: fix
 # key: fix
 # --
-`comment-start`FIX: ${0:Fixme description}`comment-end`
+`comment-start`FIX: ${1:Fixme description}`comment-end`$0

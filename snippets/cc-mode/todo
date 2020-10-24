@@ -2,4 +2,4 @@
 # name: todo
 # key: todo
 # --
-`comment-start`TODO: ${0:Todo description}`comment-end`
+`comment-start`TODO: ${1:Todo description}`comment-end`$0

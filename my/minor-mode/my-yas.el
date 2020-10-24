@@ -34,13 +34,13 @@
   (add-hook 'prog-mode-hook 'yas-minor-mode-on)
 
   :config
-  ;; (use-package dropdown-list
-  ;; 	:ensure t)
   ;; (setq yas-snippet-dirs (list 'yas-installed-snippets-dir yas--default-user-snippets-dir))
 
-  (setq yas-triggers-in-field t
-  	    yas-wrap-around-region t)
+  ;; (setq yas-triggers-in-field t
+  ;; 	    yas-wrap-around-region t)
+
   ;; (setq yas-prompt-functions '(yas-completing-prompt))
+
   (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
   (yas-reload-all)
   )

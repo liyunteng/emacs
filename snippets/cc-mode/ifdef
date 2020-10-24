@@ -3,5 +3,5 @@
 # key: ifd
 # --
 #ifdef ${1:SYMBOL}
-    $0
+    ${0:}
 #endif `comment-start`ifdef $1`comment-end`
