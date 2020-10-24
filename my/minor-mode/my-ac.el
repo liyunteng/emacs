@@ -202,7 +202,7 @@
    lsp-ui-doc-alignment 'window
    lsp-ui-doc-border "#b3b3b3"
    lsp-ui-doc-delay 0.8
-   lsp-ui-doc-max-width 300
+   lsp-ui-doc-max-width 150
    lsp-ui-doc-max-height 50
    lsp-ui-sideline-ignore-duplicate t
    lsp-ui-sideline-show-symbol nil
