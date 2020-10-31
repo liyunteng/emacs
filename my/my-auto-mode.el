@@ -78,6 +78,8 @@
     ("\\.yaml\\'" yaml-mode yaml-mode)
     ("\\.service\\'\\|\\.target\\'" systemd systemd-mode)
     ("\\.vim\\'" vimrc-mode vimrc-mode)
+    ("\\.gn\\'" gn-mode gn-mode)
+    ("\\.ninja\\'" ninja-mode ninja-mode)
     ("Dockerfile\\'" dockerfile-mode dockerfile-mode)))
 
 (defmacro my|auto-install (extension package mode)
