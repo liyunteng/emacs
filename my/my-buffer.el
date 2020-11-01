@@ -120,9 +120,15 @@ via the menu bar, and pays no attention to the menu-bar's frame."
 
 (global-set-key (kbd "M-g i") 'my/switch-buffer--info)
 (global-set-key (kbd "M-g s") 'my/switch-buffer-other-window--scratch)
-(global-set-key (kbd "M-g m") 'my/view-buffer-other-window--Messages)
-(global-set-key (kbd "M-g h") 'my/view-buffer-other-window--Help)
-(global-set-key (kbd "M-g b") 'my/view-buffer-other-window--Backtrace)
+(global-set-key (kbd "M-g m") 'my/switch-buffer-other-window--Messages)
+(global-set-key (kbd "M-g h") 'my/switch-buffer-other-window--Help)
+(global-set-key (kbd "M-g b") 'my/switch-buffer-other-window--Backtrace)
+
+(global-set-key (kbd "M-g I") 'my/view-buffer-other-window--info)
+(global-set-key (kbd "M-g S") 'my/view-buffer-other-window--scratch)
+(global-set-key (kbd "M-g M") 'my/view-buffer-other-window--Messages)
+(global-set-key (kbd "M-g H") 'my/view-buffer-other-window--Help)
+(global-set-key (kbd "M-g B") 'my/view-buffer-other-window--Backtrace)
 
 (global-set-key (kbd "C-x C-k") 'kill-buffer)
 (global-set-key (kbd "C-x k") 'kill-current-buffer)

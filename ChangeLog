@@ -1,3 +1,7 @@
+2020-11-02  liyunteng  <li_yunteng@163.com>
+
+        * my/my-buffer.el (my|view-buffer): update my/view my/switch-buffer bind
+
 2019-06-22  liyunteng  <li_yunteng@163.com>
 
 	* my/my-extension.el (youdao-dictionary):
