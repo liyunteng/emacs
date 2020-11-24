@@ -668,7 +668,7 @@ This functions should be added to the hooks of major modes for programming."
   (defun my-prog-mode-defaults ()
     "Default coding hook, useful with any programming language."
     (unless (my-derived-mode-p major-mode 'makefile-mode)
-      (setq indent-tabs-mode nil))
+      (setq-local indent-tabs-mode nil))
     (turn-on-auto-fill)
     (goto-address-prog-mode +1)
     (bug-reference-prog-mode +1)
