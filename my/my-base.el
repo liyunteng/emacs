@@ -79,7 +79,7 @@
 (setq-default tab-width 4)
 
 ;; dont't use tab
-(setq-default indent-tabs-mode t)
+(setq-default indent-tabs-mode nil)
 
 ;; Show a marker in the left fringe for lines
 (setq-default indicate-empty-lines t)
