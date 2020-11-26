@@ -121,6 +121,7 @@
         (set-variable 'term-term-name "linux")))
 
   (defun my-term-mode-hook ()
+    (term-set-escape-char ?\C-x)
     (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
     (setq-local mouse-yank-at-point t)
     (setq-local transient-mark-mode nil)
@@ -137,13 +138,14 @@
   :commands (multi-term)
   :bind (
          ;; ("C-x e" . my/multi-term)
-         ("C-x t m" . term)
+         ("C-x t x" . term)
          ("C-x t a" . ansi-term)
-         ("C-x t x" . my/multi-term-dedicated-toggle-and-select)
-         ("C-x t l" . my/multi-term)
+         ("C-x t i" . my/multi-term-dedicated-toggle-and-select)
+         ("C-x t m" . my/multi-term)
          ("C-x t t" . multi-term)
          ("C-x t n" . multi-term-next)
-         ("C-x t p" . multi-term-prev))
+         ("C-x t p" . multi-term-prev)
+         ("C-x t l" . my/multi-term-list-buffer))
 
   :config
   (setq multi-term-program (or (executable-find "zsh") (executable-find "bash")))
@@ -179,6 +181,13 @@
         (setq my-multi-term-dedicated-old-buf (current-buffer))
         (multi-term-dedicated-open)
         (multi-term-dedicated-select))))
+
+  (defun my/multi-term-list-buffer ()
+    (interactive)
+    (let ((p (completing-read "term: "
+                              (mapcar 'buffer-name multi-term-buffer-list))))
+      (switch-to-buffer p)
+      ))
 
   (defun multi-term-internal ()
     "Override multi-term-internal."
