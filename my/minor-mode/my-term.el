@@ -121,7 +121,7 @@
         (set-variable 'term-term-name "linux")))
 
   (defun my-term-mode-hook ()
-    (term-set-escape-char ?\C-x)
+    ;; (term-set-escape-char ?\C-x)
     (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
     (setq-local mouse-yank-at-point t)
     (setq-local transient-mark-mode nil)
