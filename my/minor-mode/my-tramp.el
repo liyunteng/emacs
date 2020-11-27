@@ -31,14 +31,16 @@
   :init
   (unless (file-exists-p (expand-file-name "tramp" my-cache-dir))
     (make-directory (expand-file-name "tramp" my-cache-dir)))
+  (setq-default tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
+  (setq-default tramp-backup-directory-alist `((".*" ,(expand-file-name "tramp" my-cache-dir))))
 
   (require 'tramp-cache)
-  (setq tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))
-  (setq password-cache t)
-  (setq password-cache-expiry 36000)
+  (setq-default tramp-persistency-file-name (expand-file-name "tramp/tramp" my-cache-dir))
+  ;; (setq password-cache t)
+  ;; (setq password-cache-expiry nil)
 
-  (require 'tramp-sh)
-  ;; (setq tramp-histfile-override (expand-file-name "tramp/tramp-history" my-cache-dir))
+  ;; (require 'tramp-sh)
+  ;; ;; (setq tramp-histfile-override (expand-file-name "tramp/tramp-history" my-cache-dir))
 
 
   ;;使用sudo 编辑文件
@@ -94,19 +96,15 @@ This function is suitable to add to `find-file-root-hook'."
   (add-hook 'find-file-root-hook 'find-file-root-header-warning)
 
   :config
-  (setq tramp-auto-save-directory (expand-file-name "tramp" my-cache-dir))
-  (setq tramp-backup-directory-alist `((".*" ,(expand-file-name "tramp" my-cache-dir))))
-
-  (setq tramp-verbose 3)
+  (setq tramp-verbose 1)
   (setq tramp-default-method "ssh")
   ;; (setq tramp-default-method "rcp")
-  (setq tramp-default-user "root")
-  (setq tramp-default-host "127.0.0.1")
-  (setq tramp-chunksize 8196)
-  (setq tramp-connection-timeout 10)
+  ;; (setq tramp-default-user "root")
+  ;; (setq tramp-default-host "127.0.0.1")
+  ;; (setq tramp-chunksize 8196)
+  ;; (setq tramp-connection-timeout 3)
 
-;;; 解决tramp登陆失败，导致emacs假死的问题
-  ;; (setq tramp-ssh-controlmaster-options nil)
+  ;; 解决tramp登陆失败，导致emacs假死的问题
   ;; (setq tramp-use-ssh-controlmaster-options nil)
 
   ;;(add-to-list 'tramp-remote-process-environment
