@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+#cotributor: Henrique Jung <henriquenj@gmail.com>
+#name: extern "C"
+#key: cxx
+# --
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$0
+
+#ifdef __cplusplus
+} `comment-start`extern "C"`comment-end`
+#endif
