@@ -158,18 +158,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
 ;; (setq auto-insert-header 'mega-header)
 (setq auto-insert-header 'my-header)
 
-(defvar my--auto-insert-inited nil)
 (use-package autoinsert
   :commands (auto-insert auto-insert-mode)
   :init
-  (auto-insert-mode t)
-  
   ;; don't auto-insert to custom.el
   (defadvice auto-insert (around check-custom-file-auto-insert activate)
     (when custom-file
       (if (not (equal (buffer-file-name) (file-truename custom-file)))
 	      ad-do-it)))
-  
+
+  (defun my/auto-insert-select-header (&optional h)
+    (interactive)
+    (let ((p (completing-read "which header: "
+                              my-auto-insert-header-alist)))
+      (setq auto-insert-header (intern p))
+      (setq this-command 'auto-insert)
+      (funcall-interactively #'auto-insert)))
+
+  (auto-insert-mode t)
+
   :config
   (setq auto-insert-query nil)
   ;; (setq auto-insert-directory "~/.emacs.d/autoinsert/")
@@ -185,7 +192,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
       (when time-stamp-active (time-stamp)))
     (add-hook 'write-file-functions #'my/update-time-stamp))
   (require 'time-stamp)
-  
+
   (defun my-header (&optional prefix postfix)
     "My header with PREFIX and POSTFIX."
     (append
@@ -225,23 +232,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.")
              (setq comment-style comment-style-origin)
              nil)))
      (if postfix postfix)))
-  
-  (unless my--auto-insert-inited
-    (define-auto-insert 'sh-mode (my-header '("#!/usr/bin/bash\n")))
-    (define-auto-insert 'python-mode
-      (my-header '("#!/usr/bin/env python\n" "# -*- coding: utf-8 -*-\n\n")))
-    (define-auto-insert 'go-mode (my-header))
-    (define-auto-insert '("\\.\\([Hh]\\|hh\\|hpp\\|hxx\\|h\\+\\+\\)\\'" . "C / C++ header") (my-header))
-    (define-auto-insert '("\\.\\([Cc]\\|cc\\|cpp\\|cxx\\|c\\+\\+\\)\\'" . "C / C++ program") (my-header))
-    (setq my--auto-insert-inited t))
-  
-  (defun my/auto-insert-select-header (&optional h)
-    (interactive)
-    (let ((p (completing-read "which header: "
-                              my-auto-insert-header-alist)))
-      (setq auto-insert-header (intern p))
-      (funcall-interactively #'auto-insert)))
-
   )
 
 

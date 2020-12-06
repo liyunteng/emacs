@@ -406,8 +406,38 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
 (use-package cc-mode
   :defer t
   :commands (cc-mode c-mode c++-mode)
-  :config
+  :init
+  ;; auto-insert
+  (define-auto-insert '("\\.\\([Hh]\\|hh\\|hpp\\|hxx\\|h\\+\\+\\)\\'" . "C / C++ header") (my-header))
+  (define-auto-insert '("\\.\\([Cc]\\|cc\\|cpp\\|cxx\\|c\\+\\+\\)\\'" . "C / C++ program") (my-header))
 
+  ;; lsp
+  (when (executable-find "clangd")
+    ;; (setq lsp-clients-clangd-args '("--all-scopes-completion" "--clang-tidy" "--completion-style=detailed" "--suggest-missing-includes" "--background-index" "--header-insertion-decorators" "--log=verbose"))
+    (defun my/clangd-generate-compile-commands ()
+      (interactive)
+      (let ((cmake (executable-find "cmake"))
+            (cmakefile (file-exists-p "CMakeLists.txt"))
+            (make (executable-find "make"))
+            (bear (executable-find "bear"))
+            (makefile (file-exists-p "Makefile")))
+        (cond ((and cmake cmakefile)
+               (progn (shell-command (format "%s -S . -BDebug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES" cmake))
+                      (shell-command "ln -s Debug/compile_commands.json .")))
+              ((and make bear makefile)
+               (shell-command (format "%s %s" bear make)))
+              (t
+               (message "Failed")))
+        ))
+    (add-hook 'c-mode-common-hook 'lsp-deferred))
+
+  ;; jump
+  (my|define-jump-backends c-mode lsp-find-definition my/semantic-find-definition)
+  (my|define-jump-backends c++-mode lsp-find-definition my/semantic-find-definition)
+
+
+
+  :config
   (c-add-style "linux-4"
   	           '("linux"
   	             (c-basic-offset . 4)
@@ -457,6 +487,12 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
       (define-key c-mode-base-map (kbd "C-c g") nil))
     )
   (add-hook 'c-mode-common-hook 'my-cc-mode-hook)
+
+  ;; (when (executable-find "ccls")
+  ;;   (use-package ccls
+  ;;     :ensure t
+  ;;     :init
+  ;;     (add-hook 'c-mode-common-hook 'lsp-deferred)))
 
   ;; (defun my--cc-tab ()
   ;;   (interactive)

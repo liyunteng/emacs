@@ -132,12 +132,6 @@ Example:
 	    (delete-window))))
 
 (my|define-jump-backends emacs-lisp-mode elisp-slime-nav-find-elisp-thing-at-point)
-(my|define-jump-backends c-mode lsp-find-definition my/semantic-find-definition)
-(my|define-jump-backends c++-mode lsp-find-definition my/semantic-find-definition)
-;; (my|define-jump-backends c-mode my/semantic-find-definition)
-;; (my|define-jump-backends c++-mode my/semantic-find-definition)
-(my|define-jump-backends go-mode godef-jump)
-(my|define-jump-backends python-mode elpy-goto-definition)
 
 (global-set-key (kbd "M-.") 'my/jump-to-definition)
 (global-set-key (kbd "C-M-.") 'my/jump-to-definition-other-window)

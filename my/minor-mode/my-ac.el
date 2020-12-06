@@ -47,7 +47,7 @@
    :map company-search-map
    ("C-n" . company-select-next)
    ("C-p" . company-select-previous))
-  :commands (global-company-mode company-mode company-auto-begin)
+
   :init
   ;; (defalias 'completion-at-point 'company-complete-common)
   (global-company-mode +1)
@@ -127,37 +127,6 @@
 
   (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
   (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
-
-  (when (executable-find "clangd")
-    ;; (setq lsp-clients-clangd-args '("--all-scopes-completion" "--clang-tidy" "--completion-style=detailed" "--suggest-missing-includes" "--background-index" "--header-insertion-decorators" "--log=verbose"))
-    (defun my/clangd-generate-compile-commands ()
-      (interactive)
-      (let ((cmake (executable-find "cmake"))
-            (cmakefile (file-exists-p "CMakeLists.txt"))
-            (make (executable-find "make"))
-            (bear (executable-find "bear"))
-            (makefile (file-exists-p "Makefile")))
-        (cond ((and cmake cmakefile)
-               (progn (shell-command (format "%s -S . -BDebug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES" cmake))
-                      (shell-command "ln -s Debug/compile_commands.json .")))
-              ((and make bear makefile)
-               (shell-command (format "%s %s" bear make)))
-              (t
-               (message "Failed")))
-        ))
-    (add-hook 'c-mode-common-hook 'lsp))
-
-  ;; (when (executable-find "ccls")
-  ;;   (use-package ccls
-  ;;     :ensure t
-  ;;     :init
-  ;;     (add-hook 'c-mode-common-hook 'lsp)))
-
-  (when  (executable-find "go-langserver")
-    (add-hook 'go-mode-hook 'lsp))
-
-  (when  (executable-find "pyls")
-    (add-hook 'python-mode-hook 'lsp))
 
   ;; (use-package lsp-completion
   ;;   :init
@@ -260,39 +229,13 @@ MODE parameter must match the parameter used in the call to
 (my|enable-company cmake-mode '(company-cmake))
 (my|enable-company css-mode '(company-css))
 (my|enable-company nxml-mode '(company-nxml))
-(my|enable-company ielm-mode)
-(my|enable-company inferior-emacs-lisp-mode)
 (my|enable-company java-mode '(company-eclim))
-(my|enable-company python-mode '(elpy-company-backend))
-(my|enable-company inferior-python-mode '(elpy-company-backend))
-(my|enable-company emacs-lisp-mode '(company-capf))
-(my|enable-company lisp-interaction-mode '(company-capf))
-
-(use-package company-go
-  :ensure t
-  :defer t
-  :commands (company-go))
-(my|enable-company go-mode '(company-go))
-
-(use-package company-shell
-  :ensure t
-  :defer t
-  :commands (company-shell
-	         company-shell-env))
-(my|enable-company sh-mode '(company-shell company-shell-env))
 
 (use-package company-php
   :ensure t
   :defer t
   :commands (company-php))
 (my|enable-company php-mode '(company-php))
-
-(use-package company-web
-  :ensure t
-  :defer t
-  :commands (company-web-html company-web-jade company-web-slim))
-(my|enable-company web-mode '(company-web-html company-web-jade company-web-slim))
-
 
 (my|disable-company term-mode)
 (my|disable-company shell-mode)

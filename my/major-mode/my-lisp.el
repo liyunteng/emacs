@@ -29,6 +29,12 @@
 (setq eval-expression-print-length nil
       eval-expression-print-level nil)
 
+;; company
+(my|enable-company ielm-mode)
+(my|enable-company emacs-lisp-mode '(company-capf))
+(my|enable-company lisp-interaction-mode '(company-capf))
+(my|enable-company inferior-emacs-lisp-mode)
+
 ;; automatically compile Emacs Lisp libraries
 (use-package auto-compile
   :ensure t

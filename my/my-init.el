@@ -68,7 +68,9 @@
                        my-c
                        ;; my-qt
                        my-go
+                       my-rust
                        my-python
+                       my-shell
                        my-org
                        my-web
                        my-syslog

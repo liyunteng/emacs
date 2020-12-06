@@ -38,6 +38,14 @@
 	     ("/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'" . web-mode)
 	     )
 
+  :init
+  ;; company
+  (use-package company-web
+    :ensure t
+    :defer t
+    :commands (company-web-html company-web-jade company-web-slim))
+  (my|enable-company web-mode '(company-web-html company-web-jade company-web-slim))
+
   :config
   (setq web-mode-enable-auto-pairing nil
 	    web-mode-indent-style 4))

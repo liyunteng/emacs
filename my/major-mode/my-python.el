@@ -24,13 +24,6 @@
 
 ;;; Code:
 
-(use-package pyenv-mode
-  :ensure t
-  :commands (pyenv-mode)
-  ;; :init
-  ;; (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t)))
-  )
-
 (use-package elpy
   :ensure t
   :defer t
@@ -47,6 +40,12 @@
         ("C-c C-e" . elpy-refactor-map)
         )
   :init
+  (use-package pyenv-mode
+    :ensure t
+    :commands (pyenv-mode)
+    ;; :init
+    ;; (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t)))
+    )
   ;; (advice-add 'python-mode :before 'elpy-enable)
 
   (defun my/elpy-shell-kill ()
@@ -80,6 +79,21 @@
 
   ;; (setq-default python-shell-interpreter "python3")
 
+  ;; auto-insert
+  (define-auto-insert 'python-mode
+    (my-header '("#!/usr/bin/env python\n" "# -*- coding: utf-8 -*-\n\n")))
+
+  ;; lsp
+  (when  (executable-find "pyls")
+    (add-hook 'python-mode-hook 'lsp-deferred))
+
+  ;; company
+  (my|enable-company python-mode '(elpy-company-backend))
+  (my|enable-company inferior-python-mode '(elpy-company-backend))
+
+  ;; jump
+  (my|define-jump-backends python-mode elpy-goto-definition)
+
   (defun my-python-mode-hook ()
     "My python mode hook."
     (when semantic-mode
@@ -87,9 +101,7 @@
     (subword-mode +1)
     (set (make-local-variable 'tab-width) 4)
     (pyenv-mode +1)
-    (elpy-enable)
-    )
-
+    (elpy-enable))
   (add-hook 'python-mode-hook 'my-python-mode-hook)
 
   (defun my-python-shell-mode-hook ()

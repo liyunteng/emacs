@@ -57,8 +57,7 @@
     :ensure t
     :defer t
     :init
-    (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
-    )
+    (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode))
 
   ;; (use-package gotest
   ;;   :ensure t
@@ -70,6 +69,17 @@
   ;; 		)
   ;;   )
 
+  ;; company
+  (use-package company-go
+    :ensure t
+    :defer t
+    :commands (company-go))
+  (my|enable-company go-mode '(company-go))
+
+  ;; jump
+  (my|define-jump-backends go-mode godef-jump)
+
+  (define-auto-insert 'go-mode (my-header))
 
   :config
   ;; need go get golang.org/tools/cmd/goimports
@@ -77,9 +87,13 @@
       (setq gofmt-command "goimports"))
 
   (defun my-go-mode-hook ()
-    (set (make-local-variable 'tab-width) 4)
-    )
+    (set (make-local-variable 'tab-width) 4))
+
   (add-hook 'go-mode-hook 'my-go-mode-hook)
+
+  (when  (executable-find "go-langserver")
+    (add-hook 'go-mode-hook 'lsp-deferred))
+
   (add-hook 'before-save-hook 'gofmt-before-save)
   )
 
