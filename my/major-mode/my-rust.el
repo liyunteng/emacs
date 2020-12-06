@@ -36,8 +36,8 @@
           ("C-M-a" . rust-beginning-of-defun)
           ("C-M-e" . rust-end-of-defun)))
   :init
-  (when (or (executable-find "rust-analyzer") (executable-find "rls"))
-    (add-hook 'rust-mode-hook 'lsp-deferred))
+  ;; (when (or (executable-find "rust-analyzer") (executable-find "rls"))
+  ;;   (add-hook 'rust-mode-hook 'lsp-deferred))
 
   :config
   ;; (setq rust-format-on-save t)
