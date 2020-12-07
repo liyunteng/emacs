@@ -26,22 +26,50 @@
 (use-package flycheck-rust
   :ensure t)
 
-(use-package rust-mode
+(use-package rustic
   :ensure t
   :bind ((
-          :map rust-mode-map
-          ("C-c C-c" . rust-run)
-          ("C-c RET" . rust-compile)
-          ("C-c t" . rust-test)
-          ("C-M-a" . rust-beginning-of-defun)
-          ("C-M-e" . rust-end-of-defun)))
-  :init
-  ;; (when (or (executable-find "rust-analyzer") (executable-find "rls"))
-  ;;   (add-hook 'rust-mode-hook 'lsp-deferred))
+          :map rustic-mode-map
+          ("C-c g" . rustic-compile)
+          ("C-c b" . rustic-cargo-build)
+          ("C-c f" . rustic-cargo-fmt)
+          ("C-c r" . rustic-cargo-run)
+          ("C-c c" . rustic-cargo-clippy)
+          ("C-c o" . rustic-cargo-outdated)
+          ("C-c e" . rustic-cargo-clean)
+          ("C-c k" . rustic-cargo-check)
+          ("C-c t" . rustic-cargo-test)
+          ("C-c d" . rustic-cargo-doc)
 
-  :config
-  ;; (setq rust-format-on-save t)
+          ("C-c C-t" . rustic-cargo-current-test)
+          ("C-c C-d" . rustic-racer-describe)
+          ("M-:" . rustic-docstring-dwim)
+
+          ("C-c x" . rustic-rustfix)
+          ("C-c C-f" . rustic-format-buffer)
+          ("C-c RET" . rustic-compile)
+
+          ("C-c C-c" . my/smart-compile)
+          ("C-M-a" . rustic-beginning-of-defun)
+          ("C-M-e" . rustic-end-of-defun)
+          ))
   )
+
+;; (use-package rust-mode
+;;   :ensure t
+;;   :bind ((
+;;           :map rust-mode-map
+;;           ("C-c C-c" . rust-run)
+;;           ("C-c RET" . rust-compile)
+;;           ("C-M-a" . rust-beginning-of-defun)
+;;           ("C-M-e" . rust-end-of-defun)))
+;;   :init
+;;   ;; (when (or (executable-find "rust-analyzer") (executable-find "rls"))
+;;   ;;   (add-hook 'rust-mode-hook 'lsp-deferred))
+
+;;   :config
+;;   ;; (setq rust-format-on-save t)
+;;   )
 
 (provide 'my-rust)
 ;;; my-rust.el ends here

@@ -479,7 +479,11 @@ compile-command, will auto insert new-compile-command to code file.
                                         " -g ")))
                   ((eq major-mode 'go-mode)
                    (setq command
-                         (concat "go run " (buffer-file-name) " "))))))
+                         (concat "go run " (buffer-file-name) " ")))
+                  ((or (eq major-mode 'rustic-mode)
+                       (eq major-mode 'rust-mode))
+                   (setq command
+                         (concat "cargo run"))))))
       ;; (setq-local compilation-directory default-directory)
       (let ((new-command (compilation-read-command command)))
         (unless (equal command new-command)
