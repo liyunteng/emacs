@@ -47,7 +47,7 @@
           ("M-:" . rustic-docstring-dwim)
 
           ("C-c x" . rustic-rustfix)
-          ("C-c C-f" . rustic-format-buffer)
+          ("C-c C-f" . rustic-format-file)
           ("C-c RET" . my/smart-compile)
 
           ("C-c C-c" . rustic-cargo-run)
