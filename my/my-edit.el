@@ -524,7 +524,7 @@ compile-command, will auto insert new-compile-command to code file.
     "Colorize a compilation mode buffer."
     (interactive)
     ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
-    (when (eq major-mode 'compilation-mode)
+    (when (derived-mode-p 'compilation-mode)
       (ansi-color-apply-on-region compilation-filter-start (point-max))))
   (add-hook 'compilation-filter-hook #'my/colorize-compilation-buffer))
 

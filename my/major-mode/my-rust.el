@@ -30,7 +30,8 @@
   :ensure t
   :bind ((
           :map rustic-mode-map
-          ("C-c g" . rustic-compile)
+          ("C-c u" . rustic-compile)
+          ("C-c g" . rustic-recompile)
           ("C-c b" . rustic-cargo-build)
           ("C-c f" . rustic-cargo-fmt)
           ("C-c r" . rustic-cargo-run)
@@ -47,12 +48,14 @@
 
           ("C-c x" . rustic-rustfix)
           ("C-c C-f" . rustic-format-buffer)
-          ("C-c RET" . rustic-compile)
+          ("C-c RET" . my/smart-compile)
 
-          ("C-c C-c" . my/smart-compile)
+          ("C-c C-c" . rustic-cargo-run)
           ("C-M-a" . rustic-beginning-of-defun)
           ("C-M-e" . rustic-end-of-defun)
           ))
+  :config
+  (add-hook 'rustic-cargo-run-mode-hook 'view-mode-enable)
   )
 
 ;; (use-package rust-mode
