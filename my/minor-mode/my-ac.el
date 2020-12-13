@@ -143,7 +143,7 @@
   (setq lsp-document-sync-method lsp--sync-incremental)
   ;; (setq lsp-headerline-breadcrumb-enable t)
   (setq-default lsp-completion-provider t)
-  (setq lsp-lens-enable t)
+  ;; (setq lsp-lens-enable t)
 
   ;; (setq lsp-keymap-prefix "C-c")
 
