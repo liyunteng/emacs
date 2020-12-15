@@ -40,12 +40,12 @@
         ("C-c C-e" . elpy-refactor-map)
         )
   :init
-  (use-package pyenv-mode
-    :ensure t
-    :commands (pyenv-mode)
-    ;; :init
-    ;; (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t)))
-    )
+  ;; (use-package pyenv-mode
+  ;;   :ensure t
+  ;;   :commands (pyenv-mode)
+  ;;   ;; :init
+  ;;   ;; (advice-add 'elpy-enable :before '(lambda() (pyenv-mode t)))
+  ;;   )
   ;; (advice-add 'python-mode :before 'elpy-enable)
 
   (defun my/elpy-shell-kill ()
@@ -100,7 +100,7 @@
       (semantic-mode -1))
     (subword-mode +1)
     (set (make-local-variable 'tab-width) 4)
-    (pyenv-mode +1)
+    ;; (pyenv-mode +1)
     (elpy-enable))
   (add-hook 'python-mode-hook 'my-python-mode-hook)
 
