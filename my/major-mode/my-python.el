@@ -62,7 +62,6 @@
   (setq elpy-shell-echo-input nil)
   (setq elpy-modules '(elpy-module-sane-defaults
                        elpy-module-eldoc
-        	           elpy-module-flymake
         	           elpy-module-pyvenv
         	           elpy-module-yasnippet))
   )
@@ -89,7 +88,7 @@
 
   ;; company
   (my|enable-company python-mode '(elpy-company-backend))
-  (my|enable-company inferior-python-mode '(elpy-company-backend))
+  ;; (my|enable-company inferior-python-mode '(elpy-company-backend))
 
   ;; jump
   (my|define-jump-backends python-mode elpy-goto-definition)
