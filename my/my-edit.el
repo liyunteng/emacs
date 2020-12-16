@@ -685,7 +685,7 @@ This functions should be added to the hooks of major modes for programming."
 
 ;; proced
 (use-package proced
-  :bind ("C-x P" . proced)
+  :bind (("C-x P" . proced))
   :config
   (setq proced-auto-update-flag t)
   (setq proced-auto-update-interval 3)
@@ -1278,6 +1278,7 @@ PROMPT sets the `read-string prompt."
 ;; ==================== MISC ====================
 ;; 列出正在运行的进程
 (global-set-key (kbd "C-x M-p") 'list-processes)
+(global-set-key (kbd "C-x M-t") 'list-threads)
 
 ;; narrow/widen
 (global-set-key (kbd "C-x N") #'my/narrow-or-widen-dwim)

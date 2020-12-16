@@ -192,3 +192,47 @@ http://106.75.55.63/advapi/v1/monitor?rq=1&ad=f3fb000b05f11d4162044815db68a0cc&z
 ** emacs can't use chinese input                                                :NOTE:
  [2019-07-22 Mon 01:18]
  [[file:~/git/core/client/libiHi/libihi/ihi_uac_wrapper.cpp][file:~/git/core/client/libiHi/libihi/ihi_uac_wrapper.cpp]]
+** SOTP 测试接口                                                                :NOTE:
+   *** checkUser
+   curl -v "http://ihi-sotp.streamocean.com/SOTP/index.php/interface/user/checkUser" -d '{"user_acct": "linsq", "pwd": "linsq"}' -H "Content-Type: application/json"
+   *** user
+   **** with devId check
+   curl -v "http://ihi-sotp.streamocean.com/SOTP/index.php/Interface/content/content/dev/VHD1511050002/user/dt1"
+   **** withou devId check
+   curl -v "http://ihi-sotp.streamocean.com/SOTP/index.php/Interface/infor/infor/user/dt1"
+
+ [2019-07-29 Mon 13:53]
+** 环境                                                                         :NOTE:
+   一、公司两台阿里云登录信息
+   IP：39.106.102.189 密码：5tream)ceaN
+   IP：106.14.8.145 密码：90-=op[]KL;'
+
+   二、三元桥服务器登录信息
+   1、先登录到39.106.102.189
+   2、ssh m
+
+   三、云视华通云登录信息
+   1、先登录到39.106.102.189
+   2、ssh ht157 、ssh ht116、ssh ht112
+
+** 内部环境
+   |      address | user | password | description       |
+   | 172.16.1.231 | root |    12345 | sdk build machine |
+   |  172.16.1.21 | root |          | vdn build machine |
+   |              |      |          |                   |
+
+   | 172.16.1.116 | root | admin@r3c1010.com | rsk's machine |
+   |              |      |                   |               |
+ [2019-07-29 Mon 15:25]
+** CANCELLED change cp fsm from call callbacks then change state to change state then call callbacks
+   CLOSED: [2020-12-17 Thu 03:10]
+   :LOGBOOK:
+   - State "CANCELLED"  from "TODO"       [2020-12-17 Thu 03:10]
+   :END:
+ [2019-07-22 Mon 01:16]
+** CANCELLED loopback master slave use common file
+   CLOSED: [2020-12-17 Thu 03:10]
+   :LOGBOOK:
+   - State "CANCELLED"  from "TODO"       [2020-12-17 Thu 03:10]
+   :END:
+ [2019-07-22 Mon 01:17]
