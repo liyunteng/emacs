@@ -371,7 +371,9 @@
   :custom (paradox-automatically-star t)
   :config
   (setq paradox-spinner-type 'progress-bar
-        paradox-execute-asynchronously t))
+        paradox-execute-asynchronously t)
+  (setq paradox-github-token "e67c690c4524ca155d87e7d7df0c537c9293f8e6")
+  )
 
 (use-package auto-package-update
   :ensure t
