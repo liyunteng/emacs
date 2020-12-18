@@ -530,54 +530,8 @@ compile-command, will auto insert new-compile-command to code file.
 
 ;; align
 (use-package align
-  :bind (("C-x \\" . my/align-repeat))
-  :commands (align align-regexp)
-  :init
-  (defun my/align-repeat (start end regexp &optional justify-right after)
-    "Repeat alignment with respect to the given regular expression.
-If JUSTIFY-RIGHT is non nil justify to the right instead of the
-left. If AFTER is non-nil, add whitespace to the left instead of
-the right."
-    (interactive "r\nsAlign regexp: ")
-    (let* ((ws-regexp (if (string-empty-p regexp)
-                          "\\(\\s-+\\)"
-                        "\\(\\s-*\\)"))
-           (complete-regexp
-            ;; (if after
-            ;;     (concat regexp ws-regexp)
-            ;;   (concat ws-regexp regexp))
-            (concat regexp "\\(\\s-+\\)")
-            )
-           (group (if justify-right -1 1)))
-      (message "%S" complete-regexp)
-      (align-regexp start end complete-regexp group 1 t)))
-  (defun my/align-repeat-decimal (start end)
-    "Align a table of numbers on decimal points and dollar signs (both optional) from START to END."
-    (interactive "r")
-    (align-region start end nil
-                  '((nil (regexp . "\\([\t ]*\\)\\$?\\([\t ]+[0-9]+\\)\\.?")
-                         (repeat . t)
-                         (group 1 2)
-                         (spacing 1 1)
-                         (justify nil t)))
-                  nil))
-  (defmacro my|create-align-repeat-x (name regexp &optional justify-right default-after)
-    (let ((new-func (intern (concat "my/align-repeat-" name))))
-      `(defun ,new-func (start end switch)
-         (interactive "r\nP")
-         (let ((after (not (eq (if switch t nil) (if ,default-after t nil)))))
-           (my/align-repeat start end ,regexp ,justify-right after)))))
-
-  (my|create-align-repeat-x "comma" "," nil t)
-  (my|create-align-repeat-x "semicolon" ";" nil t)
-  (my|create-align-repeat-x "colon" ":" nil t)
-  (my|create-align-repeat-x "equal" "=")
-  (my|create-align-repeat-x "math-oper" "[+\\-*/]")
-  (my|create-align-repeat-x "ampersand" "&")
-  (my|create-align-repeat-x "bar" "|")
-  (my|create-align-repeat-x "left-paren" "(")
-  (my|create-align-repeat-x "right-paren" ")" t)
-  (my|create-align-repeat-x "backslash" "\\\\"))
+  :bind (("C-x \\" . align-regexp))
+  :commands (align align-regexp))
 
 ;; comment
 (use-package newcomment
@@ -666,7 +620,7 @@ at the end of the line."
 
 This functions should be added to the hooks of major modes for programming."
     (font-lock-add-keywords
-     nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|BUG\\):\\)"
+     nil '(("\\<\\(\\(FIX\\(ME\\)?\\|WARN\\(ING\\)?\\|INFO\\|NOTE\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\|BUG\\):\\)"
             1 font-lock-warning-face t))))
 
   (defun my-prog-mode-defaults ()
@@ -1046,9 +1000,9 @@ PROMPT sets the `read-string prompt."
      (interactive)
      (my-search ,search-engine-url ,search-engine-prompt)))
 (my|install-search-engine "baidu" "https://www.baidu.com/s?ie=UTF-8&w=" "Baidu: ")
-;; (my|install-search-engine "google"     "http://www.google.com/search?q="              "Google: ")
+(my|install-search-engine "google"     "http://www.google.com/search?q="              "Google: ")
 ;; (my|install-search-engine "youtube"    "http://www.youtube.com/results?search_query=" "Search YouTube: ")
-;; (my|install-search-engine "github"     "https://github.com/search?q="                 "Search GitHub: ")
+(my|install-search-engine "github"     "https://github.com/search?q="                 "Search GitHub: ")
 ;; (my|install-search-engine "duckduckgo" "https://duckduckgo.com/?t=lm&q="              "Search DuckDuckGo: ")
 
 
