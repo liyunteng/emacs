@@ -124,7 +124,7 @@
 ;; (setq revert-without-query '(".*"))
 (setq kill-emacs-query-functions nil)
 (setq confirm-kill-emacs nil)
-(setq confirm-kill-processes t)
+(setq confirm-kill-processes nil)
 
 ;; 不产生备份文件
 (setq make-backup-files nil)
