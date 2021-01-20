@@ -88,5 +88,22 @@ If APPEND add to end."
 (my-add-to-load-path my-dir)
 (my-add-to-load-path-if-exists my-personal-dir)
 (my-add-subfolders-to-load-path my-dir)
+
+(setq-default url-cache-directory (expand-file-name "url" my-cache-dir))
+(setq-default url-cookie-file (expand-file-name "url/cookies" my-cache-dir))
+(setq-default nsm-settings-file (expand-file-name "network-security.data" my-cache-dir))
+(setq-default diary-file (expand-file-name "diary" my-cache-dir))
+(setq-default ede-project-placeholder-cache-file (expand-file-name "ede-projects" my-cache-dir))
+(setq-default smex-save-file (expand-file-name "smex-items" my-cache-dir))
+(setq-default org-id-locations-file (expand-file-name ".org-id-locations" my-cache-dir))
+
+(setq-default transient-history-file (expand-file-name "transient/history.el" my-cache-dir))
+(setq-default transient-levels-file (expand-file-name "transient/levels.el" my-cache-dir))
+(setq-default transient-values-file (expand-file-name "transient/values.el" my-cache-dir))
+
+(setq-default desktop-path (list my-cache-dir))
+(setq-default desktop-dirname my-cache-dir)
+(setq-default desktop-base-file-name "emacs.desktop")
+
 (provide 'my-load-path)
 ;;; my-load-path.el ends here

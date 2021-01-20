@@ -46,7 +46,8 @@
     ("org" . "http://elpa.emacs-china.org/org/")
     ("marmalade" . "http://elpa.emacs-china.org/marmalade/"))
   "elpa.emacs-china.org mirror")
-(setq package-archives 163-mirrors)
+;; (setq package-archives 163-mirrors)
+(setq package-archives tsinghua-mirrors)
 ;; (setq package-pinned-packages
 ;;       '((ivy . "gnu")))
 
