@@ -118,7 +118,9 @@
   (defadvice term-mode (before set-term activate)
     "Set TERM=linux if in 8-color."
     (if (<= (display-color-cells) 8)
-        (set-variable 'term-term-name "linux")))
+        ;; (set-variable 'term-term-name "eterm-color")
+        (setenv "ZSH_THEME" "my-clear")
+      ))
 
   (defadvice term-mode (after set-company activate)
     "Disable company-mode in term"
