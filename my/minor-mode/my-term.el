@@ -120,6 +120,11 @@
     (if (<= (display-color-cells) 8)
         (set-variable 'term-term-name "linux")))
 
+  (defadvice term-mode (after set-company activate)
+    "Disable company-mode in term"
+    (when (and (featurep 'company) company-mode)
+      (company-mode -1)))
+
   (defun my-term-mode-hook ()
     ;; (term-set-escape-char ?\C-x)
     (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
@@ -128,7 +133,8 @@
     (setq-local global-hl-line-mode nil)
     (setq-local beacon-mode nil)
     (setq-local scroll-margin 0)
-    (setq-default system-uses-terminfo t))
+    (setq-default system-uses-terminfo t)
+    )
 
   (add-hook 'term-mode-hook 'my-term-mode-hook)
   )

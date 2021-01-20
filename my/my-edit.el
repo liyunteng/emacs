@@ -758,7 +758,6 @@ This functions should be added to the hooks of major modes for programming."
 (diminish 'lsp-lens-mode)
 (diminish 'macrostep-mode)
 (diminish 'subword-mode)
-(diminish 'hs-minor-mode)
 (diminish 'prose-mode)
 (diminish 'yagist-minor-mode)
 (diminish 'pcre-mode)
