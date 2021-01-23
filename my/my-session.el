@@ -98,7 +98,7 @@
 	    desktop-missing-file-warning nil
         desktop-load-locked-desktop t
 	    desktop-restore-in-current-display nil
-        desktop-restore-frames nil      ; don't restore frame
+        desktop-restore-frames t
         desktop-restore-reuses-frames t
 	    desktop-save t
 	    ;; desktop-save 'ask-if-new
