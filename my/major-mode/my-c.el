@@ -199,6 +199,7 @@
   (define-key hide-ifdef-mode-map (kbd "C-c i H") 'hide-ifdefs)
   (define-key hide-ifdef-mode-map (kbd "C-c i D") 'hide-ifdef-define)
   (define-key hide-ifdef-mode-map (kbd "C-c i U") 'hide-ifdef-undef)
+  (define-key hide-ifdef-mode-map (kbd "C-c i t") 'hide-ifdef-toggle-shadowing)
   ;; (define-key hide-ifdef-mode-map (kbd "C-c i t i") 'hide-ifdef-toggle-read-only)
   ;; (define-key hide-ifdef-mode-map (kbd "C-c i t o") 'hide-ifdef-toggle-outside-read-only)
   ;; (define-key hide-ifdef-mode-map (kbd "C-c i t s") 'hide-ifdef-toggle-shadowing)

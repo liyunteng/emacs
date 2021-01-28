@@ -105,11 +105,14 @@
 	    )
   ;; don't save /tmp/*
   (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
-  ;; (add-to-list 'des'ktop-minor-mode-table '(yas-minor-mode nil))
+  ;; (add-to-list 'desktop-minor-mode-table '(yas-minor-mode nil))
   (add-to-list 'desktop-minor-mode-table '(dired-git-info-mode nil))
   ;; fixme global-auto-revert-mode can't work
   (defun global-auto-revert-desktop-restore (arg))
   (add-to-list 'desktop-minor-mode-handlers '(global-auto-revert-mode . global-auto-revert-desktop-restore))
+  (add-to-list 'desktop-minor-mode-handlers '(symbol-overlay-mode . nil))
+
+  ;; (add-to-list 'desktop-buffer-mode-handlers '(lsp-log-io-mode . nil))
 
   ;; (setq desktop-globals-to-clear)
   ;; save a bunch of variables to the desktop file

@@ -33,6 +33,7 @@
   (setq gc-cons-threshold init-gc-cons-threshold)
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+(setq read-process-output-max (* 128 8196))
 
 ;; 递归minibuffer
 (setq enable-recursive-minibuffers t)

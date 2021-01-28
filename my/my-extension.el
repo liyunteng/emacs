@@ -279,8 +279,13 @@
         (call-interactively 'symbol-overlay-put)
       (call-interactively  'tab-to-tab-stop)))
 
-  (dolist (hook '(prog-mode-hook html-mode-hook yaml-mode-hook conf-mode-hook css-mode-hook))
+  (dolist (hook '(prog-mode-hook
+                  html-mode-hook
+                  yaml-mode-hook
+                  conf-mode-hook
+                  css-mode-hook))
     (add-hook hook 'symbol-overlay-mode))
+
   :config
   (set-face-attribute 'symbol-overlay-default-face nil
                       :background

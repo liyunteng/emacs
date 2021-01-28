@@ -135,7 +135,7 @@
   :config
   (setq lsp-log-io nil)
   (setq lsp-print-performance nil)
-  ;; (setq lsp-log-max 20000)
+  (setq lsp-log-max 20000)
   ;; (setq lsp-restart 'auto-restart)
   (setq lsp-keep-workspace-alive nil)
   (setq lsp-auto-guess-root t)
