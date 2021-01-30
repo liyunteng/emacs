@@ -128,28 +128,24 @@
   (setq lsp-session-file (expand-file-name "lsp-session-v1" my-cache-dir))
   (setq lsp-server-install-dir (expand-file-name "lsp-server" my-cache-dir))
 
-  ;; (use-package lsp-completion
-  ;;   :init
-  ;;   (setq lsp-completion-provider t))
-
   :config
-  (setq lsp-log-io nil)
-  (setq lsp-print-performance nil)
-  (setq lsp-log-max 20000)
+  ;; (setq lsp-log-io t)
+  ;; (setq lsp-print-performance nil)
+  ;; (setq lsp-log-max 20000)
   ;; (setq lsp-restart 'auto-restart)
-  (setq lsp-keep-workspace-alive nil)
+  ;; (setq lsp-keep-workspace-alive nil)
   (setq lsp-auto-guess-root t)
   (setq lsp-response-timeout 2)
-  (setq lsp-document-sync-method lsp--sync-incremental)
+  ;; (setq lsp-document-sync-method lsp--sync-incremental)
   ;; (setq lsp-headerline-breadcrumb-enable t)
-  (setq-default lsp-completion-provider t)
+  ;; (setq-default lsp-completion-provider t)
   ;; (setq lsp-lens-enable t)
 
   ;; (setq lsp-keymap-prefix "C-c")
 
 
-  (setq lsp-enable-semantic-highlighting t)
-  (setq lsp-semantic-highlighting-warn-on-missing-face t)
+  (setq lsp-semantic-tokens-enable t)
+  (setq lsp-semantic-tokens-warn-on-missing-face t)
   (setq lsp-semantic-tokens-apply-modifiers t)
 
   (add-hook 'kill-emacs-hook 'lsp--global-teardown)
