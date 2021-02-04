@@ -462,10 +462,12 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
     ;; (setq comment-end '" */")
 
     (with-eval-after-load 'flycheck
-      (if (equal (flycheck-get-checker-for-buffer) 'c/c++-clang)
-          (setq-default flycheck-clang-include-path my-include-path)
-        (if (equal (flycheck-get-checker-for-buffer) 'c/c++-gcc)
-            (setq-default flycheck-gcc-include-path my-include-path))))
+      (when(equal (flycheck-get-checker-for-buffer) 'c/c++-clang)
+        (dolist (var my-include-path)
+          (add-to-list 'flycheck-clang-include-path var)))
+      (when (equal (flycheck-get-checker-for-buffer) 'c/c++-gcc)
+        (dolist (var my-include-path)
+          (add-to-list 'flycheck-gcc-include-path var))))
 
     ;; set flycheck include paths
     ;; (when (boundp 'flycheck-mode)
