@@ -72,6 +72,7 @@
   :bind (("C-x M-k" . my/desktop-clear))
   :defines (desktop-save)
   :init
+
   (defun my/desktop-clear ()
     "Desktop clear and Desktop remove."
     (interactive)
@@ -93,78 +94,86 @@
 
   :config
   (setq desktop-path (list my-cache-dir)
-	    ;; desktop-dirname my-cache-dir
+	    desktop-dirname my-cache-dir
 	    desktop-auto-save-timeout 600
 	    desktop-missing-file-warning nil
         desktop-load-locked-desktop t
 	    desktop-restore-in-current-display nil
-        desktop-restore-frames t
         desktop-restore-reuses-frames t
-	    desktop-save t
 	    ;; desktop-save 'ask-if-new
-	    )
+	    desktop-save t)
+
+  ;; fix macos fullscreen maybe hung
+  (when (system-is-mac)
+    (setq desktop-restore-frames nil))
+
   ;; don't save /tmp/*
   (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|^/tmp/*\\)")
-  ;; (add-to-list 'desktop-minor-mode-table '(yas-minor-mode nil))
+  (add-to-list 'desktop-minor-mode-table '(yas-minor-mode nil))
   (add-to-list 'desktop-minor-mode-table '(dired-git-info-mode nil))
+
   ;; fixme global-auto-revert-mode can't work
   (defun global-auto-revert-desktop-restore (arg))
   (add-to-list 'desktop-minor-mode-handlers '(global-auto-revert-mode . global-auto-revert-desktop-restore))
   (add-to-list 'desktop-minor-mode-handlers '(symbol-overlay-mode . nil))
+  (add-to-list 'desktop-minor-mode-handlers '(lsp-mode . nil))
 
+  ;; (add-to-list 'destkop-buffer-mode-handlers '(lsp-mode . nil))
+  ;; (add-to-list 'destkop-buffer-mode-handlers '(lsp-modeline-workspace-status-mode . nil))
+  ;; (add-to-list 'destkop-buffer-mode-handlers '(lsp-signature-mode . nil))
   ;; (add-to-list 'desktop-buffer-mode-handlers '(lsp-log-io-mode . nil))
 
-  ;; (setq desktop-globals-to-clear)
+
   ;; save a bunch of variables to the desktop file
   ;; for lists specify the len of the maximal saved data also
-  (setq desktop-globals-to-save
-	    (append '(
-                  (desktop-saved-frameset   . nil)  ;don't save frameset
-                  (buffer-name-history      . 30)
-                  (command-history          . 30)
-                  (compile-history          . 10)
-                  (extended-command-history . 30)
-                  (comint-input-ring        . 30)
-                  (dired-regexp-history     . 10)
-                  (face-name-history        . 20)
-                  (file-name-history        . 50)
-                  desktop-missing-file-warning
-                  (grep-files-history       . 10)
-		          (grep-find-history        . 10)
-		          (grep-history             . 10)
-                  (grep-regexp-history      . 10)
-		          (helm-ff-history          . 30)
-		          (helm-file-name-history   . 30)
-                  (helm-M-x-input-history   . 30)
-                  (helm-external-command-history . 30)
-		          (helm-grep-history        . 30)
-		          (helm-occur-history       . 30)
-                  (ido-file-history         . 30)
-		          (ido-buffer-history       . 30)
-		          (ido-last-directory-list  . 30)
-		          (ido-work-directory-list  . 30)
-		          (ido-work-file-list       . 30)
-		          (ivy-history              . 30)
-                  (counsel-M-x-history      . 30)
-                  (counsel-compile-history       . 10)
-                  (counsel-describe-symbol-history . 10)
-                  (counsel-grep-history           . 10)
-                  (counsel-locate-history    . 10 )
-                  (counsel-set-variable-history . 10)
-                  (swiper-history           . 30)
-                  (minibuffer-history       . 50)
-		          (magit-read-rev-history   . 50)
-		          (org-clock-history        . 50)
-		          (org-refile-history       . 50)
-		          (org-tags-history         . 50)
-		          (query-replace-history    . 10)
-		          (read-expression-history  . 10)
-		          (regexp-history           . 10)
-		          (regexp-search-ring       . 10)
-		          (search-ring              . 20)
-		          (shell-command-history    . 50)
-		          tags-file-name
-		          tags-table-list)))
+  ;; (setq desktop-globals-to-save
+  ;;       (append '(
+  ;;                 (desktop-saved-frameset   . nil)  ;don't save frameset
+  ;;                 (buffer-name-history      . 30)
+  ;;                 (command-history          . 30)
+  ;;                 (compile-history          . 10)
+  ;;                 (extended-command-history . 30)
+  ;;                 (comint-input-ring        . 30)
+  ;;                 (dired-regexp-history     . 10)
+  ;;                 (face-name-history        . 20)
+  ;;                 (file-name-history        . 50)
+  ;;                 desktop-missing-file-warning
+  ;;                 (grep-files-history       . 10)
+  ;;                 (grep-find-history        . 10)
+  ;;                 (grep-history             . 10)
+  ;;                 (grep-regexp-history      . 10)
+  ;;                 (helm-ff-history          . 30)
+  ;;                 (helm-file-name-history   . 30)
+  ;;                 (helm-M-x-input-history   . 30)
+  ;;                 (helm-external-command-history . 30)
+  ;;                 (helm-grep-history        . 30)
+  ;;                 (helm-occur-history       . 30)
+  ;;                 (ido-file-history         . 30)
+  ;;                 (ido-buffer-history       . 30)
+  ;;                 (ido-last-directory-list  . 30)
+  ;;                 (ido-work-directory-list  . 30)
+  ;;                 (ido-work-file-list       . 30)
+  ;;                 (ivy-history              . 30)
+  ;;                 (counsel-M-x-history      . 30)
+  ;;                 (counsel-compile-history       . 10)
+  ;;                 (counsel-describe-symbol-history . 10)
+  ;;                 (counsel-grep-history           . 10)
+  ;;                 (counsel-locate-history    . 10 )
+  ;;                 (counsel-set-variable-history . 10)
+  ;;                 (swiper-history           . 30)
+  ;;                 (minibuffer-history       . 50)
+  ;;                 (magit-read-rev-history   . 50)
+  ;;                 (org-clock-history        . 50)
+  ;;                 (org-refile-history       . 50)
+  ;;                 (org-tags-history         . 50)
+  ;;                 (query-replace-history    . 10)
+  ;;                 (read-expression-history  . 10)
+  ;;                 (regexp-history           . 10)
+  ;;                 (regexp-search-ring       . 10)
+  ;;                 (search-ring              . 20)
+  ;;                 (shell-command-history    . 50)
+  ;;                 tags-file-name
+  ;;                 tags-table-list)))
 
   (defvar before-desktop-read-time nil)
   (defvar after-desktop-read-time nil)
