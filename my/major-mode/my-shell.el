@@ -32,7 +32,7 @@
     :commands (company-shell
 	           company-shell-env))
   ;; auto-insert
-  (define-auto-insert 'sh-mode (my-header '("#!/usr/bin/bash\n")))
+  (define-auto-insert 'sh-mode (my-header '("#!/usr/bin/bash\n\n")))
 
   ;;  company
   (my|enable-company sh-mode '(company-shell company-shell-env)))
