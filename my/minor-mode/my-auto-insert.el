@@ -206,7 +206,6 @@
 
   (setq auto-insert-alist
         '((("\\.\\([Hh]\\|hh\\|hpp\\|hxx\\|h\\+\\+\\)\\'" . "C / C++ header")
-
            (concat "__" (replace-regexp-in-string
                          "[^A-Z0-9]" "_"
                          (replace-regexp-in-string
@@ -215,7 +214,7 @@
                    "__")
            "#ifndef " str \n
            "#define " str "\n\n"
-           _ "\n\n#endif /*" str " */")
+           _ "\n\n#endif " comment-start str comment-end)
 
           (("\\.\\([Cc]\\|cc\\|cpp\\|cxx\\|c\\+\\+\\)\\'" . "C / C++ program")
            nil
