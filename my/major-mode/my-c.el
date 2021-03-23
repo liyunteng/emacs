@@ -442,7 +442,9 @@ Do this when cursor is at the beginning of `regexp' (i.e. #ifX)."
   (c-add-style "my-cc"
                '("bsd"
                  (c-basic-offset . 4)
-                 (c-comment-only-line-offset . 0)))
+                 (c-comment-only-line-offset . 0)
+                 (c-offsets-alist
+                  (inextern-lang . 0))))
 
   (defun my-cc-mode-hook ()
     "My c common mode hooks."
