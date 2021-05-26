@@ -48,6 +48,7 @@
   "elpa.emacs-china.org mirror")
 ;; (setq package-archives 163-mirrors)
 (setq package-archives tsinghua-mirrors)
+;; (setq package-archives elpa-china-mirrors)
 ;; (setq package-pinned-packages
 ;;       '((ivy . "gnu")))
 
